@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <link rel="stylesheet" href="jquery/jquery.mobile-1.2.0.min.css" />
+        <link rel="stylesheet" href="Rapidtrade.css" />
+
+        <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>
+        <script src="jquery/jquery.mobile-1.2.0.min.js"></script>
+        
+        <script type="application/javascript" src="script/globals.js"></script>
+        <script type="application/javascript" src="script/dao/dao.js"></script>
+        <script type="application/javascript" src="script/dbutils.js"></script> 
+        <script type="application/javascript" src="script/printinvoice.js"></script>
+        
+    </head>
+    <body>
+		<div data-role="page" id="printinvoicepage" style="width:595px;">
+		    <script>
+		        $('#printinvoicepage').bind("pageshow", function () {
+		            printinvoiceOnPageShow();
+		        });
+		    </script>
+	        <div data-role="header" class="printinvoiceHeader">
+		        <h3>
+		            SG Invoice
+		        </h3>
+	       		<a data-role="button" id="printButton" data-transition="none"  class="ui-btn-left">
+		     		Print
+		 		</a>               
+		        <a onclick="printinvoiceOnContinueClicked()" data-role="button" class="ui-btn-right" data-iconpos="right" data-icon="arrow-r">
+	           		Continue
+	       		</a>
+	        </div>
+		    <div data-role="content" class="printinvoiceContent"> 
+				<div  class="ui-grid-a">
+		            <div class="ui-block-a">
+		            	<h3></h3>
+		            	<div id="invoiceBarcode">
+		            	</div>
+						<table>
+							<tr><td>Inv. Number</td><td id="invoiceNumber"></td></tr>
+							<tr><td>Invoice Date</td><td id="date"></td></tr>
+						</table>
+		            </div>
+		            <div class="ui-block-b">
+		            <p>Supplied By</p>
+						<table class="printinvoiceFramedTable">
+							<tr><td>ID:</td><td id="id"></td></tr>
+							<tr><td>Details</td><td id="details"><br/><br/><br/><br/><br/><br/><br/></td></tr>
+						</table>
+		            </div>
+		        </div>
+		        <p>
+		        <table class="printinvoiceFramedTable">
+		        	<tr><td>Bill To:</td><td></td><td nowrap>Deliver To:</td><td></td></tr>
+		        	<tr><td>Acc Num:</td><td id="acc"></td><td rowspan="3">Addr:</td><td rowspan="3" id="address"></td></tr>
+		        	<tr><td>Customer:</td><td id="customer"><br/><br/><br/><br/><br/></td></tr>
+		        	<tr><td>Cust VAT</td><td id="customerVAT"></td></tr>
+				</table>
+				</p>
+		        <p>
+		        <table class="printinvoiceFramedTable">
+		        	<tr><td>Reference:</td><td id="comment"></td></tr>
+				</table>
+				</p>
+				<p>
+				<table class="printinvoiceProductListTable" rules=groups id="productListTable">
+					<thead>	
+						<tr><th>Product</th><th>Description</th><th>Qty</th><th>Disc</th><th>Price</th><th>Value</th></tr>
+					</thead>
+					<tbody>
+					</tbody>
+					<tfoot>
+						<tr><td></td><td class="printinvoiceTotalLabel">Sub Total</td><td colspan="3"></td><td id="subTotal"></td></tr>
+						<tr><td></td><td class="printinvoiceTotalLabel" id="taxText">VAT</td><td colspan="3"></td><td id="vat"></td></tr>
+						<tr><td></td><td class="printinvoiceTotalLabel">Total</td><td id="quantityTotal"></td><td colspan="2"></td><td id="total"></td></tr>
+					</tfoot>
+				</table>	
+				</p>
+				<p>
+				<hr noshade="noshade" size="1">
+				I / We acknowledge receipt of goods as detailed.
+				</p>
+				<p>
+				<table style="border-spacing: 20px; width:100%">
+					<tr><td>Authorised Name:</td><td>Store Stamp</td></tr>
+					<tr><td><hr class="printinvoiceHorizontalRule"></td><td><hr class="printinvoiceHorizontalRule"></td></tr>
+					<tr><td>Signature:</td><td>GRN Number</td></tr>
+					<tr><td><hr class="printinvoiceHorizontalRule"></td><td><hr class="printinvoiceHorizontalRule"></td></tr>
+				</table>
+				</p>
+		    </div>
+	    </div>	
+	</body>
+</html>

@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	    <link rel="stylesheet" href="jquery/jquery.mobile-1.2.0.min.css" />
+	    <link rel="stylesheet" href="Rapidtrade.css" />
+	    
+	    <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>	
+	    <script type="application/javascript"  src="jquery/jquery.mobile-1.2.0.min.js"></script>
+	    <script type="application/javascript" src="script/globals.js"></script>
+	    <script type="application/javascript"  src="script/mykpis.js"></script>
+    </head> 
+    <body>
+		<div data-role="page" id="mykpispage">
+			<script>
+	 		    $('#mykpispage').bind("pageinit", function() {
+			    	myKPIsOnPageShow();
+			    });
+			</script>
+			<div data-role="header">
+				<img class="logoSml" src="img/logoSml.png"/>
+			    <a id="mykpistimenu" data-role="button" data-icon="arrow-l" data-iconpos="left" data-transition="none" class="ui-btn-left">Menu</a>
+			</div>
+			<div data-role="content">
+				<div class="rtlabel">
+	            	<img class="rtlabelimg" width="64px" height="64px" src="img/Bar_Graph_128x128.png"/>
+	            	<h2 class="rtlabeltext">My KPI's</h2>
+		        </div>
+		        <div class="panel-white-rounded" >
+			        <div id="loadingPanel" class="yellowpanel infoPanel">
+			        	<img src="img/Sand-Timer-48.png"><div id="message" class="infoText">Fetching your KPI's. Please wait...</div>
+			        </div>
+					<div data-role="content" class="hidden">
+						<h2>Weekly KPI's</h2>
+						<table class="mykpisTH">
+						<tr>
+						<td class="type">KPI Type</td>
+						<td class="value">KPI Value</td>
+						<td class="total">Current<br>Week</td>
+						<td class="total">Week<br>(-1)</td>
+						<td class="total">Week<br>(-2)</td>
+						<td class="total">Week<br>(-3)</td>
+						</tr></table>
+						<ul id="weeklyReport" data-role="listview" data-inset="true"></ul>
+			     	</div>
+		     	</div>
+		     	<div class="panel-white-rounded" style="margin-top: 10px">
+		     		<div data-role="content" class="hidden">
+						<h2>Monthly KPI's</h2>
+						<table class="mykpisTH">
+						<tr>
+						<td class="type">KPI Type</td>
+						<td class="value">KPI Value</td>
+						<td class="total">Jan</td>
+						<td class="total">Feb</td>
+						<td class="total">Mar</td>
+						<td class="total">Apr</td>
+						<td class="total">May</td>
+						<td class="total">Jun</td>
+						<td class="total">Jul</td>
+						<td class="total">Aug</td>
+						<td class="total">Sep</td>
+						<td class="total">Oct</td>
+						<td class="total">Nov</td>
+						<td class="total">Dec</td>
+						</tr>
+						</table>
+						<ul id="monthlyReport" data-role="listview" data-inset="true"></ul>
+			     	</div>	
+	     		</div>
+	    	</div>
+	    </div>
+	</body>
+</html>

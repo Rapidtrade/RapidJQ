@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	    <link rel="stylesheet" href="jquery/jquery.mobile-1.3.0.min.css" />
+	    <link rel="stylesheet" href="Rapidtrade.css" />
+        <link rel="stylesheet" href="jquery/jqm-datebox-1.1.0.css" />
+
+	    <script type="application/javascript"  src="jquery/jquery.mobile-1.3.0.min.js"></script>
+        <script type="application/javascript" src="jquery/jqm-datebox.core.min.js"></script>	  	
+		<script type="application/javascript" src="jquery/jqm-datebox.mode.calbox.min.js"></script>
+		<script type="application/javascript" src="jquery/jqm-datebox.mode.flipbox.min.js"></script>
+		
+        <script type="application/javascript" src="script/globals.js"></script>
+        <script type="application/javascript" src="script/dao/dao.js"></script>
+        <script type="application/javascript" src="script/jsonform.js"></script>
+        <script type="application/javascript" src="script/orderHeader.js"></script>
+        <script type="application/javascript" src="script/basketInfo.js"></script>
+        <script type="text/javascript" src="jquery/jSignature/flashcanvas.js"></script>
+        <script src="jquery/jSignature/jSignature.min.noconflict.js"></script>
+    </head>
+    <body>
+        <div data-role="page" id="orderHeaderpage" class="ipadStatusBar">
+            <script>
+                    $('#orderHeaderpage').bind("pageshow", function () {
+                        orderHeaderOnPageShow();
+                        $("#signature").jSignature();
+                    });
+            </script>
+            <div data-role="header">
+                <img class="logoSml" src="img/logoSml.png"/>
+                <a id="orderHeaderBackPage" data-role="button"  data-icon="arrow-l" data-iconpos="left"  data-transition="none" class="ui-btn-left">Back</a>
+                 <a data-role="button" id ="saveorder" class="ui-btn-right"  data-icon="plus" data-iconpos="left">Save</a>
+            </div>
+            <div data-role="popup" data-history="false" id="popupBasic" data-theme="e">
+                <p>
+                    Please wait, processing Order
+                </p>           
+            </div>       
+            <div data-role="popup" data-history="false" id="orderHeaderInvoicePopup" data-theme="e">
+                <p>
+                	Which size?
+                </p>  
+                <a id="a4PrinterButton" href="printinvoiceA4.html" data-role="button" data-inline="true">
+	            	   A4 Printer
+	        	</a>
+	            <a id="smallPrinterButton" href="printinvoicesmall.html" data-role="button" data-inline="true">
+	                   Small Printer
+	            </a>            
+            </div>   
+            <div data-role="popup" data-history="false" id="orderErrorPopup">
+	           <p>
+	           	<img src="img/cancel.png"><span id="message" style="padding-left:10px"></span>
+	           </p> 
+	           <a data-role="button" data-inline="false" style="margin-top:20px" href="#orderHeaderpage">
+	            	OK
+	        	</a>           
+        	</div>  
+        	<div data-role="popup" data-history="false" id="orderConfirmPopup">
+        		<h2>Please check your order</h2>
+        		<div class="yellowpanel" style="margin:40px;">Please check potential issues with your order below. <br>Choose Confirm or Cancel to change your shopping cart.</div>
+				<table style="margin: 20px;" data-role="table" data-mode="reflow" class="ui-responsive table-stroke">
+				  <thead>
+				    <tr>
+				      <th>Product ID</th>
+				      <th>Description</th>
+				      <th>Quantity</th>
+				      <th>Available</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				  </tbody>
+				</table>
+				<div>	
+   	           		<a data-role="button" data-inline="true" style="margin-top:20px" href="#orderHeaderpage">Cancel</a> 
+   	           		<a id="confirmButton" data-role="button" data-inline="true" style="margin-top:20px" href="#orderHeaderpage">Confirm</a> 
+   	           	</div>		        	          
+        	</div> 
+             <div data-role="content">
+                 <div style="float: right">
+                     <a data-role="button" id="signatureButton" class="ui-btn-right">Signature</a>
+                 </div>
+                 <div class="rtlabel" id="orderDetails">
+                     <img class="rtlabelimg" src="img/Sales-report-64.png" />
+                     <h3 class="rtlabeltext" id="orderLabel">Order Details</h3>
+                 </div>
+                <form id="orderdetailform">
+                </form>                     
+                <div class="rtlabel invisible" id="address">
+                	<img class="rtlabelimg" src="img/Address-Book-64.png"/>
+                	<h3 class="rtlabeltext">Address</h3>
+                </div>
+                <form id="addressForm" class="ui-body ui-body-c invisible" >
+	                <div data-role="fieldcontain">
+		                 <label for="email">Email</label>
+		                 <input type="text" id="email" value="" style ="width:30%" />
+		                 <a  data-transition="pop" data-rel="popup" data-position-to="window" id="emailChooseBtn" data-role="button" data-inline="true" href="#popupEmail">Choose</a>
+		            </div>
+		            <div data-role="popup" id="popupEmail" data-history="false" class="ui-content">   	
+	                   <div data-role="fieldcontain">
+	                     <fieldset data-role="controlgroup" id="emailfieldset" data-type="vertical">
+	                         <legend></legend>
+	                     </fieldset>                      
+	                    </div>    
+		             </div>           
+					<div data-role="fieldcontain">
+	                     <label for="name">Name</label>
+	                     <input type="text" name="name" id="name" value="" style =" width:30%" />
+	                     <a  data-transition="pop" data-rel="popup" data-position-to="window" id="choosebtn" data-role="button" data-inline="true" href="#popupAddressChoose">Choose</a>
+	                 </div>
+	                 <div data-role="popup" id="popupAddressChoose" data-history="false" class="ui-content" >   	
+	                   <div data-role="fieldcontain">
+	                     <fieldset data-role="controlgroup" id ="fieldset">
+	                         <legend></legend>
+	                     </fieldset>                      
+	                    </div>                
+	                 </div>	             
+	                 <div data-role="fieldcontain">
+	                     <label for="address1">Address1</label>
+	                     <input type="text" name="address1" id="address1" value="" style ="width:70%"/>
+	                 </div>
+	                  <div data-role="fieldcontain">
+	                     <label for="address2">Address2</label>
+	                     <input type="text" name="address2" id="address2" value="" style ="width:70%"/>
+	                 </div>
+	                  <div data-role="fieldcontain">
+	                     <label for="address3">Address3</label>
+	                     <input type="text" name="address3" id="address3" value="" style ="width:70%" />
+	                 </div>
+	                  <div data-role="fieldcontain">
+	                     <label for="postalCode">Postal Code</label>
+	                     <input type="text" name="postalCode" id="postalCode" value="" style ="width:70%" />
+	                 </div>
+                 </form> 
+            </div>
+            <div id="signatureFrame" class="hidden panel-grey-rounded">
+	            <div id="signature">
+	            </div>
+	            <a data-role="button" id="signatureResetButton" class="ui-btn-right" onclick="orderheaderResetSignature()">Reset</a>
+            </div>
+        </div>
+    </body>
+</html>

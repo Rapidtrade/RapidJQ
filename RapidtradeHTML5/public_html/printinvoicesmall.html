@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <link rel="stylesheet" href="jquery/jquery.mobile-1.2.0.min.css" />
+        <link rel="stylesheet" href="Rapidtrade.css" />
+
+        <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>
+        <script src="jquery/jquery.mobile-1.2.0.min.js"></script>
+        
+        <script type="application/javascript" src="script/globals.js"></script>
+        <script type="application/javascript" src="script/dao/dao.js"></script>
+        <script type="application/javascript" src="script/dbutils.js"></script> 
+        <script type="application/javascript" src="script/printinvoice.js"></script>
+        
+    </head>
+    <body>
+		<div data-role="page" id="printinvoicepage" style="width:400px; margin-left:10px;">
+		    <script>
+		        $('#printinvoicepage').bind("pageshow", function () {
+		            printinvoiceOnPageShow();
+		        });
+		    </script>
+	        <div data-role="header" class="printinvoiceHeader">
+		        <h3>
+		            SG Invoice
+		        </h3>
+	       		<a data-role="button" id="printButton" data-transition="none"  class="ui-btn-left">
+		     		Print
+		 		</a>               
+		        <a onclick="printinvoiceOnContinueClicked()" data-role="button" class="ui-btn-right" data-iconpos="right" data-icon="arrow-r">
+	           		Continue
+	       		</a>
+	        </div>
+		    <div data-role="content" class="printinvoicesmlContent"> 
+	            <div>
+	            	<h3>bla bla</h3>
+	            	<div id="invoiceBarcode">
+	            	</div>
+					<table>
+						<tr><td>Inv. Number</td><td id="invoiceNumber"></td></tr>
+						<tr><td class="printinvoicesmlh2">Invoice Date</td><td id="date"></td></tr>
+					</table>
+	            </div>
+	            <div>
+	            <p class="printinvoicesmlh2">Supplied By:</p>
+	            	<span id="details"></span>
+	            </div>
+		        <div class="printinvoicesmlbox">
+		        	<p  class="printinvoicesmlh2">Bill To:</p>
+		        	<span id="acc"></span><br/>
+		        	<span id="customer"></span><br/>
+		        	<span id="customerVAT"></span><br/>
+		        </div>
+		        <div printinvoicesmlbox>
+		        	<p class="printinvoicesmlh2">Deliver To:</p>
+		        	<span id="address"></span>
+		        </div>
+				<p  class="printinvoicesmlh2">
+					Reference: <span id="comment"></span>
+				</p>
+				<table class="printinvoicesmlProducts" rules=groups id="productListTable">
+					<thead>	
+						<tr><th>Products</th><th class="right">Qty</th><th class="right">Price</th><th class="right">Value</th></tr>
+					</thead>
+					<tbody>
+					</tbody>
+					<tfoot>
+						<tr><td class="printinvoiceTotalLabel">Sub Total</td><td colspan="2"></td><td id="subTotal"></td></tr>
+						<tr><td class="printinvoiceTotalLabel" id="taxText">VAT</td><td colspan="2"></td><td id="vat"></td></tr>
+						<tr><td class="printinvoiceTotalLabel">Total</td><td id="quantityTotal"></td><td></td><td id="total"></td></tr>
+					</tfoot>
+				</table>	
+				<p>
+				<hr noshade="noshade" size="1">
+				I / We acknowledge receipt of goods as detailed.
+				</p>
+				<table style="border-spacing: 20px; width:100%">
+					<tr><td>Authorised Name:</td><td>Signature:</td></tr>
+					<tr><td><hr class="printinvoiceHorizontalRule"></td><td><hr class="printinvoiceHorizontalRule"></td></tr>
+					<tr><td>Store Stamp</td><td>GRN Number</td></tr>
+					<tr><td><hr class="printinvoiceHorizontalRule"></td><td><hr class="printinvoiceHorizontalRule"></td></tr>					
+				</table>
+				<hr noshade="noshade" size="1">
+		    </div>
+	    </div>	
+	</body>
+</html>

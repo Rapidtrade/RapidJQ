@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <link rel="stylesheet" href="Rapidtrade.css" />
+	    <link rel="stylesheet" href="jquery/jquery.mobile-1.2.0.min.css" />
+	  
+	    <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>	
+	    <script type="application/javascript"  src="jquery/jquery.mobile-1.2.0.min.js"></script>
+	    
+	    <script type="application/javascript"  src="script/globals.js"></script>
+        <script type="application/javascript"  src="script/dao/dao.js"></script>
+        <script type="application/javascript"  src="script/sync.js"></script>
+    </head>
+    <body>
+        <div data-role="page" id="syncpage" class="ipadStatusBar">
+	        <script>
+			    $("#syncpage").bind("pageshow", function() {
+			    	syncOnPageShow();
+			    });
+		    </script>
+            <div data-role="header">
+                <h3>
+                    Synchronise
+                </h3>
+                <a id="signinagain" data-role="button" href="" data-icon="delete" data-iconpos="left" class="ui-btn-left">
+            		Log out
+        		</a>
+                <a id="syncMenu" data-role="button" data-icon="arrow-r" data-iconpos="right" data-transition="none" class="ui-btn-right">
+            		Menu
+        		</a>
+            </div>
+           
+            <div data-role="content">
+                
+            	<div style=" text-align:center">
+            		<img src="img/logo.png">
+        		</div>
+                <div class="syncResultsPanel greypanel">
+                   
+                	<div data-role="fieldcontain">
+                    	<label for="userid">
+                        	User
+               			</label>
+                	    <input name="" id="userid" placeholder="" value="" type="text" />
+                	</div>
+                	<div data-role="fieldcontain">
+                     	<label for="password">
+                         	Password
+                     	</label>
+                     	<input name="" id="password" placeholder="" value="" type="password" />
+                	</div>
+                	<input id="syncButton" type="submit" value="Submit" />
+                </div>
+                <div class="syncResultsPanel yellowpanel syncInfoPanel">
+                	<img id="syncimg" src="img/info-48.png"><div id="message" class="syncInfoText">Enter your password and click OK</div>
+                </div>
+                <div class="syncResultsPanel greypanel">
+                	<table id="results"><tbody></tbody></table>
+                </div>
+                <div style=" text-align:center"></br> If you don't know your userid, please contact 'support@rapidtrade.zendesk.com'</div>
+                  <!--<div style=" text-align:center"></br> If you don't know your userid, please contact 'ITSM.WeCare@supergrp.com'</div>-->
+            </div>
+            <form action="post.aspx" method="post" id="sendForm">
+			    <input name="Table" type="hidden" value="Activities" id="Table" />
+			    <input name="Method" type="hidden" value="Modify" id="Method" />
+			    <input name="json" type="hidden" id="json" />
+	    	</form>
+        </div>
+    </body>
+</html>

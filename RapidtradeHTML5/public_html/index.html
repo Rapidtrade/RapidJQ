@@ -1,0 +1,228 @@
+﻿	
+<!DOCTYPE html>
+<html> <!-- manifest="manifest.txt"> -->
+	<head>
+		<title>Rapidtrade</title>
+	    <meta charset="utf-8" />
+	    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />   
+	    <meta name="apple-mobile-web-app-capable" content="yes"/>
+	    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+	    <meta rel="apple-touch-startup-image" href="img/Splash-P.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px)"/>
+	    <meta rel="apple-touch-startup-image" href="img/splash-l.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)"/>
+	    <link rel="icon" href="img/57x57-icon.png"/>
+	    <link rel="shortcut icon" href="img/57x57-icon.png"/>
+	    <link rel="apple-touch-icon" href="img/57x57-icon.png" sizes="57x57"/>
+	    <link rel="apple-touch-icon" href="img/114x114-icon.png" sizes="114x114"/>
+	    <link rel="apple-touch-icon" href="img/72x72-icon.png" sizes="72x72"/>
+	    <link rel="apple-touch-icon-precomposed" href="img/57x57-icon.png" sizes="android-only"/>
+	
+	     <link rel="stylesheet" href="jquery/jquery.mobile-1.3.2.min.css" />
+	    <!--<link rel="stylesheet" href="jquery/jquery14/jquery.mobile-1.4.0-rc.1.css" />-->
+	    
+	    <link rel="stylesheet" href="jquery/jqm-datebox-1.1.0.css" />
+	    <link rel="stylesheet" href="jquery/tables.css" />
+	    <link rel="stylesheet" href="Rapidtrade.css" />
+	  
+
+    <!--   <script src="//Microsoft.WinJS.1.0/js/base.js"></script>
+
+        <script src="//Microsoft.WinJS.1.0/js/ui.js"></script>
+        <link rel="stylesheet" href="//Microsoft.WinJS.1.0/css/ui-Dark.css" />
+    -->      
+<!--
+	    <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>		
+	    <script type="application/javascript"  src="jquery/jquery14/jquery.mobile-1.4.0-rc.1.js"></script>
+-->      
+	    <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>		
+	    <script type="application/javascript"  src="jquery/jquery.mobile-1.3.2.min.js"></script>
+
+	    <script type="application/javascript"  src="jquery/jqm-datebox.core.min.js"></script>
+	    <script type="application/javascript"  src="jquery/jqm-datebox.mode.calbox.min.js"></script>
+	    <script type="application/javascript"  src="jquery/jqm-datebox.mode.flipbox.min.js"></script>
+	    <script type="application/javascript"  src="jquery/moment.min.js"></script>
+	       
+		<script type="application/javascript" src="jquery/barcode-2.0.3/jquery-barcode.min.js"></script>  
+        
+        <!-- PhoneGap -->
+        <!--<script type="text/javascript" src="phonegap.js"></script> -->
+   
+	    <!-- We must include all JS files here else jquerymobile wont see them -->
+
+	    <script type="application/javascript"  src="script/globals.js"></script>
+	    <script type="application/javascript"  src="script/dbutils.js"></script>
+	    <script type="application/javascript"  src="script/dao.js"></script>
+	    <script type="application/javascript"  src="script/dashboard.js"></script>
+	    <script type="application/javascript"  src="script/daooptions.js"></script>
+	    <script type="application/javascript"  src="script/jsonform.js"></script>
+	    <script type="application/javascript"  src="script/menu.js"></script>
+	    <script type="application/javascript"  src="script/company.js"></script>
+	    <script type="application/javascript"  src="script/myterritory.js"></script>
+	    <script type="application/javascript"  src="script/sync.js"></script> 
+	    <script type="application/javascript"  src="script/history.js"></script> 
+        <script type="application/javascript"  src="script/pricelist.js"></script> 
+        <script type="application/javascript"  src="script/productdetail.js"></script> 
+        <script type="application/javascript"  src="script/shoppingCart.js"></script> 
+        <script type="application/javascript"  src="script/orderHeader.js"></script> 
+        <script type="application/javascript"  src="script/activityform.js"></script>
+	    <script type="application/javascript"  src="script/activity.js"></script>
+        <script type="application/javascript" src="script/basketInfo.js"></script>
+        <script type="application/javascript" src="script/orderdetails.js"></script>
+        <script type="application/javascript" src="script/callcycle.js"></script>
+        <script type="application/javascript" src="script/today.js"></script>
+        <script type="application/javascript" src="script/grv.js"></script>
+        <script type="application/javascript" src="script/printinvoice.js"></script>
+        <script type="application/javascript" src="script/mykpis.js"></script>
+        <script type="application/javascript" src="script/callcycleedit.js"></script>
+        <script type="application/javascript" src="script/discount.js"></script>
+        <script type="application/javascript" src="script/orderprint.js"></script>
+        <script type="application/javascript" src="script/tpm.js"></script>
+        <script type="application/javascript" src="script/advancedsearch.js"></script>
+        <script type="application/javascript" src="script/overlay.js"></script>
+        <script type="application/javascript" src="script/utility.js"></script>
+        <script src="jquery/jSignature/jSignature.min.noconflict.js"></script>
+	</head>
+<body> 
+<!-- Home -->
+<div data-role="page" id="menupage" class="picpanel ipadStatusBar">
+	
+	<script>
+	    $('#menupage').live("pageshow", function () {
+    		menuOnPageShow();
+    	});
+	    
+	  //<!-- PhoneGap -->
+	  document.addEventListener("deviceready", function() { 
+		  						$('#status').text('Starting');
+	  							window.setTimeout(g_phonegapon, 1000); 
+	  							}, false);
+    </script>
+	
+    <div data-role="content">
+    	<div style="width:100%;">
+    		<img class="menuLogo" src="img/logo.png" style="float:left;"/>
+    		<p class="menuLabel" id="welcome"  style="float:right;">Welcome</p>
+    	</div>
+    	<div style="margin-top: 80px;">
+	        <div id="menuMainPanel" class="menuMainPanel">
+		        <div class="ui-grid-b">
+		        	<div id="syncMenuItem" class="ui-block-a menuIconPanel">
+		            	<a  href="sync.html" id="sync" data-role="button"  >
+		                    <div class="menuIconLabel">
+		                        <img id="syncImg" src="img/sync128.png"><br>Synchronise
+		                    </div>
+		                </a>
+		            </div>
+		        
+		            <div class="ui-block-b menuIconPanel"  >
+		                <a href="today.html" onclick="menuOnTodayClick()" data-role="button"  >
+		                    <div style=" text-align:center" class="menuIconLabel">
+		                        <img id="todayImg" src="img/calendarday128.png"><br>Today
+		                    </div>
+		                </a>
+		            </div>
+		            <div class="ui-block-c menuIconPanel">
+		                <a href="myterritory.html" onclick="menuOnMyTerritoryClick()" data-role="button" >
+		                    <div class="menuIconLabel">
+		                        <img id="myTerritoryImg" src="img/people128.png"><br>My Territory
+		                    </div>
+		                </a>
+		            </div>
+		            <div class="ui-block-d menuIconPanel">
+		            	<a href="dashboard.html" rel="external" data-role="button"  >
+		                    <div class="menuIconLabel">
+		                        <img id="myKPIsImg" src="img/graph128.png"><br>Dashboard
+		                    </div>
+		                </a>
+		            </div>
+		            <div class="ui-block-e menuIconPanel" >
+		            	<a href="callcycle.html" data-role="button" >
+		                    <div class="menuIconLabel">
+		                        <img id="callCycleImg" src="img/map128.png"><br>Call Cycle
+		                    </div>
+		                </a>
+		            </div>
+		            <!-- 
+		            <div class="ui-block-e menuIconPanel"   >
+		            	<a href="calendar.html" data-role="button">
+		                    <div class="menuIconLabel">
+		                        <img id="calendarImg" src="img/calendar128.png"><br>My Calendar
+		                    </div>
+		                </a>
+		            </div>
+		             -->        
+		            <div id="vansalesonlyreplenishstock" class="ui-block-f menuIconPanel">
+		            	<a onclick="menuOnReplenishClick()"  id ="replenishstock" data-role="button">
+		                    <div class="menuIconLabel">
+		                        <img id="replenishImg" src="img/truck128.png"><br>Replenish my stock
+		                    </div>
+		                </a>
+		            </div>
+		            <div id="vansalesonlyreceivestock" class="ui-block-f menuIconPanel" >
+		            	<a onclick="menuOnGRVClick()" id="receivestock"  data-role="button" >
+		                    <div class="menuIconLabel">
+		                        <img id="grvImg" src="img/receipt128.png"><br> <span id="grvLabel"> Receive my stock </span>
+		                    </div>
+		                </a>
+		            </div>
+		            <div id="vansalesonlystocktake" class="ui-block-f menuIconPanel" >
+		            	<a onclick="menuOnStocktakeClick()" id="receivestock"  data-role="button" >
+		                    <div class="menuIconLabel">
+		                        <img id="grvImg" src="img/stocktake128.png"><br> <span id="stocktakeLabel"> Stock Take </span>
+		                    </div>
+		                </a>
+		            </div>
+		            <div id="vanonlydelivery" class="ui-block-f menuIconPanel" >
+		            	<a onclick="menuOnPODClick()" id="deliverstock"  data-role="button" >
+		                    <div class="menuIconLabel">
+		                        <img id="podImg" src="img/pod128.png"><br> <span id="podLabel"> Deliveries </span>
+		                    </div>
+		                </a>
+		            </div>
+		            
+		            <!-- Customer buttons -->
+		            
+ 		            <div class="ui-block-b menuIconPanel customerMenuItem">
+		            	<a id="pricelist" data-role="button">
+		                    <div class="menuIconLabel">
+		                        <img src="img/search128.png"><br>Pricelist
+		                    </div>
+		                </a>
+		            </div>
+		            
+		            <div class="ui-block-c menuIconPanel customerMenuItem">
+		            	<a id="company" data-role="button">
+		                    <div class="menuIconLabel">
+		                        <img src="img/people128.png"><br>My Account
+		                    </div>
+		                </a>
+		            </div>
+		            
+		            <div class="ui-block-d menuIconPanel customerMenuItem">
+		            	<a id="history" data-role="button">
+		                    <div class="menuIconLabel">
+		                        <img src="img/myhistory128.png"><br>My History
+		                    </div>
+		                </a>
+		            </div>	            
+
+		        </div>
+	        </div>
+	    </div>  
+	   	<div id="nosync" class="hidden menuInfoPanel redpanel">
+            <img id="infoimg" src="img/info-48.png"><div id="menuMessage" class="menuInfoText">
+               You have unsent items, 
+                <br>
+               please perform a Sync when possible
+            </div>
+	   	</div>
+	      
+        <div style="text-align:center;color:#555555;">
+        Version 5.13.25
+        </div>
+        <div id="status" style="text-align:center;color:#555555;">
+        
+        </div>
+    </div>
+</div>
+</body>
+</html>

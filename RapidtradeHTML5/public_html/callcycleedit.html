@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+	    <link rel="stylesheet" href="jquery/jquery.mobile-1.2.0.min.css" />
+	    <link rel="stylesheet" href="Rapidtrade.css" />
+	    <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>	
+	    <script type="application/javascript" src="jquery/jquery.mobile-1.2.0.min.js"></script>
+	    
+	    <script type="application/javascript" src="script/globals.js"></script>
+	    <script type="application/javascript" src="script/dao/dao.js"></script>
+	    <script type="application/javascript" src="script/jsonform.js"></script>
+	    <script type="application/javascript" src="script/dbutils.js"></script>
+	    <script type="application/javascript" src="script/callcycleedit.js"></script>
+    </head> 
+    <body>
+	<!-- Home -->
+	<div data-role="page" id="callcycleeditpage" class="ipadStatusBar">
+		<script>
+ 		    $('#callcycleeditpage').bind("pageinit", function() {
+		    	callCycleEditOnPageShow();
+		    });
+		</script>
+		<div data-role="header">
+			<img class="logoSml" src="img/logoSml.png"/>
+		    <a data-role="button" href="callcycle.html" data-icon="arrow-l" data-iconpos="left" data-direction="reverse" data-transition="none" class="ui-btn-left">Back</a>
+		    <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right">
+			    <a id="addCustomer" data-role="button" data-transition="pop" data-rel="popup" data-position-to="window" data-inline="true" href="#popupBasic" data-icon="plus" data-iconpos="left">Add Customer</a>
+			    <a id="removeAll" data-role="button" data-inline="true" href="#popupBasic" data-icon="delete" data-iconpos="left">Remove All</a>
+		    </div>		    
+		</div>
+		<div data-role="content">
+			<div class="rtlabel">
+	            	<img class="rtlabelimg" width="64px" height="64px" src="img/car-128.png"/>
+	            	<h2 class="rtlabeltext">Call Cycle Edit</h2>
+	        </div>
+			<div class="callcycleeditCommandPanel">
+				<a id="save" data-role="button" class="ui-btn-left">Save</a>
+				<div style="float:right; margin-left: 10px; margin-top: -40px">
+					<div class="greypanel">
+						Next week <span id="nextWeekNumber">2</span><br/>
+						<span id="nextDate"></span>
+					</div>
+					<a id="prevWeek" data-role="button" data-inline="true" class="ui-disabled">&lt;</a>
+					Week <span id="weekNumber">1</span>
+					<a id="nextWeek" data-role="button" data-inline="true" >&gt;</a>
+				</div>
+			</div>	        
+	        <div class="panel-white-rounded" style="margin-top: 30px;">
+		        <div id="loadingPanel" class="yellowpanel infoPanel">
+		        	<img src="img/Sand-Timer-48.png"><div id="message" class="infoText">Fetching your call cycle report. Please wait...</div>
+		        </div>
+				
+				<div data-role="content" class="hidden">
+					<table class="callcycleTH">
+					<tr>
+					<td class="name">Customer</th>
+					<td class="delete"></th>
+					<td class="day">Mon</th>
+					<td class="day">Tue</th>
+					<td class="day">Wed</th>
+					<td class="day">Thu</th>
+					<td class="day">Fri</th>
+					<td class="day">Sat</th>
+					<td class="day">Sun</th>
+					</tr>
+					</table>
+					<ul id="callcycleReport" data-role="listview" data-inset="true"></ul>
+		     	</div>	
+	     	</div>
+	     	<div data-role="popup" id="popupBasic" class="ui-content" data-history="false" style="height:500px; min-width:500px; overflow:auto;" >
+	     		
+	     		<div class="callcycleeditPopupInfo"></div>
+	           		<input  type="search" name="search" id="search" value="" placeholder="Search for customers..." />
+                <div  id ="popupContent" class="panel-white-rounded">             	
+                	<ul id="callCycleEditCustomerList" data-role="listview" data-inset="true"></ul>
+                	<div class="yellowpanel" id="refinesearch">Only 30 customers displayed, please refine your search</div>
+            	</div>
+	           	<a href="#page1" id="closePopup" data-role="button" data-inline="true">Close</a>
+		   </div>
+     	</div>
+    </div>
+</body>
+</html>

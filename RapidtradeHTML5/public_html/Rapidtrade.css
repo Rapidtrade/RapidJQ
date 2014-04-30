@@ -1,0 +1,809 @@
+﻿@CHARSET "UTF-8";
+
+
+
+/*
+.ui-page {
+    background: url(img/bg.jpg);
+    background-repeat:repeat;
+    background-position:center center;
+    background-size:cover;  
+}
+*/
+
+/*
+* Below is only valid on IOS, uncomment in xcode project
+*/
+.ipadStatusBar{
+	/*margin-top: 20px; */
+}
+
+
+.greypanel {
+	margin-left:auto; margin-right:auto;
+	-webkit-border-radius: 12px; /* Safari 3-4, iOS 1-3.2, Android ≤1.6 */
+          	border-radius: 12px; /* Opera 10.5, IE9+, Safari 5, Chrome, Firefox 4+, iOS 4, Android 2.1+ */
+    -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
+         
+  	-webkit-box-shadow: 2px 2px 4px 0px #9f9f9f;
+          box-shadow: 2px 2px 4px 0px #9f9f9f;
+       	
+   	background-color: #eeeeee;
+   	padding: 10px;
+}
+
+.yellowpanel {
+	margin-left:auto; margin-right:auto;
+
+	-webkit-border-radius: 12px; /* Safari 3-4, iOS 1-3.2, Android ≤1.6 */
+          	border-radius: 12px; /* Opera 10.5, IE9+, Safari 5, Chrome, Firefox 4+, iOS 4, Android 2.1+ */
+    -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
+
+	background: #fefcea; /* Old browsers */
+	background: -moz-linear-gradient(top,  #fefcea 0%, #f1da36 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fefcea), color-stop(100%,#f1da36)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #fefcea 0%,#f1da36 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #fefcea 0%,#f1da36 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #fefcea 0%,#f1da36 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #fefcea 0%,#f1da36 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefcea', endColorstr='#f1da36',GradientType=0 ); /* IE6-9 */
+   	padding: 5px;
+       
+}
+
+.redpanel {
+	margin-left:auto; margin-right:auto;
+
+	-webkit-border-radius: 12px; /* Safari 3-4, iOS 1-3.2, Android ≤1.6 */
+          	border-radius: 12px; /* Opera 10.5, IE9+, Safari 5, Chrome, Firefox 4+, iOS 4, Android 2.1+ */
+    -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
+
+	background: #feeaec; /* Old browsers */
+	background: -moz-linear-gradient(top,  #feeaec 0%, #FF0000  100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#feeaec), color-stop(100%,#FF0000  )); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #feeaec 0%,#FF0000   100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #feeaec 0%,#FF0000   100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #feeaec 0%,#FF0000   100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #feeaec 0%,#FF0000   100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#feeaec', endColorstr='#FF0000  ',GradientType=0 );  /*IE6-9*/ 
+   	padding: 5px;
+
+}
+.panel-grey-rounded {
+    -moz-border-radius: 8px; 
+    -webkit-border-radius: 8px; 
+	padding: 5px;
+	border: thin solid #e7e7e7;
+	background-color: #f5f5f5;
+   
+}
+
+.panel-white-rounded {
+	border: thin solid #e7e7e7;
+	padding: 10px;
+    -moz-border-radius: 8px; 
+    -webkit-border-radius: 8px; 
+    border-radius: 8px; 
+    
+	-moz-box-shadow: 0px 0px 4px #ffffff; 
+	-webkit-box-shadow: 0px 0px 4px #ffffff; 
+	box-shadow: 0px 0px 4px #ffffff; 
+	background-color: #ffffff;
+}
+
+.panel-Filter {
+	width: 450px;
+}
+
+#signatureFrame {
+	width: 90%;
+	margin: 0 auto;
+	background: #D3D3D3 url('img/signhere.gif') no-repeat;
+	position: relative;
+}
+
+#signature {
+	margin: 25px 85px 50px 80px;
+	border: thin dotted #000;
+}
+
+#signatureResetButton {
+	position:absolute;
+	bottom: 10px;
+	right: 90px;
+}
+
+.syncResultsPanel {
+	margin-top: 15px;
+	font-size:14px;
+	color:f6ad36;
+	width: 400px;
+	vertical-align:middle;   
+}
+
+.syncInfoPanel{
+	height: 50px;	 
+}
+
+.syncInfoText {
+	font-size:14px;
+	color:f6ad36;
+	position:relative;
+	left:60px;
+	top: -33px;  
+}
+
+
+.menuMainPanelSml {
+	width: 310px;
+}
+
+.center {
+	text-align:center;
+}
+
+.logoSml {
+	display: block;
+	margin-left: auto;
+    margin-right: auto ;
+    padding: 3px;
+    margin-bottom: 5px
+}
+
+.fullwidth{
+	width: 290px;
+}
+
+.menuMainPanel {
+	width: 600px;
+		margin-left: auto;
+    margin-right: auto ;
+}
+
+.menuIconPanel {
+	/*
+  	-webkit-border-radius: 12px;
+          border-radius: 12px;
+  	-moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
+	padding: 10px;
+	border: thin solid #e7e7e7;
+	
+	background-color: white;
+	*/
+	margin-bottom:10px;
+}
+
+.menuInfoPanel {
+	margin-top: 15px;
+	font-size:14px;
+	color:ee260b;
+	width: 400px;
+	vertical-align:middle;  
+	height: 50px;
+    margin-bottom: 5px;
+}
+
+.menuInfoText {
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-size:14px;
+    font-weight: normal;
+	color:white;
+	position:relative;
+	left:60px;
+	top: -45px; 
+    text-shadow:none;
+    
+}
+
+.maintable {
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-size: 12px;	
+	width: 480px;
+	text-align: left;
+	border-collapse: collapse;
+  	-webkit-box-shadow: 4px 4px 4px 0px #919296;
+          box-shadow: 4px 4px 4px 0px #919296;
+}
+
+.maintable th {
+	font-size: 13px;
+	font-weight: normal;
+	padding: 4px;
+	background: #86b5d9;
+	border-top: 4px solid #6fa7d1;
+	border-bottom: 1px solid #fff;
+	color: #039;
+	white-space:nowrap;
+}
+
+.maintable td {
+	vertical-align:top;
+	padding: 4px;
+	background: #eaf4fd; 
+	border-bottom: 1px solid #fff;
+	color: #4897c8;
+	border-top: 1px solid transparent;
+	white-space:nowrap;
+}
+
+.maintable tr:hover td {
+	background: #d0dafd;
+	color: #339;
+}
+
+.companyContactPopup {
+	width: 500px;
+}
+
+.activityForm {
+	width: 300px;
+}
+
+.activityPanel {
+	width: 100%;
+}
+.activityPanel td {
+	vertical-align:top;
+	padding: 5px;
+}
+.activityPanel td.left {
+	width: 40%;
+}
+.activityPanel td.right {
+	width: 300px;
+}
+
+.infoPanel {
+	margin-top: 60px;
+	padding: 10px;
+	height: 50px;
+	width: 335px;
+}
+.infoPanelText{
+	position:relative;
+	left:60px;
+	top: -43px;
+}
+
+.activityCommandButton {
+	width:45%;
+}
+
+#activityPhotoButton {
+	line-height:40px;
+}
+
+
+.historyOrderPopupPanel{
+	width: 600px;
+}
+
+.historyOrderItems {
+	width: 100%;
+	font-size:14px;
+}
+
+.historyOrderItems td {
+	
+	width: 200px;
+	overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.historyOrderItems td.value {
+	text-align: right;
+	padding-right: 15px;
+	font-weight:bold;
+}
+.historyOrderItems td.quantity {
+	text-align: right;
+}
+
+.historyOrderItems td.descr {
+	font-size:15px;
+	font-weight:bold;
+    text-align: right;
+}
+.historyInfoPanel {
+	margin-top: 15px;
+	font-size:14px;
+	color:f6ad36;
+	width: 400px;
+	vertical-align:middle;  
+	height: 50px;	 
+}
+
+.historyInfoText {
+	font-size:14px;
+	color:f6ad36;
+	position:relative;
+	left:60px;
+	top: -40px;  
+}
+
+.infoPanel{
+	margin-top: 15px;
+	font-size:14px;
+	color:f6ad36;
+	width: 400px;
+	vertical-align:middle;  
+	height: 50px;	 
+}
+.infoText {
+	font-size:14px;
+	color:f6ad36;
+	position:relative;
+	left:60px;
+	top: -35px;  
+}
+.shopcartLabel {
+	height: 120px; 
+}
+.shopcartLabelImg {
+
+}
+.shopcartTotals {
+	position:relative;
+	width: 250px;
+	float:right;
+}
+.shopcartLabelText {
+	position:relative;
+	left: 80px;
+	top: -70px; 
+}
+.shopcartButtoms {
+	position:relative;
+	top: -55px; 
+}
+.shopcartHeader {
+	height: 160px; 
+}
+.shopcartItems {
+	width: 100%;
+	font-size: 14px;
+	font-weight: normal;
+	table-layout: fixed;
+}
+.shopcartItems td.productid {
+	font-size:12px;
+}
+.shopcartItems td.value {
+	width: 10%;
+	text-align: right;
+	padding-right: 14px;
+} 
+.shopcartItems td.total {
+	width: 80px;
+	text-align: right;
+}
+
+.shopcartItems td.nett {
+	width: 90px;
+	text-align: right;
+}
+
+.shopcartItems td.quantity {
+	width: 80px;
+	text-align: right;
+}
+
+.shopcartItems td.descr {
+	width: 400px;
+	font-size:16px;
+}
+
+.shopcartItems td.message {
+	width: 200px;
+	font-size:15px;
+}
+
+.rtlabel {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	height: 68px; 
+}
+
+.rtlabelimg {
+
+}
+
+.rtlabeltext {
+	position:relative;
+	left: 80px;
+	top: -67px;
+}
+.rtlabeloptions {
+	position:relative;
+	top: -145px; 
+	float:right;
+	height: 68px; 
+}
+
+.rtTableLabel {
+	width: 100%;
+}
+
+.rtTableLabel td.image {
+	width: 70px;
+}
+
+.rtTableLabel td.options {
+	text-align: right;
+	width: 450px;
+}
+
+/*Scandit barcode scanner*/
+
+#scanbarcode {
+    position:relative;
+    top:-3px;
+    height:35px;
+    width:40px;
+}
+
+#scanbarcode img{
+    position:relative;
+    left:-15px;
+    top:-8px;
+
+}
+
+.callcycle td.name {
+	width: 320px;
+}
+.callcycle td.week {
+	width: 45px;
+}
+.callcycle td.day {
+	width: 45px;
+}
+
+.callcycle td.delete {
+	width: 60px;
+}
+
+.callcycleTH td.name {
+	width: 300px;
+}
+.callcycleTH td.week {
+	width: 55px;
+}
+.callcycleTH td.day {
+	width: 45px;
+}
+.callcycleTH td.delete {
+	width: 85px;
+}
+
+.callcycleeditCommandPanel {
+	margin-bottom: 10px;
+}
+
+.callcycleeditCommandPanel .ui-btn-right {
+	float: right;
+}
+
+.callcycleeditCustomerListPopup {
+	width: 500px;
+	overflow: auto;
+}
+
+.callcycleeditCustomerListPopup {
+	width: 500px;
+	overflow: auto;
+}
+
+.callcycleeditPopupInfo {
+	height:20px;
+	font-size:15px;
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: center;	
+}
+
+.mykpis td {
+	text-indent: 20px;
+}
+
+.mykpis td.type {
+	width: 320px;
+}
+.mykpis td.value {
+	width: 100px;
+}
+.mykpis td.total {
+	width: 80px;
+}
+.mykpis td.total.red {
+	background-color: red;
+}
+.mykpis td.total.yellow {
+	background-color: yellow;
+}
+.mykpis td.total.green {
+	background-color: green;
+}
+
+.mykpisTH td.type {
+	width: 320px;
+}
+.mykpisTH td.value {
+	width: 130px;
+}
+.mykpisTH td.total {
+	width: 80px;
+}
+
+.hidden {
+	visibility:hidden;
+}
+.invisible {
+	display:none;
+}
+.show{
+	display:block;
+}
+
+.pricelistSearchImg {
+	position:relative;
+	top: 10px; 
+}
+
+.pricelistInput {
+	width:300 px;
+	background-color: white;
+	border-color: #BBBBBB;
+}
+
+.printinvoiceLabelText {
+	font-size:19px;
+	line-height:2;
+}
+
+
+.printinvoiceContent {
+	width:90%;
+	margin:auto;
+	font-size:12px;
+	font-family: Arial, Helvetica, sans-serif;
+	background-color: white;
+}
+
+.printinvoiceFramedTable {
+	border:1px solid;
+	padding: 10px;
+	width:100%;
+}
+
+.printinvoiceFramedTable td {
+	vertical-align: text-top;
+}
+
+.printinvoiceFramedTable tfoot td.right {
+	text-align:right;
+}
+
+.printinvoiceProductListTable {
+	width:100%;
+}
+
+.printinvoiceProductListTable th {
+	font-weight:normal;
+	text-align:left;
+}
+
+.printinvoiceProductListTable thead {
+	border-bottom: 1px solid;
+}
+
+.printinvoiceProductListTable tfoot {
+	text-align: left;
+	border-top: 1px solid;
+}
+
+.printinvoiceProductListTable tr { 
+	line-height: 20px; 
+}
+
+.printinvoiceTotalLabel {
+	text-align: right;
+	padding-right: 50px;
+}
+
+.printinvoiceHorizontalRule {
+	margin-left:0;
+	height:1px;
+	width:150px;
+	border-width:0;
+	color:gray;
+	background-color:gray;
+}
+
+.productImageZoomButton {
+	float: right;
+}
+
+@media print {	
+	.printinvoiceHeader {
+		display: none;
+	}
+	
+	.printinvoiceProductListTable { 
+		page-break-inside:auto;
+	}
+		
+	.printinvoiceProductListTable thead {
+		display: table-header-group;
+	}
+   
+   .printinvoiceProductListTable tr { 
+   		page-break-inside:avoid; 
+   		page-break-after:auto 
+   	}
+}
+
+@page {margin: 0;}
+
+
+.pricelistPrevProd {
+	float: left;
+}
+.pricelistNextProd {
+	float:right;
+}
+
+.pricelistChangePriceImg { 
+	
+	width: 22px;
+	height: 22px;
+	position: absolute;
+	right: -15px;
+	bottom: -5px;
+}
+
+.pricelistBusyImg {
+	
+	width: 17px;
+	height: 17px;
+	position: absolute;
+	left: 150px;
+	bottom: -3px;
+}
+
+.pricelistLoadImageText {
+    position:absolute;
+    top:50%; 
+     left:50%;
+ }
+ 
+ .productdetailValueDescription {
+ 	white-space: nowrap;
+ }
+ 
+ .usersummary td.name {
+	width: 250px;
+}
+.usersummary td.date {
+	width: 200px;
+}
+.usersummary td.num {
+	width: 70px;
+	text-align:right;
+}
+
+.orderPrintDataTable {
+	padding: 10px;
+	width:100%;
+}
+
+.picpanel {
+    background: url('img/bg4.png'); background-attachment: fixed; background-size: cover; background-position: initial initial; background-repeat: no-repeat;
+    color: #aabbcc !important;
+    position:fixed !important;
+	position:absolute;
+	top:0;
+	right:0;
+	bottom:0;
+	left:0;
+}  
+
+
+.menuLabel { 
+    color: #f4eded;
+	font-size: 22px; 
+	font-weight: normal; 
+	text-shadow: 0px 0px 15px #000000;
+	position: relative;
+	top: -30px;
+}
+
+.menuLogo { 
+ 	position: relative;
+	top: -15px;
+}
+
+.menuIconLabel { 
+    color: #555555;
+	font-size: 19px; 
+	font-family: "Helvetica Neue",sans-serif;
+	font-weight: 300;
+	text-shadow: 0px 0px 15px #000000;
+	text-align:center;
+	text-decoration: none;
+}
+
+#orderDetailsHeaderDiv .ui-select {
+	position:absolute; top:0px; right:90px
+}
+
+#saveCreditButton {
+	position:absolute; top:15px; right:20px
+}
+
+.overlayMenu li:hover {	
+
+	cursor: pointer;
+}
+
+.overlayMenu h3 {
+	
+	background-color: #CCC;
+	padding: 10px;
+}
+
+.printinvoicesmlProducts {
+	width: 350px;	
+	margin: 5px;
+}
+
+.printinvoicesmlProducts th.right {
+	text-align: right;	
+}
+
+.printinvoicesmlProducts td.right {
+	text-align: right;	
+}
+
+.printinvoicesmlProducts td.descr {
+	text-align: left;
+	margin-bottom: 10px;	
+	margin-top: 10px;		
+}
+
+.printinvoicesmlContent {
+	width:400px;
+	margin:auto;
+	font-size:12px;
+	font-family: Arial, Helvetica, sans-serif;
+	background-color: white;
+}
+
+.printinvoicesmlh1 {
+	margin-top: 3px;
+}
+
+.printinvoicesmlh2 {
+	margin-top: 3px;
+}
+
+.printinvoicesmlbox {
+	border-top: 1px solid #fff;
+}
+
+.scroll-to-top {
+	position: fixed; 
+	background:url(img/scroll-to-top.png) no-repeat; 
+	cursor: pointer; 
+	width:55px; 
+	height: 55px; 
+	bottom: 1em; 
+	padding-right: 1em; 
+	display: none; 
+	z-index: 999; 
+}
+
+.companyPagePanel {
+	
+	min-height: 1024px;
+}

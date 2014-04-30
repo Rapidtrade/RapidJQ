@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        <link rel="stylesheet" href="jquery/jquery.mobile-1.2.0.min.css" />
+        <link rel="stylesheet" href="Rapidtrade.css" />
+      
+	    <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>		
+	    <script type="application/javascript" src="jquery/jquery.mobile-1.2.0.min.js"></script>
+	    <script type="application/javascript" src="script/globals.js"></script>
+        <script type="application/javascript" src="script/dao/dao.js"></script>
+        <script type="application/javascript" src="script/jsonform.js"></script>
+        <script type="application/javascript" src="script/dbutils.js"></script>
+        <script type="application/javascript" src="script/myterritory.js"></script>
+    </head>
+    <body>
+        <div data-role="page" id="myterritorypage" class="ipadStatusBar"> 
+        	<script>
+			    $("#myterritorypage").bind("pageshow", function() {
+			    	myterritoryOnPageShow();
+			    });
+			</script> 
+            <div data-role="header" >
+            	<table style="margin-left:auto; margin-right:auto;">
+		       	<tr><td><img class="logoSml" src="img/logoSml.png"/> </td><td>&nbsp;</td></tr>
+		       	</table>     
+                <a data-role="button" id="myTerritorytoMenu"  data-icon="arrow-l" data-transition="none" data-iconpos="left" class="ui-btn-left">
+                    Menu
+                </a>  
+                <a  class="hidden" id="addcustomer" data-role="button"  data-inline="true" data-icon="plus" data-iconpos="left" class="ui-btn-right">
+                	Add Customer
+                </a>    
+            </div>
+             <div data-role="content">
+             	<table class="rtTableLabel">
+             	<tr>
+	             	<td class="image"><img src="img/City-64.png"/></td>
+	             	<td class="label"><h2 >My Territory</h2></td>
+	             	<td class="options">
+	             		<div class="hidden" id="SGforBranch" data-role="fieldcontain">
+		                    <fieldset style="width: 295px;float:right;"  data-role="controlgroup" data-type="horizontal">
+		                        <input id="sgradio1" name="" value="exvan" type="radio"  checked="checked"  />
+		                        <label for="sgradio1">
+		                            Ex Van
+		                        </label>
+		                        <input id="sgradio2" name="" value="warehouse" type="radio" />
+		                        <label for="sgradio2">
+		                            Warehouse
+		                        </label>
+		                    </fieldset>
+	                	</div> 
+	                </td>
+             	</tr>
+             	</table>
+	             <div id="customerListDiv">             	
+		           <table style="width:100%;">
+		             <tr>
+		             	<td><input  type="search" name="search" id="searchTerritory" value=""  /></td>
+		                <td align="right" style="width:32px;"><a class="pricelistSearchImg" style="padding-left: 10px"   id="searchTerritorybtn" href="#"><img src="img/Search_32.png"/></a></td>
+		             </tr>
+		            </table>            
+	                <ul id="g_myterritoryCustomerList" data-role="listview" data-inset="true" data-split-icon="bars" data-split-theme="d"></ul>
+	                <table class="hidden" id="mtNextPrevButtons"><tr>
+				         <td><a id="mtprev" data-role="button" data-icon="arrow-l" data-mini="true" data-inline="true" href="#">Previous 50</a></td>
+				         <td>Page</td><td><label id="mtpageNumber"></label></td>
+				         <td><a id="mtnext" data-role="button" data-icon="arrow-r" data-mini="true" data-iconpos="right" data-inline="true" href="#">Next 50</a></td>
+	         		</tr></table>     
+	            </div>
+	            <div id="newCustomerDiv" class="invisible" >
+	       			<h3>New Customer</h3>
+	                <div id ="newCustomerFields">
+	              	</div>
+	              	<a id="savecustomer" data-role="button" data-inline="true" data-icon="plus" data-iconpos="left">
+			           	Save
+			       	</a>
+		            <a id="cancelcustomer" data-role="button" data-inline="true">
+		                Cancel
+		            </a>
+		        </div>
+	        </div>
+		</div>
+    </body>
+</html>
