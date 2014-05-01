@@ -239,25 +239,26 @@ function activityFormRefresh() {
 }
 
 //PhoneGap
-
 function activityFormTakePhoto() {
-	var options = { quality: 50, targetWidth: 200, targetHeight: 200, destinationType: Camera.DestinationType.DATA_URL };
-	try {
-		if (DaoOptions.getValue('pictureoptions')){
-			options = JSON.parse(DaoOptions.getValue('pictureoptions'));
-		}		
-	} catch (err){
-		alert('Issue with pictureoptions ' + err.message);
-		options = { quality: 50, targetWidth: 200, targetHeight: 200, destinationType: Camera.DestinationType.DATA_URL };
-	}
+    var options = { quality: 50, targetWidth: 200, targetHeight: 200, destinationType: Camera.DestinationType.DATA_URL };
+    try {
+        if (DaoOptions.getValue('pictureoptions')){
+                options = JSON.parse(DaoOptions.getValue('pictureoptions'));
+                options.destinationType = Camera.DestinationType.DATA_URL;
 
-	try {
-		navigator.camera.getPicture(activityFormTakePhotoOnSuccess, 
-				activityFormTakePhotoOnError, 
-				options);
-	} catch (err){
-		alert('Issue taking picture:' + err.message);
-	}     
+        }		
+    } catch (err){
+        alert('Issue with pictureoptions option ' + DaoOptions.getValue('pictureoptions') + '<br/>' + err.message);
+        options = { quality: 50, targetWidth: 200, targetHeight: 200, destinationType: Camera.DestinationType.DATA_URL };
+    }
+
+    try {
+        navigator.camera.getPicture(activityFormTakePhotoOnSuccess, 
+                        activityFormTakePhotoOnError, 
+                        options);
+    } catch (err){
+            alert('Issue taking picture:' + err.message);
+    }     
 }
 
 function activityFormTakePhotoOnSuccess(imageData) {

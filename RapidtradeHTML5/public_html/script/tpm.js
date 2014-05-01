@@ -1,8 +1,7 @@
 var g_tpmLastValidQuantities = [];
-
+var g_tpmjson = [];
 function tpmOnPageShow() {	
     tpmRemovePromotions();
-    tpmFetchPromotions();
 }
 
 function tpmOnPageInit() {	
@@ -21,16 +20,76 @@ function tpmRemovePromotions() {
      function (basketInfo) {   	
          if (basketInfo.UserField01 == 'TPM')
         	 dao.deleteItem('BasketInfo', basketInfo.key);               
-     });
+     },
+     undefined,
+     tpmFetchBasket);
 }
 
-function tpmFetchPromotions() {	
-    $.getJSON('test/DWS Example 3 Output.json', tpmFetchPromotionsOnSuccess);	
+function tpmFetchBasket() {	
+    orderHeaderCreateOrderObject();
+    
+    var dao = new Dao();
+    dao.cursor('BasketInfo', 
+        undefined, 
+        undefined,
+        function (basketInfo) { 
+            if (basketInfo.UserField01 === 'TPM')
+        	 dao.deleteItem('BasketInfo', basketInfo.key);  
+            else
+                 g_tpmjson.push(basketInfo);
+        },
+        undefined,
+        function(){
+            tpmPost('qualify',tpmQualifySuccess);
+        });    	
 }
 
-function tpmFetchPromotionsOnSuccess(json) {	
-    jsonform.getInstance().show('promotionsDiv', json, 'tpm','','view','table'  );
+function tpmPost(type, onSuccess) {
+    try {    
+        g_orderHeaderOrder.Type = type;
+        g_orderHeaderOrder.orderItems = g_tpmjson;
+
+        var orderHeaderInfo = {};  	
+        orderHeaderInfo.Table = "Orders";
+        orderHeaderInfo.Method = "Modify2";
+        orderHeaderInfo.json = JSON.stringify(g_orderHeaderOrder);   
+        console.log(JSON.stringify(g_orderHeaderOrder));
+        var url = DaoOptions.getValue(g_orderHeaderOrder.Type + 'LiveURL');
+        if (!url) url = g_restUrl + 'post/post.aspx';
+
+        g_ajaxpost(jQuery.param(orderHeaderInfo), url, onSuccess, tpmSaveError);  
+    } catch (error) {  		
+        alert('You must be online...');
+    } 
 }
+
+function tpmQualifySuccess() {	
+    var url = DaoOptions.getValue('LiveGetResultsURL');
+    if (!url) url = g_restUrl + 'Orders/Exists';	
+    g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', 
+                function (json) {
+                    jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);
+                }, 
+                undefined);	
+}
+
+function tpmTableLoaded(){
+    alert('loaded');
+}
+
+function tpmSaveError(error) {	
+    if ((error.status === 0) || (error.status === 200)) {		
+        tpmQualifySuccess();
+    } else {
+        alert('You must be online...');
+    }
+}
+
+function tpmExists(json){
+    
+}
+
+
 
 /*
 function tpmFetchPromotionsOnSuccess(json) {	

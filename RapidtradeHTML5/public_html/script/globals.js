@@ -632,6 +632,10 @@ function g_fetchAvailableCredit() {
 	g_ajaxget(url, onSuccess, onError);
 }
 
+function g_getDefaults(){
+    
+}
+
 
  
 

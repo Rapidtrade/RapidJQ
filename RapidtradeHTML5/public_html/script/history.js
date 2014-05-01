@@ -259,7 +259,7 @@ function historyEditActivity(activity) {
 
 function historyShowPhotoForActivity(id) {
 	
-	$('#imagePopup img').attr('src', g_restUrl + 'Files/GetImage?id=' + id + '&supplierID=' + g_currentUser().SupplierID + '&width=500&height=500');
+	$('#imagePopup img').attr('src', g_restUrl + 'Files/GetImage?id=' + id + '&supplierID=' + g_currentUser().SupplierID + '&width=700&height=700');
 	$('#imagePopup').popup('open');
 }
 
