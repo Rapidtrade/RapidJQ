@@ -505,23 +505,18 @@ function orderHeaderOfflineSaveSuccess() {
 
 function orderHeaderOnOrderExistsSuccess(json) {
 	
-	if (json._Status == true) {		
-		
-		if (g_orderHeaderOrder.Type == 'GRV' || g_orderHeaderOrder.Type.toUpperCase() == 'POD') {
-			
-			orderHeaderSaveReferenceStatus(g_orderHeaderOrder, orderHeaderOrderAcceptOnSuccess, orderHeaderOrderAcceptOnError);	
-			return;
-		}
-		
-		orderHeaderOnOrderSaved();
-		
-	} else {
-		
-		if (DaoOptions.getValue('VerifyOrders') == 'true')
-			orderHeaderConfirmOrderItems(json._Items);
-		else			
-			g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);		
-	}		
+    if (json._Status == true) {				
+        if (g_orderHeaderOrder.Type == 'GRV' || g_orderHeaderOrder.Type.toUpperCase() == 'POD') {
+            orderHeaderSaveReferenceStatus(g_orderHeaderOrder, orderHeaderOrderAcceptOnSuccess, orderHeaderOrderAcceptOnError);	
+            return;
+        }
+        orderHeaderOnOrderSaved();	
+    } else {
+        if (DaoOptions.getValue('VerifyOrders') == 'true')
+            orderHeaderConfirmOrderItems(json._Items);
+        else			
+            g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);		
+    }		
 }
 
 function orderHeaderConfirmOrderItems(orderItems) {
@@ -601,7 +596,13 @@ function orderHeaderOnOrderSaved() {
 	
 	if (DaoOptions.getValue('DeliveryOrderType'))
 		localStorage.removeItem('CacheDeliveryOrders');
-	
+	try {
+            if (!g_syncDao) g_syncDao = new Dao();
+            syncFetchTable(g_currentUser().SupplierID, g_currentUser().UserID, 'Stock', 'Sync4', syncFetchLastTableSkip('Stock'));            
+        } catch(err){
+            console.log(err.message);
+        }
+
 	orderHeaderRemoveFromCart();
 }
 

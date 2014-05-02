@@ -1,4 +1,4 @@
-﻿
+
 //**********************************************************************************
 var g_syncSupplierID;
 var g_syncUserID;
@@ -448,7 +448,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 		  
 		} else {	// go on to the next table
 			var item = syncNextItem();
-			syncFetchTable(item.supplierid,item.userid,item.table,item.method,syncFetchLastTableSkip(item.table));
+			if (item) syncFetchTable(item.supplierid,item.userid,item.table,item.method,syncFetchLastTableSkip(item.table));
 			return;
 		}
 	} else if ((json._Items.length ) < 100 && table != 'Pricelists') {

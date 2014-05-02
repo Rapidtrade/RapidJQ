@@ -32,8 +32,9 @@ function callCycleEditBind() {
     $("#search").keypress(function (event) {
     	
         var keycode = (event.keyCode ? event.keyCode : event.which);
-        if (keycode == '13')
-            $('#searchbtn').click();
+        if (keycode == '13') callCycleEditFetchCustomers();
+            
+            //$('#searchbtn').click();
     });
     
  	$('#save').click(function() {
