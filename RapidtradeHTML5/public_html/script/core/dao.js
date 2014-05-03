@@ -771,7 +771,7 @@ var dao = (function(){
          * The first method called and is opens the database for the page
          */
         this.sqlopenDB = function (onComplete) {
-            this.db = openDatabase('core', '1.0', 'MM database', 2 * 1024 * 1024);
+            this.db = openDatabase('rapidtrade', '1.0', 'MM database', 2 * 1024 * 1024);
             this.db.transaction(function (tx) {
                 tx.executeSql('CREATE TABLE IF NOT EXISTS DisplayFields (keyf, json, index1, index2, index3, index4, primary key (keyf))');
                 tx.executeSql('CREATE TABLE IF NOT EXISTS Options (keyf, json, index1, index2, index3, index4, primary key (keyf))');

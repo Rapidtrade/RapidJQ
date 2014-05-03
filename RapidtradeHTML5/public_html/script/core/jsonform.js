@@ -24,9 +24,9 @@ var jsonform = (function(){
          * @param {type} keyField = for 
          * @returns {undefined}
          */
-        this.show = function (divID, jsonarray, id, keyField, mode, type) {
+        this.show = function (divID, jsonarray, id, keyField, mode, type, oncomplete) {
             //Save globals for async call's
-            this.vJsonFormOnComplete = this.oncomplete;
+            this.vJsonFormOnComplete = oncomplete;
             this.divID = '#' + divID;
             this.jsonArray = jsonarray;
             this.vid = id;
@@ -368,13 +368,20 @@ var jsonform = (function(){
                 if (me.mode ==='edit') htmlstr += '<td><a href="#" onclick="jsonform.getInstance().showDetail(\'' + me.vid + i + '\',\'' + me.vid + 'Det\')" class="ui-btn ui-icon-edit ui-btn-icon-notext ui-corner-all">No text</a></td>';
                 //loop through display fields to display correct columns
                 for (var x=0; x < displayObjects.length; x++) { 
-                    var value = obj[displayObjects[x].Name];
+                    var name = displayObjects[x].Name;
+                    var value = obj[name];
                     if (value === undefined) value = '';
 
                     if (displayObjects[x].Type === 'Text') {
                         htmlstr += '<td>' + value + '</td>';
                     } else if (displayObjects[x].Type === 'URL') {
                         htmlstr += '<td><a href="#" onclick="' + displayObjects[x].DefaultData + '(\'' + obj[displayObjects[x].RoleOnly] +  '\')">' + value + '</a></td>';
+                    } else if (displayObjects[x].Type === 'CheckBox') {
+                        //htmlstr += '<td><a href="#" onclick="' + displayObjects[x].DefaultData + '(\'' + obj[displayObjects[x].RoleOnly] +  '\')">' + value + '</a></td>';
+                        htmlstr += '<td><fieldset data-role="controlgroup" data-type="horizontal">' +
+                                    '        <input type="checkbox" id="' + name + '">' +
+                                    '        <label for="' + name + '">' + value + '</label>' +
+                                    '</fieldset></td>';
                     } else {
                         htmlstr += '<td>' + value + '</td>';
                     }
@@ -389,6 +396,8 @@ var jsonform = (function(){
             g_append(me.divID , htmlstr);
             $('#jsonsettings').trigger('create');
             $('#jsondetail').trigger('create');
+            
+            if (me.vJsonFormOnComplete) this.vJsonFormOnComplete();
             
             //$('#jsontbl').table-columntoggle( "refresh" );
         };

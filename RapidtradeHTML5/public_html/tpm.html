@@ -4,8 +4,8 @@
     </head>
     <body>
         <!-- Home -->
-        <div data-role="page" id="tpmpage" class="ipadStatusBar">
-   	        <script>
+    <div data-role="page" id="tpmpage" class="ipadStatusBar">
+   	<script>
 			    $('#tpmpage').bind("pagebeforeshow", function() {
 			    	tpmOnPageShow();
 			    });
@@ -13,20 +13,22 @@
 			    	tpmOnPageInit();
 			    });
 			</script>
-			<div data-role="header">
-				<h3>TPM</h3>
+	<div data-role="header">
+            <a data-role="button" id="myTerritorytoMenu"  data-icon="arrow-l" data-transition="none" data-iconpos="left" class="ui-btn-left">
+            Menu
+            </a>  
+
+            <h3>TPM</h3>
+        </div>
+        <div data-role="content">
+            <div style="margin: 5px;" id="promotionsDiv">		            
+
             </div>
-            <div data-role="content">
-	            <div style="margin: 5px;" id="promotionsDiv">		            
-					
-	            </div>
-	            <div>
-	            	<a id="saveTPM" data-role="button">Save</a>
-	            </div>
+            <div>
+                <a id="verifyTPM" data-role="button">Verify</a>
+                <a id="saveTPM" data-role="button" class="invisible">Save</a>
             </div>
-	    </div>
-        <script>
-            //App custom javascript
-        </script>
+        </div>
+    </div>
     </body>
 </html>
