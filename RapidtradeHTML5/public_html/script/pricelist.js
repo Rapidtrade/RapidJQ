@@ -1144,10 +1144,10 @@ function pricelistAddLine(pricelist) {
     	    }
     }
     
-	var stockValue = g_stockDescriptions[pricelist.Stock] || pricelist.Stock.toString() || 'N/A';
-	stockText = '<span id="' + pricelist.id + 'Stock" class="ui-li-count">' + stockValue + '</span>';
+    var stockValue = pricelist.Stock ? g_stockDescriptions[pricelist.Stock] || pricelist.Stock.toString() : 'N/A';
+    stockText = '<span id="' + pricelist.id + 'Stock" class="ui-li-count">' + stockValue + '</span>';
 	
-	if ((DaoOptions.getValue('musthavestock') == 'true') && isNaN(stockValue)) canOrderItem = false;    		
+    if ((DaoOptions.getValue('musthavestock') == 'true') && isNaN(stockValue)) canOrderItem = false;    		
     
     var quantityInputHtml = '';
     if (DaoOptions.getValue('AllowPriceQuickCapt') == 'true') {
