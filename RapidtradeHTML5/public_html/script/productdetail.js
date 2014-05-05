@@ -171,11 +171,22 @@ function productdetailInit() {
     	$('#zoomOutButton').hide();
     	$('#zoomedin').hide();
     }
+    
     var tabId = parseInt(DaoOptions.getValue('productmsgtabid'), 10);
-    if (tabId) productdetailFetchLongText(tabId, '#productInfoMsgDiv');    
+    if (tabId) productdetailFetchLongText(tabId, '#productInfoMsgDiv'); 
+    
     if (productdetailIsPackPrice())	$('#quantity').attr('step', g_pricelistSelectedProduct.Unit);
     productdetailBind();
     productdetailSetFocus();
+    
+    tabId = parseInt(DaoOptions.getValue('productpopupmsgtabid'), 10)
+    
+    if (tabId) {
+        
+        productdetailFetchLongText(tabId, '#messagePopup p');
+        $('#cancelButton').addClass('invisible');
+        $('#messagePopup').popup('open');   
+    }
 }
 
 function productdetailBind() {
@@ -827,6 +838,8 @@ function productdetailOkClicked(checkStock) {
 		}
 		
 		if (showMessage) {
+                    
+                        $('#cancelButton').removeClass('invisible');
 			$('#messagePopup p').text(message);
 			$('#messagePopup').popup('open');
 			$('#messagePopup #cancelButton').toggle(-9998 == stock);			
