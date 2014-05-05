@@ -90,24 +90,58 @@ function tpmQualifySuccess() {
 }
 
 /*
- * After a table is loaded
+ * After a table is loaded, we need to:
+ * 1. Hide the rows that have non-tpm lines (ie. userfield01=null) - complete
+ * 2. Only show one of the complex promotion lines - Still to be done
  * @returns {undefined}
  */
 function tpmTableLoaded(){
     //hide any rows that dont have a promotion
     $("#jsontable td").css("style","padding:15px;");
     $("#jsontable td:nth-child(1):contains('null')").parent().hide(); //hide rows where userfield1=null
-    //TODO - deal with complex
-    var complextr = $("#jsontable td:nth-child(6):contains('Complex')").parent(); 
+    tpmHideComplexRows();
     
     //Bind for when checkbox is changed
     $("#jsontable input:checkbox").change(function () {
-        //var val = $(this).parent().parent().parent().children()[0];
-        //Set the json to be selected
-        var idx = $(this).parent().parent().parent()[0].rowIndex;
-        jsonform.getInstance().jsonArray[idx-1].selected = $(this).val()==='on' ? true:false ;
+        tpmSelected($(this));
     });
+}
+
+/*
+ * This function selects/deselects tpm's by marking them in jsonform.getInstance().jsonArray
+ * For complex, if selected, then we need to show popup to allow them to choose which bottles.
+ * Also, if a promotion in a set is chosen, then we need to choose all promotions in that set.
+ * @param {type} checkbox
+ * @returns {undefined}
+ */
+function tpmSelected(checkbox){
+    var idx = checkbox.parent().parent().parent()[0].rowIndex;
+    var item = jsonform.getInstance().jsonArray[idx-1];
     
+    if (item.UserField01 === 'Complex') {
+        tpmShowComplexPopup();
+    } else {
+        if (item.selected)
+            item.selected =true; //since never selected it yet, make it seleced now
+        else
+            item.selected = !item.selected;  //else toggle selection //checkbox.val()==='on' ? true:false ;
+    
+        if (item.selected && item.UserField05 !== ''){
+            //todo do a $('#jsontable) to ensure all other promotions in this set are selected on the screen.
+            //Here you need to ensure that on the screen the checkbox's are selected/deselected and that item.selected = true/false
+        }
+    }
+}
+
+function tpmHideComplexRows(){
+    var complextr = $("#jsontable td:nth-child(6):contains('Complex')").parent(); 
+    //TODO - deal with complex - here we need to only show one of the complex promotion lines.
+    //       Will need a for each loop to deal with this
+    //       Also, change the binding 
+}
+
+function tpmShowComplexPopup(){
+    //TODO - weave your magic here to show a complex popup
 }
 
 function tpmSaveError(error) {	
