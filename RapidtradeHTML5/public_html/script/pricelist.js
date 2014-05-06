@@ -70,7 +70,7 @@ function pricelistOnPageShow() {
     
     if (isAdvancedSearchAllowed && !sessionStorage.getItem('advancedLevel')) {
     	
-		sessionStorage.setItem('advancedLevel', 1);
+		sessionStorage.setItem('advancedLevel', 0);
 		sessionStorage.setItem('advancedParentId', 'ADVANCED');
 		sessionStorage.setItem('advancedTip', 'null');
 	}
