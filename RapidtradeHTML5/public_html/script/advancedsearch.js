@@ -29,18 +29,18 @@ function advancedSearchInit(searchType) {
 		$('#advancedSearchList').listview( 'refresh' );		
 	}
 	if ($('#pricelistPanel').is(':visible')) {
-		$('#pricelistPanel').hide();	
-		
-		if (DaoOptions.getValue('LiveAdvanceSearch') && ('advanced' == searchType)) {
-			
-			$('#advancedSearchButton').hide();
-			
-		} else {
-			
-			$('#searchBarPanel').hide();
-		}
-		
-		$('#advancedSearchPanel').show();
+            $('#pricelistPanel').hide();	
+
+            if (DaoOptions.getValue('LiveAdvanceSearch') && ('advanced' == searchType)) {
+
+                $('#advancedSearchButton').hide();
+
+            } else {
+
+                $('#searchBarPanel').hide();
+            }
+
+            $('#advancedSearchPanel').show();
 	}
 	if ($('#alphabet input').length < 2) {
 		alphaFilter.getInstance().init('#alphabet');
@@ -48,6 +48,8 @@ function advancedSearchInit(searchType) {
 //		g_advancedSearchAlphaBuilt = false;
 //		g_advancedSearchAlpha = '';
 	}
+        
+        $('#advancedSearchBackButton').toggleClass('invisible', ('advanced' == searchType) && advancedSearchIsTopLevel() && DaoOptions.getValue('LiveAdvanceSearch') != undefined);
 	$('#advancedSearchBackButton .ui-btn-text').text(advancedSearchIsTopLevel() ? 'Basic Search' : 'Back');
 	
 	window.scrollTo(0, 0);
