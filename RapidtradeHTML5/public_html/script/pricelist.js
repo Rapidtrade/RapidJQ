@@ -799,28 +799,28 @@ function pricelistFetchPricelistLiveOnSuccess(json) {
 	if (json) {
 		$.each(json, function(index, pricelist) {
 			var newPricelist = {};
-			newPricelist.b = pricelist.Barcode;
-			newPricelist.cn = pricelist.CategoryName;
-			newPricelist.del = pricelist.Deleted;
-			newPricelist.des = pricelist.Description;
-			newPricelist.d = pricelist.Discount;
-			newPricelist.g = pricelist.Gross;
-			newPricelist.n = pricelist.Nett;
-			newPricelist.pl = pricelist.Pricelist;
+			newPricelist.b = pricelist.b;
+			newPricelist.cn = pricelist.cn;
+			newPricelist.del = pricelist.del;
+			newPricelist.des = pricelist.des;
+			newPricelist.d = pricelist.d;
+			newPricelist.g = pricelist.g;
+			newPricelist.n = pricelist.n;
+			newPricelist.pl = pricelist.pl;
 			newPricelist.Stock = pricelist.Stock;
 			newPricelist.onSpecial = pricelist.onSpecial;
-			newPricelist.id = pricelist.ProductID;
-			newPricelist.u = parseInt(pricelist.Unit, 10);
-			newPricelist.u1 = pricelist.UserField01;
-			newPricelist.u2 = pricelist.UserField02;
-			newPricelist.u3 = pricelist.UserField03;
-			newPricelist.u4 = pricelist.UserField04;
-			newPricelist.u5 = pricelist.UserField05;
-			newPricelist.u6 = pricelist.UserField06;
-			newPricelist.u7 = pricelist.UserField07;
-			newPricelist.u8 = pricelist.UserField08;
-			newPricelist.u9 = pricelist.UserField09;
-			newPricelist.u10 = pricelist.UserField10;
+			newPricelist.id = pricelist.id;
+			newPricelist.u = parseInt(pricelist.u, 10);
+			newPricelist.u1 = pricelist.u1;
+			newPricelist.u2 = pricelist.u2;
+			newPricelist.u3 = pricelist.u3;
+			newPricelist.u4 = pricelist.u4;
+			newPricelist.u5 = pricelist.u5;
+			newPricelist.u6 = pricelist.u6;
+			newPricelist.u7 = pricelist.u7;
+			newPricelist.u8 = pricelist.u8;
+			newPricelist.u9 = pricelist.u9;
+			newPricelist.u10 = pricelist.u10;
 			pricelistOnSuccessRead(newPricelist);
 		});
 	}
