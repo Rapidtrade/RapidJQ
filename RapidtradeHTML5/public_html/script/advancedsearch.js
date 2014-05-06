@@ -19,7 +19,7 @@ var g_advancedSearchAlphaBuilt = false;
 function advancedSearchInit(searchType) {
 	
 	if (searchType) 
-		g_advancedSearchType = searchType;
+            g_advancedSearchType = searchType;
 	
 	if (DaoOptions.getValue('AdvSearchAlphabet','false') == 'false'){
 		$('#alphabet').attr('class','invisible');
