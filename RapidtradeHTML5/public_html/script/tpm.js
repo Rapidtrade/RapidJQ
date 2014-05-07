@@ -192,17 +192,24 @@ function tpmVerifySuccess() {
     g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', 
                 function (json) {
                     if (!json._getStatus)
-                        alert (json._getErrorMsg);
-                    
-                    
+//                        alert (json._getErrorMsg);                                      
+                        // TEST
+                        json._order.orderItems[1].UserField10 = json._getErrorMsg;
+                        
                     	jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmverified','','list','table',tpmVerifyTableLoaded);
                 }, 
                 undefined);	
 }
 
 function tpmVerifyTableLoaded(){
-    $("#jsontable td:nth-child(1):contains('null')").parent().hide(); //hide rows where userfield1=null
-    //logic here to select all checkbox's except where there is an error description
+    $("#jsontable td:nth-child(1):contains('null')").parent().hide(); //hide rows where userfield1=null 
+    
+    $okRows = $('#jsontable td:visible:last-child:empty').parent();
+    
+    if ($okRows.length === $('#jsontable tr:visible').length - 1)
+        $('#verifyTPM .ui-btn-text').text('Create');
+    
+    $okRows.find('#Selected').prop('checked', true).checkboxradio('refresh');
     
     //also an if statement so that if no errors, then the verify button must change to Create
     //first build a new newcart with original products as well as selected lines do a tpmPost with ordertype = 'order'

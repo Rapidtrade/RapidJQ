@@ -354,6 +354,10 @@ var jsonform = (function(){
                 if (displayObjects[i].Label) {
                     label = displayObjects[i].Label;
                 }
+                // TEST
+                if ('UserField10' ==  displayObjects[i].Name)
+                    label = 'Error';
+                
                 htmlstr += '<th>' + label + '</th>';
             }
             htmlstr += '</tr></thead>';
