@@ -636,6 +636,16 @@ function g_getDefaults(){
     
 }
 
-
+function g_busy(show) {
+    if (show) {
+        $.mobile.loading( 'show', {
+                        text: 'Please wait',
+                        textVisible: true,
+                        textonly: false,
+                        });
+    } else {
+        $.mobile.loading( 'hide' );
+    }
+}
  
 
