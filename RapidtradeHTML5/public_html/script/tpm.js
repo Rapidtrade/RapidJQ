@@ -9,8 +9,16 @@ function tpmOnPageInit() {
 }
 
 function tpmBind() {
-    $('#verifyTPM').click(function() {
-        tpmVerify();
+    $('#verifyTPM').click(function() {        
+        
+        g_tpmjson = tpmBuildNewCart();
+        
+        var isVerification = ($(this).find('.ui-btn-text').text() == 'Verify');
+        
+        var postType = (isVerification ? 'verify' : 'order');
+        var onSuccess = (isVerification ? tpmVerifySuccess : tpmOrderSuccess);
+        
+        tpmPost(postType, onSuccess);
     });
     $('#cancelbtn').click(function() {
         $.mobile.changePage("ShoppingCart.html");
@@ -55,6 +63,11 @@ function tpmFetchBasket() {
             tpmPost('qualify',tpmQualifySuccess);
         });    	
 }
+
+/*
+ * Verifying / Ordering
+ * @returns {undefined}
+ */
 
 function tpmPost(type, onSuccess) {
     try {    
@@ -152,11 +165,8 @@ function tpmSaveError(error) {
     }
 }
 
-/*
- * We need to verify the promotions they selected
- * @returns {undefined}
- */
-function tpmVerify(){
+function tpmBuildNewCart() {
+    
     //create a new cart with original products & selected TPM's
     var oldcart = jsonform.getInstance().jsonArray;
     var newcart = new Array();
@@ -175,9 +185,7 @@ function tpmVerify(){
             newcart.push(row);
         }
     }
-    g_tpmjson = newcart;
-    tpmPost('verify', tpmVerifySuccess);
-    
+    return newcart;
 }
 
 /*
@@ -194,11 +202,16 @@ function tpmVerifySuccess() {
                     if (!json._getStatus)
 //                        alert (json._getErrorMsg);                                      
                         // TEST
-                        json._order.orderItems[1].UserField10 = json._getErrorMsg;
+//                        json._order.orderItems[1].UserField10 = json._getErrorMsg;
                         
                     	jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmverified','','list','table',tpmVerifyTableLoaded);
                 }, 
                 undefined);	
+}
+
+function tpmOrderSuccess() {
+    
+    alert('Order sent OK.');
 }
 
 function tpmVerifyTableLoaded(){
@@ -211,7 +224,6 @@ function tpmVerifyTableLoaded(){
     
     $okRows.find('#Selected').prop('checked', true).checkboxradio('refresh');
     
-    //also an if statement so that if no errors, then the verify button must change to Create
     //first build a new newcart with original products as well as selected lines do a tpmPost with ordertype = 'order'
 }
 
