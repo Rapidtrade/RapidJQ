@@ -195,13 +195,17 @@ function tpmVerifySuccess() {
                         alert (json._getErrorMsg);
                     
                     
-                    	jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmVerifyTableLoaded);
+                    	jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmverified','','list','table',tpmVerifyTableLoaded);
                 }, 
                 undefined);	
 }
 
 function tpmVerifyTableLoaded(){
+    $("#jsontable td:nth-child(1):contains('null')").parent().hide(); //hide rows where userfield1=null
+    //logic here to select all checkbox's except where there is an error description
     
+    //also an if statement so that if no errors, then the verify button must change to Create
+    //first build a new newcart with original products as well as selected lines do a tpmPost with ordertype = 'order'
 }
 
 function tpmExists(json){
