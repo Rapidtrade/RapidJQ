@@ -134,14 +134,25 @@ function tpmSelected(checkbox){
     if (item.UserField01 === 'Complex') {
         tpmShowComplexPopup();
     } else {
-        if (item.selected)
-            item.selected =true; //since never selected it yet, make it seleced now
+        if (!item.selected)
+            item.selected = true; //since never selected it yet, make it selected now
         else
             item.selected = !item.selected;  //else toggle selection //checkbox.val()==='on' ? true:false ;
     
-        if (item.selected && item.UserField05 !== ''){
-            //todo do a $('#jsontable) to ensure all other promotions in this set are selected on the screen.
-            //Here you need to ensure that on the screen the checkbox's are selected/deselected and that item.selected = true/false
+        var setID = $.trim(item.UserField05);
+    
+        if (setID === ''){
+            
+            //select all promotions in the set
+            
+            $setRows = $('#jsontable td:nth-child(5):contains("' + setID + '")').find('#Selected');            
+            $setRows.prop('checked', item.selected).checkboxradio('refresh');
+            
+            // update data
+            $setRows.each(function() {
+                
+                $(this).trigger('change');
+            });          
         }
     }
 }
@@ -200,9 +211,13 @@ function tpmVerifySuccess() {
     g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', 
                 function (json) {
                     if (!json._getStatus)
-//                        alert (json._getErrorMsg);                                      
+                        alert (json._getErrorMsg);                                      
                         // TEST
 //                        json._order.orderItems[1].UserField10 = json._getErrorMsg;
+                        
+//                        json._order.orderItems[1].UserField05 = 'SET1';
+//                        json._order.orderItems[2].UserField05 = 'SET1';
+//                        json._order.orderItems[3].UserField05 = 'SET1';
                         
                     	jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmverified','','list','table',tpmVerifyTableLoaded);
                 }, 
@@ -223,6 +238,11 @@ function tpmVerifyTableLoaded(){
         $('#verifyTPM .ui-btn-text').text('Create');
     
     $okRows.find('#Selected').prop('checked', true).checkboxradio('refresh');
+    
+    $okRows.find('#Selected').each(function() {
+        
+        $(this).trigger('change');
+    })
     
     //first build a new newcart with original products as well as selected lines do a tpmPost with ordertype = 'order'
 }
