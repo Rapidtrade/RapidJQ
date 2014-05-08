@@ -97,6 +97,18 @@ function tpmQualifySuccess() {
     if (!url) url = g_restUrl + 'Orders/Exists';	
     g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', 
                 function (json) {
+                    
+                    // TEST
+//                    $.each(json._order.orderItems, function(index, item) {
+//                        
+//                        if (item.UserField01) {
+//                            
+//                            item.UserField01 = 'Complex';
+//                            item.UserField02 = 'BSNFTEST';
+//                        }                            
+//                    });
+                    // TEST END
+                    
                     jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);
                 }, 
                 undefined);	
@@ -109,15 +121,17 @@ function tpmQualifySuccess() {
  * @returns {undefined}
  */
 function tpmTableLoaded(){
-    //hide any rows that dont have a promotion
+    //hide any rows that don't have a promotion
     $("#jsontable td").css("style","padding:15px;");
     $("#jsontable td:nth-child(1):contains('null')").parent().hide(); //hide rows where userfield1=null
-    tpmHideComplexRows();
     
     //Bind for when checkbox is changed
+    $("#jsontable input:checkbox").unbind();
     $("#jsontable input:checkbox").change(function () {
         tpmSelected($(this));
     });
+    
+    tpmHideComplexRows();
 }
 
 /*
@@ -157,11 +171,33 @@ function tpmSelected(checkbox){
     }
 }
 
-function tpmHideComplexRows(){
-    var complextr = $("#jsontable td:nth-child(6):contains('Complex')").parent(); 
-    //TODO - deal with complex - here we need to only show one of the complex promotion lines.
-    //       Will need a for each loop to deal with this
-    //       Also, change the binding 
+function tpmHideComplexRows() {
+    
+    var complexRowGroups = {};
+   
+    var $complexRows = $("#jsontable td:nth-child(6):contains('Complex')").parent(); 
+    
+    $complexRows.each(function() {
+        
+        var promotionId = $(this).find('td:first').text();
+        
+        if (!complexRowGroups[promotionId])
+            complexRowGroups[promotionId] = [];
+        
+        complexRowGroups[promotionId].push($(this));      
+    });
+    
+    $.each(complexRowGroups, function(index, rows) {
+       
+        $(rows[0]).siblings().hide();
+        
+        $(rows[0]).find('#Selected').off();
+        $(rows[0]).find('#Selected').on('change', function() {
+            
+            sessionStorage.setItem('selectedPromotionID', $(rows[0]).find('td:first').text());
+            tpmShowComplexPopup();
+        });
+    });
 }
 
 function tpmShowComplexPopup(){
@@ -242,7 +278,7 @@ function tpmVerifyTableLoaded(){
     $okRows.find('#Selected').each(function() {
         
         $(this).trigger('change');
-    })
+    });
     
     //first build a new newcart with original products as well as selected lines do a tpmPost with ordertype = 'order'
 }
