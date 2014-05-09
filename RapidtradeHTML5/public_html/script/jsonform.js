@@ -45,7 +45,7 @@ function JsonForm() {
 	 */
     function jsonformInit(){
         $(vformid).empty();
-        g_append(vformid, '<div class="ui-body ui-body-c"></div>');
+        g_append(vformid, '<div class="jsonFormDiv ui-body ui-body-c"></div>');
         //$(vformid).append('<div class="ui-body ui-body-c"></div>');
         jsonformFetchDisplayFields();
      
@@ -168,9 +168,9 @@ function JsonForm() {
     		                $('#' + fieldId).selectmenu('disable');
     		            }
     		            
-    		            $('#' + fieldId).closest('.ui-select').css('width', (displayObjects[i].Length ? displayObjects[i].Length * 16 + 'px' : '90%'));
+//    		            $('#' + fieldId).closest('.ui-select').css('width', (displayObjects[i].Length ? displayObjects[i].Length * 16 + 'px' : '90%'));
     		            
-    		            $('#' + fieldId).selectmenu('refresh');
+//    		            $('#' + fieldId).selectmenu('refresh');
     		        }  
         		    
         		    if (displayObjects[i].Mandatory) {

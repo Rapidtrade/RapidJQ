@@ -807,3 +807,8 @@
 	
 	min-height: 1224px;
 }
+
+.jsonFormDiv .ui-select {
+    
+    width: 50%;
+}
