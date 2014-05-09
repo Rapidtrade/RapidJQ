@@ -13,7 +13,7 @@ function tpmBind() {
         
         g_tpmjson = tpmBuildNewCart();
         
-        var isVerification = ($(this).find('.ui-btn-text').text() == 'Verify');
+        var isVerification = ($(this).find('.ui-btn-text').text() === 'Verify');
         
         var postType = (isVerification ? 'verify' : 'order');
         var onSuccess = (isVerification ? tpmVerifySuccess : tpmOrderSuccess);
@@ -23,7 +23,8 @@ function tpmBind() {
     $('#cancelbtn').click(function() {
         $.mobile.changePage("ShoppingCart.html");
     });
-    
+
+    $('#complexPopup #okButton').off().on('click', tpmSaveComplexPromotion);    
 }
 /*
  * First remove any items added due to promotions to ensure we start a fresh
@@ -105,6 +106,7 @@ function tpmQualifySuccess() {
 //                            
 //                            item.UserField01 = 'Complex';
 //                            item.UserField02 = 'BSNFTEST';
+//                            item.UserField03 = 12;
 //                        }                            
 //                    });
                     // TEST END
@@ -194,14 +196,71 @@ function tpmHideComplexRows() {
         $(rows[0]).find('#Selected').off();
         $(rows[0]).find('#Selected').on('change', function() {
             
-            sessionStorage.setItem('selectedPromotionID', $(rows[0]).find('td:first').text());
-            tpmShowComplexPopup();
+            if ($(this).prop('checked'))
+                tpmShowComplexPopup($(this).closest('tr').find('td:first').text());
         });
     });
 }
 
-function tpmShowComplexPopup(){
-    //TODO - weave your magic here to show a complex popup
+function tpmShowComplexPopup(promotionId) {
+    
+    $('#complexPromotionDiv').empty();
+    
+    var complexPromotions = [];
+    
+    $.each(jsonform.getInstance().jsonArray, function(index, item) {
+        
+        if (item.UserField02 === promotionId)
+            complexPromotions.push(item);
+    });    
+    
+    g_append('#complexPromotionDiv', '<div id="' + promotionId + 'Div" style="margin-bottom:10px" class="promotion"><h3>' + promotionId + '</h3></div>');    
+    g_append('#' + promotionId + 'Div', '<form id="' + promotionId + 'Form"></form>');    	
+    g_append('#' + promotionId + 'Div', '<table id="' + promotionId + 'Table" class="tpmTable"><thead><tr><th>Product ID</th><th>Description</th><th>UOM</th><th>Quantity</th></tr></thead><tbody></tbody></table>');
+
+    for ( var i = 0; i < complexPromotions.length; i++) {
+        var productId = $.trim(complexPromotions[i].ProductID);
+        g_append('#' + promotionId + 'Table tbody', '<tr class="promotion" id="' + promotionId + productId + 'TR"><td class="productId">' + productId + 
+                        '</td><td class="description">' + complexPromotions[i].Description + '</td><td class="uom">' + complexPromotions[i].UserField04 + 
+                        '</td><td class="quantity"><input class="' + promotionId + 'Quantity" id="' + promotionId + productId +
+                        'Quantity" type="number" min="0" value="0" step="' + complexPromotions[i].UserField04 + '" onchange="tpmOnQuantityChange(\'' + 
+                        promotionId +  '\',\'' + productId + '\')"/></td></tr>');   
+
+        g_tpmLastValidQuantities[promotionId + '|' + productId] = '0';
+    }   
+
+    g_append('#' + promotionId + 'Table tbody', '<tr class="total"><td colspan="3" style="text-align:right;">Promotion Total:</td><td id="' + promotionId + 'Total">0</td></tr>'); 
+    g_append('#' + promotionId + 'Form', '<table class="tpmHeaderTable"></table>');
+    g_append('#' + promotionId + 'Form table', '<tr><td>TPM Code</td><td><input id="UserField02" value="' + promotionId + '" />');
+    g_append('#' + promotionId + 'Form table', '<tr><td>MAX Free Stock</td><td><input id="UserField03" value="' + complexPromotions[0].UserField03 + '" />');
+
+    $('#complexPromotionDiv.tpmTable').css({
+            'border-collapse': 'collapse',
+            'margin': '20px 0'
+    }); 
+
+    $('#complexPromotionDiv input').css({
+            'height': '20px',
+            'font-size': '15px'
+    }); 
+
+    $('#complexPromotionDiv.tpmTable th, td').css({
+            'border': '1px solid black',
+            'padding': '5px',
+            'line-height': '25px'
+    });
+
+    $('#complexPromotionDiv.tpmTable tr.total td').css({
+            'border': 'none',
+            'padding': '10px'
+    });
+
+    $('#complexPromotionDiv.tpmHeaderTable td').css({
+            'border': 'none',
+            'padding': '0 10px 0 0'
+    });    
+  
+    $('#complexPopup').popup('open');
 }
 
 function tpmSaveError(error) {	
@@ -279,114 +338,12 @@ function tpmVerifyTableLoaded(){
         
         $(this).trigger('change');
     });
-    
-    //first build a new newcart with original products as well as selected lines do a tpmPost with ordertype = 'order'
 }
 
 function tpmExists(json){
     
 }
 
-
-
-/*
-function tpmFetchPromotionsOnSuccess(json) {	
-    var sets = [];
-    var promotions = [];
-
-    var showPromotionGroup = function(parentId, promotionGroup, inSet) {
-
-        if (inSet) $('#' + parentId).empty();
-        var promotionId = promotionGroup[0].UserField02;
-        g_append('#' + parentId, '<div id="' + promotionId + 'Div" style="margin-bottom:10px" class="promotion"><h3>' + promotionId + '</h3></div>');    
-        g_append('#' + promotionId + 'Div', '<form id="' + promotionId + 'Form"></form>');    	
-        g_append('#' + promotionId + 'Div', '<table id="' + promotionId + 'Table" class="tpmTable"><thead><tr><th>Product ID</th><th>Description</th><th>UOM</th><th>Quantity</th></tr></thead><tbody></tbody></table>');
-
-        for ( var i = 0; i < promotionGroup.length; i++) {
-            var productId = $.trim(promotionGroup[i].ProductID);
-            g_append('#' + promotionId + 'Table tbody', '<tr class="promotion" id="' + promotionId + productId + 'TR"><td class="productId">' + productId + 
-                            '</td><td class="description">' + promotionGroup[i].Description + '</td><td class="uom">' + promotionGroup[i].UserField04 + 
-                            '</td><td class="quantity"><input class="' + promotionId + 'Quantity" id="' + promotionId + productId +
-                            'Quantity" type="number" min="0" value="0" step="' + promotionGroup[i].UserField04 + '" onchange="tpmOnQuantityChange(\'' + 
-                            promotionId +  '\',\'' + productId + '\')"/></td></tr>');   
-
-            g_tpmLastValidQuantities[promotionId + '|' + productId] = '0';
-        }   
-
-        g_append('#' + promotionId + 'Table tbody', '<tr class="total"><td colspan="3" style="text-align:right;">Promotion Total:</td><td id="' + promotionId + 'Total">0</td></tr>'); 
-        g_append('#' + promotionId + 'Form', '<table class="tpmHeaderTable"></table>');
-        g_append('#' + promotionId + 'Form table', '<tr><td>TPM Code</td><td><input id="UserField02" value="' + promotionId + '" />');
-        g_append('#' + promotionId + 'Form table', '<tr><td>MAX Free Stock</td><td><input id="UserField03" value="' + promotionGroup[0].UserField03 + '" />');
-
-        $('.tpmTable').css({
-                'border-collapse': 'collapse',
-                'margin': '20px 0'
-        }); 
-
-        $('#promotionsDiv input').css({
-                'height': '20px',
-                'font-size': '15px'
-        }); 
-
-        $('.tpmTable th, td').css({
-                'border': '1px solid black',
-                'padding': '5px',
-                'line-height': '25px'
-        });
-
-        $('.tpmTable tr.total td').css({
-                'border': 'none',
-                'padding': '10px'
-        });
-
-        $('.tpmHeaderTable td').css({
-                'border': 'none',
-                'padding': '0 10px 0 0'
-        });
-    };
-	
-    $.each(json.orderItems, function(index, orderItem) {	    	
-    	if ($.trim(orderItem.UserField05)) {
-            if (!sets[orderItem.UserField05])    			
-                    sets[orderItem.UserField05] = {};
-
-            if (!sets[orderItem.UserField05][orderItem.UserField02])
-                    sets[orderItem.UserField05][orderItem.UserField02] = [];
-
-            sets[orderItem.UserField05][orderItem.UserField02].push(orderItem);    		
-    	} else {   	
-            if (orderItem.UserField02) {
-                if (!promotions[orderItem.UserField02])
-                        promotions[orderItem.UserField02] = [];
-                promotions[orderItem.UserField02].push(orderItem);
-	    }
-    	}
-    });
-    
-    console.log(sets);
-    var i = 0;
-    for (var set in sets) {
-    	g_append('#promotionsDiv', '<div id="set' + ++i + 'Div"></div>');
-        var selectMenuHtml = '<div data-role="fieldcontain">' +
-								 '<label for="set' + i + 'Select">Choose from ' + set + '</label>' +
-								 '<select id="set' + i + 'Select">';
-        
-        for (var promotionId in sets[set])        	
-        	selectMenuHtml += '<option value="' + promotionId + '">' + promotionId + '</option>';
-        
-        selectMenuHtml += '</select></div>';
-    	g_append('#set' + i + 'Div', selectMenuHtml);
-    	g_append('#set' + i + 'Div', '<div id="set' + i + 'PromotionsDiv"></div>');
-    	$('#set' + i + 'Select').change(function() {
-    		showPromotionGroup('set' + i + 'PromotionsDiv', sets[set][$(this).val()], true);
-    	});
-    	$('#set' + i + 'Select').trigger('change');
-    }
-
-    for ( var key in promotions)
-		showPromotionGroup('promotionsDiv', promotions[key], false);
-}
-*/
 function tpmOnQuantityChange(promotionId, productId) {
 	var totalQuantity = 0;
 	$('.' + promotionId + 'Quantity').each(function() {
@@ -401,6 +358,34 @@ function tpmOnQuantityChange(promotionId, productId) {
 	}
 	
 	g_tpmLastValidQuantities[promotionId + '|' + productId] = $('#' + promotionId + productId + 'Quantity').val();
+}
+
+function tpmSaveComplexPromotion() {
+    
+    if (tpmIsUOMValid()) {
+
+        var isAnyItemSelected = false;
+        
+        for (var key in g_tpmLastValidQuantities) {
+
+            var promotionId = key.split('|')[0];
+            var productId = key.split('|')[1];
+
+            $.each(jsonform.getInstance().jsonArray, function(index, item) {
+
+                if ((item.UserField02 === promotionId) && (item.ProductID === productId)) {
+
+                    item.Quantity = g_tpmLastValidQuantities[key];
+                    item.selected = (item.Quantity > 0);
+                    
+                    isAnyItemSelected = isAnyItemSelected || item.selected;
+                }
+            });
+        }
+        
+        $('#complexPopup').popup('close');            
+        $('#jsontable td:visible:nth-child(1):contains("' + promotionId + '")').find('#Selected').prop('checked', isAnyItemSelected).checkboxradio('refresh'); 
+    }
 }
 
 function tpmSave() {
@@ -445,7 +430,7 @@ function tpmIsUOMValid() {
 	
 	var isValid = true;
 	
-	$('.tpmTable').each(function() {
+	$('#complexPromotionDiv .tpmTable').each(function() {
 		
 		$(this).find('tr.promotion').each(function() {
 			
