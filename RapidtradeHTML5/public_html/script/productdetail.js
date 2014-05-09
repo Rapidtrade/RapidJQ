@@ -189,7 +189,9 @@ function productdetailInit() {
         
         productdetailFetchLongText(tabId, '#messagePopup p');
         $('#cancelButton').addClass('invisible');
-        $('#messagePopup').popup('open');   
+        
+        if ($('#messagePopup p').text())
+            $('#messagePopup').popup('open');   
     }
 }
 
