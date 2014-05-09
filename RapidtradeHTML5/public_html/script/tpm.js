@@ -189,15 +189,21 @@ function tpmHideComplexRows() {
         complexRowGroups[promotionId].push($(this));      
     });
     
-    $.each(complexRowGroups, function(index, rows) {
+    $.each(complexRowGroups, function(promotionId, rows) {
        
         $(rows[0]).siblings().hide();
         
-        $(rows[0]).find('#Selected').off();
-        $(rows[0]).find('#Selected').on('change', function() {
+        $(rows[0]).find('#Selected').off().on('change', function() {
             
             if ($(this).prop('checked'))
                 tpmShowComplexPopup($(this).closest('tr').find('td:first').text());
+            else
+                // deselect all complex promotion items
+                $.each(jsonform.getInstance().jsonArray, function(index, item) {
+                   
+                    if (item.UserField02 == promotionId)
+                        item.selected = false;
+                });
         });
     });
 }
@@ -219,20 +225,25 @@ function tpmShowComplexPopup(promotionId) {
     g_append('#' + promotionId + 'Div', '<table id="' + promotionId + 'Table" class="tpmTable"><thead><tr><th>Product ID</th><th>Description</th><th>UOM</th><th>Quantity</th></tr></thead><tbody></tbody></table>');
 
     for ( var i = 0; i < complexPromotions.length; i++) {
+        
         var productId = $.trim(complexPromotions[i].ProductID);
+        var quantity = complexPromotions[i].Quantity || 0;
+        
         g_append('#' + promotionId + 'Table tbody', '<tr class="promotion" id="' + promotionId + productId + 'TR"><td class="productId">' + productId + 
                         '</td><td class="description">' + complexPromotions[i].Description + '</td><td class="uom">' + complexPromotions[i].UserField04 + 
                         '</td><td class="quantity"><input class="' + promotionId + 'Quantity" id="' + promotionId + productId +
-                        'Quantity" type="number" min="0" value="0" step="' + complexPromotions[i].UserField04 + '" onchange="tpmOnQuantityChange(\'' + 
+                        'Quantity" type="number" min="0" value="' + quantity + '" step="' + complexPromotions[i].UserField04 + '" onchange="tpmOnQuantityChange(\'' + 
                         promotionId +  '\',\'' + productId + '\')"/></td></tr>');   
 
-        g_tpmLastValidQuantities[promotionId + '|' + productId] = '0';
+        g_tpmLastValidQuantities[promotionId + '|' + productId] = quantity;
     }   
 
     g_append('#' + promotionId + 'Table tbody', '<tr class="total"><td colspan="3" style="text-align:right;">Promotion Total:</td><td id="' + promotionId + 'Total">0</td></tr>'); 
     g_append('#' + promotionId + 'Form', '<table class="tpmHeaderTable"></table>');
     g_append('#' + promotionId + 'Form table', '<tr><td>TPM Code</td><td><input id="UserField02" value="' + promotionId + '" />');
     g_append('#' + promotionId + 'Form table', '<tr><td>MAX Free Stock</td><td><input id="UserField03" value="' + complexPromotions[0].UserField03 + '" />');
+    
+    tpmCalculateTotalQuantity(promotionId);
 
     $('#complexPromotionDiv.tpmTable').css({
             'border-collapse': 'collapse',
@@ -345,12 +356,8 @@ function tpmExists(json){
 }
 
 function tpmOnQuantityChange(promotionId, productId) {
-	var totalQuantity = 0;
-	$('.' + promotionId + 'Quantity').each(function() {
-		totalQuantity += parseInt($(this).val(), 10); 
-	});
-	$('#' + promotionId + 'Total').text(totalQuantity);
-	if (totalQuantity > parseInt($('#' + promotionId + 'Form #UserField03').val(), 10)) {
+    
+	if (tpmCalculateTotalQuantity(promotionId) > parseInt($('#' + promotionId + 'Form #UserField03').val(), 10)) {
 		g_alert('Cannot order more than ' + $('#' + promotionId + 'Form #UserField03').val() + ' for ' + promotionId);
 		$('#' + promotionId + productId + 'Quantity').val(g_tpmLastValidQuantities[promotionId + '|' + productId]);
 		tpmOnQuantityChange(promotionId, productId);
@@ -358,6 +365,17 @@ function tpmOnQuantityChange(promotionId, productId) {
 	}
 	
 	g_tpmLastValidQuantities[promotionId + '|' + productId] = $('#' + promotionId + productId + 'Quantity').val();
+}
+
+function tpmCalculateTotalQuantity(promotionId) {
+    
+    	var totalQuantity = 0;
+	$('.' + promotionId + 'Quantity').each(function() {
+		totalQuantity += parseInt($(this).val(), 10); 
+	});
+	$('#' + promotionId + 'Total').text(totalQuantity);
+        
+        return totalQuantity;
 }
 
 function tpmSaveComplexPromotion() {
@@ -384,7 +402,7 @@ function tpmSaveComplexPromotion() {
         }
         
         $('#complexPopup').popup('close');            
-        $('#jsontable td:visible:nth-child(1):contains("' + promotionId + '")').find('#Selected').prop('checked', isAnyItemSelected).checkboxradio('refresh'); 
+        $('#jsontable td:visible:nth-child(1):contains("' + promotionId + '")').parent().find('#Selected').prop('checked', isAnyItemSelected).checkboxradio('refresh'); 
     }
 }
 
