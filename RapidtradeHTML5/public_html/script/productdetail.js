@@ -300,23 +300,34 @@ function productdetailShowPanel(selectedPanel) {
 	
 		case 'Components':
 		case 'Alternative Products':
-			productdetailFetchComponents();
-			break;
+                    productdetailFetchComponents();
+                    break;
 						
 		case 'Product Info':
-			productdetailFetchProductInfo();
-			break;
+                    productdetailFetchProductInfo();
+                    break;
 	
 		case 'Technical Info':
-			productdetailFetchLongText(2, '#technicalInfoDiv');
-			break;
+                    
+                    var onSuccess = function () {
+                        
+                        if (!$('#technicalInfoDiv').html()) {
+                            
+                            $('#technicalInfoDiv').html('No technical info is available.');                            
+                            $('#technicalInfoDiv').show();
+                         }
+                        
+                    }
+                    
+                    productdetailFetchLongText(2, '#technicalInfoDiv', onSuccess);
+                    break;
 			
 		case 'Large Image':
-			productdetailFetchLargeImage();
-			break;
+                    productdetailFetchLargeImage();
+                    break;
 			
 		default:
-			break;
+                    break;
 	}
 }
 
@@ -436,18 +447,19 @@ function productdetailFetchLongText(tabId, selector, onSuccess) {
     	
     	$.mobile.hidePageLoadingMsg();
     	
+        $(selector).html(json.LongText);
+        
         if (json.LongText) {
         	
             $(selector).show();
-            $(selector).html(json.LongText);
-            
-            if (onSuccess)
-                onSuccess();
             
         } else {
         	
             $(selector).hide();
         };
+        
+        if (onSuccess)
+            onSuccess();
     };
     
     var error = function (e) {
