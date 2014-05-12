@@ -187,11 +187,14 @@ function productdetailInit() {
     
     if (tabId) {
         
-        productdetailFetchLongText(tabId, '#messagePopup p');
-        $('#cancelButton').addClass('invisible');
+        var onSuccess = function() {
+            
+            if ($('#messagePopup p').text())
+                $('#messagePopup').popup('open');   
+        };
         
-        if ($('#messagePopup p').text())
-            $('#messagePopup').popup('open');   
+        productdetailFetchLongText(tabId, '#messagePopup p', onSuccess);
+        $('#cancelButton').addClass('invisible');
     }
 }
 
@@ -421,7 +424,7 @@ function productdetailFetchComponentsOnError(error) {
 	console.log('Error in retrieving components: ' + error);
 }
 
-function productdetailFetchLongText(tabId, selector) {
+function productdetailFetchLongText(tabId, selector, onSuccess) {
 	
     var url = g_restUrl + 'ProductLongText/Get?supplierID=' + g_currentUser().SupplierID + '&productID=' + g_pricelistSelectedProduct.ProductID + '&tabID=' + tabId + '&format=json';
 
@@ -437,6 +440,9 @@ function productdetailFetchLongText(tabId, selector) {
         	
             $(selector).show();
             $(selector).html(json.LongText);
+            
+            if (onSuccess)
+                onSuccess();
             
         } else {
         	
