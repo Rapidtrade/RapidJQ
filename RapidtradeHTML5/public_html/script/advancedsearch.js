@@ -194,8 +194,8 @@ function advancedSearchFetchLevelLiveOnSuccess(json) {
 			
 			g_advancedSearchListHtml += 
 				'<li>' + 	
-				'	<a onclick="advancedSearchFetchNextLevelLive(\'' + modelCode + '\', \'' + object.Description + '\', \'' + linkCode + '\')">' + 
-				'        <h3 class="ui-li-heading">' + object.Description + '</h3>' +
+				'	<a onclick="advancedSearchFetchNextLevelLive(\'' + modelCode + '\', \'' + object.des + '\', \'' + linkCode + '\')">' + 
+				'        <h3 class="ui-li-heading">' + object.des + '</h3>' +
 				'   </a>' +
 				'</li>';
 			
