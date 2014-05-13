@@ -21,11 +21,11 @@ var g_pricelistCaptureQuantityClicked = false;
 
 function pricelistOnPageShow() {
 	
-	pricelistHideFooter();
-	overlaySetMenuItems();
-	
-	pricelistOnPageShowSmall();	
-	g_showCurrentCompanyName();
+    pricelistHideFooter();
+    overlaySetMenuItems();
+
+    pricelistOnPageShowSmall();	
+    g_showCurrentCompanyName();
 	
     var isAdvancedSearchAllowed = (DaoOptions.getValue('AllowAdvancedSearch') == 'true');
     if (isAdvancedSearchAllowed) {
@@ -744,7 +744,7 @@ function pricelistFetchPricelistLive() {
 		if ($('#search').val() == '' && !sessionStorage.getItem('onlinePricelistCategory') && $.isEmptyObject(g_advancedSearchProducts)) {
 			
 			$('#pricelists').hide();
-			$('.infoPanelText').text('Enter in search criteria to list products.');
+			$('.infoPanelText').text(sessionStorage.getItem('fromAdvanced') == 'true' ? 'No products found.' : 'Enter in search criteria to list products.');
 			$('#pricelistInfoDiv ').show();
 			$('#NextPrevButtons').hide();
 			$.mobile.hidePageLoadingMsg();
