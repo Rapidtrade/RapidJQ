@@ -786,7 +786,7 @@ function pricelistFetchPricelistJob() {
     		}
     	}
     	
-    	alphaFilter.getInstance().init('#alphafilter');
+//    	alphaFilter.getInstance().init('#alphafilter');
     	g_pricelistScrollto = false;
     	var offset = (g_pricelistCurrentPricelistPage - 1) * g_numItemsPerPage;
 	    var dao = new Dao();
