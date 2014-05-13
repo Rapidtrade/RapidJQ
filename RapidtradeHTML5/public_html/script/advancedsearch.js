@@ -42,12 +42,12 @@ function advancedSearchInit(searchType) {
 
             $('#advancedSearchPanel').show();
 	}
-	if ($('#alphabet input').length < 2) {
-		alphaFilter.getInstance().init('#alphabet');
-//		$('#alphabet').empty();
-//		g_advancedSearchAlphaBuilt = false;
-//		g_advancedSearchAlpha = '';
-	}
+//	if ($('#alphabet input').length < 2) {
+//		alphaFilter.getInstance().init('#alphabet');
+////		$('#alphabet').empty();
+////		g_advancedSearchAlphaBuilt = false;
+////		g_advancedSearchAlpha = '';
+//	}
         
         $('#advancedSearchBackButton').toggleClass('invisible', ('advanced' == searchType) && advancedSearchIsTopLevel() && DaoOptions.getValue('LiveAdvanceSearch') != undefined);
 	$('#advancedSearchBackButton .ui-btn-text').text(advancedSearchIsTopLevel() ? 'Basic Search' : 'Back');
@@ -264,7 +264,7 @@ function advancedSearchCurrentLevel(level) {
 
 function advancedSearchFetchLevelOnComplete() {
 	
-	if (DaoOptions.getValue('AdvSearchAlphabet','false') == 'true') alphaFilter.getInstance().HTML('#alphabet', '#advancedSearchList');
+//	if (DaoOptions.getValue('AdvSearchAlphabet','false') == 'true') alphaFilter.getInstance().HTML('#alphabet', '#advancedSearchList');
 	//advancedSearchShowAlpha();
 	
 	if (g_advancedSearchListHtml) {

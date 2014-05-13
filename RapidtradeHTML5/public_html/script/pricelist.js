@@ -537,54 +537,61 @@ function pricelistDoSearch(searchType) {
 	
 		case 'basic':		
 			
-			$('#search').attr('value', '');
-			pricelistBasicSearch();	
-			break;
+                    $('#search').attr('value', '');
+                    pricelistBasicSearch();	
+                    break;
 			
 		case 'categories':
 		case 'advanced':
+                    
+                    var isFilterEnabled = ('advanced' == searchType) && (DaoOptions.getValue('AllowAdvancedFilter') == 'true');
+                    
+                    var blockAWidthPercents = isFilterEnabled ? 50 : 100;
+                    $('#advancedSearchPanel .ui-block-a').css('width', blockAWidthPercents + '%');
+                    $('#advancedSearchPanel .ui-block-b').css('width', 100 - blockAWidthPercents + '%');                    
+                    $('#advancedSearchClearButton').toggle(isFilterEnabled);
 			
-			$('#search').val('');			
-			$('#searchBarPanel').toggle(isLiveAdvancedSearch);
-			
-			if ((searchType == g_advancedSearchType) && $('#advancedSearchList li').length) {
-				
-				$('#pricelistPanel').hide();								
-				$('#advancedSearchPanel').show();
-				$('#advancedSearchBackButton .ui-btn-text').text(advancedSearchIsTopLevel() ? 'Basic Search' : 'Back');
-				
-				if (('advanced' == searchType) && DaoOptions.getValue('LiveAdvanceSearch')) {
-					
-					$('#search').attr('placeholder', 'Search for models');
-					$('#search').val(advancedSearchGetItem('lastLiveSearch'));
-					$('#NextPrevButtons').hide();
-					$('#alphafilter').hide();
-				}
-						
-				
-			} else if (('advanced' == searchType) && DaoOptions.getValue('LiveAdvanceSearch')) {								
-				
-				$('#search').attr('placeholder', 'Search for models');
-				$('#NextPrevButtons').hide();
-				$('#alphafilter').hide();
-				$('#advancedSearchList').empty();
-				$('#breadcrumb').text('');
-				advancedSearchCurrentLevel() ? advancedSearchFetchLevelLive() : advancedSearchInit('advanced');
-				
-				$.mobile.hidePageLoadingMsg();
-				
-			} else {
-				
-				advancedSearchFetchLevel(searchType);
-			}
-			
-			break;
+                    $('#search').val('');			
+                    $('#searchBarPanel').toggle(isLiveAdvancedSearch);
+
+                    if ((searchType == g_advancedSearchType) && $('#advancedSearchList li').length) {
+
+                            $('#pricelistPanel').hide();								
+                            $('#advancedSearchPanel').show();
+                            $('#advancedSearchBackButton .ui-btn-text').text(advancedSearchIsTopLevel() ? 'Basic Search' : 'Back');
+
+                            if (('advanced' == searchType) && DaoOptions.getValue('LiveAdvanceSearch')) {
+
+                                $('#search').attr('placeholder', 'Search for models');
+                                $('#search').val(advancedSearchGetItem('lastLiveSearch'));
+                                $('#NextPrevButtons').hide();
+                                $('#alphafilter').hide();
+                            }
+
+
+                    } else if (('advanced' == searchType) && DaoOptions.getValue('LiveAdvanceSearch')) {								
+
+                            $('#search').attr('placeholder', 'Search for models');
+                            $('#NextPrevButtons').hide();
+                            $('#alphafilter').hide();
+                            $('#advancedSearchList').empty();
+                            $('#breadcrumb').text('');
+                            advancedSearchCurrentLevel() ? advancedSearchFetchLevelLive() : advancedSearchInit('advanced');
+
+                            $.mobile.hidePageLoadingMsg();
+
+                    } else {
+
+                            advancedSearchFetchLevel(searchType);
+                    }
+
+                    break;
 			
 		default:	
 			
-			$('#search').attr('value', searchType);
-			pricelistBasicSearch();
-			break;
+                    $('#search').attr('value', searchType);
+                    pricelistBasicSearch();
+                    break;
 	}	
 }
 
@@ -977,7 +984,7 @@ function pricelistOnComplete(event) {
 	    g_append('#pricelists', g_pricelistItemsHtml);
 	    $('#pricelists').listview('refresh');
 	    $('#pricelists input').trigger('create'); //.textinput( "refresh" );
-	    alphaFilter.getInstance().HTML('#alphafilter', '#pricelists');
+//	    alphaFilter.getInstance().HTML('#alphafilter', '#pricelists');
 	    pricelistBindCaptureQuantity();
 	}
 	
