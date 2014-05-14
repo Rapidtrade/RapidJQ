@@ -49,15 +49,15 @@ function overlayInit(page) {
 					 '</ul>';
 	}
 		
-	if (DaoOptions.getValue('ShowProductInfo') == 'true') {
-		
-		menuPanel += '<div id="productDetailsMenu"><h3>Product Details</h3>' +
-						'<ul data-role="listview" data-inset="true">' +
-							'<li>Price</li>' +
-							'<li>Product Info</li>' +
-						'</ul>' +
-					'</div>';
-	}
+//	if (DaoOptions.getValue('ShowProductInfo') == 'true') {
+//		
+//		menuPanel += '<div id="productDetailsMenu"><h3>Product Details</h3>' +
+//						'<ul data-role="listview" data-inset="true">' +
+//							'<li>Price</li>' +
+//							'<li>Product Info</li>' +
+//						'</ul>' +
+//					'</div>';
+//	}
 	
 	var showPricelistMenu = (DaoOptions.getValue('MobileCategories') == 'true') || (DaoOptions.getValue('AllowAdvancedSearch') == 'true');
 	
@@ -77,33 +77,38 @@ function overlayInit(page) {
 		
                     menuPanel += '<li id="advanced">Advanced Search</li>';
 
-                      if (DaoOptions.getValue('extrasearch')) {
+                    if (DaoOptions.getValue('extrasearch')) {
 
-                              var extraMenuItemArray = JSON.parse(DaoOptions.getValue('extrasearch'));
+                        var extraMenuItemArray = JSON.parse(DaoOptions.getValue('extrasearch'));
 
-                              for ( var i = 0; i < extraMenuItemArray.length; i++)
-                                      menuPanel += '<li id="' + extraMenuItemArray[i].search + '">' + extraMenuItemArray[i].label + '</li>';
-                      }	 
+                        for ( var i = 0; i < extraMenuItemArray.length; i++)
+                                menuPanel += '<li id="' + extraMenuItemArray[i].search + '">' + extraMenuItemArray[i].label + '</li>';
+                    }	 
 			
                     menuPanel += pricelistMenuEnd;
 
-                    menuPanel += '<div id="productDetailsMenu">' +
-                                    '<ul data-role="listview" data-inset="true" data-divider-theme="d">' +
-                                        '<li data-role="list-divider" role="heading">Product Details</li>' +
-                                        '<li id="price" class="ui-btn-active">Price</li>' +
-                                        '<li>Product Info</li>' + 
-                                        '<li>Components</li>';
-                                                        
-                    if (DaoOptions.get('LiveAltProductURL'))
-                        menuPanel += '<li>Alternative Products</li>';
-                    
-                    if (DaoOptions.getValue('ShowWhereUsed') == 'true')
-                        menuPanel += '<li>Where Used</li>';
-                                                                       
-                           menuPanel += '<li>Technical Info</li>' +
-                                        '<li>Large Image</li>' +
-                                '</ul>' +
-                        '</div>';
+                    if (DaoOptions.getValue('ShowProductInfo') == 'true') {
+
+                        menuPanel += '<div id="productDetailsMenu">' +
+                                        '<ul data-role="listview" data-inset="true" data-divider-theme="d">' +
+                                            '<li data-role="list-divider" role="heading">Product Details</li>' +
+                                            '<li id="price" class="ui-btn-active">Price</li>' +
+                                            '<li>Product Info</li>'; 
+
+                        if (DaoOptions.getValue('ShowComponents') === 'true')
+                            menuPanel += '<li>Components</li>';
+
+                        if (DaoOptions.getValue('ShowAlternate') === 'true')
+                            menuPanel += '<li>Alternative Products</li>';
+
+                        if (DaoOptions.getValue('ShowWhereUsed') === 'true')
+                            menuPanel += '<li>Where Used</li>';
+
+                               menuPanel += '<li>Technical Info</li>' +
+                                            '<li>Large Image</li>' +
+                                    '</ul>' +
+                            '</div>';
+                    }
 			
 		} else {
 			

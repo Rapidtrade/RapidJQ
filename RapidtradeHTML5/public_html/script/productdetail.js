@@ -300,6 +300,7 @@ function productdetailShowPanel(selectedPanel) {
 	
 		case 'Components':
 		case 'Alternative Products':
+                case 'Where Used':
                     productdetailFetchComponents(selectedPanel);
                     break;
 						
@@ -355,7 +356,7 @@ function productdetailFetchProductInfoOnError() {
 
 /*
  * 
- * @param {type} componentsType ('components', 'altProducts', 'whereUsed')
+ * @param {type} componentsType
  * @returns {undefined}
  */
 
@@ -363,28 +364,29 @@ function productdetailFetchComponents(componentsType) {
 	
 	$('#componentsTableDiv table tbody').empty();
 	
-	var url = '';
+        var from = '';
         
         switch (componentsType) {
             
             case 'Components':
                 url += g_restUrl + 'Products/GetChildren';
+                from = 'Component';
                 break;
             
             case 'Alternative Products':
-                url += DaoOptions.getValue('LiveAltProductURL');
+                from = 'Alternate';
+                break;
+                
+            case 'Where Used':
+                from = 'WhereUsed';
                 break;
              
             default:
                 break;
         }
 	
-	url += '?supplierID=' + g_currentUser().SupplierID + '&accountid=' + g_currentCompany().AccountID + '&branchid=' + g_currentCompany().BranchID + '&productID=' + g_pricelistSelectedProduct.ProductID;
-	
-	if (!DaoOptions.get('LiveAltProductURL'))
-		url += '&childtype=components';
-	
-	url += '&skip=0&top=100&format=json';
+	var url = DaoOptions.getValue('LiveAltProductURL') + '?supplierID=' + g_currentUser().SupplierID + '&accountid=' + g_currentCompany().AccountID +	
+                '&branchid=' + g_currentCompany().BranchID + '&productID=' + g_pricelistSelectedProduct.ProductID + '&from=' + from + '&skip=0&top=100&format=json';
 	
         console.log(url);
         
