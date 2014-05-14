@@ -293,9 +293,14 @@ function productdetailShowPanel(selectedPanel) {
         panelSelectors['Where Used'] = '#componentsPanel';
 	panelSelectors['Technical Info'] = '#technicalInfoPanel';
 	panelSelectors['Large Image'] = '#largeImagePanel';
-	
-	for (var panel in panelSelectors)			
-		$(panelSelectors[panel]).toggle(selectedPanel == panel);
+
+        $('#componentsPanel').toggle(panelSelectors[selectedPanel] == '#componentsPanel');
+        
+	for (var panel in panelSelectors) {	
+            
+            if (panelSelectors[panel] != '#componentsPanel')
+                $(panelSelectors[panel]).toggle(selectedPanel == panel);
+        }
 	
 	switch (selectedPanel) {
 	
