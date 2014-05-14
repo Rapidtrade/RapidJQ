@@ -1208,7 +1208,7 @@ function pricelistScrollToPos(pricelist){
 	}
 	return '';		
     } catch (err){
-		contole.log(err.message);
+	contole.log(err.message);
     }
 
 }

@@ -300,7 +300,7 @@ function productdetailShowPanel(selectedPanel) {
 	
 		case 'Components':
 		case 'Alternative Products':
-                    productdetailFetchComponents();
+                    productdetailFetchComponents(selectedPanel);
                     break;
 						
 		case 'Product Info':
@@ -353,16 +353,31 @@ function productdetailFetchProductInfoOnError() {
 	g_alert('ERROR: Cannot fetch the product info.');
 } 
 
-function productdetailFetchComponents() {
+/*
+ * 
+ * @param {type} componentsType ('components', 'altProducts', 'whereUsed')
+ * @returns {undefined}
+ */
+
+function productdetailFetchComponents(componentsType) {
 	
 	$('#componentsTableDiv table tbody').empty();
 	
 	var url = '';
-	
-	if (DaoOptions.get('LiveAltProductURL')) 
-		url += DaoOptions.getValue('LiveAltProductURL');
-	else
-		url += g_restUrl + 'Products/GetChildren'; 
+        
+        switch (componentsType) {
+            
+            case 'Components':
+                url += g_restUrl + 'Products/GetChildren';
+                break;
+            
+            case 'Alternative Products':
+                url += DaoOptions.getValue('LiveAltProductURL');
+                break;
+             
+            default:
+                break;
+        }
 	
 	url += '?supplierID=' + g_currentUser().SupplierID + '&accountid=' + g_currentCompany().AccountID + '&branchid=' + g_currentCompany().BranchID + '&productID=' + g_pricelistSelectedProduct.ProductID;
 	
@@ -371,6 +386,8 @@ function productdetailFetchComponents() {
 	
 	url += '&skip=0&top=100&format=json';
 	
+        console.log(url);
+        
 	$.mobile.showPageLoadingMsg();
 	
 	g_ajaxget(url, productdetailFetchComponentsOnSuccess, productdetailFetchComponentsOnError);

@@ -71,36 +71,43 @@ function overlayInit(page) {
 		var pricelistMenuEnd = '</ul></div>';
 		
 		if (DaoOptions.getValue('MobileCategories') == 'true')			
-			menuPanel += '<li id="categories">Product Categories</li>';
+                    menuPanel += '<li id="categories">Product Categories</li>';
 
 		if (DaoOptions.getValue('AllowAdvancedSearch') == 'true') {
 		
-			menuPanel += '<li id="advanced">Advanced Search</li>';
-			
-			  if (DaoOptions.getValue('extrasearch')) {
-					
-				  var extraMenuItemArray = JSON.parse(DaoOptions.getValue('extrasearch'));
-				
-				  for ( var i = 0; i < extraMenuItemArray.length; i++)
-					  menuPanel += '<li id="' + extraMenuItemArray[i].search + '">' + extraMenuItemArray[i].label + '</li>';
-			  }	 
-			
-			menuPanel += pricelistMenuEnd;
+                    menuPanel += '<li id="advanced">Advanced Search</li>';
 
-			menuPanel += '<div id="productDetailsMenu">' +
-							'<ul data-role="listview" data-inset="true" data-divider-theme="d">' +
-							'	<li data-role="list-divider" role="heading">Product Details</li>' +
-								'<li id="price" class="ui-btn-active">Price</li>' +
-								'<li>Product Info</li>' +
-								'<li>' + (DaoOptions.get('LiveAltProductURL') ? 'Alternative Products' : 'Components') + '</li>' +
-								'<li>Technical Info</li>' +
-								'<li>Large Image</li>' +
-							'</ul>' +
-						'</div>';
+                      if (DaoOptions.getValue('extrasearch')) {
+
+                              var extraMenuItemArray = JSON.parse(DaoOptions.getValue('extrasearch'));
+
+                              for ( var i = 0; i < extraMenuItemArray.length; i++)
+                                      menuPanel += '<li id="' + extraMenuItemArray[i].search + '">' + extraMenuItemArray[i].label + '</li>';
+                      }	 
+			
+                    menuPanel += pricelistMenuEnd;
+
+                    menuPanel += '<div id="productDetailsMenu">' +
+                                    '<ul data-role="listview" data-inset="true" data-divider-theme="d">' +
+                                        '<li data-role="list-divider" role="heading">Product Details</li>' +
+                                        '<li id="price" class="ui-btn-active">Price</li>' +
+                                        '<li>Product Info</li>' + 
+                                        '<li>Components</li>';
+                                                        
+                    if (DaoOptions.get('LiveAltProductURL'))
+                        menuPanel += '<li>Alternative Products</li>';
+                    
+                    if (DaoOptions.getValue('ShowWhereUsed') == 'true')
+                        menuPanel += '<li>Where Used</li>';
+                                                                       
+                           menuPanel += '<li>Technical Info</li>' +
+                                        '<li>Large Image</li>' +
+                                '</ul>' +
+                        '</div>';
 			
 		} else {
 			
-			menuPanel += pricelistMenuEnd;
+                    menuPanel += pricelistMenuEnd;
 		}
 	}
 	
