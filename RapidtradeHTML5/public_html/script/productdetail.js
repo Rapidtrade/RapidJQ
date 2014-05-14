@@ -290,6 +290,7 @@ function productdetailShowPanel(selectedPanel) {
 	panelSelectors['Product Info'] = '#productInfoPanel';
 	panelSelectors['Components'] = '#componentsPanel';
 	panelSelectors['Alternative Products'] = '#componentsPanel';
+        panelSelectors['Where Used'] = '#componentsPanel';
 	panelSelectors['Technical Info'] = '#technicalInfoPanel';
 	panelSelectors['Large Image'] = '#largeImagePanel';
 	
@@ -363,6 +364,7 @@ function productdetailFetchProductInfoOnError() {
 function productdetailFetchComponents(componentsType) {
 	
 	$('#componentsTableDiv table tbody').empty();
+        sessionStorage.setItem('showAllColumns', true);
 	
         var from = '';
         
@@ -379,6 +381,7 @@ function productdetailFetchComponents(componentsType) {
                 
             case 'Where Used':
                 from = 'WhereUsed';
+                sessionStorage.setItem('showAllColumns', false);
                 break;
              
             default:
@@ -398,15 +401,24 @@ function productdetailFetchComponents(componentsType) {
 function productdetailFetchComponentsOnSuccess(json) {
 	
 	$('#componentsInfoPanel').toggleClass('invisible', json &&(json.length > 0));
-	$('#componentsTableDiv').toggleClass('invisible', !json || (json.length == 0));
+	$('#componentsTableDiv').toggleClass('invisible', !json || (json.length === 0));
+        
+        var showAllColumns = (sessionStorage.getItem('showAllColumns') === 'true');
+        $('#componentsTableDiv th.optional').toggle(showAllColumns);
 	
 	$.each(json, function(index, component) {
 		
 		var stockValue = g_stockDescriptions[component.Stock] || component.Stock;
-		
-		$('#componentsTableDiv table tbody').append('<tr id="' + component.ProductID + '"><td>' + component.ProductID + 
-		'</td><td>' + component.Description + '</td><td>' + component.Nett + '</td><td>' + stockValue + '</td><td>' + component.UOM + '</td><td class="quantity"></td>' + 
-		'<td class="order"><a data-role="button" data-inline="true" data-mini="true" ' + (isNaN(stockValue) ? 'class="ui-disabled"' : '') + '>Order Now</a></td></tr>');
+                
+                var rowHtml = '<tr id="' + component.ProductID + '"><td>' + component.ProductID + '<td>';
+            
+                if (showAllColumns) {
+                    
+                    rowHtml += '<td>' + component.Nett + '</td><td>' + stockValue + '</td><td>' + component.UOM + '</td><td class="quantity"></td>' + 
+                               '<td class="order"><a data-role="button" data-inline="true" data-mini="true" ' + (isNaN(stockValue) ? 'class="ui-disabled"' : '') + '>Order Now</a></td>';
+                }
+            
+                rowHtml += '</tr>';
 		
 		$('td.order:last a').button().click(function() {
 			
