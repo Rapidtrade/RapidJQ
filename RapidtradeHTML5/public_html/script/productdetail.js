@@ -881,7 +881,7 @@ function productdetailDeleteItem() {
 
 function productdetailOkClicked(checkStock) {
 	$('#quantity').blur();
-	
+        
 	if (($('#grossvalue').text() == 'Undefined') || (Number($('#grossvalue').text()) == 0))
 		return;
 	
@@ -939,6 +939,22 @@ function productdetailOkClicked(checkStock) {
         } else {        
             $('.productimage').hide();          
             g_pricelistSelectedProduct.RepChangedPrice = (productdetailValue('nett') != g_addCommas(g_pricelistSelectedProduct.Nett.toFixed(2)));
+            
+            if (g_pricelistSelectedProduct.RepChangedPrice) {
+                
+                var minDiscount = DaoOptions.getValue('MinRepDiscount');
+                var maxDiscount = DaoOptions.getValue('MaxRepDiscount');
+                
+                var discount = productdetailValue('discount');
+
+                if ((discount < minDiscount) || (discount > maxDiscount)) {
+                    
+                     g_alert('The discount must be ' + minDiscount + ' - ' + maxDiscount + ' %');
+                     return;
+                }
+                    
+            }
+                        
             productdetailSave(qty, type, g_pricelistSelectedProduct);
             g_clearCacheDependantOnBasket();
             pricelistCheckBasket();

@@ -328,10 +328,15 @@ function pricelistBind() {
     }); 
     
     $('.pricelistInput').unbind();
-    $('.pricelistInput').keydown(function(event) {   	
+    $('.pricelistInput').keydown(function(event) {  
+        
     	var isEnterPressed = (13 == event.keyCode);   	
-    	if (isEnterPressed)
-    		$('#savevalue').click();
+    	if (isEnterPressed) {
+            
+            event.stopPropagation();
+            productdetailSaveValue();
+            $('#valuePopup').popup('close');
+        }
     });
     
     $('#barcodetoggle').unbind();
