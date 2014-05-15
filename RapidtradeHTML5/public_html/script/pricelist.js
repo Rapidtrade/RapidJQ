@@ -514,8 +514,7 @@ function pricelistDoSearch(searchType) {
 	
 	overlayHighlightMenuItem('#' + searchType);
 	
-    sessionStorage.removeItem('onlinePricelistCategory');
-
+        sessionStorage.removeItem('onlinePricelistCategory');
 	sessionStorage.removeItem('fromCategory');
 	sessionStorage.removeItem('fromAdvanced');
 	
@@ -763,10 +762,8 @@ function pricelistFetchPricelistLive() {
 	(g_pricelistSearchPricelistText ? '&searchString=' + g_pricelistSearchPricelistText : '') + '&offset=' + (g_pricelistCurrentPricelistPage - 1) *  g_numItemsPerPage + 
 	'&noRows=' + g_numItemsPerPage + '&myRange=false&includeCatalogues=false&branchID=' + g_currentCompany().BranchID;
 	
-	if (sessionStorage.getItem('onlinePricelistCategory')) {
+	if (sessionStorage.getItem('onlinePricelistCategory'))
 		url += '&category=' + sessionStorage.getItem('onlinePricelistCategory');
-		sessionStorage.removeItem('onlinePricelistCategory');
-	}
 	
 	console.log(url);
 	g_ajaxget(url, pricelistFetchPricelistLiveOnSuccess, pricelistFetchPricelistLiveOnError);
