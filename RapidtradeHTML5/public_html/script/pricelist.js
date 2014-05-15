@@ -1151,7 +1151,7 @@ function pricelistAddLine(pricelist) {
     	    }
     }
     
-    var stockValue = pricelist.Stock ? g_stockDescriptions[pricelist.Stock] || pricelist.Stock.toString() : 'N/A';
+    var stockValue = pricelist.Stock !== undefined ? g_stockDescriptions[pricelist.Stock] || pricelist.Stock.toString() : 'N/A';
     stockText = '<span id="' + pricelist.id + 'Stock" class="ui-li-count">' + stockValue + '</span>';
 	
     if ((DaoOptions.getValue('musthavestock') == 'true') && isNaN(stockValue)) canOrderItem = false;    		
