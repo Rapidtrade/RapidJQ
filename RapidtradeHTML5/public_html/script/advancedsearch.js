@@ -222,6 +222,9 @@ function advancedSearchFetchLevelLiveOnSuccess(json) {
 	advancedSearchSetBreadcrumb(advancedSearchCurrentLevel() - 1);
 	
 	$.mobile.hidePageLoadingMsg();
+          
+        $('#advancedSearchInfoDiv').toggle((advancedSearchCurrentLevel() == 1) && !$('#advancedSearchList li').length);
+            
 }
 
 function advancedSearchFetchLevelLiveOnError() {
