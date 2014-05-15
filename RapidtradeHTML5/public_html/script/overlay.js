@@ -87,28 +87,30 @@ function overlayInit(page) {
 			
                     menuPanel += pricelistMenuEnd;
 
-                    if (DaoOptions.getValue('ShowProductInfo') == 'true') {
+                    
 
-                        menuPanel += '<div id="productDetailsMenu">' +
-                                        '<ul data-role="listview" data-inset="true" data-divider-theme="d">' +
-                                            '<li data-role="list-divider" role="heading">Product Details</li>' +
-                                            '<li id="price" class="ui-btn-active">Price</li>' +
-                                            '<li>Product Info</li>'; 
+                    menuPanel += '<div id="productDetailsMenu">' +
+                                    '<ul data-role="listview" data-inset="true" data-divider-theme="d">' +
+                                        '<li data-role="list-divider" role="heading">Product Details</li>' +
+                                        '<li id="price" class="ui-btn-active">Price</li>';
+                                
+                    if (DaoOptions.getValue('ShowProductInfo') == 'true')          
+                         menuPanel += '<li>Product Info</li>'; 
 
-                        if (DaoOptions.getValue('ShowComponents') === 'true')
-                            menuPanel += '<li>Components</li>';
+                    if (DaoOptions.getValue('ShowComponents') === 'true')
+                        menuPanel += '<li>Components</li>';
 
-                        if (DaoOptions.getValue('ShowAlternate') === 'true')
-                            menuPanel += '<li>Alternative Products</li>';
+                    if (DaoOptions.getValue('ShowAlternate') === 'true')
+                        menuPanel += '<li>Alternative Products</li>';
 
-                        if (DaoOptions.getValue('ShowWhereUsed') === 'true')
-                            menuPanel += '<li>Where Used</li>';
+                    if (DaoOptions.getValue('ShowWhereUsed') === 'true')
+                        menuPanel += '<li>Where Used</li>';
 
-                               menuPanel += '<li>Technical Info</li>' +
-                                            '<li>Large Image</li>' +
-                                    '</ul>' +
-                            '</div>';
-                    }
+                           menuPanel += '<li>Technical Info</li>' +
+                                        '<li>Large Image</li>' +
+                                '</ul>' +
+                        '</div>';
+                    
 			
 		} else {
 			
