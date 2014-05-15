@@ -216,10 +216,12 @@ function syncPostData(index) {
     
     var url = g_restUrl + 'post/post.aspx';
     
-    if ((g_syncPosted[index].Table == 'Orders') && (DaoOptions.getValue(g_syncPosted[index].JsonObject.Type + 'LiveURL'))) {  
+    if (g_syncPosted[index].Table == 'Orders') {  
     	
     	success = postOrderOnSuccess;
-    	url = DaoOptions.getValue(g_syncPosted[index].JsonObject.Type + 'LiveURL');
+    	
+        if (DaoOptions.getValue(g_syncPosted[index].JsonObject.Type + 'LiveURL'))
+            url = DaoOptions.getValue(g_syncPosted[index].JsonObject.Type + 'LiveURL');
     }
     
     var saveInvoiceNumberOnSuccess = function(json) {
