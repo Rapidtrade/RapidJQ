@@ -392,10 +392,14 @@ function g_clearCacheDependantOnBasket(resetCounter) {
 function g_isValidQuantityCharPressed(event) {
 
 	var keyCode = (event.keyCode ? event.keyCode : event.which);
+        
+        // decimal point
+        if ((190 == keyCode) && (DaoOptions.getValue('AllPartfullUnit') == 'true'))
+            return true;
 	
 	// Numeric keypad
 	if ((keyCode > 95) && (keyCode < 106))
-		return true;
+            return true;
 	
 	
 	if (isNaN(String.fromCharCode(event.which)) || event.which == 32
