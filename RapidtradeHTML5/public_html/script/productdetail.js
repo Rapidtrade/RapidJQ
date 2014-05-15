@@ -415,7 +415,7 @@ function productdetailFetchComponentsOnSuccess(json) {
 		
 		var stockValue = g_stockDescriptions[component.Stock] || component.Stock;
                 
-                var rowHtml = '<tr id="' + component.ProductID + '"><td>' + component.ProductID + '<td>';
+                var rowHtml = '<tr id="' + component.ProductID + '"><td>' + component.ProductID + '</td><td>' + component.Description + '</td>';
             
                 if (showAllColumns) {
                     
@@ -424,6 +424,8 @@ function productdetailFetchComponentsOnSuccess(json) {
                 }
             
                 rowHtml += '</tr>';
+                
+                $('#componentsTableDiv tbody').append(rowHtml); 
 		
 		$('td.order:last a').button().click(function() {
 			
