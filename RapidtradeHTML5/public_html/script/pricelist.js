@@ -691,7 +691,10 @@ function pricelistOnScanFailure(error) {
 }
 
 
-function pricelistCheckBasket() {
+function pricelistCheckBasket(setOverlay) {
+    
+    if (setOverlay === undefined)
+        setOverlay = true;
 	
     var dao = new Dao();
     dao.count('BasketInfo', g_currentCompany().AccountID, 'index1',
@@ -700,11 +703,13 @@ function pricelistCheckBasket() {
         $('.ui-btn-right .ui-btn-text').text('(' + cnt + ')' + ' Shopping Cart');
         isBaksetEmpty = false;
         g_pricelistIsAnyItemAdded = true;
-        overlaySetMenuItems();
+        
+        if (setOverlay)
+            overlaySetMenuItems();
     }, function() {
-		g_pricelistIsAnyItemAdded = false;
-		$('.ui-btn-right').addClass('ui-disabled');
-		$('.ui-btn-right .ui-btn-text').text('Shopping Cart');
+        g_pricelistIsAnyItemAdded = false;
+        $('.ui-btn-right').addClass('ui-disabled');
+        $('.ui-btn-right .ui-btn-text').text('Shopping Cart');
     });
 }
 

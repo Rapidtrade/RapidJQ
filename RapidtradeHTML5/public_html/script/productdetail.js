@@ -446,7 +446,7 @@ function productdetailFetchComponentsOnSuccess(json) {
 							g_currentUser().UserID, component.Nett, component.Description, undefined, undefined, sessionStorage.getItem("currentordertype"), 
 							undefined, undefined, undefined, component.UOM);
 					
-					pricelistCheckBasket();
+					pricelistCheckBasket(false);
 				}
 			});
 		});		
