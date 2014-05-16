@@ -476,7 +476,7 @@ function orderHeaderOnLineSaveSuccess() {
 	var url = DaoOptions.getValue(g_orderHeaderOrder.Type + 'ExistsURL');
 	
 	if (!url) 
-		url = g_restUrl + 'Orders/Exists';	
+            url = g_restUrl + 'Orders/Exists';	
 	
 	g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', orderHeaderOnOrderExistsSuccess, orderHeaderOnOrderExistsError);	
 }
@@ -485,12 +485,12 @@ function orderHeaderOnLineSaveError(error) {
 	
 	if ((error.status == 0) || (error.status == 200)) {
 		
-		orderHeaderOnLineSaveSuccess();
+            orderHeaderOnLineSaveSuccess();
 		
 	} else {
 		
-		console.log('Error in saving order: ' + error);
-		g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
+            console.log('Error in saving order: ' + error);
+            g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
 	}
 }
 

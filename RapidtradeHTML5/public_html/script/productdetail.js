@@ -880,50 +880,58 @@ function productdetailDeleteItem() {
 }
 
 function productdetailOkClicked(checkStock) {
-	$('#quantity').blur();
+    
+    checkStock = (checkStock != undefined) ? checkStock : true;
         
-	if (($('#grossvalue').text() == 'Undefined') || (Number($('#grossvalue').text()) == 0))
-		return;
-	
-	if (productdetailCanChangeNett(g_pricelistSelectedProduct.ProductID)) {
-		
-		if (!$.trim($('.hdescription').val()))
-			return;
-		
-		$('#li' + g_pricelistSelectedProduct.ProductID + ' .ui-li-desc').text($('.hdescription').val());
-	}
-	
-	$('#li' + g_pricelistSelectedProduct.ProductID + ' .price').text(g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
-	
-	var quantity = parseInt($('#quantity').attr('value'), 10);
-	if (!quantity /*&& confirm('Are you sure you want to remove the item from basket?')*/) {
-		
-		productdetailDeleteItem();
-		return;
-	}  
-	
-	checkStock = (checkStock != undefined) ? checkStock : true;
-	if (checkStock && g_isOnline(false) && (DaoOptions.getValue('musthavestock') == 'true')) {
-		var showMessage = false;
-		var message = 'Not available to purchase';
-		var stock = productdetailGetStock();
-		if (isNaN(stock) || (-1 == parseInt($('#nett-r').text(), 10))) {
-			showMessage = true;
-		} else if ((-9999 == stock) || (-9998 == stock)) {
-			showMessage = true;			
-			message = DaoOptions.getValue(stock) || message;			
-		}
-		
-		if (showMessage) {
-                    
-                        $('#cancelButton').removeClass('invisible');
-			$('#messagePopup p').text(message);
-			$('#messagePopup').popup('open');
-			$('#messagePopup #cancelButton').toggle(-9998 == stock);			
-			$('#quantity').toggleClass('ui-disabled', -9999 == stock);
-			return;
-		}
-	}
+    var stock = productdetailGetStock();
+    
+    var showMessage = function(message) {
+        
+        $('#messagePopup p').text(message || 'Not available to purchase');
+        $('#messagePopup').popup('open');
+        $('#messagePopup #cancelButton').removeClass('invisible').toggle(-9998 == stock);			
+        $('#quantity').toggleClass('ui-disabled', -9999 == stock);
+    }
+    
+    $('#quantity').blur();
+    
+    if (checkStock && ((-9999 == stock) || (-9998 == stock))) {
+
+        showMessage(DaoOptions.getValue(stock));
+        return;
+    }
+
+    if (($('#grossvalue').text() == 'Undefined') || (Number($('#grossvalue').text()) == 0)) {
+
+        showMessage();
+        return;
+    }
+
+    if (productdetailCanChangeNett(g_pricelistSelectedProduct.ProductID)) {
+
+        if (!$.trim($('.hdescription').val()))
+                return;
+
+        $('#li' + g_pricelistSelectedProduct.ProductID + ' .ui-li-desc').text($('.hdescription').val());
+    }
+
+    $('#li' + g_pricelistSelectedProduct.ProductID + ' .price').text(g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
+
+    var quantity = parseInt($('#quantity').attr('value'), 10);
+    if (!quantity /*&& confirm('Are you sure you want to remove the item from basket?')*/) {
+
+        productdetailDeleteItem();
+        return;
+    }  
+
+    if (checkStock && g_isOnline(false)) {
+
+        if ((DaoOptions.getValue('musthavestock') == 'true') && (isNaN(stock) || (-1 == parseInt($('#nett-r').text(), 10)))) {
+
+            showMessage();
+            return;
+        }
+    }
 	
     type = sessionStorage.getItem("currentordertype");
     if (('Credit' == type) && !$('#reason').attr('value').trim()) {
