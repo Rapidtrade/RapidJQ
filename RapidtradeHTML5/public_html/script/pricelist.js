@@ -536,6 +536,7 @@ function pricelistDoSearch(searchType) {
 	var isLiveAdvancedSearch = (searchType == 'advanced') && (DaoOptions.getValue('LiveAdvanceSearch') != '');
 	
 	$('.rtTableLabel').toggle(!isLiveAdvancedSearch);
+        $('.next').toggleClass('invisible', (DaoOptions.getValue('NoNextAdvSearch') == 'true' && ('advanced' == searchType)));
 	
 	switch (searchType) {
 	
@@ -600,24 +601,26 @@ function pricelistDoSearch(searchType) {
 }
 
 function pricelistBasicSearch() {
+    
+    $('.next').removeClass('invisible');
 	
-	if (!$('#pricelists').is(':visible')) {
-		$('#pricelistInfoDiv').hide();
-		$('#pricelists').show();
-	}	
-	
-	if (sessionStorage.getItem('currentsearchmode')=='scan') {
-		pricelistFetchBarCode(); 
-	} else {
-        g_pricelistItemsOnPage = 0;
-        g_pricelistCurrentPricelistPage = 1;
-        sessionStorage.removeItem('advancedsearch');
-        sessionStorage.removeItem('fromCategory');
-        pricelistFetchSearchText();	
-        categories.getInstance().init();
-        pricelistFetchPricelist();  
-        $('#search').blur();
-	}
+    if (!$('#pricelists').is(':visible')) {
+            $('#pricelistInfoDiv').hide();
+            $('#pricelists').show();
+    }	
+
+    if (sessionStorage.getItem('currentsearchmode')=='scan') {
+            pricelistFetchBarCode(); 
+    } else {
+    g_pricelistItemsOnPage = 0;
+    g_pricelistCurrentPricelistPage = 1;
+    sessionStorage.removeItem('advancedsearch');
+    sessionStorage.removeItem('fromCategory');
+    pricelistFetchSearchText();	
+    categories.getInstance().init();
+    pricelistFetchPricelist();  
+    $('#search').blur();
+    }
 }
 
 function pricelistCategorySearch(category) {
