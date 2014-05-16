@@ -201,7 +201,7 @@ function advancedSearchFetchLevelLiveOnSuccess(json) {
 			
 		} else {
 			
-			g_advancedSearchProducts[object.ProductID] = object;
+			g_advancedSearchProducts[object.id] = object;
 		}
 	});
 	
