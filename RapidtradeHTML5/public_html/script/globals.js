@@ -573,7 +573,9 @@ function g_print(html) {
 
 function g_isQuantityValid(quantity, unit) {
 	
-	var isValid = (parseInt(quantity, 10) > 0) && (parseInt(quantity, 10) < 10000);
+        quantity = Number(quantity);
+        
+	var isValid = (quantity > 0) && (quantity < 10000);
 	
 	if (isValid && g_isPackSizeUnitValid(unit)) {
 		

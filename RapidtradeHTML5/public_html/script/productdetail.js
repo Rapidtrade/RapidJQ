@@ -917,7 +917,7 @@ function productdetailOkClicked(checkStock) {
 
     $('#li' + g_pricelistSelectedProduct.ProductID + ' .price').text(g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
 
-    var quantity = parseInt($('#quantity').attr('value'), 10);
+    var quantity = Number($('#quantity').attr('value'));
     if (!quantity /*&& confirm('Are you sure you want to remove the item from basket?')*/) {
 
         productdetailDeleteItem();
@@ -940,7 +940,7 @@ function productdetailOkClicked(checkStock) {
     }
   
     if (g_isQuantityValid($('#quantity').attr('value'), g_pricelistSelectedProduct.Unit)) {   	
-    	var qty = parseInt($('#quantity').attr('value'), 10);
+    	var qty = Number($('#quantity').attr('value'));
         var stock = productdetailGetStock();
         if (g_vanSales && g_currentUser().RepID.toUpperCase() == g_currentCompany().BranchID.toUpperCase() && type == 'Order' && (stock < qty || isNaN(stock))) {
             g_alert('You can\'t order more than you have in stock.');  
