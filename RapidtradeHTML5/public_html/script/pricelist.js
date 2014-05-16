@@ -536,7 +536,6 @@ function pricelistDoSearch(searchType) {
 	var isLiveAdvancedSearch = (searchType == 'advanced') && (DaoOptions.getValue('LiveAdvanceSearch') != '');
 	
 	$('.rtTableLabel').toggle(!isLiveAdvancedSearch);
-        $('.next').toggleClass('invisible', (DaoOptions.getValue('NoNextAdvSearch') == 'true' && ('advanced' == searchType)));
 	
 	switch (searchType) {
 	
@@ -601,8 +600,6 @@ function pricelistDoSearch(searchType) {
 }
 
 function pricelistBasicSearch() {
-    
-    $('.next').removeClass('invisible');
 	
     if (!$('#pricelists').is(':visible')) {
             $('#pricelistInfoDiv').hide();
@@ -614,7 +611,9 @@ function pricelistBasicSearch() {
     } else {
     g_pricelistItemsOnPage = 0;
     g_pricelistCurrentPricelistPage = 1;
+    $('#backbtn').hide();
     sessionStorage.removeItem('advancedsearch');
+    sessionStorage.removeItem('fromAdvanced');
     sessionStorage.removeItem('fromCategory');
     pricelistFetchSearchText();	
     categories.getInstance().init();
@@ -1010,9 +1009,9 @@ function pricelistOnComplete(event) {
 
 function pricelistShowNextPrev() {
 	
-    g_pricelistItemsHtml = '';
+    g_pricelistItemsHtml = '';  
 
-    if (g_pricelistItemsOnPage < g_numItemsPerPage && g_pricelistCurrentPricelistPage == 1) {
+    if (((DaoOptions.getValue('NoNextAdvSearch') == 'true') && (sessionStorage.getItem('fromAdvanced') == 'true')) || (g_pricelistItemsOnPage < g_numItemsPerPage && g_pricelistCurrentPricelistPage == 1)) {
         $('#NextPrevButtons').hide();
         $('.prev').hide();
         $('.next').hide();
