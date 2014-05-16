@@ -1155,47 +1155,52 @@ function pricelistAddLine(pricelist) {
     
     var stockValue = pricelist.Stock !== undefined ? g_stockDescriptions[pricelist.Stock] || pricelist.Stock.toString() : 'N/A';
     stockText = '<span id="' + pricelist.id + 'Stock" class="ui-li-count">' + stockValue + '</span>';
-	
-    if ((DaoOptions.getValue('musthavestock') == 'true') && isNaN(stockValue)) canOrderItem = false;    		
-    
-    var quantityInputHtml = '';
-    if (DaoOptions.getValue('AllowPriceQuickCapt') == 'true') {
-    	var step = '';
-    	if (canOrderItem)    		
-    		step = 'step=' + (g_isPackSizeUnitValid(pricelist.u) ? pricelist.u : 1) + ' min=0';
-    	
-    	quantityInputHtml = '<input type="' + (canOrderItem ? 'number' : 'text') + '" style="width:85px;position:relative;top:-10px;display:inline" ' + step + ' onclick="pricelistOnCaptureQuantityClick();" id="quantity' 
-    						+ g_pricelistItems.length + 
-    						'" class="captureQuantity ui-input-text ui-body-c ui-corner-all ui-shadow-inset"' + (canOrderItem ? '' : 'disabled') + ' value="' + (canOrderItem ? '' : 'Unavailable') + '"/>';
+    if (stockValue==="list-divider") {
+        pricelistHtml='<li data-role="list-divider">' + pricelist.des + '</li>';
     }
-    
-    var special = (pricelist.onSpecial ? ' <span style="font-size:13px;color:#8A2416;padding-left:15px;">** On Special **</span> ' : '');
-    
-    //TODO below input box needs to only be for Midas. ie. which we have an option variable
-    var pricelistHtml =       
-        '<li id="li' + pricelist.id + '" style="position:relative" ' + pricelistScrollToPos(pricelist) + ' ' + alphaFilter.getInstance().addClass(pricelist.des) + '>' +
-        '<a href="#" onclick="pricelistOnItemClicked(\'' + g_pricelistItems.length + '\');">' +   
-        (DaoOptions.getValue('MobileThumbnails') == 'true' ? '<td rowspan="2" class="quantity" align="right"><img src="' + productdetailGetImageUrl(pricelist.id, 80) + '"></td>' : '') +
-        '<span style="font-size:11px;">' + pricelist.id + '</span>' + special + '<br/>' +
-        '<span class="ui-li-desc" style="font-size:16px; padding-top:10px; display:inline-block; width:70%">' + pricelist.des + '</span>' +
-        quantityInputHtml +        
-        '<span id="' + pricelist.id + '" class="quantity" style="color:red;width:5%; position:relative; top:-10px; left:-15px; display:inline-block;text-align:right">' + quantityText + '</span>' +
-        '<span class="price" style="width:10%; position:relative; top:-10px; display:inline-block;text-align:right">' + nett + '</span>' +
-        stockText +
-        '</a>';
-    
-    if (pricelistIsQuickCaptureEnabled())
-    	pricelistHtml += 
-        '<a href="#" onclick="pricelistAddItemToBasket(\'' + g_pricelistItems.length + '\')" class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
-        '<span class="ui-btn-inner ui-btn-corner-all">' +
-        '<span class="ui-icon ui-icon-delete ui-icon-shadow">Add</span>' +
-        '</span>' +
-        '</a>';
+    else
+    {
+        if ((DaoOptions.getValue('musthavestock') == 'true') && isNaN(stockValue)) canOrderItem = false;    		
 
-    pricelistHtml += '</li>'; 
-	g_pricelistItems.push(pricelist);
-	categories.getInstance().addCategory(pricelist.cn);
-	return pricelistHtml;
+        var quantityInputHtml = '';
+        if (DaoOptions.getValue('AllowPriceQuickCapt') == 'true') {
+            var step = '';
+            if (canOrderItem)    		
+                    step = 'step=' + (g_isPackSizeUnitValid(pricelist.u) ? pricelist.u : 1) + ' min=0';
+
+            quantityInputHtml = '<input type="' + (canOrderItem ? 'number' : 'text') + '" style="width:85px;position:relative;top:-10px;display:inline" ' + step + ' onclick="pricelistOnCaptureQuantityClick();" id="quantity' 
+                                                    + g_pricelistItems.length + 
+                                                    '" class="captureQuantity ui-input-text ui-body-c ui-corner-all ui-shadow-inset"' + (canOrderItem ? '' : 'disabled') + ' value="' + (canOrderItem ? '' : 'Unavailable') + '"/>';
+        }
+
+        var special = (pricelist.onSpecial ? ' <span style="font-size:13px;color:#8A2416;padding-left:15px;">** On Special **</span> ' : '');
+
+        //TODO below input box needs to only be for Midas. ie. which we have an option variable
+        var pricelistHtml =       
+            '<li id="li' + pricelist.id + '" style="position:relative" ' + pricelistScrollToPos(pricelist) + ' ' + alphaFilter.getInstance().addClass(pricelist.des) + '>' +
+            '<a href="#" onclick="pricelistOnItemClicked(\'' + g_pricelistItems.length + '\');">' +   
+            (DaoOptions.getValue('MobileThumbnails') == 'true' ? '<td rowspan="2" class="quantity" align="right"><img src="' + productdetailGetImageUrl(pricelist.id, 80) + '"></td>' : '') +
+            '<span style="font-size:11px;">' + pricelist.id + '</span>' + special + '<br/>' +
+            '<span class="ui-li-desc" style="font-size:16px; padding-top:10px; display:inline-block; width:70%">' + pricelist.des + '</span>' +
+            quantityInputHtml +        
+            '<span id="' + pricelist.id + '" class="quantity" style="color:red;width:5%; position:relative; top:-10px; left:-15px; display:inline-block;text-align:right">' + quantityText + '</span>' +
+            '<span class="price" style="width:10%; position:relative; top:-10px; display:inline-block;text-align:right">' + nett + '</span>' +
+            stockText +
+            '</a>';
+
+        if (pricelistIsQuickCaptureEnabled())
+            pricelistHtml += 
+            '<a href="#" onclick="pricelistAddItemToBasket(\'' + g_pricelistItems.length + '\')" class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
+            '<span class="ui-btn-inner ui-btn-corner-all">' +
+            '<span class="ui-icon ui-icon-delete ui-icon-shadow">Add</span>' +
+            '</span>' +
+            '</a>';
+
+        pricelistHtml += '</li>'; 
+        g_pricelistItems.push(pricelist);
+        categories.getInstance().addCategory(pricelist.cn);
+    }
+    return pricelistHtml;
 }
 
 // Check if we in category search, then scroll to product
