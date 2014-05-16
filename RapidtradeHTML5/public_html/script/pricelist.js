@@ -1168,13 +1168,15 @@ function pricelistAddLine(pricelist) {
     }
     else
     {
-        if ((DaoOptions.getValue('musthavestock') == 'true') && isNaN(stockValue)) canOrderItem = false;    		
+        if ((pricelist.Stock !== undefined) && isNaN(stockValue)) 
+            canOrderItem = false;    		
 
         var quantityInputHtml = '';
         if (DaoOptions.getValue('AllowPriceQuickCapt') == 'true') {
+            
             var step = '';
             if (canOrderItem)    		
-                    step = 'step=' + (g_isPackSizeUnitValid(pricelist.u) ? pricelist.u : 1) + ' min=0';
+                step = 'step=' + (g_isPackSizeUnitValid(pricelist.u) ? pricelist.u : 1) + ' min=0';
 
             quantityInputHtml = '<input type="' + (canOrderItem ? 'number' : 'text') + '" style="width:85px;position:relative;top:-10px;display:inline" ' + step + ' onclick="pricelistOnCaptureQuantityClick();" id="quantity' 
                                                     + g_pricelistItems.length + 
