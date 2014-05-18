@@ -21,13 +21,23 @@
             <h3>TPM</h3>
         </div>
         <div data-role="content">
+            <h2 id="heading">Qualifying promotions</h2>
             <div style="margin: 5px;" id="promotionsDiv">		            
 
             </div>
             <div>
                 <a id="verifyTPM" data-role="button">Verify</a>
-                <a id="saveTPM" data-role="button" class="invisible">Save</a>
+                <div id="saveDiv" class="invisible">
+                    <h2>Order Details</h2>
+                    <div class="greypanel">
+                    <label for="reference">Reference</label>
+                    <input type="text" name="reference" id="reference" value="" placeholder="Enter your order reference">
+                    <a id="saveTPM" data-role="button" >Save your Order</a>                        
+                    </div>
+                </div>
+                
             </div>
+            <div id="issue" class="invisible redpanel"></div>
         </div>
         <div data-role="popup" data-history="false" id="complexPopup">
             <div id="complexPromotionDiv"></div>

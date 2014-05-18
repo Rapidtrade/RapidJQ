@@ -23,6 +23,9 @@ function tpmBind() {
     $('#cancelbtn').click(function() {
         $.mobile.changePage("ShoppingCart.html");
     });
+    $('#saveTPM').click(function() {
+        saveTPM();
+    });
 
     $('#complexPopup #okButton').off().on('click', tpmSaveComplexPromotion);    
 }
@@ -50,7 +53,7 @@ function tpmRemovePromotions() {
  */
 function tpmFetchBasket() {	
     orderHeaderCreateOrderObject();
-    
+    g_tpmjson = new Array();
     var dao = new Dao();
     dao.index('BasketInfo', g_currentCompany().AccountID,'index1',
         function (basketInfo) { 
@@ -82,7 +85,7 @@ function tpmPost(type, onSuccess) {
         console.log(JSON.stringify(g_orderHeaderOrder));
         var url = DaoOptions.getValue('OrderLiveURL');
         if (!url) url = g_restUrl + 'post/post.aspx';
-
+        console.log(orderHeaderInfo);    
         g_ajaxpost(jQuery.param(orderHeaderInfo), url, onSuccess, tpmSaveError);  
     } catch (error) {  		
         alert('You must be online...');
@@ -98,19 +101,7 @@ function tpmQualifySuccess() {
     if (!url) url = g_restUrl + 'Orders/Exists';	
     g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', 
                 function (json) {
-                    
-                    // TEST
-//                    $.each(json._order.orderItems, function(index, item) {
-//                        
-//                        if (item.UserField01) {
-//                            
-//                            item.UserField01 = 'Complex';
-//                            item.UserField02 = 'BSNFTEST';
-//                            item.UserField03 = 12;
-//                        }                            
-//                    });
-                    // TEST END
-                    
+                                        
                     jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);
                 }, 
                 undefined);	
@@ -287,19 +278,26 @@ function tpmBuildNewCart() {
     //create a new cart with original products & selected TPM's
     var oldcart = jsonform.getInstance().jsonArray;
     var newcart = new Array();
+    var itemidx = 0;
     for (var i=0; i < oldcart.length; i++){
         row = oldcart[i];
         //if a tpm line, the make sure its selected
-		if (!row.UserField01) {
-			newcart.push(row);
+        if (!row.UserField01) {
+            row.ItemID = itemidx;
+            newcart.push(row);
+            itemidx++;
         } else if (row.UserField01 !== '') {
             if (row.selected) {
-				if (row.Userfield07)
-					row.Discount = parseFloat(row.Userfield06); 
-				newcart.push(row);
+                if (row.Userfield07)
+                        row.Discount = parseFloat(row.Userfield06); 
+                row.ItemID = itemidx;
+                newcart.push(row);
+                itemidx++;
             }	
         } else {
+            row.ItemID = itemidx;
             newcart.push(row);
+            itemidx++;
         }
     }
     return newcart;
@@ -310,49 +308,117 @@ function tpmBuildNewCart() {
  * @returns {undefined}
  */
 function tpmVerifySuccess() {	
-    $('verifyTPM').addClass('invisible');
-    $('saveTPM').removeClass('invisible');
+    $('#verifyTPM').addClass('invisible');
+    $('#saveDiv').removeClass('invisible');
+    $('#promotionsDiv').empty();
     var url = DaoOptions.getValue('LiveGetResultsURL');
     if (!url) url = g_restUrl + 'Orders/Exists';	
+    
     g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', 
-                function (json) {
-                    if (!json._getStatus)
-                        alert (json._getErrorMsg);                                      
-                        // TEST
-//                        json._order.orderItems[1].UserField10 = json._getErrorMsg;
-                        
-//                        json._order.orderItems[1].UserField05 = 'SET1';
-//                        json._order.orderItems[2].UserField05 = 'SET1';
-//                        json._order.orderItems[3].UserField05 = 'SET1';
-                        
-                    	jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmverified','','list','table',tpmVerifyTableLoaded);
-                }, 
-                undefined);	
+        function (json) {
+            if (!json._getStatus)
+                alert (json._getErrorMsg);                                      
+            jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmverified','','list','table',tpmVerifyTableLoaded);
+        }, 
+        undefined);	
 }
 
 function tpmOrderSuccess() {
-    
     alert('Order sent OK.');
 }
 
 function tpmVerifyTableLoaded(){
+    $('#heading').text('Verified Promotions');
     $("#jsontable td:nth-child(1):contains('null')").parent().hide(); //hide rows where userfield1=null 
+    /*
+    var okitems = $("#jsontable td:nth-child(8):empty").length;
+    var numitems = $("#jsontable tr").length;
+    if (okitems !== numitems) {
+        $('#verifyTPM').addClass('invisible');
+        $('#saveTPM').addClass('invisible');
+        $('#issue').removeClass('invisible');
+        $('#issue').text('You have errors, so cannot proceed. Please check the errors and start again');
+    }
+    */
+    $("#jsontable td:nth-child(8):empty").text('OK'); //Mark items that dont have an issue as OK
     
-    $okRows = $('#jsontable td:visible:last-child:empty').parent();
-    
+    $okRows = $('#jsontable td:visible:last-child:empty').parent();   
     if ($okRows.length === $('#jsontable tr:visible').length - 1)
         $('#verifyTPM .ui-btn-text').text('Create');
     
-    $okRows.find('#Selected').prop('checked', true).checkboxradio('refresh');
-    
+    //$okRows.find('#Selected').prop('checked', true).checkboxradio('refresh');
+    $okRows.find('#jsontable:checkbox').prop('checked', true).checkboxradio('refresh');
     $okRows.find('#Selected').each(function() {
-        
         $(this).trigger('change');
     });
 }
 
 function tpmExists(json){
     
+}
+
+function tpmSave(){
+    var dao = new Dao();
+    dao.clearBasket('BasketInfo', g_currentCompany().AccountID,'',
+     function(){
+         alert('Error clearing basket');
+     },
+     function(){
+         for (var x=0; x < jsonform.getInstance().jsonArray; x++){
+             var item = jsonform.getInstance().jsonArray[x];
+             g_addProductToBasket(
+                item.productId, 
+                g_currentUser().SupplierID, 
+                g_currentCompany().AccountID, 
+                g_tpmLastValidQuantities[key], 
+                g_currentUser().UserID, 
+                0, 
+                $('#' + promotionId + productId + 'TR td.description').text(), 
+                0, 
+                0, 
+                sessionStorage.getItem("currentordertype"), 
+                'TPM', //TODO: see what to put in UserField01 
+                undefined, 
+                undefined, 
+                $('#' + promotionId + productId + 'TR td.uom').text(), //TODO: do we need this information repeated? // UOM
+                promotionId, 
+                undefined, // TODO: set Warehouse 
+                0, // TODO: set VAT 
+                $('#' + promotionId + 'Form #UserField03').val(), 
+                $('#' + promotionId + productId + 'TR td.uom').text()); //TODO: do we need this information repeated? // UserField04
+         }
+     });
+}
+
+
+function tpmFetchPromotionsOnSuccess(json) {	
+    var sets = [];
+    var promotions = [];
+
+    var showPromotionGroup = function(parentId, promotionGroup, inSet) {
+
+        if (inSet) $('#' + parentId).empty();
+        var promotionId = promotionGroup[0].UserField02;
+        g_append('#' + parentId, '<div id="' + promotionId + 'Div" style="margin-bottom:10px" class="promotion"><h3>' + promotionId + '</h3></div>');    
+        g_append('#' + promotionId + 'Div', '<form id="' + promotionId + 'Form"></form>');    	
+        g_append('#' + promotionId + 'Div', '<table id="' + promotionId + 'Table" class="tpmTable"><thead><tr><th>Product ID</th><th>Description</th><th>UOM</th><th>Quantity</th></tr></thead><tbody></tbody></table>');
+
+        for ( var i = 0; i < promotionGroup.length; i++) {
+            var productId = $.trim(promotionGroup[i].ProductID);
+            g_append('#' + promotionId + 'Table tbody', '<tr class="promotion" id="' + promotionId + productId + 'TR"><td class="productId">' + productId + 
+                            '</td><td class="description">' + promotionGroup[i].Description + '</td><td class="uom">' + promotionGroup[i].UserField04 + 
+                            '</td><td class="quantity"><input class="' + promotionId + 'Quantity" id="' + promotionId + productId +
+                            'Quantity" type="number" min="0" value="0" step="' + promotionGroup[i].UserField04 + '" onchange="tpmOnQuantityChange(\'' + 
+                            promotionId +  '\',\'' + productId + '\')"/></td></tr>');   
+
+            g_tpmLastValidQuantities[promotionId + '|' + productId] = '0';
+        }   
+
+        g_append('#' + promotionId + 'Table tbody', '<tr class="total"><td colspan="3" style="text-align:right;">Promotion Total:</td><td id="' + promotionId + 'Total">0</td></tr>'); 
+        g_append('#' + promotionId + 'Form', '<table class="tpmHeaderTable"></table>');
+        g_append('#' + promotionId + 'Form table', '<tr><td>TPM Code</td><td><input id="UserField02" value="' + promotionId + '" />');
+        g_append('#' + promotionId + 'Form table', '<tr><td>MAX Free Stock</td><td><input id="UserField03" value="' + promotionGroup[0].UserField03 + '" />');
+        }
 }
 
 function tpmOnQuantityChange(promotionId, productId) {
@@ -406,7 +472,7 @@ function tpmSaveComplexPromotion() {
     }
 }
 
-function tpmSave() {
+function tpmSaveold() {
 	
 	if (tpmIsUOMValid()) {
 		

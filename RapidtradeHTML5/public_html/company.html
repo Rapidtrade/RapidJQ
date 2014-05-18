@@ -241,17 +241,26 @@
 		        </table>
 		 
 		         <table style="width:97%; margin-left:10px;" class="options basicSearchWidget"  id="searchDiv">
-		          <tr>
+                            <tr>
 		          	<td><input  type="search" name="search" id="search" value="" placeholder="Search for products" /></td>
-		            <td align="right" style="width:32px;"><a id="resetsearch" href="#" data-role="button" data-icon="delete" data-iconpos="notext" data-theme="c" data-inline="true">Delete</a></td>
-		            <td id="expandcategorytd" align="right" style="width:32px;" class="invisible"><a id="expandcategory" href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext" data-theme="c" data-inline="true">Delete</a></td>
-		            
-		            <td id="scanbarcodetd" align="right" style="width:32px;" class="invisible">
-		          		<a id="scanbarcode" href="#"  data-role="button" data-inline="true">
-		 	            <img src="img/Barcode-Scanner-32.png"/>
-		 	        	</a>     
-		            </td>
-		          </tr>
+                                <td align="right" style="width:100px;">
+                                    <div data-role="controlgroup" data-type="horizontal">
+                                        <a id="resetsearch" href="#" data-role="button" data-iconpos="notext" data-icon="delete" data-theme="c">Reset</a>
+                                        <a id="expandcategory" class="ui-disabled" href="#" data-role="button" data-iconpos="notext" data-icon="arrow-r" data-theme="c">Expand</a>
+                                    </div>
+                                    
+                                </td>
+                                <!--
+                                <td align="right" style="width:32px;">
+                                    <a id="resetsearch" href="#" data-role="button" data-icon="delete" data-iconpos="notext" data-theme="c" data-inline="true">Delete</a></td>
+                                <td id="expandcategorytd" align="right" style="width:32px;" class="invisible">
+                                    <a id="expandcategory" href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext" data-theme="c" data-inline="true">Delete</a>
+                                </td>
+                                <td id="scanbarcodetd" align="right" style="width:32px;" class="invisible">
+                                    <a id="scanbarcode" href="#"  data-role="button" data-inline="true"><img src="img/Barcode-Scanner-32.png"/></a>     
+                                </td>
+                                -->
+                            </tr>
 		         </table> 	                  
 		    </div> 
             <div id="advancedSearchPanel" data-role="content" class="invisible companyPagePanel" data-display="push">

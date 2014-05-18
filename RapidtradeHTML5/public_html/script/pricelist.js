@@ -493,10 +493,10 @@ function pricelistInit() {
 function pricelistShowExpandCategory(show){
 	if ((DaoOptions.getValue('MobileCategories',false) == 'false')) return; 
 	if (show) {
-		$('#expandcategorytd').removeClass('invisible');
+		$('#expandcategory').removeClass('ui-disabled');
 		sessionStorage.removeItem('expandcategory');		
 	} else {
-		$('#expandcategorytd').addClass('invisible');
+		$('#expandcategory').addClass('ui-disabled');
 		sessionStorage.removeItem('expandcategory');		
 	}
 }
@@ -1390,7 +1390,8 @@ function pricelistAddItemToBasket(itemIndex) {
 	           '',
 	           g_pricelistItems[itemIndex].v
 	    );
-//		$('#search').val('');
+            //clear search after adding to basket so its easy to re-search
+            $('#search').val('');
 		
 	    g_clearCacheDependantOnBasket(false);
 	    pricelistCheckBasket();

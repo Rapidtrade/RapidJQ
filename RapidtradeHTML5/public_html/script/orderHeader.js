@@ -1,4 +1,4 @@
-﻿var g_orderHeaderOrder = {};
+var g_orderHeaderOrder = {};
 var g_orderHeaderOrderItems = {};
 var g_orderHeaderSignature = false;
 var g_orderHeaderNextSavingStep = undefined;
@@ -392,6 +392,9 @@ function orderHeaderCreateInvoiceNumber() {
 	
 	if (DaoOptions.getValue('shortinvoice') == 'true') {
 		var lastInvoiceNumberOption = DaoOptions.get(g_currentUser().RepID + 'lastInvNum');
+                if (!lastInvoiceNumberOption) {
+                    throw('Error, Create a number range via for this van user by creating an optioninfo with id= ' + g_currentUser().RepID + 'lastInvNum' );
+                }
 		var newInvoiceNumber = parseInt(lastInvoiceNumberOption.Value, 10) + 1;
 		lastInvoiceNumberOption.Value = newInvoiceNumber;
 		var dao = new Dao();		
