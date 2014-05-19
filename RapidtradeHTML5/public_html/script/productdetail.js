@@ -404,55 +404,79 @@ function productdetailFetchComponents(componentsType) {
 }
 
 function productdetailFetchComponentsOnSuccess(json) {
-	
-	$('#componentsInfoPanel').toggleClass('invisible', json &&(json.length > 0));
-	$('#componentsTableDiv').toggleClass('invisible', !json || (json.length === 0));
+    
+    if (!json.length) {
         
-        var showAllColumns = (sessionStorage.getItem('showAllColumns') === 'true');
-        $('#componentsTableDiv th.optional').toggle(showAllColumns);
+        var infoText = 'No ';
+    
+        switch (sessionStorage.getItem('lastMenuItemId')) {
+
+            case 'components':
+                infoText += 'components';
+                break;
+
+            case 'altProducts':
+                infoText += 'alternative products';
+                break;
+
+            case 'whereUsed':
+                infoText += 'where used';        
+                break;
+        }
+
+        infoText += ' found.';
+
+        $('#componentsInfoPanel .infoPanelText').text(infoText);
+    }
 	
-	$.each(json, function(index, component) {
-		
-		var stockValue = g_stockDescriptions[component.Stock] || component.Stock;
-                
-                var rowHtml = '<tr id="' + component.ProductID + '"><td>' + component.ProductID + '</td><td>' + component.Description + '</td>';
-            
-                if (showAllColumns) {
-                    
-                    rowHtml += '<td>' + component.Nett + '</td><td>' + stockValue + '</td><td>' + component.UOM + '</td><td class="quantity"></td>' + 
-                               '<td class="order"><a data-role="button" data-inline="true" data-mini="true" ' + (isNaN(stockValue) ? 'class="ui-disabled"' : '') + '>Order Now</a></td>';
-                }
-            
-                rowHtml += '</tr>';
-                
-                $('#componentsTableDiv tbody').append(rowHtml); 
-		
-		$('td.order:last a').button().click(function() {
-			
-			$('#componentDataDiv').html(component.ProductID + ' ' + component.Description + '<br/><br/>Nett:' + component.Nett);
-			$('#componentQuantity').val($('tr#' + component.ProductID + ' td.quantity').text());
-			$('#componentQuantityPopup').popup('open');
-			
-			$('#componentQuantityOKButton').unbind();
-			$('#componentQuantityOKButton').click(function() {
-				
-				var quantity = $('#componentQuantity').val();				
-				
-				if (g_isQuantityValid(parseInt(quantity, 10), parseInt(component.UOM, 10))) {
-					
-					$('tr#' + component.ProductID + ' td.quantity').text(quantity);
-					
-					g_addProductToBasket(component.ProductID, g_currentUser().SupplierID, g_currentCompany().AccountID, quantity, 
-							g_currentUser().UserID, component.Nett, component.Description, undefined, undefined, sessionStorage.getItem("currentordertype"), 
-							undefined, undefined, undefined, component.UOM);
-					
-					pricelistCheckBasket(false);
-				}
-			});
-		});		
-	});
-	
-	$.mobile.hidePageLoadingMsg();
+    $('#componentsInfoPanel').toggleClass('invisible', json && (json.length > 0));
+    $('#componentsTableDiv').toggleClass('invisible', !json || (json.length === 0));
+
+    var showAllColumns = (sessionStorage.getItem('showAllColumns') === 'true');
+    $('#componentsTableDiv th.optional').toggle(showAllColumns);
+
+    $.each(json, function(index, component) {
+
+            var stockValue = g_stockDescriptions[component.Stock] || component.Stock;
+
+            var rowHtml = '<tr id="' + component.ProductID + '"><td>' + component.ProductID + '</td><td>' + component.Description + '</td>';
+
+            if (showAllColumns) {
+
+                rowHtml += '<td>' + component.Nett + '</td><td>' + stockValue + '</td><td>' + component.UOM + '</td><td class="quantity"></td>' + 
+                           '<td class="order"><a data-role="button" data-inline="true" data-mini="true" ' + (isNaN(stockValue) ? 'class="ui-disabled"' : '') + '>Order Now</a></td>';
+            }
+
+            rowHtml += '</tr>';
+
+            $('#componentsTableDiv tbody').append(rowHtml); 
+
+            $('td.order:last a').button().click(function() {
+
+                    $('#componentDataDiv').html(component.ProductID + ' ' + component.Description + '<br/><br/>Nett:' + component.Nett);
+                    $('#componentQuantity').val($('tr#' + component.ProductID + ' td.quantity').text());
+                    $('#componentQuantityPopup').popup('open');
+
+                    $('#componentQuantityOKButton').unbind();
+                    $('#componentQuantityOKButton').click(function() {
+
+                            var quantity = $('#componentQuantity').val();				
+
+                            if (g_isQuantityValid(parseInt(quantity, 10), parseInt(component.UOM, 10))) {
+
+                                    $('tr#' + component.ProductID + ' td.quantity').text(quantity);
+
+                                    g_addProductToBasket(component.ProductID, g_currentUser().SupplierID, g_currentCompany().AccountID, quantity, 
+                                                    g_currentUser().UserID, component.Nett, component.Description, undefined, undefined, sessionStorage.getItem("currentordertype"), 
+                                                    undefined, undefined, undefined, component.UOM);
+
+                                    pricelistCheckBasket(false);
+                            }
+                    });
+            });		
+    });
+
+    $.mobile.hidePageLoadingMsg();
 	
     var dao = new Dao();
     

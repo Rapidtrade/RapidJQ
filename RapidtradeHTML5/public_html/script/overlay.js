@@ -98,13 +98,13 @@ function overlayInit(page) {
                          menuPanel += '<li>Product Info</li>'; 
 
                     if (DaoOptions.getValue('ShowComponents') === 'true')
-                        menuPanel += '<li>Components</li>';
+                        menuPanel += '<li id="components">Components</li>';
 
                     if (DaoOptions.getValue('ShowAlternate') === 'true')
-                        menuPanel += '<li>Alternative Products</li>';
+                        menuPanel += '<li id="altProducts">Alternative Products</li>';
 
                     if (DaoOptions.getValue('ShowWhereUsed') === 'true')
-                        menuPanel += '<li>Where Used</li>';
+                        menuPanel += '<li id="whereUsed">Where Used</li>';
 
                            menuPanel += '<li>Technical Info</li>' +
                                         '<li>Large Image</li>' +

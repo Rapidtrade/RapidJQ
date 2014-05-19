@@ -108,12 +108,9 @@ function pricelistOnPageShow() {
 		
     } else {
     	
-		$('#advancedSearchPanel .ui-block-a').css('width', '100%');
-		$('#advancedSearchImageButton').hide();
+        $('#advancedSearchPanel .ui-block-a').css('width', '100%');
+        $('#advancedSearchImageButton').hide();
     }
-    
-    if (DaoOptions.get('LiveAltProductURL'))
-    	$('#componentsInfoPanel .infoPanelText').text('No alternative products to show.');
 }
 
 function pricelistOnPageShowSmall() {
