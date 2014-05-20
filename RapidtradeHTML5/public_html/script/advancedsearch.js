@@ -163,13 +163,17 @@ function advancedSearchFetchLevelLive() {
 		filter = advancedSearchGetItem('modelCode') + ',' + advancedSearchGetItem('linkCode');
 		break;				
 	}
+        
 	
 	if (advancedSearchCurrentLevel() != '2') {
 		
-		if (!filter)
-			return;
-		
-		url += '&filter=' + filter;
+            if (!filter)
+                return;
+                
+            if (advancedSearchCurrentLevel() < 4)
+                filter = encodeURIComponent(filter);
+
+            url += '&filter=' + filter;
 	}		
 	
 	console.log(url);
