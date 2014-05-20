@@ -522,7 +522,7 @@ function pricelistDoSearch(searchType) {
 	
 	if (((searchType != 'advanced') || (DaoOptions.getValue('LiveAdvanceSearch')) && $('#advancedSearchPanel').is(':visible'))) {
 		
-		g_advancedSearchProducts = {};
+		g_advancedSearchProducts = [];
 		g_advancedSearchFilter = {};
 		$('#advancedSearchPanel').hide();
 		$('#pricelistPanel, #searchBarPanel').show();
@@ -994,7 +994,7 @@ function pricelistOnComplete(event) {
 	    pricelistBindCaptureQuantity();
 	}
 	
-	g_advancedSearchProducts = {};
+    g_advancedSearchProducts = [];
     pricelistToCache();
     g_pricelistItemsHtml = '';
     pricelistShowNextPrev();

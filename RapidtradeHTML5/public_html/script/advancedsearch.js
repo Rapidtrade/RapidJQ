@@ -8,7 +8,7 @@ var g_advancedSearchBreadcrumbItems = {};
 g_advancedSearchBreadcrumbItems['advanced'] = [];
 g_advancedSearchBreadcrumbItems['categories'] = [];
 
-var g_advancedSearchProducts = {};
+var g_advancedSearchProducts = [];
 var g_advancedSearchFilter = {};
 
 var g_advancedSearchFetchProductRequestsNumber = 0;
@@ -201,7 +201,7 @@ function advancedSearchFetchLevelLiveOnSuccess(json) {
 			
 		} else {
 			
-			g_advancedSearchProducts[object.id] = object;
+			g_advancedSearchProducts.push(object);
 		}
 	});
 	
@@ -390,7 +390,7 @@ function advancedSearchOnSearchButtonClicked() {
 		g_advancedSearchFilter[field.name] = $.trim(field.value);
 	});
 	
-	g_advancedSearchProducts = {};
+	g_advancedSearchProducts = [];
 	
 	if (parseInt(advancedSearchGetItem('level'), 10) >=  parseInt(DaoOptions.getValue('AdvSearchMinLevel') || 0, 10)) {
 		
@@ -471,7 +471,7 @@ function advancedSearchCacheProduct(product) {
 	console.log('Fetched ' + ++g_advancedSearchTotalProductsFetched + ' ' + Date.now());
 	
 	if (product) 
-		g_advancedSearchProducts[product.id] = product;
+            g_advancedSearchProducts.push(product);
 	
 	if (g_advancedSearchTotalProductsFetched == g_advancedSearchFetchProductRequestsNumber)
 		advancedSearchShowOnlineProducts();
