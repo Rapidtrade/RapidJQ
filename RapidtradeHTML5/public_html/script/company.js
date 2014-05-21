@@ -5,49 +5,80 @@
 
 function companyOnPageShow(){
 	
-	companyHideFooter();
-	overlaySetMenuItems();
-	
-	if (sessionStorage.getItem('companyBack') == 'today.html')
-		$('#companyBackButton .ui-btn-text').text('Today');
-	
-	companyOnPageShowSmall();
-	
-	g_showCurrentCompanyName();
-	
-	var dao = new Dao();
-	dao.openDB(function() {	companyInit();	});
-	companyBind();
-	
-	if (!$('#companyTabs input:checked').length) {
-		
-		$('#radio1').attr('checked', true);
-		$('#companyTabs').controlgroup('refresh');
-	}
-	
-	var lastPanelId = sessionStorage.getItem('lastPanelId');
-	lastPanelId && (lastPanelId != 'companyPanel') ? companyLoadPanel(lastPanelId) : companySetNextButton('History');
+    companyHideFooter();
+    overlaySetMenuItems();
+
+    if (sessionStorage.getItem('companyBack') == 'today.html')
+            $('#companyBackButton .ui-btn-text').text('Today');
+
+    companyOnPageShowSmall();
+
+    g_showCurrentCompanyName();
+
+    var dao = new Dao();
+    dao.openDB(function() {	companyInit();	});
+    companyBind();
+
+    $('#syncMasterChart').hide();
+    
+     var field = /*DaoOptions.getValue('MasterChartFieldIndic', '')*/ 'Userfield10';    
+    if ((DaoOptions.getValue('AllowMasterChartDownload', 'false') == 'true') && (!field || g_currentCompany()[field] == 'Y')) {    
+        
+        var isInCallCycle = false;
+        
+        var dao = new Dao();	
+        dao.cursor('CallCycle', undefined, undefined,
+
+            function(customerInfo) {
+
+                var status = customerInfo[todayGetCurrentDay()];
+
+                if ((customerInfo.Week == g_currentCallCycleWeek()) && status && customerInfo.AccountID == g_currentCompany().AccountID)
+                    isInCallCycle = true;
+            }, 
+            
+            undefined,
+            
+            function() {
+                
+                if (!isInCallCycle)
+                    $('#syncMasterChart').show();
+            }
+            
+        );
+    }
+
+
+
+    if (!$('#companyTabs input:checked').length) {
+
+            $('#radio1').attr('checked', true);
+            $('#companyTabs').controlgroup('refresh');
+    }
+
+    var lastPanelId = sessionStorage.getItem('lastPanelId');
+    lastPanelId && (lastPanelId != 'companyPanel') ? companyLoadPanel(lastPanelId) : companySetNextButton('History');
 }
 
 function companyOnPageShowSmall() {
 
-	if (g_isScreenSmall()) {
-		$('.hideonphone').hide();
-	}
+    if (g_isScreenSmall()) {
+            $('.hideonphone').hide();
+    }
 }
 
 function companyLoadPanel(panelId) {
 	
 	if (panelId != 'pricelistPanel') {
 	
-		var menuItemId = panelId.replace('Panel', 'Item');
-		
-		if (sessionStorage.getItem('lastMenuItemId') != menuItemId) 
-			sessionStorage.setItem('lastMenuItemId', menuItemId);
+            var menuItemId = panelId.replace('Panel', 'Item');
+
+            if (sessionStorage.getItem('lastMenuItemId') != menuItemId) 
+                    sessionStorage.setItem('lastMenuItemId', menuItemId);
 	}
 	
 	if (panelId.indexOf('pricelist') != -1) 
-		panelId = 'pricelistPanel';
+            panelId = 'pricelistPanel';
 	
 	sessionStorage.setItem('lastPanelId', panelId);
 	
@@ -138,6 +169,8 @@ function companyShowContact(showAll) {
 function companyBind(){
 	
 	sessionStorage.getItem('CompanyNoFooter') == 'true' ?  g_menuBind() : overlaySetMenuButton();
+        
+        $('#syncMasterChart a').off().on('click', companySyncMasterChart);
 	
 	//bind save company
  	$('#savecompany' ).button()
@@ -275,6 +308,22 @@ function companyInit(){
 		};
 	});
 	
+}
+
+function companySyncMasterChart() {
+    
+    if (!g_syncDao)
+        g_syncDao = new Dao();
+        
+    g_busy(true);
+
+    syncFetchTable(g_currentUser().SupplierID, g_currentUser().UserID, 'Orders', 'GetCollectionByType3', 0, function() {
+        
+        syncFetchTable(g_currentUser().SupplierID, g_currentUser().UserID, 'Orders', 'GetOrderItemsByType3', 0, function() {
+            
+            g_busy(false)
+        });
+    });    
 }
 
 function companySaveLiveContact() {

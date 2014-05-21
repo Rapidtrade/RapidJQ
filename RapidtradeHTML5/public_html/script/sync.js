@@ -13,7 +13,8 @@ var g_syncIsOrderPosted = false;
 var g_syncLastUserID = '';
 var g_syncPricelistSyncMethod = 'Sync5';
 var g_syncLivePricelist = false;
-
+var g_syncDownloadOrderURL = '';
+var g_syncDownloadOrderType = '';
 
 /*
  * In doc ready, always call openDB first.
@@ -258,8 +259,8 @@ function syncPostData(index) {
  */
 function syncPostedOK(index){
 	
-	if (!g_syncIsOrderPosted && g_syncPosted[index].Table == 'Orders')
-		g_syncIsOrderPosted = true;
+    if (!g_syncIsOrderPosted && g_syncPosted[index].Table == 'Orders')
+            g_syncIsOrderPosted = true;
 		
     if ('POD' == g_syncPosted[index].JsonObject.Type) {
     	
@@ -296,24 +297,29 @@ function syncPostedOK(index){
  */
 function syncAll() {
 	 
-	localStorage.setItem('lastSyncDate', g_today());
-	
-	$('#userid').addClass('ui-disabled');
-	$('#message').text('Please wait, downloading latest data');
-//	$('#results tbody').empty();
-	
-	g_syncTables = [];
-	g_syncCount = 0;
+    localStorage.setItem('lastSyncDate', g_today());
 
-	syncAddSync(g_syncSupplierID, null, 'Options', 'Sync2', 0);
+    $('#userid').addClass('ui-disabled');
+    $('#message').text('Please wait, downloading latest data');
+
+    g_syncTables = [];
+    g_syncCount = 0;
+    
+    if (localStorage.getItem('lastSyncDate') != g_today()) {
+        
+        g_syncDao.clear('Orders');
+        g_syncDao.clear('OrderItems');
+    }
+
+    syncAddSync(g_syncSupplierID, null, 'Options', 'Sync2', 0);
     syncAddSync(g_syncSupplierID, null,'DisplayFields','Sync2', 0);
     
     syncAddSync(g_syncSupplierID, g_syncUserID, 'ActivityTypes', 'Sync4', 0);
     syncAddSync(g_syncSupplierID, g_syncUserID, 'Contacts', 'Sync2', 0);
     syncAddSync(g_syncSupplierID, g_syncUserID, 'CallCycle', 'Sync', 0);
-	syncAddSync(g_syncSupplierID, g_syncUserID, 'Companies','Sync2', 0);
+    syncAddSync(g_syncSupplierID, g_syncUserID, 'Companies','Sync2', 0);
     syncAddSync(g_syncSupplierID, g_syncUserID, 'Stock', 'Sync4', 0);    
-	syncAddSync(g_syncSupplierID, g_syncUserID, 'Pricelists', 'Sync5', 0);
+    syncAddSync(g_syncSupplierID, g_syncUserID, 'Pricelists', 'Sync5', 0);
     syncAddSync(g_syncSupplierID, g_syncUserID, 'Address', 'Sync4', 0);
     
     if (g_vanSales) {
@@ -323,61 +329,70 @@ function syncAll() {
         syncAddSync(g_syncSupplierID, g_syncUserID, 'DiscountValues', 'Sync4', 0);
     }
        
-	var item = g_syncTables[g_syncCount];
-	syncTableCount = 0;
-	syncFetchTable(item.supplierid,item.userid,item.table,item.method,syncFetchLastTableSkip(item.table));
-	
-	sessionStorage.setItem('cacheMyTerritory', null);
-	sessionStorage.setItem('cachePricelist', null);
-	$('#signinagain').removeClass('ui-disabled');
+    var item = g_syncTables[g_syncCount];
+    syncTableCount = 0;
+    syncFetchTable(item.supplierid,item.userid,item.table,item.method,syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)));
+
+    sessionStorage.setItem('cacheMyTerritory', null);
+    sessionStorage.setItem('cachePricelist', null);
+    $('#signinagain').removeClass('ui-disabled');
 }
 
 /*
  * add the sync required
  */
 function syncAddSync(supplierid, userid, table, method){
-	var syncTable= {};
-	syncTable.supplierid = supplierid;
-	syncTable.userid = userid;
-	syncTable.table = table;
-	syncTable.method = method;
-	g_syncTables.push(syncTable);
+    
+    var syncTable= {};
+    syncTable.supplierid = supplierid;
+    syncTable.userid = userid;
+    syncTable.table = table;
+    syncTable.method = method;
+    g_syncTables.push(syncTable);
+}
+
+function syncGetLocalTableName(table, method) {
+    
+    return ('Orders' == table) && ('GetOrderItemsByType3' == method) ? 'OrderItems' : table;
 }
 
 /*
  * Fetch method to get each individual table from the server
  */
-function syncFetchTable(supplierid, userid, table, method, skip) {
+function syncFetchTable(supplierid, userid, table, method, skip, onSuccess) {
 		
-	// due the optional table sync, we always need to sync all data from Options table
+    // due the optional table sync, we always need to sync all data from Options table
 
-	var version = ('Options' == table) ? 0 : syncFetchLastTableVersion(table);
-	
-	var userParameter = '';
-	
-	if (userid) 
-		userParameter = '&userID=' + userid;
-	
-	if ('Pricelists' == table)
-		method = g_syncPricelistSyncMethod;
-	
-	var url = g_restUrl + table + '/' + method + 
-							'?supplierID=' + supplierid + 
-							 userParameter + 
-							'&version=' + version + 
-							'&skip=' + skip + 
-							'&top=' + g_syncNumRows + '&format=json';
-	console.log(url);
-	var success = function (json) {
-	    syncSaveToDB(json, supplierid, userid, version, table, method, skip);
-	};
-	
-	var error = function (e) {
-	    console.log(e.message);
-	};
-	
-	g_ajaxget(url, success, error);
-	
+    var version = ('Options' == table) ? 0 : syncFetchLastTableVersion(syncGetLocalTableName(table, method));
+
+    var userParameter = '';
+
+    if (userid) 
+        userParameter = '&userID=' + userid;
+
+    if ('Pricelists' == table)
+        method = g_syncPricelistSyncMethod;
+
+    var url = ('Orders' == table ? (g_syncDownloadOrderURL || DaoOptions.getValue('DownloadOrderURL')) + '/rest/' : g_restUrl)  + table + '/' + method +
+                                                    '?supplierID=' + supplierid + 
+                                                     userParameter + 
+                                                    '&version=' + version + 
+                                                    '&skip=' + skip + 
+                                                    ('Orders' == table ? '&orderType=' + g_syncDownloadOrderType : '') +
+                                                    '&top=' + g_syncNumRows + '&format=json';
+    console.log(url);
+    var success = function (json) {
+        syncSaveToDB(json, supplierid, userid, version, table, method, skip);
+        
+        if (onSuccess)
+            onSuccess();
+    };
+
+    var error = function (e) {
+        console.log(e.message);
+    };
+
+    g_ajaxget(url, success, error);	
 }
 
 /*
@@ -450,7 +465,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 		  
 		} else {	// go on to the next table
 			var item = syncNextItem();
-			if (item) syncFetchTable(item.supplierid,item.userid,item.table,item.method,syncFetchLastTableSkip(item.table));
+			if (item) syncFetchTable(item.supplierid,item.userid,item.table,item.method,syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)));
 			return;
 		}
 	} else if ((json._Items.length ) < 100 && table != 'Pricelists') {
@@ -470,7 +485,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 	        try {
 		        g_append('#results tbody', '<tr><td> Fetching new ' + item.table + '...</td></tr>');
 		        //$('#results tbody').append('<tr><td> Fetching new ' + item.table + '...</td></tr>');
-		        syncFetchTable(item.supplierid, item.userid, item.table, item.method, syncFetchLastTableSkip(item.table));	        	
+		        syncFetchTable(item.supplierid, item.userid, item.table, item.method, syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)));	        	
 	        } catch(err) {
 	        	console.log('Skipping');
 	        }
@@ -496,6 +511,18 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
                         syncAddSync(g_syncSupplierID, g_syncUserID, 'DiscountValues', 'Sync4', 0);
                     }
                     
+                    if (item.Name == 'DownloadOrderURL')
+                        g_syncDownloadOrderURL = item.Value;
+                    
+                    if (item.Name == 'DownloadOrderType')
+                        g_syncDownloadOrderType = item.Value;
+                    
+                    if (item.Name == 'AllowMasterChartDownload') {
+                    
+                        syncAddSync(g_syncSupplierID, g_syncUserID, 'Orders', 'GetCollectionByType3', 0);
+                        syncAddSync(g_syncSupplierID, g_syncUserID, 'Orders', 'GetOrderItemsByType3', 0);
+                    }
+                    
                     if (item.Name == 'MobileOnlinePricelist')
                     	g_syncLivePricelist = (item.Value == 'true');
                     
@@ -507,7 +534,6 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
                     
                     if (item.Name == 'PricelistSyncVersion')                    	
                     	g_syncPricelistSyncMethod = item.Value;
-
                     
                     if (item.Name == 'AccountSortField') {
                     	
@@ -515,7 +541,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
                     	
                     	if (g_indexedDB) {
                     		
-                    		var request = window.indexedDB.open("RapidTrade12", 14);
+                    		var request = window.indexedDB.open("RapidTrade12", 15);
                     		
                     		request.onsuccess = function (event) {
                     			
@@ -535,7 +561,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
                     	
                     	if (g_indexedDB) {
                     		
-                    		var request = window.indexedDB.open("RapidTrade12", 14);
+                    		var request = window.indexedDB.open("RapidTrade12", 15);
                     		
                     		request.onsuccess = function (event) {
                     			

@@ -378,10 +378,11 @@ function callCycleEditSave() {
 
 function callCycleEditSaveOnSuccess() {
 	
-	if (!g_syncDao)
-		g_syncDao = new Dao();
-	
-	syncFetchTable(g_currentUser().SupplierID, g_callCycleCurrentUserID, 'CallCycle', 'Sync', syncFetchLastTableSkip('CallCycle'));
+    if (!g_syncDao)
+            g_syncDao = new Dao();
+
+    syncFetchTable(g_currentUser().SupplierID, g_callCycleCurrentUserID, 'CallCycle', 'Sync', syncFetchLastTableSkip('CallCycle'));
+    
     g_alert('Changes are saved.');
 }
 

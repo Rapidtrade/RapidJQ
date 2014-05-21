@@ -363,7 +363,7 @@ function Dao() {
         window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
         window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 
-        var request = window.indexedDB.open("RapidTrade12", 14);
+        var request = window.indexedDB.open("RapidTrade12", 15);
         request.onerror = function (event) {
             g_alert("Error opening database");
         };
@@ -480,6 +480,17 @@ function Dao() {
             } catch (error) {
                 console.log("Already exists");
             }
+            
+            try {
+                objectStore = db.createObjectStore("Orders", { keyPath: "key" });
+            } catch (error) {
+                console.log("Already exists");
+            }
+            try {
+                objectStore = db.createObjectStore("OrderItems", { keyPath: "key" });
+            } catch (error) {
+                console.log("Already exists");
+            }            
         };
         request.onsuccess = function (event) {
             db = request.result;
@@ -993,6 +1004,8 @@ function Dao() {
             tx.executeSql('CREATE TABLE IF NOT EXISTS ProductCategory2Link (keyf, json, index1, index2, index3, index4, primary key (keyf))');
             tx.executeSql('CREATE TABLE IF NOT EXISTS Address (keyf, json, index1, index2, index3, index4, primary key (keyf))');
             tx.executeSql('CREATE TABLE IF NOT EXISTS Stock (keyf, json, index1, index2, index3, index4, primary key (keyf))');
+            tx.executeSql('CREATE TABLE IF NOT EXISTS Orders (keyf, json, index1, index2, index3, index4, primary key (keyf))');   
+            tx.executeSql('CREATE TABLE IF NOT EXISTS OrderItems (keyf, json, index1, index2, index3, index4, primary key (keyf))');               
             tx.executeSql('CREATE TABLE IF NOT EXISTS Unsent (keyf, json, index1, index2, index3, index4, primary key (keyf))');
             var tables = ['Pricelists', 'ProductCategories2', 'ProductCategory2Link'];
             for ( var i = 0; i < tables.length; i++)			
@@ -1024,6 +1037,8 @@ function Dao() {
             tx.executeSql('drop table if EXISTS ProductCategory2Link  ');
             tx.executeSql('drop table if EXISTS Address  ');
             tx.executeSql('drop table if EXISTS Stock  ');
+            tx.executeSql('drop table if EXISTS Orders  ');   
+            tx.executeSql('drop table if EXISTS OrderItems  ');               
             tx.executeSql('drop table if EXISTS Unsent  ');
         });
         

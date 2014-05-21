@@ -51,40 +51,36 @@ function todayRefresh() {
  * fetch call cycle for today
  */
 function todayFetchCallCycle(){	
-	
-	var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-	var date = new Date();
-	var day  = days[date.getDay()];
 		
 	var dao = new Dao();
 	$('#customerlist').empty();
 	
 	dao.cursor('CallCycle', undefined, undefined,
 			
-				function(customerInfo) {
+            function(customerInfo) {
 		
-					var status = customerInfo[day];
-					
-					if ((customerInfo.Week == g_currentCallCycleWeek()) && status) {
+                var status = customerInfo[todayGetCurrentDay()];
 
-                        g_append('#customerlist', '<li data-theme="c" id="' + customerInfo.AccountID + '">' +
-                        '<a onclick="todayOnCustomerClick(\'' + customerInfo.AccountID + '\')" data-transition="none">' +
-                        todayShowImage(g_isCustomerVisited(customerInfo.AccountID)) +
-                        customerInfo.Name +
-                        '</a>' +
+                if ((customerInfo.Week == g_currentCallCycleWeek()) && status) {
+
+                    g_append('#customerlist', '<li data-theme="c" id="' + customerInfo.AccountID + '">' +
+                    '<a onclick="todayOnCustomerClick(\'' + customerInfo.AccountID + '\')" data-transition="none">' +
+                    todayShowImage(g_isCustomerVisited(customerInfo.AccountID)) +
+                    customerInfo.Name +
+                    '</a>' +
                     '</li>');  
-					}
-				},
+		}
+            },
 				
-				undefined,
-				
-				function(event) {
-					
-					if ($('#customerlist li').length > 0)
-						$('#customerlist').listview('refresh');
-					else
-						$('#noCallCycleDiv').removeClass('hidden');
-				});
+            undefined,
+
+            function(event) {
+
+                    if ($('#customerlist li').length > 0)
+                            $('#customerlist').listview('refresh');
+                    else
+                            $('#noCallCycleDiv').removeClass('hidden');
+            });
 }
 
 function todayFetchActivities() {
@@ -150,5 +146,12 @@ function todayOnCustomerClick(accountId){
 
 function todayShowImage(status) {
 	
-	return '<img class="ui-li-icon" src="img/' + (status ? 'Select' : 'Cancel2') + '-32.png"/>';
+    return '<img class="ui-li-icon" src="img/' + (status ? 'Select' : 'Cancel2') + '-32.png"/>';
+}
+
+function todayGetCurrentDay() {
+    
+    var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    var date = new Date();
+    return days[date.getDay()];
 }
