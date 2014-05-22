@@ -379,6 +379,7 @@ function syncFetchTable(supplierid, userid, table, method, skip, onSuccess) {
                                                     '&version=' + version + 
                                                     '&skip=' + skip + 
                                                     ('Orders' == table ? '&orderType=' + g_syncDownloadOrderType : '') +
+                                                    (('Orders' == table) && g_currentCompany() ? '&accountID=' + g_currentCompany().AccountID : '') +
                                                     '&top=' + g_syncNumRows + '&format=json';
     console.log(url);
     var success = function (json) {

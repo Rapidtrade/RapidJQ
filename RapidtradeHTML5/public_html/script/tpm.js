@@ -1,5 +1,7 @@
 var g_tpmLastValidQuantities = [];
 var g_tpmjson = [];
+var g_tpmOnSuccess = tpmQualifySuccess;
+
 function tpmOnPageShow() {	
     tpmRemovePromotions();
 }
@@ -16,7 +18,7 @@ function tpmBind() {
         var isVerification = ($(this).find('.ui-btn-text').text() === 'Verify');
         
         var postType = (isVerification ? 'verify' : 'order');
-        var onSuccess = (isVerification ? tpmVerifySuccess : tpmOrderSuccess);
+        onSuccess = (isVerification ? tpmVerifySuccess : tpmOrderSuccess);
         
         tpmPost(postType, onSuccess);
     });
@@ -75,6 +77,9 @@ function tpmFetchBasket() {
 
 function tpmPost(type, onSuccess) {
     try {    
+        
+        g_tpmOnSuccess = onSuccess;
+        
         g_orderHeaderOrder.Type = type;
         g_orderHeaderOrder.orderItems = g_tpmjson;
 
@@ -267,7 +272,7 @@ function tpmShowComplexPopup(promotionId) {
 
 function tpmSaveError(error) {	
     if ((error.status === 0) || (error.status === 200)) {		
-        tpmQualifySuccess();
+        g_tpmOnSuccess();
     } else {
         alert('You must be online...');
     }
