@@ -11,22 +11,20 @@ function tpmOnPageInit() {
 }
 
 function tpmBind() {
-    $('#verifyTPM').click(function() {        
+    $('#verifyTPM, #saveTPM').click(function() {        
         
-        g_tpmjson = tpmBuildNewCart();
+        g_tpmjson = tpmBuildNewCart();    
         
-        var isVerification = ($(this).find('.ui-btn-text').text() === 'Verify');
+        var isOrder = ('saveTPM' === this.id);
         
-        var postType = (isVerification ? 'verify' : 'order');
-        onSuccess = (isVerification ? tpmVerifySuccess : tpmOrderSuccess);
+        var postType = isOrder ? 'order' : 'verify';
+        var onSuccess = isOrder ? tpmOrderSuccess : tpmVerifySuccess;
         
         tpmPost(postType, onSuccess);
     });
+    
     $('#cancelbtn').click(function() {
         $.mobile.changePage("ShoppingCart.html");
-    });
-    $('#saveTPM').click(function() {
-        saveTPM();
     });
 
     $('#complexPopup #okButton').off().on('click', tpmSaveComplexPromotion);    
@@ -329,7 +327,23 @@ function tpmVerifySuccess() {
 }
 
 function tpmOrderSuccess() {
-    alert('Order sent OK.');
+    
+    var dao = new Dao();
+    dao.clearBasket('BasketInfo', g_currentCompany().AccountID, sessionStorage.getItem('currentordertype'), 
+    
+    function(){
+         alert('Error clearing basket');
+     }, 
+    function() { 
+        $('#infoPopup').popup('open');
+        setTimeout(function() {
+            
+            $('#infoPopup').popup('close');
+            sessionStorage.setItem('lastPanelId', 'activityPanel');
+            $.mobile.changePage('company.html');
+        }, 2000);
+    }
+    );
 }
 
 function tpmVerifyTableLoaded(){
