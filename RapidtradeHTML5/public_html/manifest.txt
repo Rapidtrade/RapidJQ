@@ -1,7 +1,7 @@
 ﻿CACHE MANIFEST
 # Explicitly cached 'master entries'...........................................
 
-# Version 5.15.26
+# Version 5.15.27
 
 CACHE:
 

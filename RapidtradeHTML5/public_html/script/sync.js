@@ -380,6 +380,8 @@ function syncFetchTable(supplierid, userid, table, method, skip, onSuccess) {
                                                     '&skip=' + skip + 
                                                     ('Orders' == table ? '&orderType=' + g_syncDownloadOrderType : '') +
                                                     (('Orders' == table) && g_currentCompany() ? '&accountID=' + g_currentCompany().AccountID : '') +
+                                                    ('Orders' == table ? '&CallWeekNumber=' + g_currentCallCycleWeek() : '') +
+                                                    ('Orders' == table ? '&CallDayOfWeek=' + todayGetCurrentDay() : '') +
                                                     '&top=' + g_syncNumRows + '&format=json';
     console.log(url);
     var success = function (json) {
