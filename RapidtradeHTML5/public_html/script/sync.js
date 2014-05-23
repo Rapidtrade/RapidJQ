@@ -445,21 +445,24 @@ function syncNextItem() {
  */
 function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 	
-	if (g_syncStopSync==true) 
-		return;
-	
-	localStorage.setItem('lastSkip' + table, skip);
-		
-	if (json._Items == null) {
-		
-	    //this table sync is finished, so check if we need more downloads of this table
-	    g_append('#results tbody', '<tr><td> ' + table + ' - up to date</td></tr>');
+    if (g_syncStopSync==true) 
+        return;
+
+    localStorage.setItem('lastSkip' + syncGetLocalTableName(table, method), skip);
+    
+    if ('Orders' == table)
+        json._Items = json;
+
+    if (json._Items == null) {
+
+        //this table sync is finished, so check if we need more downloads of this table
+        g_append('#results tbody', '<tr><td> ' + table + ' - up to date</td></tr>');
 		//$('#results tbody').append('<tr><td> ' + table + ' - up to date</td></tr>');
     	syncSetLastVersion(table, json._LastVersion);
 		
     	if ((g_syncTables.length == (g_syncCount + 1))) { //completed the SYNC
-//			syncTryToPostData();
-			console.log('===== Sync completed OK =====');
+
+		console.log('===== Sync completed OK =====');
 	        $('#syncimg').attr('src', 'img/Tick-48.png');
 	        $('#message').text('Sync completed OK. Click Menu button to continue');
 	        $.mobile.hidePageLoadingMsg();
@@ -469,22 +472,23 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 			if (item) syncFetchTable(item.supplierid,item.userid,item.table,item.method,syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)));
 			return;
 		}
-	} else if ((json._Items.length ) < 100 && table != 'Pricelists') {
+	} else if (/*('Orders' === table) || */((json._Items.length ) < 100 && (table != 'Pricelists'))) {
 	    //less than 250 records, so move on to the next sync, except pricelist, dont always get back 250
-	    $('#results tbody tr:last td').text(table + ' (' + (skip + json._Items.length) + ') downloaded');
-	    syncSetLastVersion(table, json._LastVersion);
+	    $('#results tbody tr:last td').text(syncGetLocalTableName(table, method) + ' (' + (skip + json._Items.length) + ') downloaded');
+	    syncSetLastVersion(syncGetLocalTableName(table, method), 'Orders' === table ? 0 : json._LastVersion);
+            
 	    if ((g_syncTables.length == (g_syncCount + 1))) {
-//	    	syncTryToPostData();
-			console.log('===== Sync completed OK =====');
-	        $('#syncimg').attr('src', 'img/Tick-48.png');
-	        $('#message').text('Sync completed OK. Click Menu button to continue');
-	        $.mobile.hidePageLoadingMsg();
+
+		console.log('===== Sync completed OK =====');
+                $('#syncimg').attr('src', 'img/Tick-48.png');
+                $('#message').text('Sync completed OK. Click Menu button to continue');
+                $.mobile.hidePageLoadingMsg();
 	    	
 	    } else {
 	        //do the next table
 	        var item = syncNextItem();
 	        try {
-		        g_append('#results tbody', '<tr><td> Fetching new ' + item.table + '...</td></tr>');
+		        g_append('#results tbody', '<tr><td> Fetching new ' + syncGetLocalTableName(item.table, item.method) + '...</td></tr>');
 		        //$('#results tbody').append('<tr><td> Fetching new ' + item.table + '...</td></tr>');
 		        syncFetchTable(item.supplierid, item.userid, item.table, item.method, syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)));	        	
 	        } catch(err) {
@@ -493,7 +497,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 	    }
 	} else {
 	        //get the next 250 records for the table
-	        $('#results tbody tr:last td').text(table + ' (' + (skip + json._Items.length) + ') downloaded');
+	        $('#results tbody tr:last td').text(syncGetLocalTableName(table, method) + ' (' + (skip + json._Items.length) + ') downloaded');
 	        syncFetchTable(supplierid, userid, table, method, skip + g_syncNumRows); //get next 250 records	    
 	}
 	
@@ -580,35 +584,37 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
                 	g_menuGRVLabelText = 'Deliveries';
             });
             
-	    	if (g_indexedDB) {
-	    		
-			    $.each(json._Items, function (i, item) {
-			    	
-			        if ((table == "DisplayFields" && item.Visible == true) || table != "DisplayFields"){     
-			        	
-			        	item.key = syncGetKeyField(item, table);
-			        	
-			            if ((item.Deleted != null && item.Deleted == false) || !item.Deleted) {
-			                g_syncDao.put(item, table, item.key);		                
-			            } else {
-			            	g_syncDao.deleteItem(table, item.key, undefined, undefined, undefined, undefined);			            	
-			            };
-			        };
-	
-			       
-			    });
-	    	} else {
-	    		
-	    		g_syncDao.sqlputMany(json._Items, table,
-	    				undefined,
-	    		        function (tx) {
-	    		            g_alert('Error on download, can\'t continue: ' + tx.message);
-	    		            g_syncStopSync = true;
-	    		            $.mobile.hidePageLoadingMsg();
-	    		        });
+            table = syncGetLocalTableName(table, method);
+            
+            if (g_indexedDB) {
 
-	    	};
-	    };
+                $.each(json._Items, function (i, item) {
+
+                    if ((table == "DisplayFields" && item.Visible == true) || table != "DisplayFields"){     
+
+                            item.key = syncGetKeyField(item, table);
+
+                        if ((item.Deleted != null && item.Deleted == false) || !item.Deleted) {
+                            g_syncDao.put(item, table, item.key);		                
+                        } else {
+                            g_syncDao.deleteItem(table, item.key, undefined, undefined, undefined, undefined);			            	
+                        };
+                    };
+
+
+                });
+            } else {
+
+                g_syncDao.sqlputMany(json._Items, table,
+                                undefined,
+                        function (tx) {
+                            g_alert('Error on download, can\'t continue: ' + tx.message);
+                            g_syncStopSync = true;
+                            $.mobile.hidePageLoadingMsg();
+                        });
+
+            };
+        };
 
 
 	} catch (err) {	
@@ -710,6 +716,14 @@ function syncGetKeyField(item, table) {
 	case "ProductCategory2Link":
 		keyf = item.s + item.p;
 		break;
+                
+        case "Orders":
+            keyf = item.SupplierID + item.OrderID;
+            break;
+        
+        case "OrderItems":
+            keyf = item.SupplierID + item.OrderID + item.ItemID;
+            break;        
 	}
 	
 	return keyf.trim();
