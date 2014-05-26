@@ -10,23 +10,29 @@ var g_shoppingCartCredit = 0;
 var g_basketHTML = '';
 var g_shoppingcartCnt = 0;
 var g_shoppingcartalpha = [];
+var g_shoppingCartSummaryItems = {};
 
 function shoppingCartOnPageShow() {
 	
-	g_showCurrentCompanyName();
-	if (sessionStorage.getItem('ShoppingCartReturnPage') == 'orderdetails.html')
-		$('#shoppingCartBackButton .ui-btn-text').text('Order Details');
-	
-	if (shoppingCartIsGRV())
-		$('#deleteShoppingCart').hide();
-	
-	$('#shoppingCartFooter').toggle((sessionStorage.getItem('ShoppingCartNoFooter') == undefined) || (sessionStorage.getItem('ShoppingCartNoFooter') == 'false'));
+    g_showCurrentCompanyName();
+    if (sessionStorage.getItem('ShoppingCartReturnPage') == 'orderdetails.html')
+        $('#shoppingCartBackButton .ui-btn-text').text('Order Details');
+
+    if (shoppingCartIsGRV())
+        $('#deleteShoppingCart').hide();
+
+    $('#shoppingCartFooter').toggle((sessionStorage.getItem('ShoppingCartNoFooter') == undefined) || (sessionStorage.getItem('ShoppingCartNoFooter') == 'false'));
+        
+    if (DaoOptions.getValue('AllowSummaryButt', 'false') === 'true') {
+        
+        $('#summaryButton').removeClass('invisible');
+    }    
 	
     g_shoppingCartTotalIncl = 0;
     g_shoppingCartTotalExcl = 0;
     g_shoppingCartVAT = 0;
-	shoppingCartOnPageShowSmall();
-	shoppingCartConfirmScanInit();
+    shoppingCartOnPageShowSmall();
+    shoppingCartConfirmScanInit();
 	
     var dao = new Dao();
     dao.openDB(function () {
@@ -58,20 +64,41 @@ function shoppingCartOnPageShow() {
 }
 
 function shoppingCartOnPageShowSmall() {
-	if (g_isScreenSmall()) {
-		$('.hideonphone').hide();
-	}
+    
+    if (g_isScreenSmall()) {
+            $('.hideonphone').hide();
+    }
 }
 
 function shoppingCartBind() {
-	
-	$('#saveShoppingCart').unbind();
+
+    $('#summaryButton').off().on('click', function() {
+       
+       var nextButtonCaption = {
+           
+           Summary: 'Detail',
+           Detail: 'Summary'           
+       }
+       
+       $buttonCaption = $(this).find('.ui-btn-text');
+       
+       sessionStorage.setItem('shoppingCartViewType', $buttonCaption.text());
+       $buttonCaption.text(nextButtonCaption[$buttonCaption.text()]);
+       
+        g_shoppingCartTotalIncl = 0;
+        g_shoppingCartTotalExcl = 0;
+        g_shoppingCartVAT = 0;
+       
+        shoppingCartFetchBasket();
+    });
+            
+    $('#saveShoppingCart').unbind();
     $('#saveShoppingCart').click(function() {
     	
     	if (DaoOptions.getValue('LiveCreditCheckURL') && (sessionStorage.getItem('currentordertype').toLowerCase() == 'order') && (g_shoppingCartTotalExcl > g_shoppingCartCredit))    		
-    		$('#creditLimitPopup').popup('open');
+            $('#creditLimitPopup').popup('open');
     	else
-    		$.mobile.changePage("orderHeader.html", { transition: "none" });
+            $.mobile.changePage("orderHeader.html", { transition: "none" });
     });
 
     $('#deleteShoppingCart').unbind();
@@ -99,7 +126,7 @@ function shoppingCartBind() {
     	
         afteropen: function( event, ui ) {
         	
-        	shoppingCartConfirmScanResetBarcode();
+            shoppingCartConfirmScanResetBarcode();
         }
     });
 
@@ -107,10 +134,10 @@ function shoppingCartBind() {
 
 function shoppingCartConfirmScanInit() {
 	
-	var mustScan = (DaoOptions.getValue(sessionStorage.getItem('currentordertype') + 'ConfirmCartWithScan') == 'true');
-	
-	$('#saveShoppingCart').toggleClass('ui-disabled', mustScan);
-	$('#startScanning').toggle(mustScan);
+    var mustScan = (DaoOptions.getValue(sessionStorage.getItem('currentordertype') + 'ConfirmCartWithScan') == 'true');
+
+    $('#saveShoppingCart').toggleClass('ui-disabled', mustScan);
+    $('#startScanning').toggle(mustScan);
 }
 
 function shoppingCartConfirmScanOnScan() {
@@ -130,24 +157,24 @@ function shoppingCartConfirmScanOnScanSuccess(product) {
 
     	          if (basketInfo.ProductID == product.id) {
     	        	  
-    	        	  isItemFound = true;
-    	              $('#scanResult').html('Scanned OK');
-    	              shoppingCartConfirmScanAddText(product.id); 
-    	              shoppingCartConfirmScanResetBarcode();
+                    isItemFound = true;
+                    $('#scanResult').html('Scanned OK');
+                    shoppingCartConfirmScanAddText(product.id); 
+                    shoppingCartConfirmScanResetBarcode();
     	          };
     	          
     	          if ($('.unconfirmed').length == 0) {
     	        	  
-    	        	  $('#scanPopup').popup('close');
-    	        	  $('#saveShoppingCart').removeClass('ui-disabled');
-    	        	  $('#startScanning').hide();
+                    $('#scanPopup').popup('close');
+                    $('#saveShoppingCart').removeClass('ui-disabled');
+                    $('#startScanning').hide();
     	          }
     	      },
     	      undefined,
     	      function() {
     	    	  
-    	    	  if (!isItemFound)
-    	    		  $('#scanResult').html('ERROR:The product is not in the basket.');
+    	    	if (!isItemFound)
+                    $('#scanResult').html('ERROR:The product is not in the basket.');
     	      });
 	
 }
@@ -221,24 +248,27 @@ function shoppingCartIsGRV() {
 }
 
 function shoppingCartFetchBasket() {
-        $('#shoppingCartitemlist').empty();
-        var option = DaoOptions.get('TaxText');
-        $('#vatLabel').html(option && ('ONLINE' == option.Group) ? option.Value + ':' : 'VAT:'); 
-        var isArrayCached = false;
-    	for (var key in g_grvCachedBasketItems) {
-    	    if (g_grvCachedBasketItems.hasOwnProperty(key)) {
-    	    	isArrayCached = true;
-    	    	shoppingCartAddItem(g_grvCachedBasketItems[key]);
-    	    }
-    	}
-        if (isArrayCached) {
-        	g_grvCachedBasketItems = [];
-        	shoppingCartOnAllItemsAdded();
-        } else {
-        	alphaFilter.getInstance().init('#alphabet');
-        	var dao = new Dao();
-        	dao.indexsorted('BasketInfo',g_currentCompany().AccountID, 'index1', 'index4', shoppingCartAddItem, shoppingCartNoItems, shoppingCartOnAllItemsAdded);
+    
+    g_shoppingCartSummaryItems = {};
+    
+    $('#shoppingCartitemlist').empty();
+    var option = DaoOptions.get('TaxText');
+    $('#vatLabel').html(option && ('ONLINE' == option.Group) ? option.Value + ':' : 'VAT:'); 
+    var isArrayCached = false;
+    for (var key in g_grvCachedBasketItems) {
+        if (g_grvCachedBasketItems.hasOwnProperty(key)) {
+            isArrayCached = true;
+            shoppingCartAddItem(g_grvCachedBasketItems[key]);
         }
+    }
+    if (isArrayCached) {
+            g_grvCachedBasketItems = [];
+            shoppingCartOnAllItemsAdded();
+    } else {
+            alphaFilter.getInstance().init('#alphabet');
+            var dao = new Dao();
+            dao.indexsorted('BasketInfo',g_currentCompany().AccountID, 'index1', 'index4', shoppingCartAddItem, shoppingCartNoItems, shoppingCartOnAllItemsAdded);
+    }
 }
 
 function shoppingCartNoItems(){
@@ -249,7 +279,25 @@ function shoppingCartItemNett(item) {
 	return item.RepChangedPrice ? item.RepNett : item.Nett;
 }
 
-function shoppingCartAddItem(item) {
+function shoppingCartAddItem(item, checkSummary) {
+    
+    if (checkSummary === undefined)
+        checkSummary = true;
+    
+    var summaryField = DaoOptions.getValue('SummaryReportField');
+    
+    // TEST 
+//    item[summaryField] = 'A';
+    
+    if ((sessionStorage.getItem('shoppingCartViewType') === 'Summary') && checkSummary && (item[summaryField])) {
+        
+        if (!g_shoppingCartSummaryItems[item[summaryField]])
+            g_shoppingCartSummaryItems[item[summaryField]] = [];
+        
+        g_shoppingCartSummaryItems[item[summaryField]].push(item);
+        return;
+    }
+    
     qty = shoppingCartIsGRV() && g_currentUser().SupplierID == 'DS' ? parseInt(item.UserField01, 10) : item.Quantity;   	
     nett = g_addCommas(parseFloat(shoppingCartItemNett(item)).toFixed(2));
     // deal with over 1,000
@@ -300,12 +348,16 @@ function shoppingCartAddItem(item) {
 }
 
 function shoppingCartOnAllItemsAdded() {
-	var totalItemsShown = ($('#divvat p').length != 0);
-	if (!totalItemsShown) {
-	    $('#divvat').append('<p class="ui-li-aside" id="vat"></p>');
-	    $('#divtotalExcl').append('<p class="ui-li-aside" id="totalExcl"></p>');
-	    $('#divtotalIncl').append('<p class="ui-li-aside" id="totalIncl"></p>');
-	}
+    
+    if (sessionStorage.getItem('shoppingCartViewType') === 'Summary')
+        shoppingCartAddSummaryItems();
+    
+    var totalItemsShown = ($('#divvat p').length != 0);
+    if (!totalItemsShown) {
+        $('#divvat').append('<p class="ui-li-aside" id="vat"></p>');
+        $('#divtotalExcl').append('<p class="ui-li-aside" id="totalExcl"></p>');
+        $('#divtotalIncl').append('<p class="ui-li-aside" id="totalIncl"></p>');
+    }
     
     if (DaoOptions.getValue('DoubleTax') == 'true') {   	
     	var formattedVAT = g_addCommas(g_roundToTwoDecimals(g_shoppingCartVAT));
@@ -313,9 +365,11 @@ function shoppingCartOnAllItemsAdded() {
     	g_shoppingCartVAT = (g_shoppingCartTotalExcl + g_shoppingCartVAT) * g_vat();
     	g_shoppingCartTotalIncl += g_shoppingCartVAT;
     }
-	$('.quantity').keydown(function(event) {
-		return g_isValidQuantityCharPressed(event);
-	});
+    
+    $('.quantity').keydown(function(event) {
+        return g_isValidQuantityCharPressed(event);
+    });
+    
     $('#vat').html(g_addCommas(g_roundToTwoDecimals(g_shoppingCartVAT)));
     $('#totalExcl').html(g_addCommas(g_roundToTwoDecimals(g_shoppingCartTotalExcl)));
     $('#totalIncl').html(g_addCommas(g_roundToTwoDecimals(g_shoppingCartTotalIncl)));
@@ -326,6 +380,31 @@ function shoppingCartOnAllItemsAdded() {
     shoppingCartCheckItemsCount();
     g_basketHTML = '';
     alphaFilter.getInstance().HTML('#alphabet', '#shoppingCartitemlist');
+}
+
+function shoppingCartAddSummaryItems() {
+    
+    $.each(g_shoppingCartSummaryItems, function(key, itemArray) {
+        
+        var summaryItem = {};
+        summaryItem.Quantity = 0;
+
+        for (var i = 0; i < itemArray.length; ++i) {
+
+            if (i === 0) {
+                
+                summaryItem = itemArray[i];
+                summaryItem.ProductID = '';
+                summaryItem.Description = itemArray[i][DaoOptions.getValue('SummaryReportField')];
+                
+            } else {
+                
+                summaryItem.Quantity += itemArray[i].Quantity;           
+            }
+        }
+       
+        shoppingCartAddItem(summaryItem, false);
+    });
 }
 
 function shoppingCartCheckItemsCount() {
