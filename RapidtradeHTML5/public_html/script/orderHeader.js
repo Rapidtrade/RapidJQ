@@ -24,10 +24,10 @@ function orderHeaderOnPageShow() {
 
 function orderHeaderBind() {
 
-	$('#orderHeaderBackPage').click(function() {		
-		var page = sessionStorage.getItem('OrderHeaderReturnPage');
-		$.mobile.changePage(page ? page : 'shoppingCart.html');
-	});
+    $('#orderHeaderBackPage').click(function() {		
+            var page = sessionStorage.getItem('OrderHeaderReturnPage');
+            $.mobile.changePage(page ? page : 'shoppingCart.html');
+    });
 	
     $('#choosebtn').click(function () {
     	orderHeaderChooseOnClick();
@@ -190,6 +190,8 @@ function orderHeaderSaveOrder() {
 	if (!g_orderHeaderJsonForm.isValid())
 		return;
 	
+        $('#popupBasic p').text('Please wait, processing order');
+        
 	$('#popupBasic').popup('open');
 	
 	if (!g_orderHeaderOrderItems.length) {	
@@ -450,8 +452,31 @@ function orderHeaderGetVan(){
 	}
 }
 
+function orderHeaderAreItemsValid() {
+    
+    var isValid = true;
+    
+    if (DaoOptions.getValue('VanandWareOrder', 'false') == 'true') {
+        
+        for (var i = 0; i < g_orderHeaderOrder.orderItems.length; i++) {
+            
+            if (g_orderHeaderOrder.orderItems[i].Warehouse && (g_orderHeaderOrder.orderItems[i].Warehouse != g_currentBranch())) {
+                
+                isValid = false;
+                $('#popupBasic p').text('Error: The order items are not created with the current order type.');
+                break;
+            }
+        }
+    }
+    
+    return isValid;
+}
+
 function orderHeaderSaveFormedOrder() {
-	
+
+    if (!orderHeaderAreItemsValid())
+        return;
+    
     if (g_isOnline(false)) {   	
     	try {		
         	var orderHeaderInfo = {};  	

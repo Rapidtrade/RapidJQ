@@ -174,16 +174,20 @@ function g_currentCompany() {
  * If we force a user to a particular branch/warehouse
  */
 function g_currentBranch(){
-	if (!g_currentUser().Role) return g_currentCompany().BranchID.toUpperCase();
-	
-	var role = g_currentUser().Role.toLowerCase(); 
-	if (role.indexOf('wh=') != -1){
-		var wh = role.substring(role.indexOf('wh=')+3);
-		wh = (wh.indexOf(',') != -1 ) ? wh.substring(0,wh.indexOf(',')) : wh;
-		return wh.toUpperCase();
-	} else {
-		return g_currentCompany().BranchID.toUpperCase();
-	}
+    
+    if (DaoOptions.getValue('VanandWareOrder', 'false') == 'true')
+        return (g_pricelistInvoiceWarehouse ? g_pricelistInvoiceWarehouse : g_currentCompany().BranchID).toUpperCase(); 
+       
+    if (!g_currentUser().Role) return g_currentCompany().BranchID.toUpperCase();
+
+    var role = g_currentUser().Role.toLowerCase(); 
+    if (role.indexOf('wh=') != -1){
+            var wh = role.substring(role.indexOf('wh=')+3);
+            wh = (wh.indexOf(',') != -1 ) ? wh.substring(0,wh.indexOf(',')) : wh;
+            return wh.toUpperCase();
+    } else {
+            return g_currentCompany().BranchID.toUpperCase();
+    }
 	
 }
 

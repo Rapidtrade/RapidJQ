@@ -726,25 +726,25 @@ function pricelistFetchPricelist() {
  */
 function pricelistLoadBasket() {
 
-	if (!g_indexedDB && (DaoOptions.getValue('MobileOnlinePricelist') != 'true') && (DaoOptions.getValue('CanDoNonStock') != 'true')) {
-		pricelistFetchPricelistJob();
-		return;
-	} else {		    
-	    var dao = new Dao();
-	    var i = 0;
-	    g_pricelistCurrentBasket = [];
-	
-	    dao.cursor('BasketInfo', undefined, undefined,
-	    function (basketinfo) {
-	        if ((basketinfo.AccountID == g_currentCompany().AccountID) /*&& (basketinfo.Type == sessionStorage.getItem("currentordertype"))*/) {
-	            g_pricelistCurrentBasket[i++] = basketinfo;
-	        }
-	    }, undefined,
-	    function (event)  {
-	    	pricelistFetchPricelistJob();
-	    }
-	    );
-	}
+    if (!g_indexedDB && (DaoOptions.getValue('MobileOnlinePricelist') != 'true') && (DaoOptions.getValue('CanDoNonStock') != 'true')) {
+            pricelistFetchPricelistJob();
+            return;
+    } else {		    
+        var dao = new Dao();
+        var i = 0;
+        g_pricelistCurrentBasket = [];
+
+        dao.cursor('BasketInfo', undefined, undefined,
+        function (basketinfo) {
+            if ((basketinfo.AccountID == g_currentCompany().AccountID) /*&& (basketinfo.Type == sessionStorage.getItem("currentordertype"))*/) {
+                g_pricelistCurrentBasket[i++] = basketinfo;
+            }
+        }, undefined,
+        function (event)  {
+            pricelistFetchPricelistJob();
+        }
+        );
+    }
 }
 
 function pricelistFetchPricelistLive() {
@@ -799,10 +799,7 @@ function pricelistFetchPricelistJob() {
     g_pricelistItemsHtml = '';
     g_pricelistItems = [];
     
-    if (pricelistIsCheckWarehouseEnabled()) {
-        
-        g_pricelistInvoiceWarehouse = sessionStorage.getItem('currentordertype').replace('Invoice-', '');
-    }
+    g_pricelistInvoiceWarehouse = pricelistIsCheckWarehouseEnabled() ? sessionStorage.getItem('currentordertype').replace('Invoice-', '') : '';
 
     if ((DaoOptions.getValue('MobileOnlinePricelist') == 'true') || (!$.isEmptyObject(g_advancedSearchProducts))) { 
     	
