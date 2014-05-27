@@ -14,7 +14,7 @@ function productdetailInit() {
 	g_productdetailIsPriceChanged = false;
 	
 	if ($('#quantity').hasClass('ui-disabled'))
-		$('#quantity').removeClass('ui-disabled');
+            $('#quantity').removeClass('ui-disabled');
 	
 	g_pricelistView = 'detail';
 	$('#pricelistPanel, #searchBarPanel').hide();
@@ -256,21 +256,21 @@ function productdetailSetStock(stock) {
 
 function productdetailGetStock() {
 	
-	var stockValue = parseInt($('#stockvalue').text(), 10);
-	
-	if (isNaN(stock)) {
-		
-		for (var stock in g_stockDescriptions) {
-			
-			if ($('#stockvalue').text() == g_stockDescriptions[stock]) {
-				
-				stockValue = stock;
-				break;
-			}
-		}
-	}
-	
-	return stockValue;
+    var stockValue = parseInt($('#stockvalue').text(), 10);
+
+    if (isNaN(stock)) {
+
+        for (var stock in g_stockDescriptions) {
+
+                if ($('#stockvalue').text() == g_stockDescriptions[stock]) {
+
+                        stockValue = stock;
+                        break;
+                }
+        }
+    }
+
+    return stockValue;
 }
 
 function productdetailOnNettChange() {

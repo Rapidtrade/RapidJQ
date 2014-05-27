@@ -115,7 +115,7 @@ function menuOnMyTerritoryClick() {
 
 function menuOnTodayClick() {
 	
-	sessionStorage.setItem('orderheaderNext', 'activity');	
+    sessionStorage.setItem('orderheaderNext', 'activity');	
 }
 
 /*
@@ -238,10 +238,23 @@ function menuShowButtons() {
 }
 
 function menuFetchConfigData(){
-	
+        
 	menuFetchDiscounts();
 	menuFetchDiscountConditions();
-	DaoOptions.fetchOptions();
+	DaoOptions.fetchOptions(menuFetchWarehouses);
+}
+
+
+function menuFetchWarehouses() {
+    
+    if (DaoOptions.getValue('VanandWareOrder', 'false') == 'true') {
+    
+        var dao = new Dao();
+        dao.cursor('Stock', undefined, undefined,
+                   function (item) {
+                       g_pricelistWarehouses[item.ProductID] = item.Warehouse;
+                   });
+    }
 }
 
 function menuFetchUnsentObjects() {

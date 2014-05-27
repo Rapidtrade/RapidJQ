@@ -13,6 +13,7 @@ var g_numItemsPerPage = 100;
 var g_pricelistScrollto = false;
 
 var g_pricelistCaptureQuantityClicked = false;
+var g_pricelistInvoiceWarehouse = '';
 
 /**
  * Always call openDB, which in turn call's init
@@ -20,7 +21,12 @@ var g_pricelistCaptureQuantityClicked = false;
  */
 
 function pricelistOnPageShow() {
-	
+    
+    if (DaoOptions.getValue('VanandWareOrder', 'false') === 'true')
+        sessionStorage.removeItem('cachePricelist');
+    
+    $('#search').val(pricelistIsCheckWarehouseEnabled() ? '' : g_pricelistSearchPricelistText);
+	        
     pricelistHideFooter();
     overlaySetMenuItems();
 
@@ -779,12 +785,24 @@ function pricelistFetchPricelistLive() {
 	
 }
 
+function pricelistIsCheckWarehouseEnabled() {
+    
+    return (DaoOptions.getValue('VanandWareOrder', 'false') == 'true') && (sessionStorage.getItem('currentordertype').indexOf('Invoice-') != -1);
+}
+
 function pricelistFetchPricelistJob() {	
+        
     $.mobile.showPageLoadingMsg();
+    
     //pricelistFetchSearchText();
     $('#pricelists').empty();
     g_pricelistItemsHtml = '';
     g_pricelistItems = [];
+    
+    if (pricelistIsCheckWarehouseEnabled()) {
+        
+        g_pricelistInvoiceWarehouse = sessionStorage.getItem('currentordertype').replace('Invoice-', '');
+    }
 
     if ((DaoOptions.getValue('MobileOnlinePricelist') == 'true') || (!$.isEmptyObject(g_advancedSearchProducts))) { 
     	
@@ -1126,6 +1144,11 @@ function pricelistBindCaptureQuantity() {
 }
 
 function pricelistAddLine(pricelist) {
+    
+    if (pricelistIsCheckWarehouseEnabled() && (g_pricelistWarehouses[pricelist.id] != g_pricelistInvoiceWarehouse)) {
+       
+        return '';
+    }
 	
     var quantityText = '';
     
@@ -1205,6 +1228,7 @@ function pricelistAddLine(pricelist) {
         g_pricelistItems.push(pricelist);
         categories.getInstance().addCategory(pricelist.cn);
     }
+    
     return pricelistHtml;
 }
 

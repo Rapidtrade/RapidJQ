@@ -19,7 +19,7 @@
 		return option ? option.Value : defaultValue;
 	};
 	
-	constructor.fetchOptions = function() {
+	constructor.fetchOptions = function(onSuccess) {
 		
 		optionsArray = [];
 		
@@ -29,7 +29,11 @@
 					optionsArray.push(option);
 				},
 				undefined,
-				undefined);
+				function() {
+                                    
+                                    if (onSuccess)
+                                        onSuccess();
+                                });
 	};
 	
 	return constructor;

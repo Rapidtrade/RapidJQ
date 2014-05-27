@@ -138,18 +138,27 @@ function overlayBind() {
 		  
 		  if ($(this).closest('ul').attr('id') != 'mainMenu')
 			  return;
-		  
-		  companyLoadPanel(this.id.replace('Item', 'Panel'));		  
+		  		  
 		  sessionStorage.setItem('lastMenuItemId', this.id);
 		  
 		  if (sessionStorage.getItem('lastPanelId') == 'pricelistPanel') {
 			  
 			  if ($(this).hasClass('orderItem')) {
 				  
-				  sessionStorage.removeItem('fromAdvanced');
-				  sessionStorage.removeItem('fromCategory');
+				sessionStorage.removeItem('fromAdvanced');
+				sessionStorage.removeItem('fromCategory');
+                                  
+                                if (sessionStorage.getItem('lastPanelId') != 'pricelistPanel') {
+			  
+                                    advancedSearchResetStorage();
+                                    sessionStorage.removeItem('cachePricelist');
+                                }
+
+                                sessionStorage.setItem('currentordertype', $.trim($(this).text().replace('Create ', ''))); 
 			  }			  
 		  }
+                  
+                  companyLoadPanel(this.id.replace('Item', 'Panel'));
 		  
 		  overlayOnItemClick(this);
 	  });
@@ -168,18 +177,7 @@ function overlayBind() {
 			  productdetailShowPanel($(this).text());
 		  }
 	  });
-	  
-	  $('.orderItem').click(function() {
-		  
-		  if (sessionStorage.getItem('lastPanelId') != 'pricelistPanel') {
-			  
-			  advancedSearchResetStorage();
-			  sessionStorage.removeItem('cachePricelist');
-		  }
-		  
-		  sessionStorage.setItem('currentordertype', $.trim($(this).text().replace('Create ', ''))); 		  
-	  });
-	  
+	  	  
 	  $('#menuPanel a[data-role="button"]').click(function() {
 		  
 		  if ('home' == this.id)
