@@ -428,22 +428,23 @@ function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetI
 	    		pricelistCheckBasket();
 	    		
 	    		if (onSuccess)
-	    			onSuccess();
+                            onSuccess();
 	    		
 	    	} else {
 	    		
-	    		if (removeNode) { 
-	    			try {
-		    			var val = parseFloat($('#' + key + 'total').text()); 
-		    			g_shoppingCartTotalExcl -= val;
-		    			shoppingCartRecalcTotals();
-	    			} catch (err){
-	    				console.log(err.message);
-	    			}
-		    		$('#LI' + key).remove();
-		    		shoppingCartCheckItemsCount();		    		
-	    		} 
+                    if (removeNode) { 
+                            try {
+                                    var val = parseFloat($('#' + key + 'total').text()); 
+                                    g_shoppingCartTotalExcl -= val;
+                                    shoppingCartRecalcTotals();
+                            } catch (err){
+                                    console.log(err.message);
+                            }
+                            $('#LI' + key).remove();
+                            shoppingCartCheckItemsCount();		    		
+                    } 
 	    	}
+                
 	    	if (saveLostSale) shoppingCartSaveLostSales(key);
 	    });
     };

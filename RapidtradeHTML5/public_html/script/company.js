@@ -9,7 +9,7 @@ function companyOnPageShow(){
     overlaySetMenuItems();
 
     if (sessionStorage.getItem('companyBack') == 'today.html')
-            $('#companyBackButton .ui-btn-text').text('Today');
+        $('#companyBackButton .ui-btn-text').text('Today');
 
     companyOnPageShowSmall();
 
@@ -21,7 +21,7 @@ function companyOnPageShow(){
 
     $('#syncMasterChart').hide();
     
-     var field = /*DaoOptions.getValue('MasterChartFieldIndic', '')*/ 'Userfield10';    
+    var field = /*DaoOptions.getValue('MasterChartFieldIndic', '')*/ 'Userfield10';    
     if ((DaoOptions.getValue('AllowMasterChartDownload', 'false') == 'true') && (!field || g_currentCompany()[field] == 'Y')) {    
         
         var isInCallCycle = false;

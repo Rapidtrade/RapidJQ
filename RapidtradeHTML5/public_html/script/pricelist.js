@@ -132,8 +132,8 @@ function pricelistHideFooter() {
 	
 	if (sessionStorage.getItem('PricelistNoFooter') == 'true') {
 		
-		$('#pricelistFooter, #backbtn').hide();
-		$('#companyNextButton').show();
+            $('#pricelistFooter, #backbtn').hide();
+            $('#companyNextButton').show();
 	}
 }
 
@@ -154,9 +154,9 @@ function pricelistOnBackButtonClick() {
     	if (sessionStorage.getItem('fromCategory') == 'true')
             $('#backbtn .ui-btn-text').text('Categories');
     	else if (sessionStorage.getItem('fromAdvanced') == 'true')
-    		$('#backbtn .ui-btn-text').text('Advanced Search');
+            $('#backbtn .ui-btn-text').text('Advanced Search');
     	else
-        	$('#backbtn').hide();    		
+            $('#backbtn').hide();    		
 
     	pricelistHideFooter();
     	g_pricelistView = 'pricelist';
@@ -193,11 +193,11 @@ function pricelistOnBackButtonClick() {
         $('#backbtn .ui-btn-text').text('Back');
     	$('#backbtn').hide();    	
     	
-    } else	if ($('#advancedSearchPanel').is(':visible')) {
+    } else if ($('#advancedSearchPanel').is(':visible')) {
     	
-		$('#advancedSearchPanel').hide();
-		$('#pricelistPanel, #searchBarPanel').show();		
-	}
+        $('#advancedSearchPanel').hide();
+        $('#pricelistPanel, #searchBarPanel').show();		
+    }
 }
 
 function pricelistScrollTo(id) {
@@ -213,9 +213,9 @@ function pricelistScrollTo(id) {
 
 function pricelistBind() {
 	
-	(DaoOptions.getValue('AllowAdvancedSearch') != 'true') && (DaoOptions.getValue('MobileCategories') != 'true') ?  g_menuBind() : overlaySetMenuButton();
-	
-	$('#backbtn').unbind();
+    (DaoOptions.getValue('AllowAdvancedSearch') != 'true') && (DaoOptions.getValue('MobileCategories') != 'true') ?  g_menuBind() : overlaySetMenuButton();
+
+    $('#backbtn').unbind();
     $('#backbtn').click(pricelistOnBackButtonClick);
     
     $("#search").unbind();
@@ -755,6 +755,7 @@ function pricelistFetchPricelistLive() {
 	}
 	*/
 	if (DaoOptions.getValue('MustSearch', 'true') == 'true'){
+            
 		if ($('#search').val() == '' && !sessionStorage.getItem('onlinePricelistCategory') && $.isEmptyObject(g_advancedSearchProducts)) {
 			
 			$('#pricelists').hide();
@@ -1364,22 +1365,22 @@ function pricelistAddItemToBasket(itemIndex) {
 	
 	var getQuantity = function(itemIndex) {
 		
-		return DaoOptions.getValue('AllowPriceQuickCapt') == 'true' ? $('#quantity' + itemIndex).val() : pricelistGetNewQuantityForItem(itemIndex);
+            return DaoOptions.getValue('AllowPriceQuickCapt') == 'true' ? $('#quantity' + itemIndex).val() : pricelistGetNewQuantityForItem(itemIndex);
 	};
 	
 	var deleteItemOnSuccess = function() {
 		
-		$('#' + g_pricelistItems[itemIndex].id).html('');
+            $('#' + g_pricelistItems[itemIndex].id).html('');
 	};
 	
 	if (!getQuantity(itemIndex)) {
 
-		shoppingCartDeleteItem(g_pricelistItems[itemIndex].id + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID, 
-				DaoOptions.getValue('LostSaleActivityID') != undefined, 
-				undefined, 
-				deleteItemOnSuccess, false);
-		
-		return;
+            shoppingCartDeleteItem(g_pricelistItems[itemIndex].id + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID, 
+                            DaoOptions.getValue('LostSaleActivityID') != undefined, 
+                            undefined, 
+                            deleteItemOnSuccess, false);
+
+            return;
 	}	
 	
 	var unit = parseInt(g_pricelistItems[itemIndex].u, 10);
@@ -1389,7 +1390,7 @@ function pricelistAddItemToBasket(itemIndex) {
 	if (g_isQuantityValid(getQuantity(itemIndex), unit)) {
 	
 		g_addProductToBasket(
-				g_pricelistItems[itemIndex].id,
+                    g_pricelistItems[itemIndex].id,
 	            g_currentCompany().SupplierID,
 	            g_currentCompany().AccountID,
 	            getQuantity(itemIndex),
@@ -1408,7 +1409,8 @@ function pricelistAddItemToBasket(itemIndex) {
 	           g_pricelistItems[itemIndex].v
 	    );
             //clear search after adding to basket so its easy to re-search
-            $('#search').val('');
+            //commented out because this caused the issue with Next button (https://rapidtrade.basecamphq.com/projects/11434985-midas/todo_items/184747466/comments)
+//            $('#search').val(''); 
 		
 	    g_clearCacheDependantOnBasket(false);
 	    pricelistCheckBasket();

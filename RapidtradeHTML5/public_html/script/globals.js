@@ -391,7 +391,7 @@ function g_clearCacheDependantOnBasket(resetCounter) {
 	sessionStorage.setItem('cachePricelist', null);
 	
 	if (resetCounter)
-		g_pricelistItemsOnPage = 0;
+            g_pricelistItemsOnPage = 0;
 }
 
 function g_isValidQuantityCharPressed(event) {

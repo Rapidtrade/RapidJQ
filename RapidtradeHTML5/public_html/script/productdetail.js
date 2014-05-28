@@ -988,7 +988,7 @@ function productdetailOkClicked(checkStock) {
             }
                         
             productdetailSave(qty, type, g_pricelistSelectedProduct);
-            g_clearCacheDependantOnBasket();
+            g_clearCacheDependantOnBasket(false);
             pricelistCheckBasket();
             $('#' + g_pricelistSelectedProduct.ProductID).html(qty);
             if (!g_vanSales && !g_pricelistIsAnyItemAdded) {
