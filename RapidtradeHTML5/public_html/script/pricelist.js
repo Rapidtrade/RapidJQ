@@ -1445,21 +1445,20 @@ function pricelistStoreItemData(itemIndex) {
     g_pricelistSelectedProduct.RepDiscount = g_pricelistItems[itemIndex].RepDiscount;
     g_pricelistSelectedProduct.VAT = g_pricelistItems[itemIndex].v;
     		
-	g_pricelistSelectedProduct.Similar = g_pricelistItems[itemIndex].sim;
-	g_pricelistSelectedProduct.UserField01 = g_pricelistItems[itemIndex].u1;
-	g_pricelistSelectedProduct.UserField02 = g_pricelistItems[itemIndex].u2;
-	g_pricelistSelectedProduct.UserField03 = g_pricelistItems[itemIndex].u3;
-	g_pricelistSelectedProduct.UserField04 = g_pricelistItems[itemIndex].u4;
-	g_pricelistSelectedProduct.UserField05 = g_pricelistItems[itemIndex].u5;
-	g_pricelistSelectedProduct.UserField06 = g_pricelistItems[itemIndex].u6;
-	g_pricelistSelectedProduct.UserField07 = g_pricelistItems[itemIndex].u7;
-	g_pricelistSelectedProduct.UserField08 = g_pricelistItems[itemIndex].u8;
-	g_pricelistSelectedProduct.UserField09 = g_pricelistItems[itemIndex].u9;
-	g_pricelistSelectedProduct.UserField10 = g_pricelistItems[itemIndex].u10;
-	
-	if (g_pricelistItems[itemIndex].Stock) g_pricelistSelectedProduct.Stock = g_pricelistItems[itemIndex].Stock;
-	if (g_pricelistItems[itemIndex].Basket) g_pricelistSelectedProduct.Basket = g_pricelistItems[itemIndex].Basket;
-		
+    g_pricelistSelectedProduct.Similar = g_pricelistItems[itemIndex].sim;
+    g_pricelistSelectedProduct.UserField01 = g_pricelistItems[itemIndex].u1;
+    g_pricelistSelectedProduct.UserField02 = g_pricelistItems[itemIndex].u2;
+    g_pricelistSelectedProduct.UserField03 = g_pricelistItems[itemIndex].u3;
+    g_pricelistSelectedProduct.UserField04 = g_pricelistItems[itemIndex].u4;
+    g_pricelistSelectedProduct.UserField05 = g_pricelistItems[itemIndex].u5;
+    g_pricelistSelectedProduct.UserField06 = g_pricelistItems[itemIndex].u6;
+    g_pricelistSelectedProduct.UserField07 = g_pricelistItems[itemIndex].u7;
+    g_pricelistSelectedProduct.UserField08 = g_pricelistItems[itemIndex].u8;
+    g_pricelistSelectedProduct.UserField09 = g_pricelistItems[itemIndex].u9;
+    g_pricelistSelectedProduct.UserField10 = g_pricelistItems[itemIndex].u10;
+
+    g_pricelistSelectedProduct.Stock = g_pricelistItems[itemIndex].Stock;
+    g_pricelistSelectedProduct.Basket = g_pricelistItems[itemIndex].Basket;		
     
     g_pricelistSelectedProduct.ItemIndex = itemIndex;
 }

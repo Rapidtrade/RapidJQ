@@ -143,20 +143,23 @@ function overlayBind() {
 		  
 		  if (sessionStorage.getItem('lastPanelId') == 'pricelistPanel') {
 			  
-			  if ($(this).hasClass('orderItem')) {
-				  
-				sessionStorage.removeItem('fromAdvanced');
-				sessionStorage.removeItem('fromCategory');
-                                  
-                                if (sessionStorage.getItem('lastPanelId') != 'pricelistPanel') {
-			  
-                                    advancedSearchResetStorage();
-                                    sessionStorage.removeItem('cachePricelist');
-                                }
+                    if ($(this).hasClass('orderItem')) {
 
-                                sessionStorage.setItem('currentordertype', $.trim($(this).text().replace('Create ', ''))); 
-			  }			  
-		  }
+                          sessionStorage.removeItem('fromAdvanced');
+                          sessionStorage.removeItem('fromCategory');
+                          
+                    }
+                          
+		  } else {
+                      
+                    advancedSearchResetStorage();
+                    sessionStorage.removeItem('cachePricelist');                      
+                  }
+                  
+                  if ($(this).hasClass('orderItem')) {
+                      
+                    sessionStorage.setItem('currentordertype', $.trim($(this).text().replace('Create ', '')));
+                  }
                   
                   companyLoadPanel(this.id.replace('Item', 'Panel'));
 		  
