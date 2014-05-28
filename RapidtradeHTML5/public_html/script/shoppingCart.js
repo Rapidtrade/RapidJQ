@@ -434,7 +434,7 @@ function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetI
 	    		
                     if (removeNode) { 
                             try {
-                                    var val = parseFloat($('#' + key + 'total').text()); 
+                                    var val = parseFloat($('#' + key + 'total').text().replace(/[,]/g, '')); 
                                     g_shoppingCartTotalExcl -= val;
                                     shoppingCartRecalcTotals();
                             } catch (err){

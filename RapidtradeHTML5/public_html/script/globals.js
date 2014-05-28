@@ -640,6 +640,7 @@ function g_fetchAvailableCredit() {
 	};
 	
 	var url = DaoOptions.getValue('LiveCreditCheckURL') + '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&branchID=' + g_currentCompany().BranchID;
+
 	g_ajaxget(url, onSuccess, onError);
 }
 
