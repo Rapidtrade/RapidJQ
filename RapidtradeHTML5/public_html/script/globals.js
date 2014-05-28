@@ -629,9 +629,9 @@ function g_fetchAvailableCredit() {
 	var onSuccess = function(json) {
 		
 		if (json)
-			sessionStorage.setItem(g_currentCompany().AccountID + 'AvailableCredit', json._AvailableCredit);
+                    sessionStorage.setItem(g_currentCompany().AccountID + 'AvailableCredit', json._AvailableCredit);
 		else
-			console.log('No available credit fetched.');
+                    console.log('No available credit fetched.');
 	};
 	
 	var onError = function() {

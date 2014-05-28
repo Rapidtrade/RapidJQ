@@ -343,6 +343,7 @@ function orderHeaderRemovedFromCartSuccess(){
     	
     } else {
     	
+        g_fetchAvailableCredit();
     	sessionStorage.setItem('lastPanelId', sessionStorage.getItem('orderheaderNext') + 'Panel');
     	$.mobile.changePage('company.html');
     }
