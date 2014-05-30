@@ -181,7 +181,7 @@ function Dao() {
     	}
     };
     
-    this.fetchPricelist = function (searchText, ponsuccessread, ponerror, poncomplete, offset, limit) {
+    this.fetchPricelist = function (searchText, ponsuccessread, ponerror, poncomplete, offset, limit, warehouse) {
     	
     	searchText = searchText || '';
     	
@@ -194,12 +194,12 @@ function Dao() {
     			//TODO: implement offset / limit in indexeddb
     			this.idbFetchPricelist(searchWords, ponsuccessread, ponerror, poncomplete);
     		else 
-    			this.sqlFetchPricelist(searchWords, ponsuccessread, ponerror, poncomplete, offset, limit);
+    			this.sqlFetchPricelist(searchWords, ponsuccessread, ponerror, poncomplete, offset, limit, warehouse);
     		
     	} catch (e) {
     		
     		g_pricelistSortField = 'des';
-    		(g_indexedDB ? this.idbFetchPricelist : this.sqlFetchPricelist)(searchWords, ponsuccessread, ponerror, poncomplete);
+    		(g_indexedDB ? this.idbFetchPricelist : this.sqlFetchPricelist)(searchWords, ponsuccessread, ponerror, poncomplete, offset, limit, warehouse);
     	}
     };  
 
@@ -637,13 +637,13 @@ function Dao() {
             
                 for (var i = 0; i < searchWords.length; ++i) {
                 	
-					word = searchWords[i].toLowerCase();
-					
-					isFound = isFound && ((productId.indexOf(word) != -1) || (description.indexOf(word) != -1));
-					
-					if (!isFound)
-						break;
-				}
+                    word = searchWords[i].toLowerCase();
+
+                    isFound = isFound && ((productId.indexOf(word) != -1) || (description.indexOf(word) != -1));
+
+                    if (!isFound)
+                            break;
+                }
             }
             
             return isFound;
@@ -1133,7 +1133,7 @@ function Dao() {
     };
     
 
-    this.sqlFetchPricelist = function(searchWords, ponsuccessread, ponerror, poncomplete, offset, limit) {
+    this.sqlFetchPricelist = function(searchWords, ponsuccessread, ponerror, poncomplete, offset, limit, warehouse) {
         
         isBarCodeSearch = (searchWords.length == 1) && (searchWords[0].indexOf('b":"') != -1);
         
@@ -1144,7 +1144,7 @@ function Dao() {
         	if (includeCategoryToggle != 'on') {
         		query = 'select p.json, b.index3 as Basket, s.index3 as Stock from Pricelists p ' + 
         	    		'left outer join basketinfo b on p.index3 = b.index2 and b.index1 = ? ' +  
-        	    		'left outer join stock s on s.index1 = p.index3 and s.index2 = ? ' +  
+        	    		(DaoOptions.getValue('VanandWareOrder', 'false') === 'true' ? 'inner' : 'left outer') + ' join stock s on s.index1 = p.index3 and s.index2 = ? ' +  
         	    		'WHERE p.index1 = ? AND ';
             	for (var i = 0; i < searchWords.length; ++i) {        	        		
             		query += 'p.json like \'%' + searchWords[i].replace(' ', '%') + '%\'';
@@ -1156,7 +1156,7 @@ function Dao() {
         		query = 'select p.json, b.index3 as Basket, s.index3 as Stock  ' +
 						' from Pricelists p  ' +
 						' left outer join basketinfo b on p.index3 = b.index2 and b.index1 = ?  ' +
-						' left outer join stock s on s.index1 = p.index3 and s.index2 = ?  ' +
+						(DaoOptions.getValue('VanandWareOrder', 'false') === 'true' ? 'inner' : 'left outer') + ' join stock s on s.index1 = p.index3 and s.index2 = ?  ' +
 						' WHERE p.index1 = ?  ' +
 						'   AND p.index4 in ( ' +
 						'       select distinct p.index4 ' +
@@ -1174,7 +1174,7 @@ function Dao() {
         	// limit 50 offset 0
         	query += ' ORDER BY p.index2 limit ' + limit + ' offset ' + offset;
         	console.log(query);
-            tx.executeSql(query,[g_currentCompany().AccountID,g_currentCompany().BranchID,g_currentCompany().Pricelist], 
+            tx.executeSql(query,[g_currentCompany().AccountID, warehouse ? warehouse : g_currentCompany().BranchID, g_currentCompany().Pricelist], 
             		function (tx, results) {
 		                try {		              
 		                	if (ponsuccessread)

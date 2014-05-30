@@ -241,20 +241,7 @@ function menuFetchConfigData(){
         
 	menuFetchDiscounts();
 	menuFetchDiscountConditions();
-	DaoOptions.fetchOptions(menuFetchWarehouses);
-}
-
-
-function menuFetchWarehouses() {
-    
-    if (DaoOptions.getValue('VanandWareOrder', 'false') == 'true') {
-    
-        var dao = new Dao();
-        dao.cursor('Stock', undefined, undefined,
-                   function (item) {
-                       g_pricelistWarehouses[item.ProductID] = item.Warehouse;
-                   });
-    }
+	DaoOptions.fetchOptions();
 }
 
 function menuFetchUnsentObjects() {

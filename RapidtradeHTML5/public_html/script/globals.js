@@ -38,7 +38,6 @@ var g_pricelistTop = 50;
 var g_pricelistItemsOnPage;
 var g_pricelistCurrentBasket = [];
 var g_pricelistSortField = 'des';
-var g_pricelistWarehouses = {};
 
 /*
  * Discount variables
