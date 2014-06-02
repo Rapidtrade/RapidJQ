@@ -86,7 +86,7 @@ var g_menuGRVLabelText = 'Receive my stock';
 /*
  * Stock variables
  */
-var g_stockDescriptions = {'-9999': 'Not available', '-9998': 'Back Order'};
+var g_stockDescriptions = {'-9999': 'N/A', '-9998': 'Back Order'};
 
 /*
  * global functions

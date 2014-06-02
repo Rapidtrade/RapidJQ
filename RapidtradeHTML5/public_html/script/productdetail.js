@@ -189,11 +189,11 @@ function productdetailInit() {
         
         var onSuccess = function() {
             
-            if ($('#messagePopup p').text())
-                $('#messagePopup').popup('open');   
+            if ($('#productMessagePopup p').text())
+                $('#productMessagePopup').popup('open');   
         };
         
-        productdetailFetchLongText(tabId, '#messagePopup p', onSuccess);
+        productdetailFetchLongText(tabId, '#productMessagePopup p', onSuccess);
         $('#cancelButton').addClass('invisible');
     }
 }
@@ -221,8 +221,8 @@ function productdetailBind() {
         }
     });
     
-    $('#messagePopup a').unbind();
-    $('#messagePopup a').click(function() {
+    $('#productMessagePopup a').unbind();
+    $('#productMessagePopup a').click(function() {
     	if ((this.id == 'okButton') && (productdetailGetStock() == -9998))
     		productdetailOkClicked(false);
     });
@@ -246,12 +246,12 @@ function productdetailBind() {
 
 function productdetailCanChangeNett(productId) {
 	
-	return (DaoOptions.getValue('CanDoNonStock') == 'true') && (productId.toLowerCase().indexOf('nonstock') != -1);
+    return (DaoOptions.getValue('CanDoNonStock') == 'true') && (productId.toLowerCase().indexOf('nonstock') != -1);
 }
 
 function productdetailSetStock(stock) {
-	
-	$('#stockvalue').text((g_stockDescriptions[stock] || stock));
+
+    $('#stockvalue').text((g_stockDescriptions[stock] || stock));
 }
 
 function productdetailGetStock() {
@@ -511,14 +511,10 @@ function productdetailFetchLongText(tabId, selector, onSuccess) {
     	
         $(selector).html(json.LongText);
         
-        if (json.LongText) {
-        	
-            $(selector).show();
+        if ($(selector).parent().data('role') !== 'popup') {
             
-        } else {
-        	
-            $(selector).hide();
-        };
+            $(selector).toggle($.trim(json.LongText) != '');
+        }
         
         if (onSuccess)
             onSuccess();
@@ -555,14 +551,14 @@ function productdetailGetImageUrl(productId, size) {
 
 function productdetailFillWarehouses(stockArray) {
 	
-	g_productdetailStockValues = [];
-	$('#whChoiceDiv select').empty();
-	
-	for ( var i = 0; i < stockArray.length; i++) {
-		
-		g_productdetailStockValues[stockArray[i].Warehouse] = stockArray[i].Stock;		
-		$('#whChoiceDiv select').append($("<option></option>").attr("value", stockArray[i].Warehouse).text(stockArray[i].Warehouse));
-	}
+    g_productdetailStockValues = [];
+    $('#whChoiceDiv select').empty();
+
+    for ( var i = 0; i < stockArray.length; i++) {
+
+            g_productdetailStockValues[stockArray[i].Warehouse] = stockArray[i].Stock;		
+            $('#whChoiceDiv select').append($("<option></option>").attr("value", stockArray[i].Warehouse).text(stockArray[i].Warehouse));
+    }
 			
     $("#whChoiceDiv select option").filter(function() {        	
         return $(this).attr('value') == g_currentCompany().BranchID;
@@ -807,7 +803,7 @@ function productdetailPriceOnSuccess (json) {
     if (stockDataArray) {
     	
     	if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true')
-    		productdetailFillWarehouses(stockDataArray);
+            productdetailFillWarehouses(stockDataArray);
     	
     	for (var i = 0; i < stockDataArray.length; ++i) {
     		
@@ -911,9 +907,9 @@ function productdetailOkClicked(checkStock) {
     
     var showMessage = function(message) {
         
-        $('#messagePopup p').text(message || 'Not available to purchase');
-        $('#messagePopup').popup('open');
-        $('#messagePopup #cancelButton').removeClass('invisible').toggle(-9998 == stock);			
+        $('#productMessagePopup p').text(message || 'Not available to purchase');
+        $('#productMessagePopup').popup('open');
+        $('#productMessagePopup #cancelButton').removeClass('invisible').toggle(-9998 == stock);			
         $('#quantity').toggleClass('ui-disabled', -9999 == stock);
     }
     
