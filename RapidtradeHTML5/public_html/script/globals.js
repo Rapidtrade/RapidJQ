@@ -643,6 +643,17 @@ function g_fetchAvailableCredit() {
 	g_ajaxget(url, onSuccess, onError);
 }
 
+function g_fetchMasterChartBarcode(key, onSuccess) {
+    
+    var callback = function(item) {
+                
+        onSuccess(item[DaoOptions.getValue('MasterChrtBCodeField')]);
+    };
+    
+    var dao = new Dao();    
+    dao.get('OrderItems', key, callback);
+}
+
 function g_getDefaults(){
     
 }

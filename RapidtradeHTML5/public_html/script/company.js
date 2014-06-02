@@ -21,7 +21,7 @@ function companyOnPageShow(){
 
     $('#syncMasterChart').hide();
     
-    var field = /*DaoOptions.getValue('MasterChartFieldIndic', '')*/ 'Userfield10';    
+    var field = DaoOptions.getValue('MasterChartFieldIndic', '');    
     if ((DaoOptions.getValue('AllowMasterChartDownload', 'false') == 'true') && (!field || g_currentCompany()[field] == 'Y')) {    
         
         var isInCallCycle = false;

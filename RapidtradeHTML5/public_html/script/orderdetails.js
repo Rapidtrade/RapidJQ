@@ -316,7 +316,7 @@ function orderdetailsFetchOrderItems() {
 	        
 	        var nettValue = orderItem.RepNett ? orderItem.RepNett : orderItem.Nett;
 	                
-	        g_append('#orderitemlist', '<li data-theme="c">' +
+	        g_append('#orderitemlist', '<li data-theme="c" id="' + syncGetKeyField(orderItem, 'OrderItems') + '">' +
                     '   <a><p class="ui-li-heading"><strong>' + orderItem.Description + '</strong></p>' +
                     '   <table class="ui-li-desc historyOrderItems"><tr><td class="productId">' + orderItem.ProductID + '</td><td class="descr">' + orderItem.Quantity + '</td><td class="value">' + g_roundToTwoDecimals(nettValue) + '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td></tr></table></a>' +
                     '	<a onclick="orderdetailsSendOrderItem(\'' + 
@@ -344,6 +344,21 @@ function orderdetailsFetchOrderItems() {
 	  
 	    $.mobile.changePage("#orderdetails", { transition: "none" });
 	    $('#orderitemlist').listview('refresh');
+            
+            if ((DaoOptions.getValue('AllowMasterChartDownload', 'false') == 'true')) {
+            
+                $('#orderitemlist li').each(function() {
+
+                    var that = this;
+
+                    g_fetchMasterChartBarcode(this.id, function(barcode) {
+
+                       var $description = $(that).find('p.ui-li-heading strong');
+                       $description.text($description.text() + ' (' + barcode + ' )');                    
+                    });
+                });
+            }
+            
 	    $.mobile.hidePageLoadingMsg();
 	};
 	

@@ -724,7 +724,7 @@ function syncGetKeyField(item, table) {
             break;
         
         case "OrderItems":
-            keyf = item.SupplierID + item.OrderID + item.ItemID;
+            keyf = item.SupplierID + item.OrderID + item.ProductID;
             break;        
 	}
 	
