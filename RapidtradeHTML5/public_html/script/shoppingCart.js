@@ -451,6 +451,7 @@ function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetI
 }
 
 function shoppingCartSaveLostSales(key){
+    var dao = new Dao();
     dao.get('BasketInfo', key,
   	      function (basketInfo) {
   	          if (basketInfo.key == key) {
