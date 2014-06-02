@@ -1172,7 +1172,7 @@ function pricelistAddLine(pricelist) {
     }
     
     var stockValue = pricelist.Stock !== undefined ? g_stockDescriptions[pricelist.Stock] || pricelist.Stock.toString() : 'N/A';
-    var stockText = DaoOptions.getValue('HideStockBubble', 'false') == 'true' ? '' : '<span id="' + pricelist.id + 'Stock" class="ui-li-count">' + stockValue + '</span>';
+    var stockText = g_indexedDB || (DaoOptions.getValue('HideStockBubble', 'false') == 'true') ? '' : '<span id="' + pricelist.id + 'Stock" class="ui-li-count">' + stockValue + '</span>';
     if (stockValue==="list-divider") {
         pricelistHtml='<li data-role="list-divider">' + pricelist.des + '</li>';
     }
