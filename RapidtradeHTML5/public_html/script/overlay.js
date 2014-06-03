@@ -113,10 +113,49 @@ function overlayInit(page) {
                     
 			
 		} else {
+                    
+                    if (DaoOptions.getValue('extrasearch')) {
+
+                        var extraMenuItemArray = JSON.parse(DaoOptions.getValue('extrasearch'));
+
+                        for ( var i = 0; i < extraMenuItemArray.length; i++)
+                                menuPanel += '<li id="' + extraMenuItemArray[i].search + '">' + extraMenuItemArray[i].label + '</li>';
+                    }	 
 			
                     menuPanel += pricelistMenuEnd;
+                    
+                    if (DaoOptions.getValue('ShowProductInfo') == 'true') {  
+                        menuPanel += '<div id="productDetailsMenu">' +
+                                    '<ul data-role="listview" data-inset="true" data-divider-theme="d">' +
+                                        '<li data-role="list-divider" role="heading">Product Details</li>' +
+                                        '<li id="price" class="ui-btn-active">Price</li>';
+                                
+                         menuPanel += '<li>Product Info</li>'; 
+                     }
+                    menuPanel += pricelistMenuEnd;
 		}
-	}
+	} else {
+                    
+                    if (DaoOptions.getValue('extrasearch')) {
+
+                        var extraMenuItemArray = JSON.parse(DaoOptions.getValue('extrasearch'));
+
+                        for ( var i = 0; i < extraMenuItemArray.length; i++)
+                                menuPanel += '<li id="' + extraMenuItemArray[i].search + '">' + extraMenuItemArray[i].label + '</li>';
+                    }	 
+			
+                    menuPanel += pricelistMenuEnd;
+                    
+                    if (DaoOptions.getValue('ShowProductInfo') == 'true') {  
+                        menuPanel += '<div id="productDetailsMenu">' +
+                                    '<ul data-role="listview" data-inset="true" data-divider-theme="d">' +
+                                        '<li data-role="list-divider" role="heading">Product Details</li>' +
+                                        '<li id="price" class="ui-btn-active">Price</li>';
+                                
+                         menuPanel += '<li>Product Info</li>'; 
+                     }
+                    menuPanel += pricelistMenuEnd;
+		}
 	
 	if (g_currentUser().Role != 'CUST') 
 		menuPanel += '<a data-role="button" href="myterritory.html" data-icon="search" data-theme="b">My Customers</a>';
