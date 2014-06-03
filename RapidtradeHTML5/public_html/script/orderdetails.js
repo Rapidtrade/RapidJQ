@@ -351,7 +351,7 @@ function orderdetailsFetchOrderItems() {
 
                     var that = this;
 
-                    g_fetchMasterChartBarcode(this.id, function(barcode) {
+                    orderdetailsFetchMasterChartBarcode(this.id, function(barcode) {
 
                        var $description = $(that).find('p.ui-li-heading strong');
                        $description.text($description.text() + ' (' + barcode + ' )');                    
@@ -369,7 +369,18 @@ function orderdetailsFetchOrderItems() {
 	};
 	
 	g_ajaxget(url, success, error);
- };	
+ };
+ 
+ function orderdetailsFetchMasterChartBarcode(key, onSuccess) {
+    
+    var callback = function(item) {
+                
+        onSuccess(item[DaoOptions.getValue('MasterChrtBCodeField')]);
+    };
+    
+    var dao = new Dao();    
+    dao.get('OrderItems', key, callback);
+}
  
  function orderdetailsSendItemToBasket(productID, quantity, nett, description, discount, gross, userField01,  repNett, repDiscount, unit, userField02, warehouse, vat, showInfoMessage) {
 

@@ -803,8 +803,10 @@ function Dao() {
                 return item.ProductID;
             } else if ((table == 'ProductCategories2') || (table == 'ProductCategory2Link')) {
                 return item.p;
+            } else if (table == 'OrderItems') {
+                return $.trim(item.AccountID) + $.trim(item.ProductID);
             }
-            
+
             return '';
             
         } catch (error) {

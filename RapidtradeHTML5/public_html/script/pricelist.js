@@ -979,44 +979,74 @@ function pricelistBarcodeOnError(pricelist) {
     $('#barcodescanned').removeClass('greypanel');
     $('#barcodescanned').addClass('redpanel');
     $('#barcodescanned').show();
-	$.mobile.hidePageLoadingMsg();
-	$('#search').val('');
+    
+    $('#search').val('');
     $('#search').focus();
-	$.mobile.hidePageLoadingMsg();
+    $.mobile.hidePageLoadingMsg();
 }
 
 function pricelistOnComplete(event) {
 	
-	$('#pricelists').toggle(g_pricelistItemsHtml != '');
-	$('#pricelistInfoDiv').toggle(g_pricelistItemsHtml == '');
-	$('#NextPrevButtons').toggle(g_pricelistItemsHtml != '');
-	
-	if (pricelistIsPricelistVisible()) {
-		
-		if (!g_pricelistItemsHtml) {			
-			
-			var infoText = sessionStorage.getItem('fromCategory') == 'true' || sessionStorage.getItem('fromAdvanced') == 'true' || $.trim($('#search').val()) != '' ?  'No products found.' : 'Enter in search criteria to list products.';			
-			$('.infoPanelText').text(infoText);
-			$.mobile.hidePageLoadingMsg();
-			
-			return;
-		}
-		
-	    g_append('#pricelists', g_pricelistItemsHtml);
-	    $('#pricelists').listview('refresh');
-	    $('#pricelists input').trigger('create'); //.textinput( "refresh" );
+    $('#pricelists').toggle(g_pricelistItemsHtml != '');
+    $('#pricelistInfoDiv').toggle(g_pricelistItemsHtml == '');
+    $('#NextPrevButtons').toggle(g_pricelistItemsHtml != '');
+
+    if (pricelistIsPricelistVisible()) {
+
+        if (!g_pricelistItemsHtml) {			
+
+                var infoText = sessionStorage.getItem('fromCategory') == 'true' || sessionStorage.getItem('fromAdvanced') == 'true' || $.trim($('#search').val()) != '' ?  'No products found.' : 'Enter in search criteria to list products.';			
+                $('.infoPanelText').text(infoText);
+                $.mobile.hidePageLoadingMsg();
+
+                return;
+        }
+
+        g_append('#pricelists', g_pricelistItemsHtml);
+        $('#pricelists').listview('refresh');
+        $('#pricelists input').trigger('create'); //.textinput( "refresh" );
 //	    alphaFilter.getInstance().HTML('#alphafilter', '#pricelists');
-	    pricelistBindCaptureQuantity();
-	}
+        pricelistBindCaptureQuantity();
+
+        if ((DaoOptions.getValue('AllowMasterChartDownload', 'false') === 'true')) {
+
+            $('#pricelists li').each(function() {
+
+                var that = this;
+
+                pricelistFetchMasterChartBarcode(this.id.replace('li', ''), function(barcode) {
+
+                   var $description = $(that).find('.ui-li-desc');
+                   $description.text($description.text() + ' (' + barcode + ' )');                    
+                });
+            });
+        }
+
+    }
 	
     g_advancedSearchProducts = [];
     pricelistToCache();
     g_pricelistItemsHtml = '';
     pricelistShowNextPrev();
     pricelistScrollTo('scrollto');
-    
 }
 
+function pricelistFetchMasterChartBarcode(productId, onSuccess) {
+    
+    var barcodeFetched = false;
+    
+    var callback = function(item) {
+        
+        if (!barcodeFetched) {
+         
+            onSuccess(item[DaoOptions.getValue('MasterChrtBCodeField')]);
+            barcodeFetched = true;
+        }        
+    };
+    
+    var dao = new Dao();    
+    dao.index('OrderItems', $.trim(g_currentCompany().AccountID) + $.trim(productId), 'index1', callback);
+}
 
 
 function pricelistShowNextPrev() {
