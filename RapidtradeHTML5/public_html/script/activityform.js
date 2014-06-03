@@ -274,82 +274,89 @@ function activityFormTakePhotoOnError(errorMessage) {
 }
 
 function activityFormSave() {
+    
+    if (g_canTakePhoto && ($.trim(g_activityFormNewActivity.Label).match(/\*{2}$/)) && !g_activityFormPhotoData) {
+        
+        $('#activityErrorMessagePopup p').text('You must take a photo.');
+        $('#activityErrorMessagePopup').popup('open');
+        return;
+    }
 	
-	$.mobile.showPageLoadingMsg();
-	
-	try {			
-			if (!g_activityFormSelectedActivityType.DueDateAllowed) {			
-				activityFormSetDateTimeToNow();
-				$(g_activityFormParentDivSelector + ' #duration').val(30);
-				var now = moment();
-				g_activityFormNewActivity.DueDate = now.toDate();
-				now.add('h',1);
-				g_activityFormNewActivity.EndDate = now.toDate();
-			} else {
-				var mom = new moment($(g_activityFormParentDivSelector + ' #duedate').val() + $(g_activityFormParentDivSelector + ' #time').val(), "YYYY-MM-DD HH:mm");
-				var now = mom.toDate();
-				now.setHours(now.getHours() - now.getTimezoneOffset() / 60);
-				g_activityFormNewActivity.DueDate = now;
-				var mom2 = new moment(now);
-				mom2.add('hours', 1); //$("#duration").val());
-				g_activityFormNewActivity.EndDate = mom2.toDate(); //new Date(g_activityFormNewActivity.DueDate.getTime() + $("#duration").val() * 60 * 1000); 				
-			}
-		
-		    g_activityFormNewActivity.EventID = g_activityFormNewActivity.EventID || createId();
-			g_activityFormNewActivity.Deleted = false;
-			g_activityFormNewActivity.EventTypeID = g_activityFormSelectedActivityType.EventID;
-			g_activityFormNewActivity.AccountID = g_currentCompany().AccountID;
-			g_activityFormNewActivity.SupplierID = g_currentCompany().SupplierID;
-			g_activityFormNewActivity.Notes = $(g_activityFormParentDivSelector + ' #note').val();
-			g_activityFormNewActivity.UserID = g_currentUser().UserID;		
-			g_activityFormNewActivity.key = g_currentCompany().SupplierID + g_currentCompany().AccountID + g_activityFormNewActivity.EventID;
-			
-			if ((1 == g_activityFormSelectedActivityType.FieldType) && (!$.isNumeric($(g_activityFormParentDivSelector + ' #number').val()))) {
-				
-			    g_alert("Please enter numeric data.");
-			    $.mobile.hidePageLoadingMsg();
-				return;
-			}
-			
-			if (g_activityFormSelectedActivityType.FieldType == 0)
-				g_activityFormNewActivity.Data = $(g_activityFormParentDivSelector + ' #textType').val();
-			
-			else if (g_activityFormSelectedActivityType.FieldType == 1)
-				g_activityFormNewActivity.Data = $(g_activityFormParentDivSelector + ' #number').val();	
-			
-			else if (4 == g_activityFormSelectedActivityType.FieldType) {
-				
-				var data = [];			
-				$(g_activityFormParentDivSelector + ' input:checkbox[name=datachoice]:checked').each(function() {
-					data.push($(this).val());
-				});
-				
-				if (!data.length) {
-					
-				    g_alert("You need to select an option.");
-				    $.mobile.hidePageLoadingMsg();
-					return;					
-				}
-				
-				g_activityFormNewActivity.Data = data.toString();
-			}
-			
-			if (g_activityFormSelectedActivityType.AllowContact) {
-				g_activityFormNewActivity.ContactID = $(g_activityFormParentDivSelector + ' input:radio[name=contactchoice]:checked').val();
-			}
-			
-			if (g_activityFormSelectedActivityType.AllowGPS)		
-				navigator.geolocation ? navigator.geolocation.getCurrentPosition(activityFormSavePosition, activityFormOnPositionError, {timeout:10000}) : g_alert("ERROR: GPS is not supported on your device.");
-			else
-				activityFormSaveStep2();
-			
-			
-	} catch (err) {	
-		
-		$.mobile.hidePageLoadingMsg();
-	    g_alert('Error saving activity:' + err.message);
-		return;
-	}	
+    $.mobile.showPageLoadingMsg();
+
+    try {			
+        if (!g_activityFormSelectedActivityType.DueDateAllowed) {			
+                activityFormSetDateTimeToNow();
+                $(g_activityFormParentDivSelector + ' #duration').val(30);
+                var now = moment();
+                g_activityFormNewActivity.DueDate = now.toDate();
+                now.add('h',1);
+                g_activityFormNewActivity.EndDate = now.toDate();
+        } else {
+                var mom = new moment($(g_activityFormParentDivSelector + ' #duedate').val() + $(g_activityFormParentDivSelector + ' #time').val(), "YYYY-MM-DD HH:mm");
+                var now = mom.toDate();
+                now.setHours(now.getHours() - now.getTimezoneOffset() / 60);
+                g_activityFormNewActivity.DueDate = now;
+                var mom2 = new moment(now);
+                mom2.add('hours', 1); //$("#duration").val());
+                g_activityFormNewActivity.EndDate = mom2.toDate(); //new Date(g_activityFormNewActivity.DueDate.getTime() + $("#duration").val() * 60 * 1000); 				
+        }
+
+        g_activityFormNewActivity.EventID = g_activityFormNewActivity.EventID || createId();
+        g_activityFormNewActivity.Deleted = false;
+        g_activityFormNewActivity.EventTypeID = g_activityFormSelectedActivityType.EventID;
+        g_activityFormNewActivity.AccountID = g_currentCompany().AccountID;
+        g_activityFormNewActivity.SupplierID = g_currentCompany().SupplierID;
+        g_activityFormNewActivity.Notes = $(g_activityFormParentDivSelector + ' #note').val();
+        g_activityFormNewActivity.UserID = g_currentUser().UserID;		
+        g_activityFormNewActivity.key = g_currentCompany().SupplierID + g_currentCompany().AccountID + g_activityFormNewActivity.EventID;
+
+        if ((1 == g_activityFormSelectedActivityType.FieldType) && (!$.isNumeric($(g_activityFormParentDivSelector + ' #number').val()))) {
+
+            g_alert("Please enter numeric data.");
+            $.mobile.hidePageLoadingMsg();
+                return;
+        }
+
+        if (g_activityFormSelectedActivityType.FieldType == 0)
+                g_activityFormNewActivity.Data = $(g_activityFormParentDivSelector + ' #textType').val();
+
+        else if (g_activityFormSelectedActivityType.FieldType == 1)
+                g_activityFormNewActivity.Data = $(g_activityFormParentDivSelector + ' #number').val();	
+
+        else if (4 == g_activityFormSelectedActivityType.FieldType) {
+
+                var data = [];			
+                $(g_activityFormParentDivSelector + ' input:checkbox[name=datachoice]:checked').each(function() {
+                        data.push($(this).val());
+                });
+
+                if (!data.length) {
+
+                    g_alert("You need to select an option.");
+                    $.mobile.hidePageLoadingMsg();
+                        return;					
+                }
+
+                g_activityFormNewActivity.Data = data.toString();
+        }
+
+        if (g_activityFormSelectedActivityType.AllowContact) {
+                g_activityFormNewActivity.ContactID = $(g_activityFormParentDivSelector + ' input:radio[name=contactchoice]:checked').val();
+        }
+
+        if (g_activityFormSelectedActivityType.AllowGPS)		
+                navigator.geolocation ? navigator.geolocation.getCurrentPosition(activityFormSavePosition, activityFormOnPositionError, {timeout:10000}) : g_alert("ERROR: GPS is not supported on your device.");
+        else
+                activityFormSaveStep2();
+
+
+    } catch (err) {	
+
+            $.mobile.hidePageLoadingMsg();
+        g_alert('Error saving activity:' + err.message);
+            return;
+    }	
 }
 
 
@@ -439,35 +446,37 @@ function activityFormSaveOffline() {
 
 function activityFormOnSaveSuccess() {
 	
-	$.mobile.hidePageLoadingMsg();
-	
-	g_markCustomerAsVisited(g_activityFormNewActivity.AccountID);
-	
-	sessionStorage.setItem('HistoryCacheAccountID', '');
-	sessionStorage.removeItem('CacheHistoryActivities');
-	sessionStorage.removeItem('CacheHistoryOrders');
-	
-	$(g_activityFormParentDivSelector + ' #textType').val('');
-	
-	if ($(g_activityFormParentDivSelector).data('role') == 'popup') {
-		
-		sessionStorage.setItem('activitySavedItems', JSON.stringify({Data: g_activityFormNewActivity.Data, Notes: g_activityFormNewActivity.Notes}));
-		
-		$(g_activityFormParentDivSelector).popup('close');
-		return;
-	}
-	
-	if (g_isScreenSmall()) {
-		
-		g_alert('The activity is saved.');
-		activityShowPanel(g_activityFormPanels.activityList);
-		
-	} else {
-		
-		$(g_activityFormParentDivSelector + ' .infoPanelText').html('<b>Activity saved OK.</b> Create another<br>by selecting another activity on the left.');
-		$(g_activityFormParentDivSelector + ' #activityFormPanel').hide();
-		$(g_activityFormParentDivSelector + ' .activityInfoPanel').fadeIn();
-	}
+    $.mobile.hidePageLoadingMsg();
+
+    g_markCustomerAsVisited(g_activityFormNewActivity.AccountID);
+
+    sessionStorage.setItem('HistoryCacheAccountID', '');
+    sessionStorage.removeItem('CacheHistoryActivities');
+    sessionStorage.removeItem('CacheHistoryOrders');
+
+    $(g_activityFormParentDivSelector + ' #textType').val('');
+
+    if ($(g_activityFormParentDivSelector).data('role') == 'popup') {
+
+            sessionStorage.setItem('activitySavedItems', JSON.stringify({Data: g_activityFormNewActivity.Data, Notes: g_activityFormNewActivity.Notes}));
+
+            $(g_activityFormParentDivSelector).popup('close');
+            return;
+    }
+
+    if (g_isScreenSmall()) {
+
+            g_alert('The activity is saved.');
+            activityShowPanel(g_activityFormPanels.activityList);
+
+    } else {
+
+            $(g_activityFormParentDivSelector + ' .infoPanelText').html('<b>Activity saved OK.</b> Create another<br>by selecting another activity on the left.');
+            $(g_activityFormParentDivSelector + ' #activityFormPanel').hide();
+            $(g_activityFormParentDivSelector + ' .activityInfoPanel').fadeIn();
+    }
+    
+    g_activitySavedActivities[g_activityFormNewActivity.EventTypeID] = 'Saved';
 }
 
 

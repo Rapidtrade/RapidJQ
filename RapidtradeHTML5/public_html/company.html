@@ -583,17 +583,21 @@
 		    	</div>
 		    </div>   
 	        <div id="activityPanel"  data-role="content" class="invisible companyPagePanel">
-	        <div class="rtlabel hideonphone">
-	       		<img class="rtlabelimg" src="img/Monitor_64.png"/>
-	       		<h2 class="rtlabeltext">Add Activity</h2>
-	        </div>
-			<div class="ui-grid-a">	
-				<div class="ui-block-a" id="activitylist">
-					<ul id="activitytypelist"  data-role="listview" data-divider-theme="b" data-inset="true"></ul>
-				</div>
-				<div class="ui-block-b" id="activitydetails" class="panel-white-rounded">
-				</div>
-			</div>
+                    <div class="rtlabel hideonphone">
+                            <img class="rtlabelimg" src="img/Monitor_64.png"/>
+                            <h2 class="rtlabeltext">Add Activity</h2>
+                    </div>
+                    <div class="ui-grid-a">	
+                            <div class="ui-block-a" id="activitylist">
+                                    <ul id="activitytypelist"  data-role="listview" data-divider-theme="b" data-inset="true"></ul>
+                            </div>
+                            <div class="ui-block-b" id="activitydetails" class="panel-white-rounded">
+                            </div>
+                    </div>
+                <div data-role="popup" id="activityErrorMessagePopup" data-theme="e">
+                    <p style="margin: 20px">You must take a photo.</p>
+                    <a data-role="button" href="#activityPanel">OK</a>
+                </div>                    
          </div>        
      	</div>    
   	</body>

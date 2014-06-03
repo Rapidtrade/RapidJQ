@@ -2,6 +2,7 @@
  * variables
  */
 var g_activityPanels = {'activityList': 0, 'activityDetails':1};
+var g_activitySavedActivities = {};
 
 
 /**

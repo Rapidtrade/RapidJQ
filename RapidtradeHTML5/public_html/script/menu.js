@@ -1,6 +1,6 @@
 ﻿function menuOnPageShow() {
 	
-	g_iPadBar('#menupage');
+    g_iPadBar('#menupage');
     if (window.MSApp) {
         WinJS.Application.onsettings = function (e) {
             e.detail.applicationcommands = {
@@ -10,15 +10,17 @@
         };
         WinJS.Application.start();
     }
-	menuOnPageShowSmall();
+    
+    menuOnPageShowSmall();
 	
     sessionStorage.setItem('orderheaderNext', 'menu');
 	
-	var dao = new Dao();
-	dao.openDB(function (user) { menuInit(); });
-	$('#nosync').hide();
-	
-	menuBind();
+    var dao = new Dao();
+    dao.openDB(function (user) { menuInit(); });
+    $('#nosync').hide();
+
+    menuFetchMandatoryActivities();
+    menuBind();
 }
 
 function menuBind() {
@@ -43,6 +45,25 @@ function menuOnPageShowSmall() {
 		$('#grvImg').attr('src', 'img/receipt-32.png');
 		$('#menuMainPanel').attr('class','greypanel menuMainPanelSml');
 	}	
+}
+
+function menuFetchMandatoryActivities() {
+    
+    var requiredActivities = [];
+    
+    var dao = new Dao();
+    dao.cursor('ActivityTypes', undefined, undefined, function(item) {
+       
+        // fetch activities with 1 or 2 asterisks at the end of label
+        if ($.trim(item.Label).match(/\*{1,2}$/))
+            requiredActivities.push(item.EventID);
+    }, undefined,
+    
+    function () {
+        
+        sessionStorage.setItem('requiredActivities', requiredActivities);
+    }
+    ); 
 }
 
 function menuOnReplenishClick() {
@@ -133,39 +154,40 @@ function menuInit(){
 	if (!g_defaultDisplayFields.length) g_createDefaultDisplayFields();
 	
 	if (g_currentUser()) {
-		$('#welcome').text(g_currentUser().Name);		
-		menuFetchConfigData();
-		menuShowButtons();
-		menuFetchDefaultCustomer();
-		return;
+            
+            $('#welcome').text(g_currentUser().Name);		
+            menuFetchConfigData();
+            menuShowButtons();
+            menuFetchDefaultCustomer();
+            return;
 	}
 	
 	var dao = new Dao();	
 	dao.get('Users', 
-			'user',
-			function(user) {
-				
-				if (localStorage.getItem('lastSyncDate') != g_today()) { 					
-					alert('You haven\'t synchronised today. You should do so now to keep up to date. After clicking OK, click on the Syncronise button');
-				}
-		
-				sessionStorage.setItem('currentUser', JSON.stringify(user));
-				g_callCycleCurrentUserID = user.UserID;
-				g_syncIsFirstSync = false;
-				
-				$('#welcome').text(user.Name);
-				menuFetchConfigData();
+                'user',
+                function(user) {
 
-				$('#grvTitle').text('Deliveries');
+                    if (localStorage.getItem('lastSyncDate') != g_today())
+                        alert('You haven\'t synchronised today. You should do so now to keep up to date. After clicking OK, click on the Syncronise button');
 
-				menuShowButtons();
-				menuFetchDefaultCustomer();
-			},
-			function(user) {
-				$.mobile.changePage('sync.html', { transition: "none"} );
-			},
-			undefined
-			);	
+                    sessionStorage.setItem('currentUser', JSON.stringify(user));
+                    g_callCycleCurrentUserID = user.UserID;
+                    g_syncIsFirstSync = false;
+
+                    $('#welcome').text(user.Name);
+                    menuFetchConfigData();
+
+                    $('#grvTitle').text('Deliveries');
+
+                    menuShowButtons();
+                    menuFetchDefaultCustomer();
+                },
+                function(user) {
+                    
+                    $.mobile.changePage('sync.html', { transition: "none"} );
+                },
+                undefined
+                );	
 }
 
 // For customers, go get first customer and set as current customer
@@ -239,9 +261,9 @@ function menuShowButtons() {
 
 function menuFetchConfigData(){
         
-	menuFetchDiscounts();
-	menuFetchDiscountConditions();
-	DaoOptions.fetchOptions();
+    menuFetchDiscounts();
+    menuFetchDiscountConditions();
+    DaoOptions.fetchOptions();
 }
 
 function menuFetchUnsentObjects() {

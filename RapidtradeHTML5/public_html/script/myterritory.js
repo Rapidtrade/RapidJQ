@@ -9,10 +9,12 @@ var g_myterritoryItems = [];
  * This is called from script tag inside page
  */
 
-function myterritoryOnPageShow(){
-	myterritoryOnPageShowSmall();
+function myterritoryOnPageShow() {
+    
+    myterritoryOnPageShowSmall();
 	
-	if (!myterritoryFromCache()) {
+    if (!myterritoryFromCache()) {
+        
         var dao = new Dao();
         dao.openDB(function () { myterritoryInit(); });
     }

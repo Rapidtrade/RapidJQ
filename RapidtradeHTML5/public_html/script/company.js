@@ -121,40 +121,60 @@ function companySetNextButton(title) {
 	$('#companyNextButton .ui-btn-text').text(title);
 	
 	if ('Shopping Cart' != title)
-		$('#companyNextButton').removeClass('ui-disabled');
+            $('#companyNextButton').removeClass('ui-disabled');
 	
 	$('#companyNextButton').off();
 	$('#companyNextButton').on('click', function() {
 		
-		switch(title) {
+            switch(title) {
 		
 		case 'Shopping Cart':
-			$.mobile.changePage('shoppingCart.html');
-			break;
+                    $.mobile.changePage('shoppingCart.html');
+                    break;
 			
 		case 'Finished':
-			overlayRemoveStorage();
-			g_navigateBackFromCompanyView();
-			break;
+                    if (companyRequiredActivitiesSaved()) {
+                        
+                        overlayRemoveStorage();
+                        g_navigateBackFromCompanyView();
+                        g_activitySavedActivities = {};
+                        
+                    } else {
+                        
+                        $('#activityErrorMessagePopup p').text('Please complete all activities marked with a * before leaving this customer.');
+                        $('#activityErrorMessagePopup').popup('open');                        
+                    }
+
+                    break;
 		
 		case 'Pricelist':
-			overlayHighlightMenuItem('.orderItem');
+                    overlayHighlightMenuItem('.orderItem');
 		
 		default:
-			companyLoadPanel(title.toLowerCase() + 'Panel');
-		}
-		
+                    companyLoadPanel(title.toLowerCase() + 'Panel');
+            }
 	});
 }
 
-
 function companyHideFooter() {
 	
-	if (sessionStorage.getItem('CompanyNoFooter') == 'true') {
-		
-		sessionStorage.setItem('orderheaderNext', 'menu');
-		$('#companyBackButton, #companyNextButton, #savecompany').hide();
-	}
+    if (sessionStorage.getItem('CompanyNoFooter') == 'true') {
+
+        sessionStorage.setItem('orderheaderNext', 'menu');
+        $('#companyBackButton, #companyNextButton, #savecompany').hide();
+    }
+}
+
+function companyRequiredActivitiesSaved() {
+    
+    var result = true;
+    
+    var requiredActivities = sessionStorage.getItem('requiredActivities').split(',');
+    
+    for (var i = 0; result && (i < requiredActivities.length); ++i) 
+        result = result && (requiredActivities[i] in g_activitySavedActivities);
+    
+    return result;
 }
 
 function companyShowContact(showAll) {
