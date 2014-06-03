@@ -196,22 +196,22 @@ function g_currentProduct() {
 }
 
 function g_showCurrentCompanyName() {
-	$('.companyName').text(g_currentCompany().Name);
+    $('.companyName').text(g_currentCompany().Name);
 }
 
 function g_vat() {
 		
-	return (DaoOptions.getValue('taxpercent') || 14) / 100;
+    return (DaoOptions.getValue('taxpercent') || 14) / 100;
 }
 
 function g_isOnline(showAlert) {
 
-	showAlert = (showAlert !== undefined) ? showAlert : true;
+    showAlert = (showAlert !== undefined) ? showAlert : true;
 
-	if (!navigator.onLine && showAlert)
-		alert('This feature is disabled in the offline mode.');
+    if (!navigator.onLine && showAlert)
+            alert('This feature is disabled in the offline mode.');
 
-	return navigator.onLine;
+    return navigator.onLine;
 }
 
 function g_setLeadingZero(number) {

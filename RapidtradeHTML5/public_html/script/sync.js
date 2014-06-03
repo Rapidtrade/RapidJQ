@@ -106,7 +106,10 @@ function syncInit() {
  * Anytime we fetch data from the server, it should always be in a fetch<xxxx>...
  */
 function syncFetchUser() {
-	g_syncStopSync = false;
+    
+     $('#syncMenu').removeClass('ui-disabled');
+    
+    g_syncStopSync = false;
     $.mobile.showPageLoadingMsg();
 	$.support.core = true;
 	$.mobile.allowCrossDomainPages = true;
@@ -446,6 +449,18 @@ function syncNextItem() {
  * This method saves the sync data to local database
  */
 function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
+    
+    if (('Companies' === table) && (0 === skip) && (json._Items === null)) {
+        
+        $('#syncMenu').addClass('ui-disabled');
+        $('#errorMessagePopup').popup('open');
+        setTimeout(function() {
+            $('#errorMessagePopup').popup('close');
+        }, 2000);
+        
+        $.mobile.hidePageLoadingMsg();
+        return;
+    }
 	
     if (g_syncStopSync==true) 
         return;
