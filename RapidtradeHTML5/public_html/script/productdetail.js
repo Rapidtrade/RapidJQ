@@ -508,6 +508,9 @@ function productdetailFetchLongText(tabId, selector, onSuccess) {
     var success = function (json) {
     	
     	$.mobile.hidePageLoadingMsg();
+        
+        if (json.LongText.search(/^http/) != -1)
+            json.LongText = '<a href="' + json.LongText + '" target="_blank">' + json.LongText + '</a>';
     	
         $(selector).html(json.LongText);
         
