@@ -50,22 +50,25 @@ function activityFetchActivityTypes() {
 	$('#activitytypelist').empty();
 	
 	dao.cursor('ActivityTypes',undefined, undefined,
-				function(activityType) {
-		
-				    if (!activityType.Deleted) {
-				    	
-				        g_append('#activitytypelist', '<li data-theme="c"><a href="#" data-transition="none">' + activityType.Label + '</a></li>');
-  
-						$( '#activitytypelist li:last' ).click(function( event ) {
-																activityTypeOnClick(activityType);	
-															}); 
-					}
-				},
-				undefined,
-				function(event) {
-				    $('#activitytypelist').listview('refresh');
-				    
-				});
+            function(activityType) {
+                
+                var accountGroups = activityType.ForAccntGrp.split(',');                                
+
+                if (($.inArray(g_currentCompany().AccountGroup, accountGroups) !== -1) && !activityType.Deleted) {
+
+                    g_append('#activitytypelist', '<li data-theme="c"><a href="#" data-transition="none">' + activityType.Label + '</a></li>');
+
+                        $( '#activitytypelist li:last' ).click(function(event) {
+                            
+                            activityTypeOnClick(activityType);	
+                        }); 
+                    }
+            },
+            undefined,
+            function(event) {
+                $('#activitytypelist').listview('refresh');
+
+            });
 }
 
 /*
