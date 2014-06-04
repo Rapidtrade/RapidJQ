@@ -137,11 +137,11 @@ function callCycleEditShowSelectedWeek() {
 
 function callCycleEditLoadReport() {
 	
-	g_callCycleEditVisibleCustomerKeys = [];
-	
-	$.mobile.showPageLoadingMsg();
-	
-	$("#callcycleReport").empty();
+    g_callCycleEditVisibleCustomerKeys = [];
+
+    $.mobile.showPageLoadingMsg();
+
+    $("#callcycleReport").empty();
 	
     $.each(callCycleEditCachedItems(), function (i, item) {
     	
@@ -155,40 +155,42 @@ function callCycleEditLoadReport() {
 }
 
 function callCycleEditAddItemToReport(index, item) {
+    
     g_append('#callcycleReport', callCycleEditRowHtml(index, item))
-	//$('#callcycleReport').append(callCycleEditRowHtml(index, item));
-	g_callCycleEditVisibleCustomerKeys.push(callCycleEditItemKey(item));
+    g_callCycleEditVisibleCustomerKeys.push(callCycleEditItemKey(item));
 	
     $('.exclusive' + index).click(function () {
     	
         var checked = $(this).attr('checked');
+//        
+//        $('.exclusive' + index + ':checked').each(function() {
+//            $(this).attr('checked', false);
+//        });
+//        
+//        $(this).attr('checked', checked);
+
         
-        $('.exclusive' + index + ':checked').each(function() {
-            $(this).attr('checked', false);
+            var cachedItems = callCycleEditCachedItems();
+
+            var selectedDayIndex = $(this).val();
+
+            $.each(cachedItems, function (i, cachedItem) {
+
+            if (callCycleEditItemKey(cachedItem) == callCycleEditItemKey(item) && (cachedItem.Week == g_callCycleEditSelectedWeek)) {
+
+                    cachedItems[i].Changed = true;
+                    cachedItems[i][g_callCycleEditDays[selectedDayIndex]] = (checked === 'checked');
+
+//                    for (var j = 0; j < g_callCycleEditDays.length; ++j) {
+//
+//                        cachedItems[i][g_callCycleEditDays[j]] = (j == selectedDayIndex) ? (checked == "checked") : false;
+//                    }
+
+                    callCycleEditSetCachedItems(cachedItems);
+
+                    return false;
+            }
         });
-        
-        $(this).attr('checked', checked);
-        
-		var cachedItems = callCycleEditCachedItems();
-		
-		var selectedDayIndex = $(this).val();
-
-		$.each(cachedItems, function (i, cachedItem) {
-	    	
-	    	if (callCycleEditItemKey(cachedItem) == callCycleEditItemKey(item) && (cachedItem.Week == g_callCycleEditSelectedWeek)) {
-	    		
-	    		cachedItems[i].Changed = true;
-   		
-	    		for (var j = 0; j < g_callCycleEditDays.length; ++j) {
-	    			
-	    			cachedItems[i][g_callCycleEditDays[j]] = (j == selectedDayIndex) ? (checked == "checked") : false;
-	    		}
-
-	    		callCycleEditSetCachedItems(cachedItems);
-	    		
-	    		return false;
-	    	}
-	    });
         
     });	
 }
