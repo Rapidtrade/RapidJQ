@@ -61,13 +61,14 @@ function overlayInit(page) {
 	
 	var showPricelistMenu = (DaoOptions.getValue('MobileCategories') == 'true') || (DaoOptions.getValue('AllowAdvancedSearch') == 'true');
 	var pricelistMenuEnd = '</ul></div>';
-        menuPanel += '<div id="pricelistMenu">' +   
-			'<ul data-role="listview" data-inset="true" data-divider-theme="d" >' +
-			'<li data-role="list-divider" role="heading">Pricelist</li>' +
-			'<li id="basic" class="ui-btn-active">Basic Search</li>';
+        
                 
 	if (showPricelistMenu) {
 		
+                menuPanel += '<div id="pricelistMenu">' +   
+			'<ul data-role="listview" data-inset="true" data-divider-theme="d" >' +
+			'<li data-role="list-divider" role="heading">Pricelist</li>' +
+			'<li id="basic" class="ui-btn-active">Basic Search</li>';
 		
 		if (DaoOptions.getValue('MobileCategories') == 'true')			
                     menuPanel += '<li id="categories">Product Categories</li>';
