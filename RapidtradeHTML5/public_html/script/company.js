@@ -171,8 +171,11 @@ function companyRequiredActivitiesSaved() {
     
     var requiredActivities = sessionStorage.getItem('requiredActivities').split(',');
     
-    for (var i = 0; result && (i < requiredActivities.length); ++i) 
-        result = result && (requiredActivities[i] in g_activitySavedActivities);
+    if ($.trim(requiredActivities[0])) {
+    
+        for (var i = 0; result && (i < requiredActivities.length); ++i) 
+            result = result && (requiredActivities[i] in g_activitySavedActivities);
+    }
     
     return result;
 }
