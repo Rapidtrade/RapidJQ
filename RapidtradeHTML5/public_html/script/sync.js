@@ -450,7 +450,7 @@ function syncNextItem() {
  */
 function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
     
-    if (('Companies' === table) && (0 === skip) && (json._Items === null)) {
+  /*  if (('Companies' === table) && (0 === skip) && (json._Items === null)) {
         
         $('#syncMenu').addClass('ui-disabled');
         $('#errorMessagePopup').popup('open');
@@ -460,7 +460,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
         
         $.mobile.hidePageLoadingMsg();
         return;
-    }
+    }*/
 	
     if (g_syncStopSync==true) 
         return;
