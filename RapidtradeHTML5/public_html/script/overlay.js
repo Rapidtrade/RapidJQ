@@ -209,7 +209,10 @@ function overlayRemoveStorage() {
 
 function overlayOnItemClick(item) {
 	
-	(g_phonegap || $( window ).width() < 900) ? $('#menuPanel').panel('close') : overlayHighlightMenuItem(item);
+        overlayHighlightMenuItem(item);
+        
+	if (g_phonegap || $( window ).width() < 900) 
+            $('#menuPanel').panel('close');
 }
 
 function overlayHighlightMenuItem(item) {

@@ -153,6 +153,7 @@ function g_menuBind() {
 	$('#menuButton').unbind();
 	$('#menuButton').click(function() {
 		
+            if ($.mobile.activePage.attr('id') !== 'companypage')    
 		g_loadMenu();
 	});
 }
