@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Always call openDB, which in turn call's init
  * This is called from script tag inside page
  */
@@ -133,16 +133,15 @@ function companySetNextButton(title) {
                     break;
 			
 		case 'Finished':
-                    if (companyRequiredActivitiesSaved()) {
-                        
-                        overlayRemoveStorage();
-                        g_navigateBackFromCompanyView();
-                        g_activitySavedActivities = {};
-                        
-                    } else {
-                        
+//                    if (companyRequiredActivitiesSaved()) {
+                    //if we do have RequiredActivities then still activities to capture
+                    if (sessionStorage.getItem('RequiredActivities')) {
                         $('#activityErrorMessagePopup p').text('Please complete all activities marked with a * before leaving this customer.');
                         $('#activityErrorMessagePopup').popup('open');                        
+                    } else {
+                        overlayRemoveStorage();
+                        g_navigateBackFromCompanyView();
+                        g_activitySavedActivities = {};                        
                     }
 
                     break;

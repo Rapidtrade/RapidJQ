@@ -362,45 +362,55 @@ function activityFormSave() {
 
 
 function activityFormSaveStep2() {
-	//shaun - always save image offline
-	if (g_canTakePhoto) {
-		//alert('saving');
-	    var image = new Object();
-	    
-	    image.Id = g_activityFormNewActivity.EventID;
-	    image.SupplierID = g_activityFormNewActivity.SupplierID;
-	    image.FileData = g_activityFormPhotoData;
-	    
-	    image.Type = 'image/jpeg;base64';
-	    image.Name = image.Id + '.jpg';
-	    
-	    g_saveObjectForSync(image, image.Id, 'File', 'UploadImage');
-	}
+    //if we have required activities, then remove this one from the list
+    if (sessionStorage.getItem('RequiredActivities')){
+        var requiredactivities = sessionStorage.getItem('RequiredActivities');
+        var newreq = requiredactivities.replace(g_activityFormNewActivity.EventTypeID + ',','' );
+        if (newreq==='')
+            sessionStorage.removeItem('RequiredActivities');
+        else
+            sessionStorage.setItem('RequiredActivities',newreq);
+    }
 
-	if (g_isOnline(false)) {
-    	try {		
-        	var activityInfo = {};  
-        	activityInfo.Table = "Activities";
-        	activityInfo.Method = "Modify";
-        	activityInfo.json = JSON.stringify(g_activityFormNewActivity); 
-        	var onSuccess = function() {
-    			console.log('Activity saved online.');
-        		activityFormOnSaveSuccess();
-        	};
-        	
-        	var onFailure = function(error) {
-        		activityFormSaveOffline();
-        		//((error.status == 0) || (error.status == 200)) ? onSuccess() : activityFormSaveOffline();
-        	};
-        	
-        	g_ajaxpost(jQuery.param(activityInfo), g_restUrl + 'post/post.aspx', onSuccess, onFailure);  
-    	} catch (error) {
-    		activityFormSaveOffline();   		
-    	} 
-    	
-	} else {
-		activityFormSaveOffline();
-	}
+    //shaun - always save image offline
+    if (g_canTakePhoto) {
+            //alert('saving');
+        var image = new Object();
+
+        image.Id = g_activityFormNewActivity.EventID;
+        image.SupplierID = g_activityFormNewActivity.SupplierID;
+        image.FileData = g_activityFormPhotoData;
+
+        image.Type = 'image/jpeg;base64';
+        image.Name = image.Id + '.jpg';
+
+        g_saveObjectForSync(image, image.Id, 'File', 'UploadImage');
+    }
+
+    if (g_isOnline(false)) {
+    try {		
+            var activityInfo = {};  
+            activityInfo.Table = "Activities";
+            activityInfo.Method = "Modify";
+            activityInfo.json = JSON.stringify(g_activityFormNewActivity); 
+            var onSuccess = function() {
+                    console.log('Activity saved online.');
+                    activityFormOnSaveSuccess();
+            };
+
+            var onFailure = function(error) {
+                    activityFormSaveOffline();
+                    //((error.status == 0) || (error.status == 200)) ? onSuccess() : activityFormSaveOffline();
+            };
+
+            g_ajaxpost(jQuery.param(activityInfo), g_restUrl + 'post/post.aspx', onSuccess, onFailure);  
+    } catch (error) {
+            activityFormSaveOffline();   		
+    } 
+
+    } else {
+            activityFormSaveOffline();
+    }
 }
 
 function activityFormSavePosition(position) {

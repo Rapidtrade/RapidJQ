@@ -1,4 +1,4 @@
-﻿/*
+/*
  * variables
  */
 var g_activityPanels = {'activityList': 0, 'activityDetails':1};
@@ -48,20 +48,24 @@ function activityFetchActivityTypes() {
 	
 	var dao = new Dao();
 	$('#activitytypelist').empty();
-	
-	dao.cursor('ActivityTypes',undefined, undefined,
+	sessionStorage.removeItem('RequiredActivities');
+	dao.cursor('ActivityTypes',undefined, undefined,           
             function(activityType) {
-                
-                var accountGroups = activityType.ForAccntGrp.split(',');                                
-
-                if (($.inArray(g_currentCompany().AccountGroup, accountGroups) !== -1) && !activityType.Deleted) {
-
+                var mustadd = true;
+                var requiredActivities = ''; 
+                if (activityType.ForAccntGrp!=='') {
+                        var accountGroups = activityType.ForAccntGrp.split(',');  
+                        mustadd = ($.inArray(g_currentCompany().AccountGroup, accountGroups)===-1)? false:true;
+                }                                              
+				
+                if (mustadd && !activityType.Deleted) {
                     g_append('#activitytypelist', '<li data-theme="c"><a href="#" data-transition="none">' + activityType.Label + '</a></li>');
-
                         $( '#activitytypelist li:last' ).click(function(event) {
-                            
                             activityTypeOnClick(activityType);	
-                        }); 
+                        });
+                    if (activityType.Label.indexOf('*') > -1)
+                        requiredActivities = requiredActivities + activityType.EventID + ',';
+                        sessionStorage.setItem('RequiredActivities', requiredActivities);
                     }
             },
             undefined,
