@@ -61,7 +61,7 @@ function orderHeaderBind() {
     	g_orderHeaderOrder.orderItems = g_orderHeaderValidItems;
     	g_orderHeaderOrder.Status = 'Validated';
     	
-    	orderHeaderSaveFormedOrder();
+    	orderHeaderCaptureGPSAndSave();
     });
 }
 
@@ -244,20 +244,20 @@ function orderHeaderSaveOrder() {
         //if ((g_orderheaderOrderType == "grv") && !DaoOptions.getValue('DeliveryOrderType')) 
         //	g_orderHeaderOrder.Comments = g_grv_replorderid;
         if (sessionStorage.getItem('referenceDocID')) {
-        	if (g_orderheaderOrderType == "grv") {
-        		//for GRV and links back to the repl number
-        		g_orderHeaderOrder.Comments = sessionStorage.getItem('referenceDocID');
-        		g_orderHeaderOrder.Userfield06 = sessionStorage.getItem('referenceDocID');
-        	} else {
-        		//for credits, this links the credit back to its invoice
-        		g_orderHeaderOrder.Userfield06 = sessionStorage.getItem('referenceDocID');
-        	}
-        	g_orderHeaderOrder.referenceDocID = sessionStorage.getItem('referenceDocID'); //TODO for future - must include this field in order
-        	sessionStorage.removeItem('referenceDocID');
+            if (g_orderheaderOrderType == "grv") {
+                    //for GRV and links back to the repl number
+                    g_orderHeaderOrder.Comments = sessionStorage.getItem('referenceDocID');
+                    g_orderHeaderOrder.Userfield06 = sessionStorage.getItem('referenceDocID');
+            } else {
+                    //for credits, this links the credit back to its invoice
+                    g_orderHeaderOrder.Userfield06 = sessionStorage.getItem('referenceDocID');
+            }
+            g_orderHeaderOrder.referenceDocID = sessionStorage.getItem('referenceDocID'); //TODO for future - must include this field in order
+            sessionStorage.removeItem('referenceDocID');
         }
         
         if (g_isiPad())
-        	g_orderHeaderOrder.UserField10 = 'IPAD';
+            g_orderHeaderOrder.UserField10 = 'IPAD';
         
         // next step
        
@@ -267,12 +267,20 @@ function orderHeaderSaveOrder() {
         //	g_orderHeaderNextSavingStep();
         //else
         orderHeaderVanSales();
-        orderHeaderSaveFormedOrder();
+        orderHeaderCaptureGPSAndSave();
         
-	} catch (error) {	
-		
-		orderHeaderShowError(error);
-	}
+    } catch (error) {	
+
+        orderHeaderShowError(error);
+    }
+}
+
+function orderHeaderCaptureGPSAndSave() {
+    
+    if (g_phonegap && navigator.geolocation)
+        navigator.geolocation.getCurrentPosition(orderHeaderSaveFormedOrder, orderHeaderSaveFormedOrder, {timeout:10000});
+    else
+        orderHeaderSaveFormedOrder();
 }
 
 function orderHeaderShowError(error) {
@@ -473,7 +481,13 @@ function orderHeaderAreItemsValid() {
     return isValid;
 }
 
-function orderHeaderSaveFormedOrder() {
+function orderHeaderSaveFormedOrder(position) {
+    
+    if (position && position.coords) {
+        
+    	g_orderHeaderOrder.Userfield04 = position.coords.latitude;
+	g_orderHeaderOrder.Userfield05 = position.coords.longitude;
+    }
 
     if (!orderHeaderAreItemsValid())
         return;
