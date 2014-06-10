@@ -297,7 +297,10 @@
 	font-weight:bold;
 }
 .historyOrderItems td.quantity {
+    	font-size:15px;
+	font-weight:bold;
 	text-align: right;
+        color:red;
 }
 
 .historyOrderItems td.descr {
