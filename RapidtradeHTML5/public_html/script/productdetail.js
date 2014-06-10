@@ -1007,35 +1007,37 @@ function productdetailIsPackPrice() {
 	return g_isPackSizeUnitValid(g_pricelistSelectedProduct.Unit);
 }
 
-function productdetailSave(qty, type, product) {	
+function productdetailSave(qty, type, product) {
+    
+    var userField01 = ('Credit' === type) ? $('#reason').attr('value') : product.UserField01;
 	
-	g_addProductToBasket(
-			product.ProductID,
-            g_currentCompany().SupplierID,
-            g_currentCompany().AccountID,
-            qty,
-            g_currentUser().UserID,
-            product.Nett,
-            (productdetailCanChangeNett(product.ProductID) ? $('.hdescription').val() : product.Description),
-            product.Discount,
-            $('#grossvalue').html(),
-            type,
-            product.UserField01 || (('Credit' == type) ? $('#reason').attr('value') : ''),
-            product.RepChangedPrice ? productdetailValue('nett') : '',
-            product.RepChangedPrice ? productdetailValue('discount') : '',
-            productdetailIsPackPrice() ? g_pricelistSelectedProduct.Unit : '',
-            product.UserField02,
-            DaoOptions.getValue('MobileSelectWhOnDetail') == 'true' ? $.trim($('#whChoiceDiv select option:selected').val().split(':')[0]) : '',
-            product.VAT,
-            productdetailGetStock(),
-            product.UserField03,
-            product.UserField04,
-            product.UserField05,
-            product.UserField06,
-            product.UserField07,
-            product.UserField08,
-            product.UserField09,
-            product.UserField10
+    g_addProductToBasket(
+        product.ProductID,
+        g_currentCompany().SupplierID,
+        g_currentCompany().AccountID,
+        qty,
+        g_currentUser().UserID,
+        product.Nett,
+        (productdetailCanChangeNett(product.ProductID) ? $('.hdescription').val() : product.Description),
+        product.Discount,
+        $('#grossvalue').html(),
+        type,
+        userField01,
+        product.RepChangedPrice ? productdetailValue('nett') : '',
+        product.RepChangedPrice ? productdetailValue('discount') : '',
+        productdetailIsPackPrice() ? g_pricelistSelectedProduct.Unit : '',
+        product.UserField02,
+        DaoOptions.getValue('MobileSelectWhOnDetail') == 'true' ? $.trim($('#whChoiceDiv select option:selected').val().split(':')[0]) : '',
+        product.VAT,
+        productdetailGetStock(),
+        product.UserField03,
+        product.UserField04,
+        product.UserField05,
+        product.UserField06,
+        product.UserField07,
+        product.UserField08,
+        product.UserField09,
+        product.UserField10
     );
 }
 
