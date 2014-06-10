@@ -318,7 +318,7 @@ function orderdetailsFetchOrderItems() {
 	                
 	        g_append('#orderitemlist', '<li data-theme="c" id="' + syncGetKeyField(orderItem, 'OrderItems') + '">' +
                     '   <a><p class="ui-li-heading"><strong>' + orderItem.Description + '</strong></p>' +
-                    '   <table class="ui-li-desc historyOrderItems"><tr><td class="productId">' + orderItem.ProductID + '</td><td class="descr">' + orderItem.Quantity + '</td><td class="value">' + g_roundToTwoDecimals(nettValue) + '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td></tr></table></a>' +
+                    '   <table class="ui-li-desc historyOrderItems"><tr><td class="itemId">' + orderItem.ItemID + '</td><td class="productId">' + orderItem.ProductID + '</td><td class="descr">' + orderItem.Quantity + '</td><td class="value">' + g_roundToTwoDecimals(nettValue) + '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td></tr></table></a>' +
                     '	<a onclick="orderdetailsSendOrderItem(\'' + 
 		                  orderItem.ProductID + '\',\'' +
 		                  orderItem.Quantity + '\',\'' +
