@@ -956,7 +956,7 @@ function productdetailOkClicked(checkStock) {
         }
     }
 	
-    type = sessionStorage.getItem("currentordertype");
+    type = $.trim(sessionStorage.getItem("currentordertype"));
     if (('Credit' == type) && !$('#reason').attr('value').trim()) {
         g_alert('You need to enter a reason.');
     	return;

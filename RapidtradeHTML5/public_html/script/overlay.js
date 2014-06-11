@@ -37,12 +37,12 @@ function overlayInit(page) {
 				
 			} else {
 				
-				menuPanel += '<li class="orderItem">Create Order</li>';
+				menuPanel += '<li id="pricelistOrderItem" class="orderItem">Create Order</li>';
 			}
 			
 		} else {
 			
-			menuPanel += '<li class="orderItem">Create Order</li>';
+			menuPanel += '<li id="pricelistOrderItem" class="orderItem">Create Order</li>';
 		}	
 		
 		menuPanel += 	'<li id="activityItem">Add Activity</li>' +
