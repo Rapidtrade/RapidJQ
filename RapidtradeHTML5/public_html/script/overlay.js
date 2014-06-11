@@ -217,9 +217,11 @@ function overlayOnItemClick(item) {
 
 function overlayHighlightMenuItem(item) {
 	
-	var $item = ('.orderItem' == item) ? $(item).first() : $(item);			
-	$item.addClass('ui-btn-active').siblings('li').removeClass('ui-btn-active');
-	sessionStorage.setItem('lastMenuItemId', $item.attr('id'));
+    var $item = ('.orderItem' == item) ? $(item).first() : $(item);			
+    $item.addClass('ui-btn-active').siblings('li').removeClass('ui-btn-active');
+
+    if ($item.closest('ul').attr('id') === 'mainMenu')
+        sessionStorage.setItem('lastMenuItemId', $item.attr('id'));    
 }
 
 function overlaySetMenuButton() {
@@ -244,7 +246,7 @@ function overlaySetMenuItems() {
     
     $('#companyItem, #historyItem, #activityItem').toggleClass('ui-disabled', g_vanSales && g_currentCompany().AccountID.toUpperCase() == g_currentUser().RepID.toUpperCase());
     
-	overlayHighlightMenuItem(document.getElementById(sessionStorage.getItem('lastMenuItemId') || 'companyItem'));
+    overlayHighlightMenuItem(document.getElementById(sessionStorage.getItem('lastMenuItemId') || 'companyItem'));
     
     if ($('#pricelistMenu').length) {
     	

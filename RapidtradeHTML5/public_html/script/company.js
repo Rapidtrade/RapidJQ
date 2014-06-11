@@ -74,7 +74,7 @@ function companyLoadPanel(panelId) {
             var menuItemId = panelId.replace('Panel', 'Item');
 
             if (sessionStorage.getItem('lastMenuItemId') != menuItemId) 
-                    sessionStorage.setItem('lastMenuItemId', menuItemId);
+                sessionStorage.setItem('lastMenuItemId', menuItemId);
 	}
 	
 	if (panelId.indexOf('pricelist') != -1) 
