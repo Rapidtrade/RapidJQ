@@ -1,4 +1,4 @@
-var g_tpmLastValidQuantities = [];
+var g_tpmLastValidQuantities = {};
 var g_tpmjson = [];
 var g_tpmOnSuccess = tpmQualifySuccess;
 
@@ -104,7 +104,8 @@ function tpmQualifySuccess() {
     if (!url) url = g_restUrl + 'Orders/Exists';	
     g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', 
                 function (json) {
-                                        
+                    
+                    console.log(json);
                     jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);
                 }, 
                 undefined);	
@@ -476,7 +477,7 @@ function tpmSaveComplexPromotion() {
 
             $.each(jsonform.getInstance().jsonArray, function(index, item) {
 
-                if ((item.UserField02 === promotionId) && (item.ProductID === productId)) {
+                if ((item.UserField02 === promotionId) && ($.trim(item.ProductID) === productId)) {
 
                     item.Quantity = g_tpmLastValidQuantities[key];
                     item.selected = (item.Quantity > 0);
