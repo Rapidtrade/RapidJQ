@@ -300,12 +300,19 @@
     	font-size:15px;
 	font-weight:bold;
 	text-align: right;
+}
+
+
+.historyOrderItems td.orderedQuantity {
+    	font-size:15px;
+	font-weight:bold;
+	text-align: right;
         color:red;
 }
 
 .historyOrderItems td.descr {
-	font-size:15px;
-	font-weight:bold;
+    font-size:15px;
+    font-weight:bold;
     text-align: right;
 }
 .historyInfoPanel {

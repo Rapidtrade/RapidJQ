@@ -1,4 +1,4 @@
-﻿var g_orderdetailsOrderItems = [];
+var g_orderdetailsOrderItems = [];
 var g_orderdetailsCurrentOrder = {};
 
 /**
@@ -8,8 +8,8 @@ var g_orderdetailsCurrentOrder = {};
 
 function orderdetailsOnPageShow() {
 	
-	orderdetailsInit();
-	orderdetailsBind();
+    orderdetailsInit();
+    orderdetailsBind();
 }
 
 /*
@@ -140,19 +140,63 @@ function orderdetailsInit() {
 	$('#reprintButton').toggle(g_vanSales && (g_currentUser().RepID.toUpperCase() == g_orderdetailsCurrentOrder.BranchID.toUpperCase()));
 	orderdetailsInitOrderType();
 	orderdetailsFetchOrderItems();
-	
-	orderdetailsCheckBasket();
 }
 
 function orderdetailsCheckBasket() {
     
+//    var dao = new Dao();
+//    dao.cursor('BasketInfo', undefined, undefined,
+//    function (basketinfo) {
+//    	
+//        if (basketinfo.AccountID == g_currentCompany().AccountID)        	
+//            $('#shoppingcartButton').removeClass('ui-disabled');
+//    },undefined, undefined);
+
+    var totalItems = 0;
+    
     var dao = new Dao();
-    dao.cursor('BasketInfo', undefined, undefined,
-    function (basketinfo) {
-    	
-        if (basketinfo.AccountID == g_currentCompany().AccountID)        	
-            $('#shoppingcartButton').removeClass('ui-disabled');
-    },undefined, undefined);
+    dao.cursor('BasketInfo', g_currentCompany().AccountID, 'index1',
+    function (item) {
+        
+        totalItems++;
+        
+        var orderItemInfo = {
+
+            'SupplierID': g_currentCompany().SupplierID,
+            'OrderID': g_orderdetailsCurrentOrder.OrderID,
+            'ProductID': item.ProductID
+        };                    
+
+        $('#' + syncGetKeyField(orderItemInfo, 'OrderItems')).find('.orderedQuantity').text(item.Quantity);        
+        
+    },
+    undefined,
+    function (event) {
+    
+        $('.ui-btn-right').toggleClass('ui-disabled', totalItems === 0);
+        
+        if (totalItems) {
+            
+            $('.ui-btn-right .ui-btn-text').text('(' + totalItems + ')' + ' Shopping Cart');            
+        }
+    });   
+    
+//    dao.count('BasketInfo', g_currentCompany().AccountID, 'index1',
+//    function (cnt) {        	
+//
+//        // on success
+//        
+//        $('.ui-btn-right').removeClass('ui-disabled');
+//        $('.ui-btn-right .ui-btn-text').text('(' + cnt + ')' + ' Shopping Cart');
+//        
+//    }, function() {
+//        
+//        // on failure
+//        
+//        g_pricelistIsAnyItemAdded = false;
+//        $('.ui-btn-right').addClass('ui-disabled');
+//        $('.ui-btn-right .ui-btn-text').text('Shopping Cart');
+//    });
 }
 
 /*
@@ -224,7 +268,7 @@ function orderdetailsSendOrderItem(productId, quantity, nett, description, disco
 	$('#quantityEdit').val(quantity);
 	
 	if (unit) 
-		$('#quantityEdit').attr('step', unit);	
+            $('#quantityEdit').attr('step', unit);	
 	
 	var creditReasons = DaoOptions.getValue('CreditReasons') ?  DaoOptions.getValue('CreditReasons').split(',') : undefined;
 	
@@ -276,10 +320,10 @@ function orderdetailsSendOrderItem(productId, quantity, nett, description, disco
 				
 		if (isValid) {
 			
-			orderdetailsSendItemToBasket(productId, enteredQuantity(), nett, description, discount, gross, userField01, repNett, repDiscount, unit, userField02, warehouse, vat, true);
-			
-			if (orderdetailsIsCreditSelected())
-				$('.historyOrderItems tr:contains("' + productId + '") .descr').text(quantity + ' [-' + enteredQuantity() + ']');
+                    orderdetailsSendItemToBasket(productId, enteredQuantity(), nett, description, discount, gross, userField01, repNett, repDiscount, unit, userField02, warehouse, vat, true);
+                   
+                    if (orderdetailsIsCreditSelected())
+                        $('.historyOrderItems tr:contains("' + productId + '") .descr').text(quantity + ' [-' + enteredQuantity() + ']');
 		}
 	});
 }
@@ -291,11 +335,11 @@ function orderdetailsFetchOrderItems() {
 	
 	g_orderdetailsOrderItems = [];
 
-	var testorder = new Object();
-	testorder.SupplierID = "DS";
-	testorder.Type = "DatePicker";
-	testorder.Name = "display";
-	testorder.Visible = true;
+//	var testorder = new Object();
+//	testorder.SupplierID = "DS";
+//	testorder.Type = "DatePicker";
+//	testorder.Name = "display";
+//	testorder.Visible = true;
 	
 	$.mobile.showPageLoadingMsg(); 
 	
@@ -315,10 +359,13 @@ function orderdetailsFetchOrderItems() {
 	        var orderItem = json[i];
 	        
 	        var nettValue = orderItem.RepNett ? orderItem.RepNett : orderItem.Nett;
-	                
-	        g_append('#orderitemlist', '<li data-theme="c" id="' + syncGetKeyField(orderItem, 'OrderItems') + '">' +
+
+                var itemKey = syncGetKeyField(orderItem, 'OrderItems');
+	        g_append('#orderitemlist', '<li data-theme="c" id="' + itemKey + '">' +
                     '   <a><p class="ui-li-heading"><strong>' + orderItem.Description + '</strong></p>' +
-                    '   <table class="ui-li-desc historyOrderItems"><tr><td class="itemId">' + orderItem.ItemID + '</td><td class="productId">' + orderItem.ProductID + '</td><td class="quantity">' + orderItem.Quantity + '</td><td class="value">' + g_roundToTwoDecimals(nettValue) + '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td></tr></table></a>' +
+                    '   <table class="ui-li-desc historyOrderItems"><tr><td class="itemId">' + orderItem.ItemID + '</td><td class="productId">' + orderItem.ProductID + 
+                    '</td><td class="quantity">' + orderItem.Quantity + '</td><td class="value">' + g_roundToTwoDecimals(nettValue) + 
+                    '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td><td class="orderedQuantity"></td></tr></table></a>' +
                     '	<a onclick="orderdetailsSendOrderItem(\'' + 
 		                  orderItem.ProductID + '\',\'' +
 		                  orderItem.Quantity + '\',\'' +
@@ -344,6 +391,8 @@ function orderdetailsFetchOrderItems() {
 	  
 	    $.mobile.changePage("#orderdetails", { transition: "none" });
 	    $('#orderitemlist').listview('refresh');
+            
+            orderdetailsCheckBasket();
             
             if ((DaoOptions.getValue('AllowMasterChartDownload', 'false') == 'true')) {
             
@@ -384,36 +433,35 @@ function orderdetailsFetchOrderItems() {
  
  function orderdetailsSendItemToBasket(productID, quantity, nett, description, discount, gross, userField01,  repNett, repDiscount, unit, userField02, warehouse, vat, showInfoMessage) {
 
-	g_addProductToBasket(
-			productID, 
-			g_currentCompany().SupplierID, 
-			g_currentCompany().AccountID,
-			quantity, 
-			g_currentUser().UserID, 
-			nett, 
-			description, 
-			discount,
-			gross,
-			sessionStorage.getItem("currentordertype"),
-			userField01,
-			repNett,
-			repDiscount,
-			unit,
-			userField02,
-			warehouse,
-			vat
-			);
-	
-	g_clearCacheDependantOnBasket();
-	
-	$('#shoppingcartButton').removeClass('ui-disabled');
+    g_addProductToBasket(
+                    productID, 
+                    g_currentCompany().SupplierID, 
+                    g_currentCompany().AccountID,
+                    quantity, 
+                    g_currentUser().UserID, 
+                    nett, 
+                    description, 
+                    discount,
+                    gross,
+                    sessionStorage.getItem("currentordertype"),
+                    userField01,
+                    repNett,
+                    repDiscount,
+                    unit,
+                    userField02,
+                    warehouse,
+                    vat
+                    );
 
-	if (showInfoMessage) {
-		
-		$('#quantityPopup').popup('close');
-		window.setTimeout( function(){ $('#itemSentPopup').popup('open'); }, 500 );
-		window.setTimeout( function(){ $('#itemSentPopup').popup('close'); }, 2500 );
-	}
+    g_clearCacheDependantOnBasket();	
+
+    if (showInfoMessage) {
+
+            $('#quantityPopup').popup('close');
+            orderdetailsCheckBasket();
+            window.setTimeout( function(){ $('#itemSentPopup').popup('open'); }, 500 );
+            window.setTimeout( function(){ $('#itemSentPopup').popup('close'); }, 2500 );
+    }
  };
  
  function orderdetailsFetchStock(productId, gross, nett) {
