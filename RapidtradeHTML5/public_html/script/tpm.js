@@ -106,7 +106,23 @@ function tpmQualifySuccess() {
                 function (json) {
                     
                     console.log(json);
-                    jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);
+                                        
+                    if (json._getStatus == false) {
+                        
+                        $('#infoPopup p').text(json._getErrorMsg || 'Unknown error');
+                        $('#infoPopup').popup('open');
+                        setTimeout(function() {
+
+                            $('#infoPopup').popup('close');
+                            sessionStorage.setItem('lastPanelId', 'pricelistPanel');
+                            $.mobile.changePage('company.html', { transition: "none" });
+                            
+                        }, 2000);
+                        
+                    } else {
+                    
+                        jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);
+                    }
                 }, 
                 undefined);	
 }
@@ -336,6 +352,8 @@ function tpmOrderSuccess() {
          alert('Error clearing basket');
      }, 
     function() { 
+        
+        $('#infoPopup p').text('Order sent OK.');
         $('#infoPopup').popup('open');
         setTimeout(function() {
             
