@@ -307,13 +307,16 @@ function tpmBuildNewCart() {
             newcart.push(row);
             itemidx++;
         } else if (row.UserField01 !== '') {
-            if (row.selected) {
+            
+            row.Userfield08 = row.selected ? 'Y' : 'N';
+            
+//            if (row.selected) {
                 if (row.Userfield07)
-                        row.Discount = parseFloat(row.Userfield06); 
+                    row.Discount = parseFloat(row.Userfield06); 
                 row.ItemID = itemidx;
                 newcart.push(row);
                 itemidx++;
-            }	
+//            }	
         } else {
             row.ItemID = itemidx;
             newcart.push(row);
