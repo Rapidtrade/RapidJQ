@@ -339,9 +339,23 @@ function tpmVerifySuccess() {
     
     g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', 
         function (json) {
-            if (!json._getStatus)
-                alert (json._getErrorMsg);                                      
-            jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmverified','','list','table',tpmVerifyTableLoaded);
+            if (!json._getStatus) {
+                
+                alert (json._getErrorMsg);  
+            }
+            else {                
+                
+                for (var i = 0; i < json._order.orderItems.length; ++i) {
+                    
+                    if (json._order.orderItems[i].Userfield08 !== 'Y') {
+                        
+                        json._order.orderItems.splice(i,1);
+                        --i;
+                    }
+                }
+                
+                jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmverified','','list','table',tpmVerifyTableLoaded);
+            }
         }, 
         undefined);	
 }
