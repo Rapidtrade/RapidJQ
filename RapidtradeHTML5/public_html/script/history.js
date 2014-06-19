@@ -6,25 +6,27 @@
  */
 
 function historyOnPageShow() {
-	
-	historyHideFooter();	
-	overlaySetMenuItems();
-	
-	historyOnPageShowSmall();
-	historyBind();
-	
-	g_showCurrentCompanyName();
-	
-	//check for re-load of same customer, reload not needed
+
+    $('#noorders, #noactivities').hide();
+    
+    historyHideFooter();	
+    overlaySetMenuItems();
+
+    historyOnPageShowSmall();
+    historyBind();
+
+    g_showCurrentCompanyName();
+
+    //check for re-load of same customer, reload not needed
     if (sessionStorage.getItem('HistoryCacheAccountID') && g_currentCompany().AccountID == sessionStorage.getItem('HistoryCacheAccountID')) {
-    	historyFromCache();
-	} else {
-		//else reload from scratch
-		if (g_isOnline()) {
-		    var dao = new Dao();
-		    dao.openDB(function() {	historyInit();	});
-		}
-	}	
+        historyFromCache();
+    } else {
+            //else reload from scratch
+            if (g_isOnline()) {
+                var dao = new Dao();
+                dao.openDB(function() {	historyInit();	});
+            }
+    }	
 }
 
 function historyOnPageShowSmall() {
@@ -66,9 +68,10 @@ function historyFromCache() {
 	}	
 	//reload the orders and activity tables
 	historySetRadioButton(g_historyLastRadioButton);
-	historyActivitiesListView(JSON.parse(sessionStorage.getItem('CacheHistoryActivities')));
-	historyOrderListView(JSON.parse(sessionStorage.getItem('CacheHistoryOrders')));
-	$('.hidden').removeClass('hidden');
+        g_currentUser().Role != 'CUST' ? historyFetchActivities() : historyFetchOrders();
+//	historyActivitiesListView(JSON.parse(sessionStorage.getItem('CacheHistoryActivities')));
+//	historyOrderListView(JSON.parse(sessionStorage.getItem('CacheHistoryOrders')));
+//	$('.hidden').removeClass('hidden');
 }
 
 
