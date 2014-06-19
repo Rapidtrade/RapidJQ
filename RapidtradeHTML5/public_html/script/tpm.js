@@ -114,8 +114,7 @@ function tpmQualifySuccess() {
                         setTimeout(function() {
 
                             $('#infoPopup').popup('close');
-                            sessionStorage.setItem('lastPanelId', 'pricelistPanel');
-                            $.mobile.changePage('company.html', { transition: "none" });
+                            $.mobile.changePage('orderHeader.html');        
                             
                         }, 2000);
                         
