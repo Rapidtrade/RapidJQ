@@ -68,10 +68,10 @@ function historyFromCache() {
 	}	
 	//reload the orders and activity tables
 	historySetRadioButton(g_historyLastRadioButton);
-        g_currentUser().Role != 'CUST' ? historyFetchActivities() : historyFetchOrders();
-//	historyActivitiesListView(JSON.parse(sessionStorage.getItem('CacheHistoryActivities')));
-//	historyOrderListView(JSON.parse(sessionStorage.getItem('CacheHistoryOrders')));
-//	$('.hidden').removeClass('hidden');
+//        g_currentUser().Role != 'CUST' ? historyFetchActivities() : historyFetchOrders();
+	historyActivitiesListView(JSON.parse(sessionStorage.getItem('CacheHistoryActivities')));
+	historyOrderListView(JSON.parse(sessionStorage.getItem('CacheHistoryOrders')));
+	$('.hidden').removeClass('hidden');
 }
 
 

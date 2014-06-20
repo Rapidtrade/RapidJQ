@@ -263,7 +263,7 @@ function syncPostData(index) {
 function syncPostedOK(index){
 	
     if (!g_syncIsOrderPosted && g_syncPosted[index].Table == 'Orders')
-            g_syncIsOrderPosted = true;
+        g_syncIsOrderPosted = true;
 		
     if ('POD' == g_syncPosted[index].JsonObject.Type) {
     	
@@ -277,7 +277,7 @@ function syncPostedOK(index){
 	if (index == (g_syncPosted.length - 1)){
 		
 		if (g_syncIsOrderPosted)
-			sessionStorage.setItem('HistoryCacheAccountID', '');	
+                    sessionStorage.setItem('HistoryCacheAccountID', '');	
 		
 		g_syncDao.clear('Unsent');
 		syncAll();

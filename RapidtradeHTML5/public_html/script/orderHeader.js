@@ -632,21 +632,23 @@ function orderHeaderOrderAcceptOnError () {
 }
 
 function orderHeaderOnOrderSaved() {
-	
-	$('#popupBasic').popup('close');
-	g_alert('Your order was saved OK');
-	sessionStorage.setItem('HistoryCacheAccountID', '');
-	
-	if (DaoOptions.getValue('DeliveryOrderType'))
-		localStorage.removeItem('CacheDeliveryOrders');
-	try {
-            if (!g_syncDao) g_syncDao = new Dao();
-            syncFetchTable(g_currentUser().SupplierID, g_currentUser().UserID, 'Stock', 'Sync4', syncFetchLastTableSkip('Stock'));            
-        } catch(err){
-            console.log(err.message);
-        }
 
-	orderHeaderRemoveFromCart();
+    sessionStorage.setItem('HistoryCacheAccountID', '');
+    
+    $('#popupBasic').popup('close');
+    g_alert('Your order was saved OK');
+    sessionStorage.setItem('HistoryCacheAccountID', '');
+
+    if (DaoOptions.getValue('DeliveryOrderType'))
+            localStorage.removeItem('CacheDeliveryOrders');
+    try {
+        if (!g_syncDao) g_syncDao = new Dao();
+        syncFetchTable(g_currentUser().SupplierID, g_currentUser().UserID, 'Stock', 'Sync4', syncFetchLastTableSkip('Stock'));            
+    } catch(err){
+        console.log(err.message);
+    }
+
+    orderHeaderRemoveFromCart();
 }
 
 
