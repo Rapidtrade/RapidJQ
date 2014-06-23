@@ -76,6 +76,7 @@ function tpmFetchBasket() {
 function tpmPost(type, onSuccess) {
     try {    
         
+        g_busy(true);
         g_tpmOnSuccess = onSuccess;
         
         g_orderHeaderOrder.Type = type;
@@ -100,6 +101,7 @@ function tpmPost(type, onSuccess) {
  * @returns {undefined}
  */
 function tpmQualifySuccess() {	
+    
     var url = DaoOptions.getValue('LiveGetResultsURL');
     if (!url) url = g_restUrl + 'Orders/Exists';	
     g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', 
@@ -120,6 +122,7 @@ function tpmQualifySuccess() {
                         
                     } else {
                     
+                        g_busy(false);
                         jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);
                     }
                 }, 
@@ -330,6 +333,9 @@ function tpmBuildNewCart() {
  * @returns {undefined}
  */
 function tpmVerifySuccess() {	
+    
+    g_busy(false);
+    
     $('#verifyTPM').addClass('invisible');
     $('#saveDiv').removeClass('invisible');
     $('#promotionsDiv').empty();
@@ -360,6 +366,8 @@ function tpmVerifySuccess() {
 }
 
 function tpmOrderSuccess() {
+    
+    g_busy(false);
     
     var dao = new Dao();
     dao.clearBasket('BasketInfo', g_currentCompany().AccountID, sessionStorage.getItem('currentordertype'), 
