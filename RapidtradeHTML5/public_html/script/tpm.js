@@ -352,7 +352,7 @@ function tpmVerifySuccess() {
                 
                 for (var i = 0; i < json._order.orderItems.length; ++i) {
                     
-                    if (json._order.orderItems[i].Userfield08 !== 'Y') {
+                    if ((json._order.orderItems[i].Userfield08 !== 'Y') && (!json._order.orderItems[i].Userfield10)) {
                         
                         json._order.orderItems.splice(i,1);
                         --i;
@@ -402,7 +402,16 @@ function tpmVerifyTableLoaded(){
         $('#issue').text('You have errors, so cannot proceed. Please check the errors and start again');
     }
     */
+   
+   var ok = $("#jsontable tr").length === $("#jsontable td:nth-child(8):empty").length;
+   
     $("#jsontable td:nth-child(8):empty").text('OK'); //Mark items that dont have an issue as OK
+    
+    if (!ok) {
+        
+        $('#reference, #saveTPM').addClass('ui-disabled');
+        return;
+    }
     
     $okRows = $('#jsontable td:visible:last-child:empty').parent();   
     if ($okRows.length === $('#jsontable tr:visible').length - 1)
