@@ -403,15 +403,15 @@ function tpmVerifyTableLoaded(){
     }
     */
    
-   var ok = $("#jsontable tr").length === $("#jsontable td:nth-child(8):empty").length;
-   
     $("#jsontable td:nth-child(8):empty").text('OK'); //Mark items that dont have an issue as OK
+    
+    var ok = ($("#jsontable tr:visible").length - 1 === $("#jsontable td:nth-child(8)").filter(function() {return $(this).text() === 'OK';}).length);
     
     if (!ok) {
         
         $('#reference, #saveTPM').addClass('ui-disabled');
-        return;
-    }
+        return;        
+    } 
     
     $okRows = $('#jsontable td:visible:last-child:empty').parent();   
     if ($okRows.length === $('#jsontable tr:visible').length - 1)
