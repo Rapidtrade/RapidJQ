@@ -332,6 +332,8 @@ function orderdetailsSendOrderItem(productId, quantity, nett, description, disco
  * 
  */
 function orderdetailsFetchOrderItems() {
+    
+    var isMasterChartSynced = sessionStorage.getItem('MasterChartSynced');
 	
 	g_orderdetailsOrderItems = [];
 
@@ -346,6 +348,8 @@ function orderdetailsFetchOrderItems() {
 	var url = DaoOptions.getValue('LiveHistoryItems') || g_restUrl + 'Orders/GetOrderItems';
 	
 	url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + ' &orderID=' + g_orderdetailsCurrentOrder.OrderID + '&skip=0&top=100&format=json';
+        
+        console.log(url);
 	
 	var success = function (json) {
 		
@@ -359,13 +363,23 @@ function orderdetailsFetchOrderItems() {
 	        var orderItem = json[i];
 	        
 	        var nettValue = orderItem.RepNett ? orderItem.RepNett : orderItem.Nett;
-
                 var itemKey = syncGetKeyField(orderItem, 'OrderItems');
+
+                var quantityInputHtml = '';
+                
+                if (isMasterChartSynced === 'true') {
+  		
+                    var step = 'step=' + (g_isPackSizeUnitValid(pricelist.Unit) ? pricelist.Unit : 1) + ' min=0';
+
+                    quantityInputHtml = '<td class="value"><input type="number" style="width:85px;position:relative;top:0px;display:inline" ' + step + 
+                            ' class="captureQuantity ui-input-text ui-body-c ui-corner-all ui-shadow-inset" onkeydown="orderdetailsQuickCapture(event, this, \'' + itemKey + '\',' + g_orderdetailsOrderItems.length + ')"/></td>';
+                }
+
 	        g_append('#orderitemlist', '<li data-theme="c" id="' + itemKey + '">' +
                     '   <a><p class="ui-li-heading"><strong>' + orderItem.Description + '</strong></p>' +
                     '   <table class="ui-li-desc historyOrderItems"><tr><td class="itemId">' + orderItem.ItemID + '</td><td class="productId">' + orderItem.ProductID + 
                     '</td><td class="quantity">' + orderItem.Quantity + '</td><td class="value">' + g_roundToTwoDecimals(nettValue) + 
-                    '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td><td class="orderedQuantity"></td></tr></table></a>' +
+                    '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td><td class="orderedQuantity"></td>' + quantityInputHtml + '</tr></table></a>' +
                     '	<a onclick="orderdetailsSendOrderItem(\'' + 
 		                  orderItem.ProductID + '\',\'' +
 		                  orderItem.Quantity + '\',\'' +
@@ -388,6 +402,8 @@ function orderdetailsFetchOrderItems() {
 
 	        g_orderdetailsOrderItems.push(orderItem);
 	    }
+            
+            console.log($('#orderitemlist li:first').html());
 	  
 	    $.mobile.changePage("#orderdetails", { transition: "none" });
 	    $('#orderitemlist').listview('refresh');
@@ -419,6 +435,22 @@ function orderdetailsFetchOrderItems() {
 	
 	g_ajaxget(url, success, error);
  };
+ 
+ function orderdetailsQuickCapture(event, inputElement, itemKey, rowIndex) {
+     
+     var keyCode = (event.keyCode ? event.keyCode : event.which);
+     
+     if (keyCode === 13) {
+         
+         $('#' + itemKey).find('.orderedQuantity').text(inputElement.value);
+         
+         var item = g_orderdetailsOrderItems[rowIndex];         
+         item.Description = item.Description && item.Description.replace(/'/g, '&quot;') || '';
+         
+         orderdetailsSendItemToBasket(item.ProductID, inputElement.value, item.Nett, item.Description, item.Discount, item.Gross, '', item.RepNett, item.RepDiscount, item.Unit, '', item.Warehouse, item.VAT);
+         orderdetailsCheckBasket();
+     }
+ }
  
  function orderdetailsFetchMasterChartBarcode(key, onSuccess) {
     

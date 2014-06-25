@@ -19,41 +19,17 @@ function companyOnPageShow(){
     dao.openDB(function() {	companyInit();	});
     companyBind();
 
-    $('#syncMasterChart').hide();
-    
-    var field = DaoOptions.getValue('MasterChartFieldIndic', '');    
-    if ((DaoOptions.getValue('AllowMasterChartDownload', 'false') == 'true') && (!field || g_currentCompany()[field] == 'Y')) {    
+    companyCheckIfMasterChartIsSynced(function(isSynced) {
         
-        var isInCallCycle = false;
-        
-        var dao = new Dao();	
-        dao.cursor('CallCycle', undefined, undefined,
-
-            function(customerInfo) {
-
-                var status = customerInfo[todayGetCurrentDay()];
-
-                if ((customerInfo.Week == g_currentCallCycleWeek()) && status && customerInfo.AccountID == g_currentCompany().AccountID)
-                    isInCallCycle = true;
-            }, 
-            
-            undefined,
-            
-            function() {
-                
-                if (!isInCallCycle)
-                    $('#syncMasterChart').show();
-            }
-            
-        );
-    }
-
+        $('#syncMasterChart').toggle(!isSynced);
+        sessionStorage.setItem('MasterChartSynced', isSynced);
+    });
 
 
     if (!$('#companyTabs input:checked').length) {
 
-            $('#radio1').attr('checked', true);
-            $('#companyTabs').controlgroup('refresh');
+        $('#radio1').attr('checked', true);
+        $('#companyTabs').controlgroup('refresh');
     }
 
     var lastPanelId = sessionStorage.getItem('lastPanelId');
@@ -161,6 +137,40 @@ function companyHideFooter() {
 
         sessionStorage.setItem('orderheaderNext', 'menu');
         $('#companyBackButton, #companyNextButton, #savecompany').hide();
+    }
+}
+
+function companyCheckIfMasterChartIsSynced(callback) {
+        
+    var field = DaoOptions.getValue('MasterChartFieldIndic', ''); 
+    
+    if ((DaoOptions.getValue('AllowMasterChartDownload', 'false') == 'true') && (!field || g_currentCompany()[field] == 'Y')) {    
+        
+        var isSynced = false;
+        
+        var dao = new Dao();	
+        dao.cursor('CallCycle', undefined, undefined,
+
+            function(customerInfo) {
+
+                var status = customerInfo[todayGetCurrentDay()];
+
+                if ((customerInfo.Week == g_currentCallCycleWeek()) && status && customerInfo.AccountID == g_currentCompany().AccountID)
+                    isSynced = true;
+            }, 
+            
+            undefined,
+            
+            function() {
+  
+                callback(isSynced);
+            }
+            
+        );
+
+    } else {
+    
+        callback(false);    
     }
 }
 
@@ -343,7 +353,7 @@ function companySyncMasterChart() {
         
         syncFetchTable(g_currentUser().SupplierID, g_currentUser().UserID, 'Orders', 'GetOrderItemsByType3', 0, function() {
             
-            g_busy(false)
+            g_busy(false);
         });
     });    
 }

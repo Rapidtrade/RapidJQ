@@ -285,8 +285,8 @@
 
 .historyOrderItems td {
 	
-	width: 200px;
-	overflow: hidden;
+    width: 200px;
+    overflow: hidden;
     display: inline-block;
     white-space: nowrap;
 }

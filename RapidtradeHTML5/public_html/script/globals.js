@@ -377,7 +377,7 @@ function g_addProductToBasket(productID, supplierID, accountID, quantity,
 }
 
 function g_roundToTwoDecimals(number) {
-	return parseFloat(Math.round(number * 100) / 100).toFixed(2);
+    return parseFloat(Math.round(number * 100) / 100).toFixed(2);
 }
 
 // Clears each cache that depends on basket. This is used when basket is cleared
