@@ -193,18 +193,19 @@ function syncPostData(index) {
     
     var orderExistsOnSuccess = function(json) {
     	
-    	(json._Status == true) ? syncPostedOK(index) : orderExistsOnError();    			
+    	(json._Status == true) ? syncPostedOK(index) : orderExistsOnError(json);    			
     };
     
-    var orderExistsOnError = function() {
+    var orderExistsOnError = function(json) {
     	
-		g_append('#results tbody', '<tr><td>Error: order not verified.</td></tr>');
-		
-		if (json._Errors[0])
-			g_append('#results tbody', '<tr><td>' + json._Errors[0] + '</td></tr>');
-		
-		$.mobile.hidePageLoadingMsg();
-		$('#message').text('Sync completed. Click Next button to continue');
+        g_append('#results tbody', '<tr><td>Error: order not sent.</td></tr>');
+
+//        if (json && json._Errors[0])
+//            g_append('#results tbody', '<tr><td>' + json._Errors[0] + '</td></tr>');
+
+        syncPostedOK(index, true);        
+//		$.mobile.hidePageLoadingMsg();
+//		$('#message').text('Sync completed. Click Next button to continue');
     };
     
     var postOrderOnSuccess = function() {
@@ -260,26 +261,33 @@ function syncPostData(index) {
 /*
  * Data posted OK, so post the next index
  */
-function syncPostedOK(index){
-	
-    if (!g_syncIsOrderPosted && g_syncPosted[index].Table == 'Orders')
-        g_syncIsOrderPosted = true;
-		
-    if ('POD' == g_syncPosted[index].JsonObject.Type) {
-    	
-    	g_acceptDelivery(g_syncPosted[index].JsonObject, function() {
-    		localStorage.removeItem('CacheDeliveryOrders');
-    	});
-    }
+function syncPostedOK(index, skip){
 
-	$('#results tbody tr:last td').text((index + 1) + ' of ' + g_syncPosted.length + ' rows sent OK' );
+    if (!skip) {
+        
+        if (!g_syncIsOrderPosted && g_syncPosted[index].Table == 'Orders')
+            g_syncIsOrderPosted = true;
+
+        if ('POD' == g_syncPosted[index].JsonObject.Type) {
+
+            g_acceptDelivery(g_syncPosted[index].JsonObject, function() {
+                    localStorage.removeItem('CacheDeliveryOrders');
+            });
+        }
+
+            $('#results tbody tr:last td').text((index + 1) + ' of ' + g_syncPosted.length + ' rows sent OK' );
+    }
 
 	if (index == (g_syncPosted.length - 1)){
 		
-		if (g_syncIsOrderPosted)
-                    sessionStorage.setItem('HistoryCacheAccountID', '');	
-		
-		g_syncDao.clear('Unsent');
+                if (!skip) {
+                    
+                    if (g_syncIsOrderPosted)
+                        sessionStorage.setItem('HistoryCacheAccountID', '');	
+
+                    g_syncDao.clear('Unsent');
+                }
+                
 		syncAll();
 		
 //		console.log('===== Sync completed OK =====');
