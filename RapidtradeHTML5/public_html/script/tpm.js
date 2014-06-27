@@ -17,7 +17,7 @@ function tpmBind() {
         
         var isOrder = ('saveTPM' === this.id);
         
-        var postType = isOrder ? 'Order' : 'verify';
+        var postType = isOrder ? 'Order' : 'Verify';
         var onSuccess = isOrder ? tpmOrderSuccess : tpmVerifySuccess;
         
         tpmPost(postType, onSuccess);
@@ -64,7 +64,7 @@ function tpmFetchBasket() {
         },
         undefined,
         function(){
-            tpmPost('qualify',tpmQualifySuccess);
+            tpmPost('Qualify',tpmQualifySuccess);
         });    	
 }
 
@@ -310,7 +310,9 @@ function tpmBuildNewCart() {
             itemidx++;
         } else if (row.UserField01 !== '') {
             
-            row.Userfield08 = row.selected ? 'Y' : 'N';
+            if (!row.Userfield08 && row.selected !== undefined) {
+                row.Userfield08 = row.selected ? 'Y' : 'N';
+            }
             
 //            if (row.selected) {
                 if (row.Userfield07)
@@ -354,8 +356,7 @@ function tpmVerifySuccess() {
                     
                     if ((json._order.orderItems[i].Userfield08 !== 'Y') && (!json._order.orderItems[i].Userfield10)) {
                         
-                        json._order.orderItems.splice(i,1);
-                        --i;
+                        json._order.orderItems[i].hidden = true;
                     }
                 }
                 

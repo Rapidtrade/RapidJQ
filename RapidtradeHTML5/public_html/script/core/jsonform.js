@@ -365,8 +365,15 @@ var jsonform = (function(){
             //create rows
             htmlstr += '<tbody>';
             for (var i=0; i < me.jsonArray.length;i++) { 
-                htmlstr += '<tr>';
+                
                 var obj = me.jsonArray[i];
+                if (obj.hidden) {
+                    
+                    delete obj.hidden;
+                    continue;
+                }
+                
+                htmlstr += '<tr>';
                 // save to session storage for later use
                 sessionStorage.setItem(me.vid + i, JSON.stringify(obj) );
                 if (me.mode ==='edit') htmlstr += '<td><a href="#" onclick="jsonform.getInstance().showDetail(\'' + me.vid + i + '\',\'' + me.vid + 'Det\')" class="ui-btn ui-icon-edit ui-btn-icon-notext ui-corner-all">No text</a></td>';
