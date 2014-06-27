@@ -17,7 +17,7 @@ function tpmBind() {
         
         var isOrder = ('saveTPM' === this.id);
         
-        var postType = isOrder ? 'order' : 'verify';
+        var postType = isOrder ? 'Order' : 'verify';
         var onSuccess = isOrder ? tpmOrderSuccess : tpmVerifySuccess;
         
         tpmPost(postType, onSuccess);
@@ -366,27 +366,28 @@ function tpmVerifySuccess() {
 }
 
 function tpmOrderSuccess() {
-    
-    g_busy(false);
-    
-    var dao = new Dao();
-    dao.clearBasket('BasketInfo', g_currentCompany().AccountID, sessionStorage.getItem('currentordertype'), 
-    
-    function(){
-         alert('Error clearing basket');
-     }, 
-    function() { 
-        
-        $('#infoPopup p').text('Order sent OK.');
-        $('#infoPopup').popup('open');
-        setTimeout(function() {
-            
-            $('#infoPopup').popup('close');
-            sessionStorage.setItem('lastPanelId', 'activityPanel');
-            $.mobile.changePage('company.html');
-        }, 2000);
-    }
-    );
+  
+    orderHeaderOnLineSaveSuccess();
+//    g_busy(false);
+//    
+//    var dao = new Dao();
+//    dao.clearBasket('BasketInfo', g_currentCompany().AccountID, sessionStorage.getItem('currentordertype'), 
+//    
+//    function(){
+//         alert('Error clearing basket');
+//     }, 
+//    function() { 
+//        
+//        $('#infoPopup p').text('Order sent OK.');
+//        $('#infoPopup').popup('open');
+//        setTimeout(function() {
+//            
+//            $('#infoPopup').popup('close');
+//            sessionStorage.setItem('lastPanelId', 'activityPanel');
+//            $.mobile.changePage('company.html');
+//        }, 2000);
+//    }
+//    );
 }
 
 function tpmVerifyTableLoaded(){

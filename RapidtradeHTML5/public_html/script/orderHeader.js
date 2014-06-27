@@ -190,9 +190,9 @@ function orderHeaderSaveOrder() {
 	if (!g_orderHeaderJsonForm.isValid())
 		return;
 	
-        $('#popupBasic p').text('Please wait, processing order');
+        $('#infoPopup p').text('Please wait, processing order');
         
-	$('#popupBasic').popup('open');
+	$('#infoPopup').popup('open');
 	
 	if (!g_orderHeaderOrderItems.length) {	
 		g_alert('There is a problem with your order, go back to the shopping cart now and try again. Please contact Rapidtrade support on 011 493 9755 if this continues.');
@@ -236,7 +236,7 @@ function orderHeaderSaveOrder() {
         
         if (g_orderHeaderOrder.Reference.length==0){      	
         	g_alert('You must enter a reference before you can continue');
-        	$('#popupBasic').popup('close');
+        	$('#infoPopup').popup('close');
         	return;	
         }
         
@@ -472,7 +472,7 @@ function orderHeaderAreItemsValid() {
             if (g_orderHeaderOrder.orderItems[i].Warehouse && (g_orderHeaderOrder.orderItems[i].Warehouse != g_currentBranch())) {
                 
                 isValid = false;
-                $('#popupBasic p').text('Error: The order items are not created with the current order type.');
+                $('#infoPopup p').text('Error: The order items are not created with the current order type.');
                 break;
             }
         }
@@ -539,7 +539,7 @@ function orderHeaderOnLineSaveError(error) {
 
 function orderHeaderOfflineSaveSuccess() {
 	
-	$('#popupBasic').popup('close');
+	$('#infoPopup').popup('close');
 	g_alert('Your order was saved locally. Please sync later to send this order');
 	sessionStorage.setItem('HistoryCacheAccountID', '');
 	orderHeaderRemoveFromCart();
@@ -547,7 +547,9 @@ function orderHeaderOfflineSaveSuccess() {
 
 
 function orderHeaderOnOrderExistsSuccess(json) {
-	
+
+    g_busy(false);
+    
     if (json._Status == true) {				
         if (g_orderHeaderOrder.Type == 'GRV' || g_orderHeaderOrder.Type.toUpperCase() == 'POD') {
             orderHeaderSaveReferenceStatus(g_orderHeaderOrder, orderHeaderOrderAcceptOnSuccess, orderHeaderOrderAcceptOnError);	
@@ -555,10 +557,22 @@ function orderHeaderOnOrderExistsSuccess(json) {
         }
         orderHeaderOnOrderSaved();	
     } else {
-        if (DaoOptions.getValue('VerifyOrders') == 'true')
+        if (DaoOptions.getValue('VerifyOrders') == 'true') {
+            
             orderHeaderConfirmOrderItems(json._Items);
-        else			
-            g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);		
+            
+        } else {
+
+            $('#infoPopup p').html(json._Errors.join('<br/>'));
+            $('#infoPopup').popup('open');
+            
+            setTimeout(function() {
+
+                $('#infoPopup').popup('close');
+                g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
+
+            }, 2000);            
+        }			            
     }		
 }
 
@@ -590,7 +604,7 @@ function orderHeaderConfirmOrderItems(orderItems) {
 	
 	$('#confirmButton').toggleClass('ui-disabled', !g_orderHeaderValidItems.length);
 	
-	$('#popupBasic').popup('close');
+	$('#infoPopup').popup('close');
 	$('#orderConfirmPopup').popup('open');
 }
 
@@ -635,7 +649,7 @@ function orderHeaderOnOrderSaved() {
 
     sessionStorage.setItem('HistoryCacheAccountID', '');
     
-    $('#popupBasic').popup('close');
+    $('#infoPopup').popup('close');
     g_alert('Your order was saved OK');
     sessionStorage.setItem('HistoryCacheAccountID', '');
 
