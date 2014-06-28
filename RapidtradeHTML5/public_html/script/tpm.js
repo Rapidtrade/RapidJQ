@@ -312,7 +312,11 @@ function tpmBuildNewCart() {
             
             if (!row.Userfield08 && row.selected !== undefined) {
                 row.Userfield08 = row.selected ? 'Y' : 'N';
+            } else if (row.selected == undefined) {
+                // If the row.selected is undefined - set userfield08 to 'N'
+                row.Userfield08 = 'N';
             }
+                
             
 //            if (row.selected) {
                 if (row.Userfield07)
