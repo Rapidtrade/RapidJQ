@@ -8,7 +8,7 @@ var g_logo = 'img/rapidtrade-logo-small.png';
 //var g_restUrl = g_url + "rest/";
 //var g_vanSales = true;
 
-var g_url = "http://app.rapidtrade.biz/";
+var g_url = "https://app.rapidtrade.biz/";
 var g_restUrl = g_url + "rest/";
 var g_vanSales = false;
 
@@ -522,7 +522,12 @@ function g_ajaxget(url, success, error) {
 //			success : success,
 //			error : error
 //		});
-		$.get(url,undefined,success,"jsonp");
+		$.get(url,undefined,success)
+		.fail(function() {
+			alert( "Error, you seem to be offline" );
+		}).error(function() {
+    
+  		});
 	}
 
 }
@@ -554,7 +559,7 @@ function g_ajaxpost(data, url, success, error) {
 				error : error
 			});			
 		} catch (error){
-			error("Oops");
+			alert("Oops");
 		}
 	}
 }
@@ -638,6 +643,8 @@ function g_fetchAvailableCredit() {
 		
 		console.log('Error in fetching available credit');
 	};
+	var creditcheck = DaoOptions.getValue('LiveCreditCheckURL');
+	if (creditcheck === undefined) return;
 	
 	var url = DaoOptions.getValue('LiveCreditCheckURL') + '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&branchID=' + g_currentCompany().BranchID;
 

@@ -492,7 +492,7 @@ function orderHeaderSaveFormedOrder(position) {
     if (!orderHeaderAreItemsValid())
         return;
     
-    if (g_isOnline(false)) {   	
+    //if (g_isOnline(false)) {   	
     	try {		
         	var orderHeaderInfo = {};  	
         	orderHeaderInfo.Table = "Orders";
@@ -508,9 +508,9 @@ function orderHeaderSaveFormedOrder(position) {
     	} catch (error) {  		
         	g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);   		
     	}    	
-    } else {
-    	g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
-    }
+    //} else {
+    //	g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
+    //}
 } 
 
 
@@ -526,7 +526,7 @@ function orderHeaderOnLineSaveSuccess() {
 
 function orderHeaderOnLineSaveError(error) {
 	
-	if ((error.status == 0) || (error.status == 200)) {
+	if (((error.status == 0) || (error.status == 200)) && error.statusText!=='error') {
 		
             orderHeaderOnLineSaveSuccess();
 		

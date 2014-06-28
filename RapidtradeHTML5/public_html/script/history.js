@@ -22,10 +22,10 @@ function historyOnPageShow() {
         historyFromCache();
     } else {
             //else reload from scratch
-            if (g_isOnline()) {
+            //if (g_isOnline()) {
                 var dao = new Dao();
                 dao.openDB(function() {	historyInit();	});
-            }
+            //}
     }	
 }
 
@@ -159,7 +159,7 @@ function historyFetchActivities() {
     };
     
     var error = function (e) {
-    	
+    	alert('You dont seem to be online');
         console.log(e.message);
     };
     
