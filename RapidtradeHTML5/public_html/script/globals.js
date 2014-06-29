@@ -514,20 +514,22 @@ function g_ajaxget(url, success, error) {
 			error(err);
 		});
 	} else {
-//		$.ajax({
-//			type : 'GET',
-//			url : url,
-//			jsonpCallback : 'jsonCallback2',
-//			dataType : 'jsonp',
-//			success : success,
-//			error : error
-//		});
-		$.get(url,undefined,success)
-		.fail(function() {
+		$.ajax({
+			type : 'GET',
+			url : url,
+			jsonpCallback : 'jsonCallback2',
+			dataType : 'jsonp',
+			success : success,
+			error : error
+		});
+		/*
+		$.get(url,undefined,success,"jsonp")
+		.fail(function(p) {
 			alert( "Error, you seem to be offline" );
 		}).error(function() {
-    
+    		alert( "Error, you seem to be offline" );
   		});
+		*/
 	}
 
 }

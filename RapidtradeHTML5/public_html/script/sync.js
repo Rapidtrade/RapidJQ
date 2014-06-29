@@ -137,7 +137,9 @@ function syncFetchUser() {
 	        $('#message').text('Enter your password and click OK');
 	    }
 	};
-	var error = function (e) {
+	var error = function (e, a) {
+            alert('You seem to be offline: ' + a);
+            $.mobile.hidePageLoadingMsg();
 	    console.log(e.message);
 	};
 
@@ -402,7 +404,9 @@ function syncFetchTable(supplierid, userid, table, method, skip, onSuccess) {
             onSuccess();
     };
 
-    var error = function (e) {
+    var error = function (e, a) {
+        alert('You seem to have timed out, please check your connection and try again: ' + a);
+        $.mobile.hidePageLoadingMsg();
         console.log(e.message);
     };
 
