@@ -526,7 +526,7 @@ function orderHeaderOnLineSaveSuccess() {
 
 function orderHeaderOnLineSaveError(error) {
 	
-	if (((error.status == 0) || (error.status == 200)) && error.statusText!=='error') {
+	if (((error.status == 0) || (error.status == 200)) /*&& error.statusText!=='error'*/) {
 		
             orderHeaderOnLineSaveSuccess();
 		
