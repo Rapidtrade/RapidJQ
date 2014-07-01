@@ -147,6 +147,7 @@ function tpmTableLoaded(){
     });
     
     tpmHideComplexRows();
+    tpmSelectLinePromotions();
 }
 
 /*
@@ -184,6 +185,19 @@ function tpmSelected(checkbox){
             });          
         }
     }
+}
+
+function tpmSelectLinePromotions() {
+    
+    var $lineRows = $("#jsontable td:nth-child(6):contains('Line')").parent();
+    $lineRows.each(function() {
+       
+        $(this).find('#Selected').prop('checked', true).prop('disabled', true);
+        var promotionId = $(this).find('td:first').text(); 
+        
+        //select the line item in jsonArray
+        jsonform.getInstance().jsonArray.filter(function(item) {return item.UserField02 === promotionId;})[0].selected = true;
+    });
 }
 
 function tpmHideComplexRows() {
