@@ -495,19 +495,22 @@ function tpmFetchPromotionsOnSuccess(json) {
         g_append('#' + promotionId + 'Form', '<table class="tpmHeaderTable"></table>');
         g_append('#' + promotionId + 'Form table', '<tr><td>TPM Code</td><td><input id="UserField02" value="' + promotionId + '" />');
         g_append('#' + promotionId + 'Form table', '<tr><td>MAX Free Stock</td><td><input id="UserField03" value="' + promotionGroup[0].UserField03 + '" />');
-        }
+    }
 }
 
 function tpmOnQuantityChange(promotionId, productId) {
     
-	if (tpmCalculateTotalQuantity(promotionId) > parseInt($('#' + promotionId + 'Form #UserField03').val(), 10)) {
-		g_alert('Cannot order more than ' + $('#' + promotionId + 'Form #UserField03').val() + ' for ' + promotionId);
-		$('#' + promotionId + productId + 'Quantity').val(g_tpmLastValidQuantities[promotionId + '|' + productId]);
-		tpmOnQuantityChange(promotionId, productId);
-		return;
-	}
-	
-	g_tpmLastValidQuantities[promotionId + '|' + productId] = $('#' + promotionId + productId + 'Quantity').val();
+    if (!$('#' + promotionId + productId + 'Quantity').val())
+        $('#' + promotionId + productId + 'Quantity').val(0);
+    
+    if (tpmCalculateTotalQuantity(promotionId) > parseInt($('#' + promotionId + 'Form #UserField03').val(), 10)) {
+            g_alert('Cannot order more than ' + $('#' + promotionId + 'Form #UserField03').val() + ' for ' + promotionId);
+            $('#' + promotionId + productId + 'Quantity').val(g_tpmLastValidQuantities[promotionId + '|' + productId]);
+            tpmOnQuantityChange(promotionId, productId);
+            return;
+    }
+
+    g_tpmLastValidQuantities[promotionId + '|' + productId] = $('#' + promotionId + productId + 'Quantity').val();
 }
 
 function tpmCalculateTotalQuantity(promotionId) {
