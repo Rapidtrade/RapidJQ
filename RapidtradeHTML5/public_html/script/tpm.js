@@ -79,6 +79,21 @@ function tpmPost(type, onSuccess) {
         g_busy(true);
         g_tpmOnSuccess = onSuccess;
         
+        if (type === 'Order') {
+            
+            if ($('#reference').val()) {
+                
+                g_orderHeaderOrder.Reference = $('#reference').val();
+                
+            } else {
+                
+                g_busy(false);
+                $('#infoPopup p').text('You must enter a reference before you can continue');
+                g_popup('#infoPopup').show(2000);
+                return;
+            }
+        }
+        
         g_orderHeaderOrder.Type = type;
         g_orderHeaderOrder.orderItems = g_tpmjson;
 

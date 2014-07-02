@@ -668,5 +668,27 @@ function g_busy(show) {
         $.mobile.loading( 'hide' );
     }
 }
+
+var g_popup = (function(popupSelector) {
+    
+    return function(popupSelector) {
+        
+        return {
+      
+            show: function(miliseconds) {
+
+                $(popupSelector).popup('open');
+
+                if (miliseconds)
+                    setTimeout(this.hide, miliseconds);
+            },
+
+            hide: function() {
+
+                $(popupSelector).popup('close');
+            }
+        };
+    };
+})();
  
 
