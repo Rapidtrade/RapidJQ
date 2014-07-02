@@ -331,7 +331,9 @@ function tpmBuildNewCart() {
     var newcart = new Array();
     var itemidx = 0;
     for (var i=0; i < oldcart.length; i++){
-        row = oldcart[i];
+        row = oldcart[i];        
+        row.AccountID = g_currentCompany().AccountID;
+        
         //if a tpm line, the make sure its selected
         if (!row.UserField01) {
             row.ItemID = itemidx;
