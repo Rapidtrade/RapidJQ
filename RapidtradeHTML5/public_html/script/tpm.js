@@ -126,6 +126,8 @@ function tpmQualifySuccess() {
                                         
                     if (json._getStatus == false) {
                         
+                        g_busy(false);
+                        
                         $('#infoPopup p').text(json._getErrorMsg || 'Unknown error');
                         $('#infoPopup').popup('open');
                         setTimeout(function() {
