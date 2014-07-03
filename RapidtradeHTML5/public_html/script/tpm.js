@@ -124,7 +124,7 @@ function tpmQualifySuccess() {
                     
                     console.log(json);
                                         
-                    if (json._getStatus == false) {
+                    if (json._getStatus === false) {
                         
                         g_busy(false);
                         
@@ -156,6 +156,15 @@ function tpmTableLoaded(){
     //hide any rows that don't have a promotion
     $("#jsontable td").css("style","padding:15px;");
     $("#jsontable td:nth-child(1):contains('null')").parent().hide(); //hide rows where userfield1=null
+    
+    if ($('#jsontable tr:visible').length === 1) {
+        
+        $('#infoPopup p').text('No current TPMs found.');
+        g_popup('#infoPopup').show(2000, function() {
+            
+            $.mobile.changePage('orderHeader.html');
+        });
+    }
     
     //Bind for when checkbox is changed
     $("#jsontable input:checkbox").unbind();

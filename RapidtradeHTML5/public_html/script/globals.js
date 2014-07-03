@@ -688,11 +688,15 @@ function g_busy(show) {
 
 var g_popup = (function(popupSelector) {
     
+    var onClose;
+    
     return function(popupSelector) {
         
         return {
       
-            show: function(miliseconds) {
+            show: function(miliseconds, callback) {
+                
+                onClose = callback;
 
                 $(popupSelector).popup('open');
 
@@ -703,6 +707,9 @@ var g_popup = (function(popupSelector) {
             hide: function() {
 
                 $(popupSelector).popup('close');
+                
+                if (onClose)
+                    onClose();
             }
         };
     };
