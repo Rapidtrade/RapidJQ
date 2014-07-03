@@ -299,17 +299,34 @@ function g_getWeek(){
 
 function g_saveObjectForSync(object, key, table, method, poncomplete) {
 
-	if (('Orders' == table) && (DaoOptions.getValue('VerifyOrders') == 'true'))
-		object.Status = 'Validated';
-	
-	var objectInfo = new Object();
+    if (('Orders' == table) && (DaoOptions.getValue('VerifyOrders') == 'true'))
+        object.Status = 'Validated';
 
-	objectInfo.Table = table;
-	objectInfo.Method = method;
-	objectInfo.JsonObject = object;
+    var objectInfo = new Object();
 
-	var dao = new Dao();
-	dao.put(objectInfo, 'Unsent', key, poncomplete, undefined, undefined);
+    objectInfo.Table = table;
+    objectInfo.Method = method;
+    objectInfo.JsonObject = object;
+
+    var dao = new Dao();
+    dao.put(objectInfo, 'Unsent', key, poncomplete, undefined, undefined);
+
+    if (table === 'Orders') {
+
+        $.each(object.orderItems, function(index, item) {
+            
+            var key = syncGetKeyField(item, 'Stock');         
+
+            dao.get('Stock', key, function(stockItem) {
+                                
+                stockItem.Stock -= item.Quantity;
+                dao.put(stockItem, 'Stock', key, function() {
+                    
+                    console.log('Stock ' + key + ' reduced to ' + stockItem.Stock + '.');
+                })
+            });
+        });
+    }            
 }
 
 function g_today() {

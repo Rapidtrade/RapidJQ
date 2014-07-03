@@ -481,7 +481,7 @@ function orderHeaderAreItemsValid() {
     return isValid;
 }
 
-function orderHeaderSaveFormedOrder(position) {
+function orderHeaderSaveFormedOrder(position) {    
     
     if (position && position.coords) {
         
@@ -515,13 +515,13 @@ function orderHeaderSaveFormedOrder(position) {
 
 
 function orderHeaderOnLineSaveSuccess() {
-	
-	var url = DaoOptions.getValue(g_orderHeaderOrder.Type + 'ExistsURL');
-	
-	if (!url) 
-            url = g_restUrl + 'Orders/Exists';	
-	
-	g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', orderHeaderOnOrderExistsSuccess, orderHeaderOnOrderExistsError);	
+
+    var url = DaoOptions.getValue(g_orderHeaderOrder.Type + 'ExistsURL');
+
+    if (!url) 
+        url = g_restUrl + 'Orders/Exists';	
+
+    g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', orderHeaderOnOrderExistsSuccess, orderHeaderOnOrderExistsError);	
 }
 
 function orderHeaderOnLineSaveError(error) {

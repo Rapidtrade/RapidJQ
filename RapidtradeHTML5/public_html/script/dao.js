@@ -241,7 +241,7 @@ function Dao() {
     	// for index range purposes
     	
     	if ('Pricelists' == table)
-    		json[g_pricelistSortField] = 'PL:' + json.pl + ';' + g_pricelistSortField.toUpperCase() + ':' + json[g_pricelistSortField];
+            json[g_pricelistSortField] = 'PL:' + json.pl + ';' + g_pricelistSortField.toUpperCase() + ':' + json[g_pricelistSortField];
     		
         var transaction;
         
