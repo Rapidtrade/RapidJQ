@@ -628,22 +628,25 @@ function productdetailSaveValue() {
 	//save 
 	var valueType = $('#nettedit').is(':visible') ? 'nett' : 'discount';
 	var valueId = valueType + '-w';
-
+        
 	//check for max disocunt
 	if (sessionStorage.getItem('maxdiscount')) {
-		try {
-			var value = parseFloat($('#' + valueId).val());
-			var maxdiscount = parseFloat(sessionStorage.getItem('maxdiscount'));
-			if (value > maxdiscount){
-				g_alert('Maximum discount is ' + maxdiscount + '%');
-				return;
-			}			
-		} catch (err){
-			g_alert(err.message);
-			return;
-		}
-
-	}
+            
+            var value = parseFloat($('#' + valueId).val());
+            var gross = parseFloat($('#grossvalue').text().replace(/,/g,''));
+            var discount = (valueType === 'nett') ? g_roundToTwoDecimals(100 - value * 100 / gross) : value;
+            
+            try {
+                var maxdiscount = parseFloat(sessionStorage.getItem('maxdiscount'));
+                if (discount > maxdiscount){
+                    g_alert('Maximum discount is ' + maxdiscount + '%');
+                    return;
+                }			
+            } catch (err){
+                g_alert(err.message);
+                return;
+            }
+	}        
 	
 	//process
 	productdetailValue(valueType, g_addCommas(parseFloat($('#' + valueId).val()).toFixed(2)) + ('discount' == valueType ? '%' : ''));
@@ -661,7 +664,7 @@ function productdetailOnValueChanged(changedValueId) {
 	var newValue = g_roundToTwoDecimals(isNettChanged ? 100 - changedValue * 100 / gross : productdetailNettFromCurrentDiscount()); 
 	
 	if (isNettChanged)
-		newValue += '%';
+            newValue += '%';
 	
 	productdetailValue(isNettChanged ? 'discount' : 'nett', newValue);
 }
