@@ -19,12 +19,40 @@ function companyOnPageShow(){
     dao.openDB(function() {	companyInit();	});
     companyBind();
 
-    companyCheckIfMasterChartIsSynced(function(isSynced) {
+    if (DaoOptions.getValue('AllowMasterChartDownload', 'false') == 'true') {
         
-        $('#syncMasterChart').toggle(!isSynced);
-        sessionStorage.setItem('MasterChartSynced', isSynced);
-    });
+        var field = DaoOptions.getValue('MasterChartFieldIndic', ''); 
 
+        if ((!field || g_currentCompany()[field] === 'Y')) {    
+
+            var isSynced = false;
+
+            var dao = new Dao();	
+            dao.cursor('CallCycle', undefined, undefined,
+
+                function(customerInfo) {
+
+                    var status = customerInfo[todayGetCurrentDay()];
+
+                    if ((customerInfo.Week == g_currentCallCycleWeek()) && status && customerInfo.AccountID == g_currentCompany().AccountID)
+                        isSynced = true;
+                }, 
+
+                undefined,
+
+                function() {
+
+                    $('#syncHistoryButton').toggleClass('invisible', isSynced);
+                    sessionStorage.setItem('MasterChartSynced', isSynced);
+                }
+
+            );
+
+        } else {
+
+            sessionStorage.setItem('MasterChartSynced', false);
+        }
+    }
 
     if (!$('#companyTabs input:checked').length) {
 
@@ -140,40 +168,6 @@ function companyHideFooter() {
     }
 }
 
-function companyCheckIfMasterChartIsSynced(callback) {
-        
-    var field = DaoOptions.getValue('MasterChartFieldIndic', ''); 
-    
-    if ((DaoOptions.getValue('AllowMasterChartDownload', 'false') == 'true') && (!field || g_currentCompany()[field] == 'Y')) {    
-        
-        var isSynced = false;
-        
-        var dao = new Dao();	
-        dao.cursor('CallCycle', undefined, undefined,
-
-            function(customerInfo) {
-
-                var status = customerInfo[todayGetCurrentDay()];
-
-                if ((customerInfo.Week == g_currentCallCycleWeek()) && status && customerInfo.AccountID == g_currentCompany().AccountID)
-                    isSynced = true;
-            }, 
-            
-            undefined,
-            
-            function() {
-  
-                callback(isSynced);
-            }
-            
-        );
-
-    } else {
-    
-        callback(false);    
-    }
-}
-
 function companyRequiredActivitiesSaved() {
     
     var result = true;
@@ -202,7 +196,7 @@ function companyBind(){
 	
 	sessionStorage.getItem('CompanyNoFooter') == 'true' ?  g_menuBind() : overlaySetMenuButton();
         
-        $('#syncMasterChart a').off().on('click', companySyncMasterChart);
+        $('#syncHistoryButton').off().on('click', companySyncHistory);
 	
 	//bind save company
  	$('#savecompany' ).button()
@@ -272,20 +266,21 @@ function companyBind(){
         $('#iframeDiv iframe').attr('src', DaoOptions.getValue('CompanyIframeURL') + '?accountid=' + g_currentCompany().AccountID + 
         		'&userid=' + g_currentUser().UserID + '&supplierid=' + g_currentUser().SupplierID);
      });
- 	// back button
- 	$('#companyBackButton').click(function () {
- 		g_navigateBackFromCompanyView();
- 	});
- 	// capture GPS button
- 	$('#captureGPS').click(function() {
- 		companyFetchGPSPosition();
- 	});
- 	
- 	$('.scroll-to-top').click(function(event) {
- 		event.preventDefault();
- 		$('html,body').animate({scrollTop: 0},'fast');
- 		return false;
- 	});
+     
+    // back button
+    $('#companyBackButton').click(function () {
+            g_navigateBackFromCompanyView();
+    });
+    // capture GPS button
+    $('#captureGPS').click(function() {
+            companyFetchGPSPosition();
+    });
+
+    $('.scroll-to-top').click(function(event) {
+            event.preventDefault();
+            $('html,body').animate({scrollTop: 0},'fast');
+            return false;
+    });
 }
 
 /*
@@ -342,7 +337,7 @@ function companyInit(){
 	
 }
 
-function companySyncMasterChart() {
+function companySyncHistory() {
     
     if (!g_syncDao)
         g_syncDao = new Dao();

@@ -48,7 +48,7 @@
             			<img src="img/Company-64.png"/>
             		</td>
             		<td class="hideonphone"><h2>Details</h2></td>
-                        <td id="syncMasterChart"><a data-role="button" data-inline="true">Sync Master Chart</a></td>
+                        <!--<td id="syncMasterChart"><a data-role="button" data-inline="true">Sync Master Chart</a></td>-->
             		<td>
                             <div style="width:480px; float:right;" id="show" data-role="fieldcontain">
                                         <fieldset id="companyTabs" data-role="controlgroup" data-type="horizontal">
@@ -79,8 +79,9 @@
 		                <form id="companyform">
 		                </form>
 		                <a id="savecompany" data-role="button" data-inline="true" href="#page1" data-icon="plus" data-iconpos="left">
-				            Save
-				        </a> 
+                                    Save
+				</a>
+                                <a data-role="button" data-inline="true" data-icon="refresh" id="syncHistoryButton" class="invisible">History</a>
 		            </div>
 		            <div id="contacts" class="hidden" >
 	                    <div data-role="content">                    
