@@ -271,9 +271,11 @@ function historyShowPhotoForActivity(id) {
  */
 function historyFetchOrders() {
 	
-		var url = DaoOptions.getValue('LiveHistoryOrders') || g_restUrl + 'Orders/GetCollection';
+        var url = DaoOptions.getValue('LiveHistoryOrders') || g_restUrl + 'Orders/GetCollection';
 
         url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&skip=0&top=100&format=json';
+        
+        console.log(url);
         
         var success = function (json) {
         	

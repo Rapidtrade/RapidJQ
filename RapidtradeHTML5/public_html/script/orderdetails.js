@@ -347,7 +347,7 @@ function orderdetailsFetchOrderItems() {
 	
 	var url = DaoOptions.getValue('LiveHistoryItems') || g_restUrl + 'Orders/GetOrderItems';
 	
-	url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + ' &orderID=' + g_orderdetailsCurrentOrder.OrderID + '&skip=0&top=100&format=json';
+	url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&orderID=' + g_orderdetailsCurrentOrder.OrderID + '&skip=0&top=100&format=json';
         
         console.log(url);
 	
