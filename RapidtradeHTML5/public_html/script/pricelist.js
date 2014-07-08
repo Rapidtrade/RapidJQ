@@ -14,6 +14,7 @@ var g_pricelistScrollto = false;
 
 var g_pricelistCaptureQuantityClicked = false;
 var g_pricelistInvoiceWarehouse = '';
+var g_pricelistIsPrevNextPressed = false;
 
 /**
  * Always call openDB, which in turn call's init
@@ -265,6 +266,9 @@ function pricelistBind() {
     
     $(".next, .prev").unbind();
     $(".next, .prev").click(function () {
+        
+        g_pricelistIsPrevNextPressed = true;
+        
     	$('#productimagebig').attr('src', '');
     	$('.productimage').attr('src', '');
         if ($(this).hasClass('next')) {
@@ -754,20 +758,25 @@ function pricelistFetchPricelistLive() {
 		$('#search').val(g_pricelistSearchPricelistText);
 	}
 	*/
-	if (DaoOptions.getValue('MustSearch', 'true') == 'true'){
-            
-		if ($('#search').val() == '' && !sessionStorage.getItem('onlinePricelistCategory') && $.isEmptyObject(g_advancedSearchProducts)) {
-			
-			$('#pricelists').hide();
-			$('.infoPanelText').text(sessionStorage.getItem('fromAdvanced') == 'true' ? 'No products found.' : 'Enter in search criteria to list products.');
-			$('#pricelistInfoDiv ').show();
-			$('#NextPrevButtons').hide();
-			$.mobile.hidePageLoadingMsg();
-			return;
-		}
-	}
+       
+       if (g_pricelistIsPrevNextPressed) {
+           
+           g_pricelistIsPrevNextPressed = false;
+           
+       } else if (DaoOptions.getValue('MustSearch', 'true') == 'true') {
+                   
+            if ($('#search').val() === '' && !sessionStorage.getItem('onlinePricelistCategory') && !g_advancedSearchProducts.length) {
+
+                $('#pricelists').hide();
+                $('.infoPanelText').text(sessionStorage.getItem('fromAdvanced') == 'true' ? 'No products found.' : 'Enter in search criteria to list products.');
+                $('#pricelistInfoDiv ').show();
+                $('#NextPrevButtons').hide();
+                $.mobile.hidePageLoadingMsg();
+                return;
+            }
+        }
 	
-	if (!$.isEmptyObject(g_advancedSearchProducts)) {
+	if (g_advancedSearchProducts.length) {
 		
 		pricelistFetchPricelistLiveOnSuccess(g_advancedSearchProducts);
 		return;
@@ -800,7 +809,7 @@ function pricelistFetchPricelistJob() {
     g_pricelistItemsHtml = '';
     g_pricelistItems = [];
     
-    if ((DaoOptions.getValue('MobileOnlinePricelist') == 'true') || (!$.isEmptyObject(g_advancedSearchProducts))) { 
+    if ((DaoOptions.getValue('MobileOnlinePricelist') == 'true') || g_advancedSearchProducts.length) { 
     	
     	pricelistFetchPricelistLive();
     	
@@ -1141,9 +1150,9 @@ function pricelistOnSuccessRead(pricelist) {
     
     //if (DaoOptions.getValue('MobileOnlinePricelist') ||  (g_pricelistItemsOnPage >= currentItem && g_pricelistItemsOnPage < maxItemOnpage)) {   	
 	if (sessionStorage.getItem('currentordertype')=='repl')
-		nett = g_addCommas(parseFloat(pricelist.c).toFixed(2));  //for repl, show cost 
+            nett = g_addCommas(parseFloat(pricelist.c).toFixed(2));  //for repl, show cost 
 	else    	
-		nett = g_addCommas(parseFloat(pricelist.n).toFixed(2));  //otherwise show nett 
+            nett = g_addCommas(parseFloat(pricelist.n).toFixed(2));  //otherwise show nett 
      g_pricelistItemsHtml += pricelistAddLine(pricelist);
     //}   
     
@@ -1433,8 +1442,7 @@ function pricelistAddItemToBasket(itemIndex) {
 	           g_pricelistItems[itemIndex].v
 	    );
             //clear search after adding to basket so its easy to re-search
-            //commented out because this caused the issue with Next button (https://rapidtrade.basecamphq.com/projects/11434985-midas/todo_items/184747466/comments)
-//            $('#search').val(''); 
+            $('#search').val(''); 
 		
 	    g_clearCacheDependantOnBasket(false);
 	    pricelistCheckBasket();
