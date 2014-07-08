@@ -564,18 +564,17 @@ function orderHeaderOnOrderExistsSuccess(json) {
         } else {
 
             $('#infoPopup p').html(json._Errors.join('<br/>'));
-            $('#infoPopup').popup('open');
             
-            setTimeout(function() {
-
-                $('#infoPopup').popup('close');
+            g_popup('#infoPopup').show(3000, function() {
                 
-                if (DaoOptions.getValue('OrderRejectType').split(',').indexOf(g_orderHeaderOrder.Type) === -1)  
-                    g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
-                else
-                    $.mobile.changePage("shoppingCart.html");
+                if (json._ErrorType !== 'E') {
                 
-            }, 2000);            
+                    if (DaoOptions.getValue('OrderRejectType').split(',').indexOf(g_orderHeaderOrder.Type) === -1)  
+                        g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
+                    else
+                        $.mobile.changePage("shoppingCart.html");
+                }
+            });                    
         }			            
     }		
 }
