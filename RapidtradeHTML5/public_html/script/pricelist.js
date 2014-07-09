@@ -808,6 +808,7 @@ function pricelistFetchPricelistJob() {
     $('#pricelists').empty();
     g_pricelistItemsHtml = '';
     g_pricelistItems = [];
+    g_pricelistItemsOnPage = 0;
     
     if ((DaoOptions.getValue('MobileOnlinePricelist') == 'true') || g_advancedSearchProducts.length) { 
     	
@@ -1004,11 +1005,11 @@ function pricelistOnComplete(event) {
 
         if (!g_pricelistItemsHtml) {			
 
-                var infoText = sessionStorage.getItem('fromCategory') == 'true' || sessionStorage.getItem('fromAdvanced') == 'true' || $.trim($('#search').val()) != '' ?  'No products found.' : 'Enter in search criteria to list products.';			
-                $('.infoPanelText').text(infoText);
-                $.mobile.hidePageLoadingMsg();
+            var infoText = sessionStorage.getItem('fromCategory') == 'true' || sessionStorage.getItem('fromAdvanced') == 'true' || $.trim($('#search').val()) != '' ?  'No products found.' : 'Enter in search criteria to list products.';			
+            $('.infoPanelText').text(infoText);
+            $.mobile.hidePageLoadingMsg();
 
-                return;
+            return;
         }
 
         g_append('#pricelists', g_pricelistItemsHtml);
