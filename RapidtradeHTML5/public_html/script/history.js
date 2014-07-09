@@ -341,7 +341,7 @@ function historyOrderListView(orders) {
         	order.ERPOrderNumber = "";
         
         ordersList = ordersList +   '<li>' +
-        							'	<a onclick="historyOrderOnClick(\'' + order.OrderID + '\',' + i + ')">' + 
+        							'	<a onclick="historyOrderOnClick(' + i + ')">' + 
         							'        <h3 class="ui-li-heading">' + order.Reference + '</h3>' +
         							'        <p class="ui-li-desc">' + order.Comments + '</p>' +
         							'        <p class="ui-li-desc"><strong>' + order.ERPOrderNumber + '</strong></p>' +
@@ -355,7 +355,7 @@ function historyOrderListView(orders) {
     $('#orderlist').listview('refresh');  
 }
 
-function historyOrderOnClick(orderID, cnt){	
+function historyOrderOnClick(cnt) {	
 	
 	sessionStorage.setItem('currentOrderCount',cnt); //store for other pages
 	$.mobile.changePage("orderdetails.html", { transition: "none" });

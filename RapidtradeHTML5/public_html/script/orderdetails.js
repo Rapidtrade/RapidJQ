@@ -129,10 +129,10 @@ function orderdetailsInit() {
 	
 	var cnt = parseInt(sessionStorage.getItem('currentOrderCount'));
 	var json = JSON.parse(sessionStorage.getItem('CacheHistoryOrders'));
-	g_orderdetailsCurrentOrder = json[cnt];  //JSON.parse(sessionStorage.getItem('currentOrder'));
+	g_orderdetailsCurrentOrder = json[cnt]; 
 	
 	try {
-		$('#headerlabel').text(g_orderdetailsCurrentOrder.Type + ' Details');
+            $('#headerlabel').text(g_orderdetailsCurrentOrder.Type + ' Details');
 	} catch (err){
 		
 	}
@@ -345,7 +345,11 @@ function orderdetailsFetchOrderItems() {
 	
 	$.mobile.showPageLoadingMsg(); 
 	
-	var url = DaoOptions.getValue('LiveHistoryItems') || g_restUrl + 'Orders/GetOrderItems';
+        var isMasterOrder = (g_orderdetailsCurrentOrder.Type === DaoOptions.getValue('DownloadOrderType'));
+        
+        var url = (isMasterOrder ? DaoOptions.getValue('DownloadOrderURL') + '/rest/' : (DaoOptions.getValue('LiveHistoryItems') || g_restUrl)) + 'Orders/';
+        
+	url +=  'GetOrderItems' + (isMasterOrder ? 'ByType3' : '');
 	
 	url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&orderID=' + g_orderdetailsCurrentOrder.OrderID + '&skip=0&top=100&format=json';
         
