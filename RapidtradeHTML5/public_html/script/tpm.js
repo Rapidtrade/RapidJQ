@@ -293,8 +293,8 @@ function tpmShowComplexPopup(promotionId) {
 
     g_append('#' + promotionId + 'Table tbody', '<tr class="total"><td colspan="3" style="text-align:right;">Promotion Total:</td><td id="' + promotionId + 'Total">0</td></tr>'); 
     g_append('#' + promotionId + 'Form', '<table class="tpmHeaderTable"></table>');
-    g_append('#' + promotionId + 'Form table', '<tr><td>TPM Code</td><td><input id="UserField02" value="' + promotionId + '" />');
-    g_append('#' + promotionId + 'Form table', '<tr><td>MAX Free Stock</td><td><input id="UserField03" value="' + complexPromotions[0].UserField03 + '" />');
+    g_append('#' + promotionId + 'Form table', '<tr><td>TPM Code</td><td><input id="UserField02" value="' + promotionId + '" disabled/>');
+    g_append('#' + promotionId + 'Form table', '<tr><td>MAX Free Stock</td><td><input id="UserField03" value="' + complexPromotions[0].UserField03 + '" disabled/>');
     
     tpmCalculateTotalQuantity(promotionId);
 
