@@ -37,7 +37,6 @@ function callCycleInit() {
 			g_callCycleCurrentUserID = g_currentUser().UserID;
 		
 		callCycleReadStaff();
-		callCycleFetch();
 	}
 }
 
@@ -65,15 +64,20 @@ function callCycleReadStuffOnSuccess(json) {
         
 		$('#userSelect').selectmenu('refresh');
 	}
+        
+        callCycleFetch();
 }
 
 function callCycleFetch() {
 	
-	$("#callcycleReport").empty();
+    $("#callcycleReport").empty();
 	
     var date = new Date();
     var start = date.getFullYear() + "" + g_setLeadingZero((date.getMonth() + 1)) + "" + g_setLeadingZero(date.getDate());
     var url = g_restUrl + "callcycle/GetReport?supplierID=" + g_currentUser().SupplierID + "&userID=" + g_callCycleCurrentUserID + "&startdate=" + start + "&format=json";
+    
+    console.log(url);
+    
     var success = function (json) {
         	
         $.each(json, function (i, item) {
