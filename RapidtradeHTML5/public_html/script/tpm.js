@@ -153,6 +153,14 @@ function tpmQualifySuccess() {
  * @returns {undefined}
  */
 function tpmTableLoaded(){
+    
+    //check promotions id
+//    $("#jsontable tr").each(function() {
+//        
+//        $td = $(this).find('td').first();
+//        $td.text(tpmMapId($td.text()));
+//    });
+    
     //hide any rows that don't have a promotion
     $("#jsontable td").css("style","padding:15px;");
     $("#jsontable td:nth-child(1):contains('null')").parent().hide(); //hide rows where userfield1=null
@@ -202,7 +210,7 @@ function tpmSelected(checkbox){
             //select all promotions in the set
             
             $setRows = $('#jsontable td:nth-child(5):contains("' + setID + '")').find('#Selected');            
-            $setRows.prop('checked', item.selected).checkboxradio('refresh');
+            $setRows.prop('checked', item.selected)/*.checkboxradio('refresh')*/;
             
             // update data
             $setRows.each(function() {
@@ -273,28 +281,30 @@ function tpmShowComplexPopup(promotionId) {
             complexPromotions.push(item);
     });    
     
-    g_append('#complexPromotionDiv', '<div id="' + promotionId + 'Div" style="margin-bottom:10px" class="promotion"><h3>' + promotionId + '</h3></div>');    
-    g_append('#' + promotionId + 'Div', '<form id="' + promotionId + 'Form"></form>');    	
-    g_append('#' + promotionId + 'Div', '<table id="' + promotionId + 'Table" class="tpmTable"><thead><tr><th>Product ID</th><th>Description</th><th>UOM</th><th>Quantity</th></tr></thead><tbody></tbody></table>');
+    var mappedPromotionId = tpmMapId(promotionId);
+    
+    g_append('#complexPromotionDiv', '<div id="' + mappedPromotionId + 'Div" style="margin-bottom:10px" class="promotion"><h3>' + promotionId + '</h3></div>');    
+    g_append('#' + mappedPromotionId + 'Div', '<form id="' + mappedPromotionId + 'Form"></form>');    	
+    g_append('#' + mappedPromotionId + 'Div', '<table id="' + mappedPromotionId + 'Table" class="tpmTable"><thead><tr><th>Product ID</th><th>Description</th><th>UOM</th><th>Quantity</th></tr></thead><tbody></tbody></table>');
 
     for ( var i = 0; i < complexPromotions.length; i++) {
         
         var productId = $.trim(complexPromotions[i].ProductID);
         var quantity = complexPromotions[i].Quantity || 0;
         
-        g_append('#' + promotionId + 'Table tbody', '<tr class="promotion" id="' + promotionId + productId + 'TR"><td class="productId">' + productId + 
+        g_append('#' + mappedPromotionId + 'Table tbody', '<tr class="promotion" id="' + mappedPromotionId + productId + 'TR"><td class="productId">' + productId + 
                         '</td><td class="description">' + complexPromotions[i].Description + '</td><td class="uom">' + complexPromotions[i].UserField04 + 
-                        '</td><td class="quantity"><input class="' + promotionId + 'Quantity" id="' + promotionId + productId +
+                        '</td><td class="quantity"><input class="' + mappedPromotionId + 'Quantity" id="' + mappedPromotionId + productId +
                         'Quantity" type="number" min="0" value="' + quantity + '" step="' + complexPromotions[i].UserField04 + '" onchange="tpmOnQuantityChange(\'' + 
                         promotionId +  '\',\'' + productId + '\')"/></td></tr>');   
 
         g_tpmLastValidQuantities[promotionId + '|' + productId] = quantity;
     }   
 
-    g_append('#' + promotionId + 'Table tbody', '<tr class="total"><td colspan="3" style="text-align:right;">Promotion Total:</td><td id="' + promotionId + 'Total">0</td></tr>'); 
-    g_append('#' + promotionId + 'Form', '<table class="tpmHeaderTable"></table>');
-    g_append('#' + promotionId + 'Form table', '<tr><td>TPM Code</td><td><input id="UserField02" value="' + promotionId + '" disabled/>');
-    g_append('#' + promotionId + 'Form table', '<tr><td>MAX Free Stock</td><td><input id="UserField03" value="' + complexPromotions[0].UserField03 + '" disabled/>');
+    g_append('#' + mappedPromotionId + 'Table tbody', '<tr class="total"><td colspan="3" style="text-align:right;">Promotion Total:</td><td id="' + mappedPromotionId + 'Total">0</td></tr>'); 
+    g_append('#' + mappedPromotionId + 'Form', '<table class="tpmHeaderTable"></table>');
+    g_append('#' + mappedPromotionId + 'Form table', '<tr><td>TPM Code</td><td><input id="UserField02" value="' + promotionId + '" disabled/>');
+    g_append('#' + mappedPromotionId + 'Form table', '<tr><td>MAX Free Stock</td><td><input id="UserField03" value="' + complexPromotions[0].UserField03 + '" disabled/>');
     
     tpmCalculateTotalQuantity(promotionId);
 
@@ -465,8 +475,8 @@ function tpmVerifyTableLoaded(){
     if ($okRows.length === $('#jsontable tr:visible').length - 1)
         $('#verifyTPM .ui-btn-text').text('Create');
     
-    //$okRows.find('#Selected').prop('checked', true).checkboxradio('refresh');
-    $okRows.find('#jsontable:checkbox').prop('checked', true).checkboxradio('refresh');
+    //$okRows.find('#Selected').prop('checked', true)/*.checkboxradio('refresh')*/;
+    $okRows.find('#jsontable:checkbox').prop('checked', true)/*.checkboxradio('refresh')*/;
     $okRows.find('#Selected').each(function() {
         $(this).trigger('change');
     });
@@ -509,6 +519,15 @@ function tpmSave(){
      });
 }
 
+function tpmMapId(id) {
+    
+//    var map = {
+//        
+//        '+' : 'plus'
+//    };
+    
+    return id.replace(/\+/g, 'plus');
+}
 
 function tpmFetchPromotionsOnSuccess(json) {	
     var sets = [];
@@ -517,7 +536,7 @@ function tpmFetchPromotionsOnSuccess(json) {
     var showPromotionGroup = function(parentId, promotionGroup, inSet) {
 
         if (inSet) $('#' + parentId).empty();
-        var promotionId = promotionGroup[0].UserField02;
+        var promotionId = tpmMapId(promotionGroup[0].UserField02);
         g_append('#' + parentId, '<div id="' + promotionId + 'Div" style="margin-bottom:10px" class="promotion"><h3>' + promotionId + '</h3></div>');    
         g_append('#' + promotionId + 'Div', '<form id="' + promotionId + 'Form"></form>');    	
         g_append('#' + promotionId + 'Div', '<table id="' + promotionId + 'Table" class="tpmTable"><thead><tr><th>Product ID</th><th>Description</th><th>UOM</th><th>Quantity</th></tr></thead><tbody></tbody></table>');
@@ -542,26 +561,28 @@ function tpmFetchPromotionsOnSuccess(json) {
 
 function tpmOnQuantityChange(promotionId, productId) {
     
-    if (!$('#' + promotionId + productId + 'Quantity').val())
-        $('#' + promotionId + productId + 'Quantity').val(0);
+    var mappedPromotionId = tpmMapId(promotionId);
     
-    if (tpmCalculateTotalQuantity(promotionId) > parseInt($('#' + promotionId + 'Form #UserField03').val(), 10)) {
-            g_alert('Cannot order more than ' + $('#' + promotionId + 'Form #UserField03').val() + ' for ' + promotionId);
-            $('#' + promotionId + productId + 'Quantity').val(g_tpmLastValidQuantities[promotionId + '|' + productId]);
+    if (!$('#' + mappedPromotionId + productId + 'Quantity').val())
+        $('#' + mappedPromotionId + productId + 'Quantity').val(0);
+    
+    if (tpmCalculateTotalQuantity(promotionId) > parseInt($('#' + mappedPromotionId + 'Form #UserField03').val(), 10)) {
+            g_alert('Cannot order more than ' + $('#' + mappedPromotionId + 'Form #UserField03').val() + ' for ' + promotionId);
+            $('#' + mappedPromotionId + productId + 'Quantity').val(g_tpmLastValidQuantities[promotionId + '|' + productId]);
             tpmOnQuantityChange(promotionId, productId);
             return;
     }
 
-    g_tpmLastValidQuantities[promotionId + '|' + productId] = $('#' + promotionId + productId + 'Quantity').val();
+    g_tpmLastValidQuantities[promotionId + '|' + productId] = $('#' + mappedPromotionId + productId + 'Quantity').val();
 }
 
 function tpmCalculateTotalQuantity(promotionId) {
     
     	var totalQuantity = 0;
-	$('.' + promotionId + 'Quantity').each(function() {
+	$('.' + tpmMapId(promotionId) + 'Quantity').each(function() {
 		totalQuantity += parseInt($(this).val(), 10); 
 	});
-	$('#' + promotionId + 'Total').text(totalQuantity);
+	$('#' + tpmMapId(promotionId) + 'Total').text(totalQuantity);
         
         return totalQuantity;
 }
@@ -590,7 +611,7 @@ function tpmSaveComplexPromotion() {
         }
         
         $('#complexPopup').popup('close');            
-        $('#jsontable td:visible:nth-child(1):contains("' + promotionId + '")').parent().find('#Selected').prop('checked', isAnyItemSelected).checkboxradio('refresh'); 
+        $('#jsontable td:visible:nth-child(1):contains("' + promotionId + '")').parent().find('#Selected').prop('checked', isAnyItemSelected)/*.checkboxradio('refresh')*/; 
     }
 }
 
