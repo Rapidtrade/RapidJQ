@@ -551,7 +551,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
                     if (item.Name == 'DownloadOrderType')
                         g_syncDownloadOrderType = item.Value;
                     
-                    if (item.Name == 'AllowMasterChartDownload') {
+                    if (item.Name == 'AllowHistoryDownload') {
                     
                         syncAddSync(g_syncSupplierID, g_syncUserID, 'Orders', 'GetCollectionByType3', 0);
                         syncAddSync(g_syncSupplierID, g_syncUserID, 'Orders', 'GetOrderItemsByType3', 0);

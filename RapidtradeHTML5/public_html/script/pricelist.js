@@ -1017,7 +1017,7 @@ function pricelistOnComplete(event) {
 //	    alphaFilter.getInstance().HTML('#alphafilter', '#pricelists');
         pricelistBindCaptureQuantity();
 
-        if ((DaoOptions.getValue('AllowMasterChartDownload', 'false') === 'true')) {
+        if ((DaoOptions.getValue('AllowHistoryDownload', 'false') === 'true')) {
 
             $('#pricelists li').each(function() {
 

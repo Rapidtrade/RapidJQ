@@ -19,7 +19,7 @@ function companyOnPageShow(){
     dao.openDB(function() {	companyInit();	});
     companyBind();
 
-    if (DaoOptions.getValue('AllowMasterChartDownload', 'false') == 'true') {
+    if (DaoOptions.getValue('AllowHistoryDownload', 'false') == 'true') {
         
         var field = DaoOptions.getValue('MasterChartFieldIndic', ''); 
 

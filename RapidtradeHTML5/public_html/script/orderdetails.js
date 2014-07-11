@@ -414,7 +414,7 @@ function orderdetailsFetchOrderItems() {
             
             orderdetailsCheckBasket();
             
-            if ((DaoOptions.getValue('AllowMasterChartDownload', 'false') == 'true')) {
+            if ((DaoOptions.getValue('AllowHistoryDownload', 'false') == 'true')) {
             
                 $('#orderitemlist li').each(function() {
 
