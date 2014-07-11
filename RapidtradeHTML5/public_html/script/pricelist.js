@@ -978,7 +978,6 @@ function pricelistNewInstance(product) {
 	newProduct.UserField08 = product.u8;
 	newProduct.UserField09 = product.u9;
 	newProduct.UserField10 = product.u10;
-
 	
 	return newProduct;
 }

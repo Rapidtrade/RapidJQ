@@ -285,16 +285,17 @@ function shoppingCartAddItem(item, checkSummary) {
         checkSummary = true;
     
     var summaryField = DaoOptions.getValue('SummaryReportField');
+    var orderByField = DaoOptions.getValue('SummaryReportOrderBy');
     
-    // TEST 
-//    item[summaryField] = 'A';
-    
-    if ((sessionStorage.getItem('shoppingCartViewType') === 'Summary') && checkSummary && (item[summaryField])) {
+    if ((sessionStorage.getItem('shoppingCartViewType') === 'Summary') && checkSummary && (item[summaryField])) {                
         
-        if (!g_shoppingCartSummaryItems[item[summaryField]])
-            g_shoppingCartSummaryItems[item[summaryField]] = [];
+        if (!g_shoppingCartSummaryItems[item[orderByField]])            
+            g_shoppingCartSummaryItems[item[orderByField]] = [];                  
         
-        g_shoppingCartSummaryItems[item[summaryField]].push(item);
+        if (!g_shoppingCartSummaryItems[item[orderByField]][item[summaryField]])
+            g_shoppingCartSummaryItems[item[orderByField]][item[summaryField]] = [];        
+        
+        g_shoppingCartSummaryItems[item[orderByField]][item[summaryField]].push(item);
         return;
     }
     
@@ -384,27 +385,60 @@ function shoppingCartOnAllItemsAdded() {
 
 function shoppingCartAddSummaryItems() {
     
-    $.each(g_shoppingCartSummaryItems, function(key, itemArray) {
+    var headings = Object.keys(g_shoppingCartSummaryItems).sort();
+    
+    for (var i = 0; i < headings.length; ++i) {
         
-        var summaryItem = {};
-        summaryItem.Quantity = 0;
+        g_basketHTML += '<li data-role="list-divider" role="heading">' + headings[i] + '</li>';
+        
+        var groups = Object.keys(g_shoppingCartSummaryItems[headings[i]]).sort();
+        
+        for (var j = 0; j < groups.length; ++j) {
+            
+            var summaryItem = {};
+            summaryItem.Quantity = 0;
 
-        for (var i = 0; i < itemArray.length; ++i) {
+            var itemArray = g_shoppingCartSummaryItems[headings[i]][groups[j]];
 
-            if (i === 0) {
-                
-                summaryItem = itemArray[i];
-                summaryItem.ProductID = '';
-                summaryItem.Description = itemArray[i][DaoOptions.getValue('SummaryReportField')];
-                
-            } else {
-                
-                summaryItem.Quantity += itemArray[i].Quantity;           
+            for (var k = 0; k < itemArray.length; ++k) {
+
+                if (k === 0) {
+
+                    summaryItem = itemArray[k];
+                    summaryItem.ProductID = itemArray[k][DaoOptions.getValue('SummaryReportProdID')];
+                    summaryItem.Description = itemArray[k][DaoOptions.getValue('SummaryReportProdDes')];
+
+                } else {
+
+                    summaryItem.Quantity += itemArray[k].Quantity;           
+                }
             }
+
+            shoppingCartAddItem(summaryItem, false);            
         }
-       
-        shoppingCartAddItem(summaryItem, false);
-    });
+    }
+        
+//    $.each(g_shoppingCartSummaryItems.keys().sort(), function(key, itemArray) {
+//        
+//        var summaryItem = {};
+//        summaryItem.Quantity = 0;
+//
+//        for (var i = 0; i < itemArray.length; ++i) {
+//
+//            if (i === 0) {
+//                
+//                summaryItem = itemArray[i];
+//                summaryItem.ProductID = '';
+//                summaryItem.Description = itemArray[i][DaoOptions.getValue('SummaryReportField')];
+//                
+//            } else {
+//                
+//                summaryItem.Quantity += itemArray[i].Quantity;           
+//            }
+//        }
+//       
+//        shoppingCartAddItem(summaryItem, false);
+//    });
 }
 
 function shoppingCartCheckItemsCount() {
