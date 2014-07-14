@@ -548,14 +548,38 @@ function orderHeaderOfflineSaveSuccess() {
 
 function orderHeaderOnOrderExistsSuccess(json) {
 
-    g_busy(false);
-    
-    if (json._Status == true) {				
+    var onSuccess = function() {
+        
         if (g_orderHeaderOrder.Type == 'GRV' || g_orderHeaderOrder.Type.toUpperCase() == 'POD') {
             orderHeaderSaveReferenceStatus(g_orderHeaderOrder, orderHeaderOrderAcceptOnSuccess, orderHeaderOrderAcceptOnError);	
             return;
         }
-        orderHeaderOnOrderSaved();	
+        
+        orderHeaderOnOrderSaved();
+    }
+
+    g_busy(false);
+    
+    if (json._Status == true) {	
+        
+        if (json._Warning) {
+            
+            $('#infoPopup').popup('close');
+            
+            $('#infoPopup p').text(json._Warning);            
+            $('#infoPopup a').removeClass('invisible');
+            
+            g_popup('#infoPopup').show(undefined, function() {
+                
+                $('#infoPopup a').addClass('invisible');
+                onSuccess();
+            });
+            
+        } else {
+            
+            onSuccess();
+        }                
+        
     } else {
         if (DaoOptions.getValue('VerifyOrders') == 'true') {
             

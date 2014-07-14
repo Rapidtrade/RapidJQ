@@ -699,6 +699,7 @@ var g_popup = (function(popupSelector) {
                 onClose = callback;
 
                 $(popupSelector).popup('open');
+                $(popupSelector).off().on('click', 'a', this.hide);
 
                 if (miliseconds)
                     setTimeout(this.hide, miliseconds);
