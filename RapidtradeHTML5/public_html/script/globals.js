@@ -538,8 +538,27 @@ function g_ajaxget(url, success, error) {
                     jsonpCallback : 'jsonCallback2',
                     dataType : 'json',
                     success:success,
-                    error:error                    
+                    error:error,
+                    timeout:10000
+                    
             });
+            
+            /*
+                $.ajax({
+                        type : 'GET',
+                        url : url,
+                        jsonpCallback : 'jsonCallback2',
+                        dataType : 'jsonp',
+                        success:success,
+                        timeout:10000
+
+                }).error(function() {
+
+                    if (error)
+                        error();
+                });
+             */
+            
             /*
             $.get(url,undefined,success,"jsonp")
             .fail(function(p) {
