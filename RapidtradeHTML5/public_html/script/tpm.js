@@ -17,7 +17,7 @@ function tpmBind() {
         
         var isOrder = ('saveTPM' === this.id);
         
-        var postType = isOrder ? 'Order' : 'Verify';
+        var postType = isOrder ? 'Order' : 'Verify|Sample';
         var onSuccess = isOrder ? tpmOrderSuccess : tpmVerifySuccess;
         
         tpmPost(postType, onSuccess);
@@ -64,7 +64,7 @@ function tpmFetchBasket() {
         },
         undefined,
         function(){
-            tpmPost('Qualify',tpmQualifySuccess);
+            tpmPost('Qualify|Sample',tpmQualifySuccess);
         });    	
 }
 
