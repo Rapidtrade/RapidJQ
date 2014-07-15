@@ -701,11 +701,19 @@ var g_popup = (function(popupSelector) {
         return {
       
             show: function(miliseconds, callback) {
-                
+                               
                 onClose = callback;
 
                 $(popupSelector).popup('open');
                 $(popupSelector).off().on('click', 'a', this.hide);
+                
+                $(popupSelector).bind({
+                    popupafterclose: function() { 
+                        
+                        if (onClose)
+                            onClose();
+                    }
+                });
 
                 if (miliseconds)
                     setTimeout(this.hide, miliseconds);
@@ -713,10 +721,7 @@ var g_popup = (function(popupSelector) {
 
             hide: function() {
 
-                $(popupSelector).popup('close');
-                
-                if (onClose)
-                    onClose();
+                $(popupSelector).popup('close');                
             }
         };
     };
