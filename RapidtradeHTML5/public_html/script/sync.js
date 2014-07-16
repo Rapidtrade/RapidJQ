@@ -21,13 +21,13 @@ var g_syncDownloadOrderType = '';
  * openDB will call init()
  */
 function syncOnPageShow() {
-	//first open database and it will call init
-	g_syncDao = new Dao();
-	g_syncDao.openDB(function(user) {
-					syncInit();	
-				});
-	
-	syncBind();
+    //first open database and it will call init
+    g_syncDao = new Dao();
+    g_syncDao.openDB(function(user) {
+                                    syncInit();	
+                            });
+
+    syncBind();
 }
 
 /*
@@ -35,37 +35,37 @@ function syncOnPageShow() {
  */
 function syncBind() {
    
-	$('#syncButton').unbind();
- 	$('#syncButton').click(function( event ) {
-        			syncFetchUser();	
-       			}); 	
- 	
- 	$('#signinagain').unbind();
- 	$('#signinagain').click(function(event){
- 		
-				 		g_syncIsOrderPosted = false;
-				 		g_syncLastUserID = '';
-				 		g_syncPricelistSyncMethod = 'Sync5';
-				 		g_syncLivePricelist = false;
+    $('#syncButton').unbind();
+    $('#syncButton').click(function( event ) {
+                            syncFetchUser();	
+                    }); 	
 
- 						syncDeleteDB();
- 					});
+    $('#signinagain').unbind();
+    $('#signinagain').click(function(event){
 
- 	$('#password').unbind();
- 	$("#password").keypress(function (event) {
- 	 
- 	    var keycode = (event.keyCode ? event.keyCode : event.which);
- 	    if (keycode == '13') {
- 	        if (!(/MSIE (\d+\.\d+);/.test(navigator.userAgent)))
- 	        	syncFetchUser();
- 	    }
- 	});
+                                            g_syncIsOrderPosted = false;
+                                            g_syncLastUserID = '';
+                                            g_syncPricelistSyncMethod = 'Sync5';
+                                            g_syncLivePricelist = false;
 
- 	$('#syncMenu').unbind();
- 	$('#syncMenu').click(function (event) {
+                                            syncDeleteDB();
+                                    });
 
-       g_loadMenu();
-   });
+    $('#password').unbind();
+    $("#password").keypress(function (event) {
+
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            if (!(/MSIE (\d+\.\d+);/.test(navigator.userAgent)))
+                    syncFetchUser();
+        }
+    });
+
+    $('#syncMenu').unbind();
+    $('#syncMenu').click(function (event) {
+
+   g_loadMenu();
+});
 }
 
 
@@ -98,8 +98,7 @@ function syncInit() {
             function (event) {
                   if (unsent) 
                 	  $('#signinagain').addClass('ui-disabled');
-            });
-	
+            });	
 }
 
 /*
@@ -391,8 +390,8 @@ function syncFetchTable(supplierid, userid, table, method, skip, onSuccess) {
                                                      userParameter + 
                                                     '&version=' + version + 
                                                     '&skip=' + skip + 
-                                                    ('Orders' == table ? '&orderType=' + g_syncDownloadOrderType : '') +
-                                                    (('Orders' == table) && g_currentCompany() ? '&accountID=' + g_currentCompany().AccountID : '') +
+                                                    ('Orders' == table ? '&orderType=' + (g_syncDownloadOrderType || DaoOptions.getValue('DownloadOrderType')) : '') +
+                                                    (('Orders' == table) && ($.mobile.activePage.attr('id') === 'companypage') ? '&accountID=' + g_currentCompany().AccountID : '') +
                                                     ('Orders' == table ? '&CallWeekNumber=' + g_currentCallCycleWeek() : '') +
                                                     ('Orders' == table ? '&CallDayOfWeek=' + todayGetCurrentDay() : '') +
                                                     '&top=' + g_syncNumRows + '&format=json';
