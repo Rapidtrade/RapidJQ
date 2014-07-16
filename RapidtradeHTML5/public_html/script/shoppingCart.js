@@ -20,6 +20,10 @@ function shoppingCartOnPageShow() {
 
     if (shoppingCartIsGRV())
         $('#deleteShoppingCart').hide();
+    
+    var viewType = sessionStorage.getItem('shoppingCartViewType');
+    if (viewType)
+        $('#summaryButton .ui-btn-text').text(viewType === 'Summary' ? 'Detail' : 'Summary');
 
     $('#shoppingCartFooter').toggle((sessionStorage.getItem('ShoppingCartNoFooter') == undefined) || (sessionStorage.getItem('ShoppingCartNoFooter') == 'false'));
         
@@ -442,8 +446,11 @@ function shoppingCartAddSummaryItems() {
 }
 
 function shoppingCartCheckItemsCount() {
-    if (($.mobile.activePage.attr('id') == 'shoppingCartpage') && $('#shoppingCartitemlist li').length == 0)
+    if (($.mobile.activePage.attr('id') == 'shoppingCartpage') && $('#shoppingCartitemlist li').length == 0) {
+        
+        sessionStorage.removeItem('shoppingCartViewType');
     	shoppingCartOnBack();
+    }
 }
 
 function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetItemsOnPageNumber) {

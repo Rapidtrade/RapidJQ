@@ -51,21 +51,7 @@ function orderdetailsBind() {
     	var orderItemsNumber = g_orderdetailsOrderItems.length;
     	g_grvCachedBasketItems = [];
     	for (var index = 0; index < orderItemsNumber; ++index) {
-    		orderdetailsSendItemToBasket(
-    				g_orderdetailsOrderItems[index].ProductID,
-    				g_orderdetailsOrderItems[index].Quantity,
-    				g_orderdetailsOrderItems[index].Nett,
-    				g_orderdetailsOrderItems[index].Description,
-    				g_orderdetailsOrderItems[index].Discount,
-    				g_orderdetailsOrderItems[index].Gross,
-    				undefined,
-    				g_orderdetailsOrderItems[index].RepNett,
-    				g_orderdetailsOrderItems[index].RepDiscount,
-    				g_orderdetailsOrderItems[index].Unit,
-    				undefined,
-    				g_orderdetailsOrderItems[index].Warehouse,
-    				g_orderdetailsOrderItems[index].VAT,
-    				false);
+    		orderdetailsSendItemToBasket(g_orderdetailsOrderItems[index]);
     		var key = (g_orderdetailsOrderItems[index].ProductID + g_orderdetailsOrderItems[index].SupplierID + g_currentUser().UserID + g_orderdetailsOrderItems[index].AccountID).trim();
     		g_orderdetailsOrderItems[index].key = key;
     		g_grvCachedBasketItems[key] = g_orderdetailsOrderItems[index];
@@ -258,17 +244,17 @@ function orderdetailsSaveCredit() {
 	$.mobile.changePage('shoppingCart.html');
 }
 
-function orderdetailsSendOrderItem(productId, quantity, nett, description, discount, gross, repNett, repDiscount, unit, warehouse, vat) {
+function orderdetailsSendOrderItem(itemIndex) {
+    
+        var item = g_orderdetailsOrderItems[itemIndex];
 	
 	$('#stockValue').text('');
 	$('#quantityPopup').popup('open');
 	
-	orderdetailsFetchStock(productId, gross, nett);
+	orderdetailsFetchStock(item.ProductID, item.Gross, item.Nett);
 	
-	$('#quantityEdit').val(quantity);
-	
-	if (unit) 
-            $('#quantityEdit').attr('step', unit);	
+	$('#quantityEdit').val(item.Quantity);
+        $('#quantityEdit').attr('step', item.Unit || 1);	
 	
 	var creditReasons = DaoOptions.getValue('CreditReasons') ?  DaoOptions.getValue('CreditReasons').split(',') : undefined;
 	
@@ -297,33 +283,38 @@ function orderdetailsSendOrderItem(productId, quantity, nett, description, disco
 		var isValid = (enteredQuantity() > 0);
 		
 		if (isValid && orderdetailsIsCreditSelected())
-			isValid = (enteredQuantity() <= parseInt(quantity, 10));
+                    isValid = (enteredQuantity() <= parseInt(item.Quantity, 10));
 		
 		if (!isValid)
 			alert('Please enter a valid quantity');
 		
-		if (isValid && unit) {
+		if (isValid && item.Unit) {
 			
-			isValid = enteredQuantity() % unit > 0;
-			
-			if (!isValid) {
-				
-				alert('You are ordering in incorrect units. The pack size requires you to order in units of ' + g_pricelistSelectedProduct.Unit);
-				isValid = false;
-			}
+                    isValid = enteredQuantity() % item.Unit > 0;
+
+                    if (!isValid) {
+
+                        alert('You are ordering in incorrect units. The pack size requires you to order in units of ' + g_pricelistSelectedProduct.Unit);
+                        isValid = false;
+                    }
 		} 
 		
 		$(this).unbind(event);
 		
-		var userField01 = orderdetailsIsCreditSelected() ? $('#creditReasonDiv option:selected').val() : undefined;
-		var userField02 = orderdetailsIsCreditSelected() ? quantity : undefined;
+                if ($('#creditReasonDiv option:selected').val())
+                    item.UserField01 = $('#creditReasonDiv option:selected').val();
+
+                if (orderdetailsIsCreditSelected())
+                    item.UserField02 = item.Quantity;
 				
 		if (isValid) {
+                    
+                    item.Quantity = enteredQuantity();
 			
-                    orderdetailsSendItemToBasket(productId, enteredQuantity(), nett, description, discount, gross, userField01, repNett, repDiscount, unit, userField02, warehouse, vat, true);
+                    orderdetailsSendItemToBasket(item, true);
                    
                     if (orderdetailsIsCreditSelected())
-                        $('.historyOrderItems tr:contains("' + productId + '") .descr').text(quantity + ' [-' + enteredQuantity() + ']');
+                        $('.historyOrderItems tr:contains("' + item.ProductID + '") .descr').text(item.Quantity + ' [-' + enteredQuantity() + ']');
 		}
 	});
 }
@@ -379,24 +370,14 @@ function orderdetailsFetchOrderItems() {
                             ' class="captureQuantity ui-input-text ui-body-c ui-corner-all ui-shadow-inset" onkeydown="orderdetailsQuickCapture(event, this, \'' + itemKey + '\',' + g_orderdetailsOrderItems.length + ')"/></td>';
                 }
 
+                orderItem.Description = orderItem.Description.replace(/'/g, '&quot;');
+
 	        g_append('#orderitemlist', '<li data-theme="c" id="' + itemKey + '">' +
                     '   <a><p class="ui-li-heading"><strong>' + orderItem.Description + '</strong></p>' +
                     '   <table class="ui-li-desc historyOrderItems"><tr><td class="itemId">' + orderItem.ItemID + '</td><td class="productId">' + orderItem.ProductID + 
                     '</td><td class="quantity">' + orderItem.Quantity + '</td><td class="value">' + g_roundToTwoDecimals(nettValue) + 
                     '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td><td class="orderedQuantity"></td>' + quantityInputHtml + '</tr></table></a>' +
-                    '	<a onclick="orderdetailsSendOrderItem(\'' + 
-		                  orderItem.ProductID + '\',\'' +
-		                  orderItem.Quantity + '\',\'' +
-		                  orderItem.Nett + '\',\'' +
-		                  (orderItem.Description ? orderItem.Description.replace(/'/g, '&quot;') : '') + '\',\'' +
-		                  orderItem.Discount + '\',\'' +
-		                  orderItem.Gross + '\',\'' +
-		                  (orderItem.RepNett ? orderItem.RepNett : '') + '\',\'' +
-		                  (orderItem.RepDiscount ? orderItem.RepDiscount : '') + '\',\'' +
-		                  (g_isPackSizeUnitValid(orderItem.Unit) ? orderItem.Unit : '') + '\',\'' +
-		                  (orderItem.Warehouse ? orderItem.Warehouse : '') + '\',\'' +
-		                  (orderItem.VAT != undefined ? orderItem.VAT : '')  + '\'' +
-                    ')" data-role="button" data-transition="pop" data-rel="popup"  data-position-to="window" data-inline="true"' +
+                    '	<a onclick="orderdetailsSendOrderItem(' + g_orderdetailsOrderItems.length + ')" data-role="button" data-transition="pop" data-rel="popup"  data-position-to="window" data-inline="true"' +
                     '	class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
                     '	<span class="ui-btn-inner ui-btn-corner-all">' +
                     '	<span class="ui-icon ui-icon-plus ui-icon-shadow">Send to Basket</span>' +
@@ -450,8 +431,9 @@ function orderdetailsFetchOrderItems() {
          
          var item = g_orderdetailsOrderItems[rowIndex];         
          item.Description = item.Description && item.Description.replace(/'/g, '&quot;') || '';
+         item.Quantity = inputElement.value;
          
-         orderdetailsSendItemToBasket(item.ProductID, inputElement.value, item.Nett, item.Description, item.Discount, item.Gross, '', item.RepNett, item.RepDiscount, item.Unit, '', item.Warehouse, item.VAT);
+         orderdetailsSendItemToBasket(item);
          orderdetailsCheckBasket();
      }
  }
@@ -467,26 +449,30 @@ function orderdetailsFetchOrderItems() {
     dao.get('OrderItems', key, callback);
 }
  
- function orderdetailsSendItemToBasket(productID, quantity, nett, description, discount, gross, userField01,  repNett, repDiscount, unit, userField02, warehouse, vat, showInfoMessage) {
+ function orderdetailsSendItemToBasket(item, showInfoMessage) {
 
     g_addProductToBasket(
-                    productID, 
-                    g_currentCompany().SupplierID, 
-                    g_currentCompany().AccountID,
-                    quantity, 
+                    item.ProductID, 
+                    item.SupplierID, 
+                    item.AccountID,
+                    item.Quantity, 
                     g_currentUser().UserID, 
-                    nett, 
-                    description, 
-                    discount,
-                    gross,
+                    item.Nett, 
+                    item.Description, 
+                    item.Discount,
+                    item.Gross,
                     sessionStorage.getItem("currentordertype"),
-                    userField01,
-                    repNett,
-                    repDiscount,
-                    unit,
-                    userField02,
-                    warehouse,
-                    vat
+                    item.UserField01,
+                    item.RepNett,
+                    item.RepDiscount,
+                    item.Unit,
+                    item.UserField02,
+                    item.Warehouse,
+                    item.VAT,
+                    item.Stock,
+                    item.UserField03,
+                    item.UserField04,
+                    item.UserField05
                     );
 
     g_clearCacheDependantOnBasket();	
