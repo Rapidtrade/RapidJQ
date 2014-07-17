@@ -1030,7 +1030,7 @@ function productdetailSave(qty, type, product) {
         product.RepChangedPrice ? productdetailValue('discount') : '',
         productdetailIsPackPrice() ? g_pricelistSelectedProduct.Unit : '',
         product.UserField02,
-        DaoOptions.getValue('MobileSelectWhOnDetail') == 'true' ? $.trim($('#whChoiceDiv select option:selected').val().split(':')[0]) : '',
+        DaoOptions.getValue('MobileSelectWhOnDetail') == 'true' ? $('#whChoiceDiv select option:selected').val() && $.trim($('#whChoiceDiv select option:selected').val().split(':')[0]) : '',
         product.VAT,
         productdetailGetStock(),
         product.UserField03,
