@@ -383,7 +383,9 @@ function g_addProductToBasket(productID, supplierID, accountID, quantity,
 		repDiscount, unit, userField02, warehouse, vat, stock, userField03, userField04,
 		userField05, userField06, userField07, userField08, userField09, userField10) {
 
-	var repChangedPrice = repNett && (nett.toFixed(2) != repNett);
+        nett = nett.toFixed(2);
+
+	var repChangedPrice = repNett && (nett != repNett);
 	
 	var basketInfo = new BasketInfo(productID, supplierID, accountID, quantity,
 			userID, nett, description, parseFloat(discount), gross, type,
