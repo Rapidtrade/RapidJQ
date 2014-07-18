@@ -539,7 +539,7 @@ function g_ajaxget(url, success, error) {
                     dataType : 'json',
                     success:success,
                     error:error,
-                    timeout:10000
+                    timeout:30000
                     
             });
             
