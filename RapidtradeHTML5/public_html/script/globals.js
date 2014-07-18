@@ -539,8 +539,7 @@ function g_ajaxget(url, success, error) {
                     dataType : 'json',
                     success:success,
                     error:error,
-                    timeout:30000
-                    
+                    timeout: DaoOptions.getValue('AjaxTimeout', 30000)                  
             });
             
             /*
