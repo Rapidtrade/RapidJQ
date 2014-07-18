@@ -414,7 +414,7 @@ function shoppingCartAddSummaryItems() {
 
                 } else {
 
-                    summaryItem.Quantity += itemArray[k].Quantity;           
+                    summaryItem.Quantity = Number(summaryItem.Quantity) + Number(itemArray[k].Quantity);           
                 }
             }
 
