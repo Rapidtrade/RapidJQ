@@ -80,16 +80,15 @@
 <!-- Home -->
 <div data-role="page" id="menupage" class="picpanel ipadStatusBar">
 	
-	<script>
-	    $('#menupage').live("pageshow", function () {
-    		menuOnPageShow();
-    	});
+    <script>
+        $('#menupage').bind('pagebeforecreate', menuOnPageBeforeCreate);                
+	$('#menupage').live("pageshow", menuOnPageShow);
 	    
-	  //<!-- PhoneGap -->
-	  document.addEventListener("deviceready", function() { 
-		  						$('#status').text('Starting');
-	  							window.setTimeout(g_phonegapon, 1000); 
-	  							}, false);
+        //<!-- PhoneGap -->
+        document.addEventListener("deviceready", function() { 
+                                                              $('#status').text('Starting');
+                                                              window.setTimeout(g_phonegapon, 1000); 
+                                                              }, false);
     </script>
 	
     <div data-role="content">
@@ -98,109 +97,109 @@
     		<p class="menuLabel" id="welcome"  style="float:right;">Welcome</p>
     	</div>
     	<div style="margin-top: 80px;">
-	        <div id="menuMainPanel" class="menuMainPanel">
-		        <div class="ui-grid-b">
-		        	<div id="syncMenuItem" class="ui-block-a">
-		            	<a  href="sync.html" id="sync" data-role="button"  >
-		                    <div class="menuIconLabel">
-		                        <img id="syncImg" src="img/sync128.png"><br>Synchronise
-		                    </div>
-		                </a>
-		            </div>
-		        
-		            <div class="ui-block-b menuIconPanel"  >
-		                <a href="today.html" onclick="menuOnTodayClick()" data-role="button"  >
-		                    <div style=" text-align:center" class="menuIconLabel">
-		                        <img id="todayImg" src="img/calendarday128.png"><br>Today
-		                    </div>
-		                </a>
-		            </div>
-		            <div class="ui-block-c menuIconPanel">
-		                <a href="myterritory.html" onclick="menuOnMyTerritoryClick()" data-role="button" >
-		                    <div class="menuIconLabel">
-		                        <img id="myTerritoryImg" src="img/people128.png"><br>My Territory
-		                    </div>
-		                </a>
-		            </div>
-		            <div class="ui-block-d menuIconPanel">
-		            	<a href="dashboard.html" rel="external" data-role="button"  >
-		                    <div class="menuIconLabel">
-		                        <img id="myKPIsImg" src="img/graph128.png"><br>Dashboard
-		                    </div>
-		                </a>
-		            </div>
-		            <div class="ui-block-e menuIconPanel" >
-		            	<a href="callcycle.html" data-role="button" >
-		                    <div class="menuIconLabel">
-		                        <img id="callCycleImg" src="img/map128.png"><br>Call Cycle
-		                    </div>
-		                </a>
-		            </div>
-		            <!-- 
-		            <div class="ui-block-e menuIconPanel"   >
-		            	<a href="calendar.html" data-role="button">
-		                    <div class="menuIconLabel">
-		                        <img id="calendarImg" src="img/calendar128.png"><br>My Calendar
-		                    </div>
-		                </a>
-		            </div>
-		             -->        
-		            <div id="vansalesonlyreplenishstock" class="ui-block-f menuIconPanel">
-		            	<a onclick="menuOnReplenishClick()"  id ="replenishstock" data-role="button">
-		                    <div class="menuIconLabel">
-		                        <img id="replenishImg" src="img/truck128.png"><br>Replenish my stock
-		                    </div>
-		                </a>
-		            </div>
-		            <div id="vansalesonlyreceivestock" class="ui-block-f menuIconPanel" >
-		            	<a onclick="menuOnGRVClick()" id="receivestock"  data-role="button" >
-		                    <div class="menuIconLabel">
-		                        <img id="grvImg" src="img/receipt128.png"><br> <span id="grvLabel"> Receive my stock </span>
-		                    </div>
-		                </a>
-		            </div>
-		            <div id="vansalesonlystocktake" class="ui-block-f menuIconPanel" >
-		            	<a onclick="menuOnStocktakeClick()" id="receivestock"  data-role="button" >
-		                    <div class="menuIconLabel">
-		                        <img id="grvImg" src="img/stocktake128.png"><br> <span id="stocktakeLabel"> Stock Take </span>
-		                    </div>
-		                </a>
-		            </div>
-		            <div id="vanonlydelivery" class="ui-block-f menuIconPanel" >
-		            	<a onclick="menuOnPODClick()" id="deliverstock"  data-role="button" >
-		                    <div class="menuIconLabel">
-		                        <img id="podImg" src="img/pod128.png"><br> <span id="podLabel"> Deliveries </span>
-		                    </div>
-		                </a>
-		            </div>
-		            
-		            <!-- Customer buttons -->
-		            
- 		            <div class="ui-block-b menuIconPanel customerMenuItem">
-		            	<a id="pricelist" data-role="button">
-		                    <div class="menuIconLabel">
-		                        <img src="img/search128.png"><br>Pricelist
-		                    </div>
-		                </a>
-		            </div>
-		            
-		            <div class="ui-block-c menuIconPanel customerMenuItem">
-		            	<a id="company" data-role="button">
-		                    <div class="menuIconLabel">
-		                        <img src="img/people128.png"><br>My Account
-		                    </div>
-		                </a>
-		            </div>
-		            
-		            <div class="ui-block-d menuIconPanel customerMenuItem">
-		            	<a id="history" data-role="button">
-		                    <div class="menuIconLabel">
-		                        <img src="img/myhistory128.png"><br>My History
-		                    </div>
-		                </a>
-		            </div>	            
+            <div id="menuMainPanel" class="menuMainPanel">
+                    <div class="ui-grid-b">
+                            <div id="syncMenuItem" class="ui-block-a">
+                            <a  href="sync.html" id="sync" data-role="button"  >
+                                <div class="menuIconLabel">
+                                    <img id="syncImg" src="img/sync128.png"><br>Synchronise
+                                </div>
+                            </a>
+                        </div>
 
-		        </div>
+                        <div class="ui-block-b menuIconPanel"  >
+                            <a href="today.html" onclick="menuOnTodayClick()" data-role="button"  >
+                                <div style=" text-align:center" class="menuIconLabel">
+                                    <img id="todayImg" src="img/calendarday128.png"><br>Today
+                                </div>
+                            </a>
+                        </div>
+                        <div class="ui-block-c menuIconPanel">
+                            <a href="myterritory.html" onclick="menuOnMyTerritoryClick()" data-role="button" >
+                                <div class="menuIconLabel">
+                                    <img id="myTerritoryImg" src="img/people128.png"><br>My Territory
+                                </div>
+                            </a>
+                        </div>
+                        <div class="ui-block-d menuIconPanel">
+                            <a href="dashboard.html" rel="external" data-role="button"  >
+                                <div class="menuIconLabel">
+                                    <img id="myKPIsImg" src="img/graph128.png"><br>Dashboard
+                                </div>
+                            </a>
+                        </div>
+                        <div class="ui-block-e menuIconPanel" >
+                            <a href="callcycle.html" data-role="button" >
+                                <div class="menuIconLabel">
+                                    <img id="callCycleImg" src="img/map128.png"><br>Call Cycle
+                                </div>
+                            </a>
+                        </div>
+                        <!-- 
+                        <div class="ui-block-e menuIconPanel"   >
+                            <a href="calendar.html" data-role="button">
+                                <div class="menuIconLabel">
+                                    <img id="calendarImg" src="img/calendar128.png"><br>My Calendar
+                                </div>
+                            </a>
+                        </div>
+                         -->        
+                        <div id="vansalesonlyreplenishstock" class="ui-block-f menuIconPanel">
+                            <a onclick="menuOnReplenishClick()"  id ="replenishstock" data-role="button">
+                                <div class="menuIconLabel">
+                                    <img id="replenishImg" src="img/truck128.png"><br>Replenish my stock
+                                </div>
+                            </a>
+                        </div>
+                        <div id="vansalesonlyreceivestock" class="ui-block-f menuIconPanel" >
+                            <a onclick="menuOnGRVClick()" id="receivestock"  data-role="button" >
+                                <div class="menuIconLabel">
+                                    <img id="grvImg" src="img/receipt128.png"><br> <span id="grvLabel"> Receive my stock </span>
+                                </div>
+                            </a>
+                        </div>
+                        <div id="vansalesonlystocktake" class="ui-block-f menuIconPanel" >
+                            <a onclick="menuOnStocktakeClick()" id="receivestock"  data-role="button" >
+                                <div class="menuIconLabel">
+                                    <img id="grvImg" src="img/stocktake128.png"><br> <span id="stocktakeLabel"> Stock Take </span>
+                                </div>
+                            </a>
+                        </div>
+                        <div id="vanonlydelivery" class="ui-block-f menuIconPanel" >
+                            <a onclick="menuOnPODClick()" id="deliverstock"  data-role="button" >
+                                <div class="menuIconLabel">
+                                    <img id="podImg" src="img/pod128.png"><br> <span id="podLabel"> Deliveries </span>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Customer buttons -->
+
+                        <div class="ui-block-b menuIconPanel customerMenuItem">
+                            <a id="pricelist" data-role="button">
+                                <div class="menuIconLabel">
+                                    <img src="img/search128.png"><br>Pricelist
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="ui-block-c menuIconPanel customerMenuItem">
+                            <a id="company" data-role="button">
+                                <div class="menuIconLabel">
+                                    <img src="img/people128.png"><br>My Account
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="ui-block-d menuIconPanel customerMenuItem">
+                            <a id="history" data-role="button">
+                                <div class="menuIconLabel">
+                                    <img src="img/myhistory128.png"><br>My History
+                                </div>
+                            </a>
+                        </div>	            
+
+                    </div>
 	        </div>
 	    </div>  
 	   	<div id="nosync" class="hidden menuInfoPanel redpanel">
@@ -212,7 +211,7 @@
 	   	</div>
 	      
         <div style="text-align:center;color:#555555;">
-        Version 7.4.16
+        Version 7.4.17
         </div>
         <div id="status" style="text-align:center;color:#555555;">
         

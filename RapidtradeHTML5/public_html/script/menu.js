@@ -1,4 +1,34 @@
-﻿function menuOnPageShow() {
+var g_menuPageInitialised = false; 
+
+function menuOnPageBeforeCreate() {
+    
+    if ((navigator.language.indexOf('en') === -1) && (!localStorage.getItem('translations'))) {
+    
+        $.getJSON('translations.json', function(json) {
+
+            localStorage.setItem('translations', JSON.stringify(json));
+            g_menuPageInitialised = true;
+
+        }).error(function() {
+
+            g_menuPageInitialised = true;
+            console.log('File translations.json doesn\'t exist');
+        });    
+        
+    } else {
+        
+        g_menuPageInitialised = true;
+    }
+}
+
+function menuOnPageShow() {
+    
+    if (!g_menuPageInitialised) {
+        
+        setTimeout(menuOnPageShow, 10);
+        console.log('Waiting for initialisation...')
+        return;   
+    }
 	
     g_iPadBar('#menupage');
     if (window.MSApp) {
