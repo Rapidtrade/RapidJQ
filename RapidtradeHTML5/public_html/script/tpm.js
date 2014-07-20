@@ -17,7 +17,7 @@ function tpmBind() {
         
         var isOrder = ('saveTPM' === this.id);
         
-        var postType = isOrder ? 'Order' : 'Verify|Sample';
+        var postType = isOrder ? 'Order' : 'Verify|' + + g_orderHeaderOrder.Type;
         var onSuccess = isOrder ? tpmOrderSuccess : tpmVerifySuccess;
         
         tpmPost(postType, onSuccess);
@@ -64,7 +64,7 @@ function tpmFetchBasket() {
         },
         undefined,
         function(){
-            tpmPost('Qualify|Sample',tpmQualifySuccess);
+            tpmPost('Qualify|' + g_orderHeaderOrder.Type,tpmQualifySuccess);
         });    	
 }
 
