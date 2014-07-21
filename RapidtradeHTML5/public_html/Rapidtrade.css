@@ -1,7 +1,4 @@
-﻿@CHARSET "UTF-8";
-
-
-
+@CHARSET "UTF-8";
 /*
 .ui-page {
     background: url(img/bg.jpg);
@@ -15,9 +12,12 @@
 * Below is only valid on IOS, uncomment in xcode project
 */
 .ipadStatusBar{
-	/*margin-top: 20px; */
+    /*margin-top: 20px; */
 }
 
+#testDiv .ui-slider-switch { 
+    width: 9em 
+} 
 
 .greypanel {
 	margin-left:auto; margin-right:auto;
@@ -815,7 +815,7 @@
 
 .companyPagePanel {
 	
-	min-height: 1224px;
+    min-height: 1224px;
 }
 
 .jsonFormDiv .ui-select {

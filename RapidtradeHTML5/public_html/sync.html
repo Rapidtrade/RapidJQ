@@ -17,10 +17,11 @@
     <body>
         <div data-role="page" id="syncpage" class="ipadStatusBar">
 	        <script>
-			    $("#syncpage").bind("pageshow", function() {
-			    	syncOnPageShow();
-			    });
-		    </script>
+                    $("#syncpage").bind("pagebeforeshow", g_loadTranslation);
+                    $("#syncpage").bind("pageshow", function() {
+                        syncOnPageShow();
+                    });
+		</script>
             <div data-role="header">
                 <h3>
                     Synchronise
@@ -41,13 +42,13 @@
                 <div class="syncResultsPanel greypanel">
                    
                 	<div data-role="fieldcontain">
-                    	<label for="userid">
+                    	<label for="userid" class="multiLanguage">
                         	User
                			</label>
                 	    <input name="" id="userid" placeholder="" value="" type="text" />
                 	</div>
                 	<div data-role="fieldcontain">
-                     	<label for="password">
+                     	<label for="password" class="multiLanguage">
                          	Password
                      	</label>
                      	<input name="" id="password" placeholder="" value="" type="password" />

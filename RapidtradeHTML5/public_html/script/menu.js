@@ -1,34 +1,11 @@
-var g_menuPageInitialised = false; 
-
-function menuOnPageBeforeCreate() {
-    
-    if ((navigator.language.indexOf('en') === -1) && (!localStorage.getItem('translations'))) {
-    
-        $.getJSON('translations.json', function(json) {
-
-            localStorage.setItem('translations', JSON.stringify(json));
-            g_menuPageInitialised = true;
-
-        }).error(function() {
-
-            g_menuPageInitialised = true;
-            console.log('File translations.json doesn\'t exist');
-        });    
-        
-    } else {
-        
-        g_menuPageInitialised = true;
-    }
-}
-
 function menuOnPageShow() {
     
-    if (!g_menuPageInitialised) {
-        
-        setTimeout(menuOnPageShow, 10);
-        console.log('Waiting for initialisation...')
-        return;   
-    }
+//    if (sessionStorage.getItem('translationFinished') === 'false') {
+//        
+//        setTimeout(menuOnPageShow, 5);
+//        console.log('Loading translation...');
+//        return;   
+//    }   
 	
     g_iPadBar('#menupage');
     if (window.MSApp) {
@@ -55,26 +32,31 @@ function menuOnPageShow() {
 
 function menuBind() {
 	
-	$('.customerMenuItem a').off();
-	$('.customerMenuItem a').on('click', function() {
-		
-		sessionStorage.setItem('lastPanelId', this.id + 'Panel');
-		$.mobile.changePage('company.html', {transition:"none"});
-	});
+    $('.customerMenuItem a').off().on('click', function() {
+
+        sessionStorage.setItem('lastPanelId', this.id + 'Panel');
+        $.mobile.changePage('company.html', {transition:"none"});
+    });
+    
+    $('#testDiv select').off().on('slidestop', function() {
+       
+        localStorage.setItem('Portuguese', $(this).val());
+        alert('Please restart the application for the language change to take effect.');
+    });
 }
 
 function menuOnPageShowSmall() {
 	
-	if (g_isScreenSmall()) {
-		
-		$('#todayImg').attr('src', 'img/Calendar-32.png');
-		$('#myTerritoryImg').attr('src', 'img/Client-Male-Light-32.png');
-		$('#myKPIsImg').attr('src', 'img/Bar-Graph-32.png');
-		$('#callCycleImg').attr('src', 'img/car-32.png');
-		$('#replenishImg').attr('src', 'img/Truck-32.png');
-		$('#grvImg').attr('src', 'img/receipt-32.png');
-		$('#menuMainPanel').attr('class','greypanel menuMainPanelSml');
-	}	
+    if (g_isScreenSmall()) {
+
+            $('#todayImg').attr('src', 'img/Calendar-32.png');
+            $('#myTerritoryImg').attr('src', 'img/Client-Male-Light-32.png');
+            $('#myKPIsImg').attr('src', 'img/Bar-Graph-32.png');
+            $('#callCycleImg').attr('src', 'img/car-32.png');
+            $('#replenishImg').attr('src', 'img/Truck-32.png');
+            $('#grvImg').attr('src', 'img/receipt-32.png');
+            $('#menuMainPanel').attr('class','greypanel menuMainPanelSml');
+    }	
 }
 
 function menuFetchMandatoryActivities() {
@@ -293,7 +275,16 @@ function menuFetchConfigData(){
         
     menuFetchDiscounts();
     menuFetchDiscountConditions();
-    DaoOptions.fetchOptions();
+    DaoOptions.fetchOptions(menuShowTestButton);
+}
+
+function menuShowTestButton() {
+    
+    if (DaoOptions.getValue('TestPortuguese') === 'true') {
+        
+        $('#testDiv').removeClass('invisible');
+        $('#testDiv select').val(localStorage.getItem('Portuguese')).slider('refresh');
+    }    
 }
 
 function menuFetchUnsentObjects() {

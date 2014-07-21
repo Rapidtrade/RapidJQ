@@ -134,18 +134,54 @@ function g_iPadBar(panel){
 }
 
 function g_loadMenu() {
-	
-	if (g_isiPad() || window.MSApp) {
-		
-		$.mobile.changePage('index.html');
-		
-	} else {
-		
-		var menuPageUrl = navigator.userAgent.match(/Android/i) ? 'index.html'
-				: location.href
-						.substring(0, location.href.lastIndexOf('/') + 1);
-		$.mobile.changePage(menuPageUrl);
-	}
+
+    $.mobile.changePage('index.html');
+    
+    //commented out because it doesn't work well when translations are used 
+  
+//	if (g_isiPad() || window.MSApp) {
+//		
+//		$.mobile.changePage('index.html');
+//		
+//	} else {
+//		
+//		var menuPageUrl = navigator.userAgent.match(/Android/i) ? 'index.html'
+//				: location.href
+//						.substring(0, location.href.lastIndexOf('/') + 1);
+//		$.mobile.changePage(menuPageUrl);
+//	}
+}
+
+function g_loadTranslation() {
+    
+    sessionStorage.setItem('translationFinished', 'false');
+    
+    var testLanguageOn = (localStorage.getItem('Portuguese') === 'on');
+    
+    var fileName = 'translations/' + $.mobile.activePage.attr('id') + '.json';
+    
+    $.getJSON(fileName, function(json) {
+
+        $('#' + $.mobile.activePage.attr('id') + ' .multiLanguage').each(function() {
+
+            var translationObject = json[$.trim($(this).text())];
+
+            if (translationObject) {
+
+                var translation = translationObject[testLanguageOn ? 'pt' : navigator.language];
+
+                if (translation)
+                    $(this).text(translation);
+            }
+        });            
+
+        sessionStorage.setItem('translationFinished', 'true');
+
+    }).error(function() {
+
+        sessionStorage.setItem('translationFinished', 'true');
+        console.log('File ' + fileName + 'doesn\'t exist');
+    });     
 }
 
 function g_menuBind() {

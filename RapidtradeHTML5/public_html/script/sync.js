@@ -21,6 +21,14 @@ var g_syncDownloadOrderType = '';
  * openDB will call init()
  */
 function syncOnPageShow() {
+    
+//    if (sessionStorage.getItem('translationFinished') === 'false') {
+//        
+//        setTimeout(syncOnPageShow, 5);
+//        console.log('Loading translation...');
+//        return;   
+//    }
+    
     //first open database and it will call init
     g_syncDao = new Dao();
     g_syncDao.openDB(function(user) {
