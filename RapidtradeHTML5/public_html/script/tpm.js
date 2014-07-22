@@ -133,7 +133,7 @@ function tpmQualifySuccess() {
                         setTimeout(function() {
 
                             $('#infoPopup').popup('close');
-                            $.mobile.changePage('orderHeader.html');        
+                        //    $.mobile.changePage('orderHeader.html');        
                             
                         }, 2000);
                         
@@ -170,7 +170,7 @@ function tpmTableLoaded(){
         $('#infoPopup p').text('No current TPMs found.');
         g_popup('#infoPopup').show(2000, function() {
             
-            $.mobile.changePage('orderHeader.html');
+        //    $.mobile.changePage('orderHeader.html');
         });
     }
     
