@@ -19,17 +19,10 @@
     <body>
         <!-- Home -->
         <div data-role="page" id="companypage" class="ipadStatusBar ui-responsive-panel">
-		    <script>
-			    $('#companypage').bind("pagebeforecreate", function() {
-			    	
-			    	activityFormLoadIntoDiv('#activitydetails', true);
-			    	activityFormLoadIntoDiv('#activityPopup', true);
-			    	overlayInit(this);
-			    });
-			    $('#companypage').bind("pageshow", function() {
-			    	companyOnPageShow();
-			    });
-			</script>			
+                <script>
+                        $('#companypage').bind("pagebeforecreate", companyOnPageBeforeCreate);
+                        $('#companypage').bind("pageshow", companyOnPageShow);
+                    </script>			
         	<div data-role="header">
                 <table style="margin-left:auto; margin-right:auto; height:50px;">
             	<tr><td class="companyName"></td><td>&nbsp;</td></tr>

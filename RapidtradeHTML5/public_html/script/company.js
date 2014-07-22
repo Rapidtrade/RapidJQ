@@ -3,6 +3,13 @@
  * This is called from script tag inside page
  */
 
+function companyOnPageBeforeCreate() {
+    
+    activityFormLoadIntoDiv('#activitydetails', true);
+    activityFormLoadIntoDiv('#activityPopup', true);
+    overlayInit('companypage');    
+}
+
 function companyOnPageShow(){
 	
     companyHideFooter();
@@ -16,7 +23,7 @@ function companyOnPageShow(){
     g_showCurrentCompanyName();
 
     var dao = new Dao();
-    dao.openDB(function() {	companyInit();	});
+    dao.openDB(function() {companyInit();});
     companyBind();
 
     if (DaoOptions.getValue('AllowHistoryDownload', 'false') == 'true') {

@@ -1,143 +1,137 @@
-function overlayInit(page) {
+function overlayInit(pageId) {
 	
-	var menuPanel = '<div data-role="panel" data-dismissible="false" id="menuPanel" class="overlayMenu invisible" data-theme="b">';
-	
-	if (g_currentUser().Role != 'CUST') {
-		
-		menuPanel += '<ul id="mainMenu" data-role="listview" data-inset="true" data-divider-theme="d" >' +
-							'<li data-role="list-divider" role="heading">Main Menu</li>' +
-						 	'<li id="companyItem">Company Details</li>' +
-						 	'<li id="historyItem">Customer History</li>';
-		
-		if (!g_vanSales) {
-			
-	    	var orderTypes = overlayFetchOrderTypes();
-	    	
-			//Check if we can invoice, then add order types
-			if (g_currentUser().Role) {
-				
-				if (g_currentUser().Role.indexOf('canInv') != -1) {		
-					
-					var warehouses = ((g_currentUser().Role.split(',')[1]).split('=')[1]).split('|');
-					$.each(warehouses, function(key, value) {   
-						
-					     orderTypes.push('Invoice-' + value);
-					});				
-				}
-			}
-			
-			if (orderTypes.length) {
-				
-				if (!((orderTypes.length == 1) && (orderTypes[0].toLowerCase() == 'none')))
-			
-					$.each(orderTypes, function(key, value) {   
-						
-						menuPanel += '<li id="pricelist' + value + 'Item" class="orderItem">Create ' + value + '</li>';
-					});
-				
-			} else {
-				
-				menuPanel += '<li id="pricelistOrderItem" class="orderItem">Create Order</li>';
-			}
-			
-		} else {
-			
-			menuPanel += '<li id="pricelistOrderItem" class="orderItem">Create Order</li>';
-		}	
-		
-		menuPanel += 	'<li id="activityItem">Add Activity</li>' +
-					 '</ul>';
-	}
-		
-//	if (DaoOptions.getValue('ShowProductInfo') == 'true') {
-//		
-//		menuPanel += '<div id="productDetailsMenu"><h3>Product Details</h3>' +
-//						'<ul data-role="listview" data-inset="true">' +
-//							'<li>Price</li>' +
-//							'<li>Product Info</li>' +
-//						'</ul>' +
-//					'</div>';
-//	}
-	
-	var showPricelistMenu = (DaoOptions.getValue('MobileCategories') == 'true') || (DaoOptions.getValue('AllowAdvancedSearch') == 'true');
-	var pricelistMenuEnd = '</ul></div>';
-        
-                
-	if (showPricelistMenu) {
-		
-                menuPanel += '<div id="pricelistMenu">' +   
-			'<ul data-role="listview" data-inset="true" data-divider-theme="d" >' +
-			'<li data-role="list-divider" role="heading">Pricelist</li>' +
-			'<li id="basic" class="ui-btn-active">Basic Search</li>';
-		
-		if (DaoOptions.getValue('MobileCategories') == 'true')			
-                    menuPanel += '<li id="categories">Product Categories</li>';
+    var menuPanel = '<div data-role="panel" data-dismissible="false" id="menuPanel" class="overlayMenu invisible" data-theme="b">';
 
-		if (DaoOptions.getValue('AllowAdvancedSearch') == 'true') {
-		
-                    menuPanel += '<li id="advanced">Advanced Search</li>';
+    if (g_currentUser().Role != 'CUST') {
 
-                    if (DaoOptions.getValue('extrasearch')) {
+            menuPanel += '<ul id="mainMenu" data-role="listview" data-inset="true" data-divider-theme="d" >' +
+                                                    '<li data-role="list-divider" role="heading">' + g_translateText('Main Menu', pageId) + '</li>' +
+                                                    '<li id="companyItem">' + g_translateText('Company Details', pageId) + '</li>' +
+                                                    '<li id="historyItem">' + g_translateText('Customer History', pageId) + '</li>';
 
-                        var extraMenuItemArray = JSON.parse(DaoOptions.getValue('extrasearch'));
+            if (!g_vanSales) {
 
-                        for ( var i = 0; i < extraMenuItemArray.length; i++)
-                                menuPanel += '<li id="' + extraMenuItemArray[i].search + '">' + extraMenuItemArray[i].label + '</li>';
-                    }	 
-			
-                    menuPanel += pricelistMenuEnd;
-			
-		} else {
-                    
-                    if (DaoOptions.getValue('extrasearch')) {
+                var orderTypes = overlayFetchOrderTypes();
 
-                        var extraMenuItemArray = JSON.parse(DaoOptions.getValue('extrasearch'));
+                //Check if we can invoice, then add order types
+                if (g_currentUser().Role) {
 
-                        for ( var i = 0; i < extraMenuItemArray.length; i++)
-                                menuPanel += '<li id="' + extraMenuItemArray[i].search + '">' + extraMenuItemArray[i].label + '</li>';
-                    }	 
-			
-                    menuPanel += pricelistMenuEnd;
-                    
-		}
-	} 
-                
-        menuPanel += '<div id="productDetailsMenu">' +
-                                    '<ul data-role="listview" data-inset="true" data-divider-theme="d">' +
-                                        '<li data-role="list-divider" role="heading">Product Details</li>' +
-                                        '<li id="price" class="ui-btn-active">Price</li>';
-                                
-        if (DaoOptions.getValue('ShowProductInfo') == 'true')          
-            menuPanel += '<li>Product Info</li>'; 
+                    if (g_currentUser().Role.indexOf('canInv') != -1) {		
 
-        if (DaoOptions.getValue('ShowComponents') === 'true')
-            menuPanel += '<li id="components">Components</li>';
+                        var warehouses = ((g_currentUser().Role.split(',')[1]).split('=')[1]).split('|');
+                        $.each(warehouses, function(key, value) {   
 
-        if (DaoOptions.getValue('ShowAlternate') === 'true')
-            menuPanel += '<li id="altProducts">Alternative Products</li>';
+                             orderTypes.push('Invoice-' + value);
+                        });				
+                    }
+                }
 
-        if (DaoOptions.getValue('ShowWhereUsed') === 'true')
-            menuPanel += '<li id="whereUsed">Where Used</li>';
-                    
-        if (DaoOptions.getValue('ShowTechnical') === 'true')
-            menuPanel += '<li>Technical Info</li>';
-                       
-        menuPanel += '<li>Large Image</li>' +
-                     '</ul>' +
-                     '</div>';
-	
-	if (g_currentUser().Role != 'CUST') 
-		menuPanel += '<a data-role="button" href="myterritory.html" data-icon="search" data-theme="b">My Customers</a>';
-	
-	menuPanel += '<p><a id="home" data-role="button" data-icon="home" data-theme="e">Home</a>';
-			
-	menuPanel += '</p></div>';
-	
-	 if ($(page).find('[data-role="panel"]').length == 0) {
-		 
-		  $('[data-role="header"]').before(menuPanel);
-		  overlayBind();
-	 }
+                if (orderTypes.length) {
+
+                    if (!((orderTypes.length == 1) && (orderTypes[0].toLowerCase() == 'none'))) {
+
+                        $.each(orderTypes, function(key, value) {   
+
+                            var orderTypeItemText = ('Create ' + value).replace('Create Invoice', g_translateText('Create Invoice', pageId))
+                                    .replace('Create Order', g_translateText('Create Order', pageId));
+                            
+                            menuPanel += '<li id="pricelist' + value + 'Item" class="orderItem">' + orderTypeItemText + '</li>';
+                        });
+                    }
+
+                } else {
+
+                    menuPanel += '<li id="pricelistOrderItem" class="orderItem">' + g_translateText('Create Order', pageId) + '</li>';
+                }
+
+            } else {
+
+                menuPanel += '<li id="pricelistOrderItem" class="orderItem">' + g_translateText('Create Order', pageId) + '</li>';
+            }	
+
+            menuPanel += '<li id="activityItem">' + g_translateText('Add Activity', pageId) + '</li>' +
+                                     '</ul>';
+    }
+
+    var showPricelistMenu = (DaoOptions.getValue('MobileCategories') == 'true') || (DaoOptions.getValue('AllowAdvancedSearch') == 'true');
+    var pricelistMenuEnd = '</ul></div>';
+
+
+    if (showPricelistMenu) {
+
+            menuPanel += '<div id="pricelistMenu">' +   
+                    '<ul data-role="listview" data-inset="true" data-divider-theme="d" >' +
+                    '<li data-role="list-divider" role="heading">Pricelist</li>' +
+                    '<li id="basic" class="ui-btn-active">Basic Search</li>';
+
+            if (DaoOptions.getValue('MobileCategories') == 'true')			
+                menuPanel += '<li id="categories">Product Categories</li>';
+
+            if (DaoOptions.getValue('AllowAdvancedSearch') == 'true') {
+
+                menuPanel += '<li id="advanced">Advanced Search</li>';
+
+                if (DaoOptions.getValue('extrasearch')) {
+
+                    var extraMenuItemArray = JSON.parse(DaoOptions.getValue('extrasearch'));
+
+                    for ( var i = 0; i < extraMenuItemArray.length; i++)
+                            menuPanel += '<li id="' + extraMenuItemArray[i].search + '">' + extraMenuItemArray[i].label + '</li>';
+                }	 
+
+                menuPanel += pricelistMenuEnd;
+
+            } else {
+
+                if (DaoOptions.getValue('extrasearch')) {
+
+                    var extraMenuItemArray = JSON.parse(DaoOptions.getValue('extrasearch'));
+
+                    for ( var i = 0; i < extraMenuItemArray.length; i++)
+                            menuPanel += '<li id="' + extraMenuItemArray[i].search + '">' + extraMenuItemArray[i].label + '</li>';
+                }	 
+
+                menuPanel += pricelistMenuEnd;
+
+            }
+    } 
+
+    menuPanel += '<div id="productDetailsMenu">' +
+                                '<ul data-role="listview" data-inset="true" data-divider-theme="d">' +
+                                    '<li data-role="list-divider" role="heading">Product Details</li>' +
+                                    '<li id="price" class="ui-btn-active">Price</li>';
+
+    if (DaoOptions.getValue('ShowProductInfo') == 'true')          
+        menuPanel += '<li>Product Info</li>'; 
+
+    if (DaoOptions.getValue('ShowComponents') === 'true')
+        menuPanel += '<li id="components">Components</li>';
+
+    if (DaoOptions.getValue('ShowAlternate') === 'true')
+        menuPanel += '<li id="altProducts">Alternative Products</li>';
+
+    if (DaoOptions.getValue('ShowWhereUsed') === 'true')
+        menuPanel += '<li id="whereUsed">Where Used</li>';
+
+    if (DaoOptions.getValue('ShowTechnical') === 'true')
+        menuPanel += '<li>Technical Info</li>';
+
+    menuPanel += '<li>Large Image</li>' +
+                 '</ul>' +
+                 '</div>';
+
+    if (g_currentUser().Role != 'CUST') 
+        menuPanel += '<a data-role="button" href="myterritory.html" data-icon="search" data-theme="b">' + g_translateText('My Customers', pageId) + '</a>';
+
+    menuPanel += '<p><a id="home" data-role="button" data-icon="home" data-theme="e">' + g_translateText('Home', pageId) + '</a>';
+
+    menuPanel += '</p></div>';
+
+     if ($('#' + pageId).find('[data-role="panel"]').length == 0) {
+
+        $('[data-role="header"]').before(menuPanel);
+        overlayBind();
+     }
 }
 
 function overlayBind() {

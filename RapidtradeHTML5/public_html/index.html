@@ -81,7 +81,7 @@
 <div data-role="page" id="menupage" class="picpanel ipadStatusBar" data-cache="false">
 	
     <script>
-        $('#menupage').bind('pagebeforeshow', g_loadTranslation);                
+        $('#menupage').bind('pagebeforecreate', menuOnPageBeforeCreate);                
 	$('#menupage').live("pageshow", menuOnPageShow);
 	    
         //<!-- PhoneGap -->
@@ -217,7 +217,7 @@
 	   	</div>
 	      
         <div style="text-align:center;color:#555555;">
-        Version 7.5.0
+        Version 7.5.1
         </div>
         <div id="status" style="text-align:center;color:#555555;">
         

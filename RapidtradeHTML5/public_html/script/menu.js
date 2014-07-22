@@ -1,11 +1,9 @@
-function menuOnPageShow() {
+function menuOnPageBeforeCreate() {
     
-//    if (sessionStorage.getItem('translationFinished') === 'false') {
-//        
-//        setTimeout(menuOnPageShow, 5);
-//        console.log('Loading translation...');
-//        return;   
-//    }   
+    g_translatePage('menupage');
+}
+
+function menuOnPageShow() {
 	
     g_iPadBar('#menupage');
     if (window.MSApp) {

@@ -16,6 +16,13 @@ var g_syncLivePricelist = false;
 var g_syncDownloadOrderURL = '';
 var g_syncDownloadOrderType = '';
 
+var SYNC_OK_MESSAGE = 'Sync completed OK. Click Menu button to continue';
+
+function syncOnPageBeforeCreate() {
+    
+    g_translatePage('syncpage');
+}
+
 /*
  * In doc ready, always call openDB first.
  * openDB will call init()
@@ -170,10 +177,6 @@ function syncFetchPostData() {
                        syncPostData(0);
                    else {
                 	   syncAll();
-//                       $('#syncimg').attr('src', 'img/Tick-48.png');
-//                       $('#message').text('Sync completed OK. Click Next button to continue');
-//                       $('#results tbody tr:last td').text('No unsent data');
-//                       $.mobile.hidePageLoadingMsg();
                    }
                });
 }
@@ -208,13 +211,7 @@ function syncPostData(index) {
     var orderExistsOnError = function(json) {
     	
         g_append('#results tbody', '<tr><td>Error: order not sent.</td></tr>');
-
-//        if (json && json._Errors[0])
-//            g_append('#results tbody', '<tr><td>' + json._Errors[0] + '</td></tr>');
-
         syncPostedOK(index, true);        
-//		$.mobile.hidePageLoadingMsg();
-//		$('#message').text('Sync completed. Click Next button to continue');
     };
     
     var postOrderOnSuccess = function() {
@@ -244,10 +241,10 @@ function syncPostData(index) {
     
     var saveInvoiceNumberOnError = function() {
     	
-		g_append('#results tbody', '<tr><td>Error: The last invoice number not sent.</td></tr>');
-		
-		$.mobile.hidePageLoadingMsg();
-		$('#message').text('Sync completed. Click Next button to continue');
+        g_append('#results tbody', '<tr><td>Error: The last invoice number not sent.</td></tr>');
+
+        $.mobile.hidePageLoadingMsg();
+        $('#message').text(g_translateText(SYNC_OK_MESSAGE));
     };
     
     if ((g_syncPosted[index].Table == 'Options') && (g_syncPosted[index].Method == 'QuickModify')) {
@@ -284,32 +281,26 @@ function syncPostedOK(index, skip){
             });
         }
 
-            $('#results tbody tr:last td').text((index + 1) + ' of ' + g_syncPosted.length + ' rows sent OK' );
+        $('#results tbody tr:last td').text((index + 1) + ' of ' + g_syncPosted.length + ' rows sent OK' );
     }
 
-	if (index == (g_syncPosted.length - 1)){
-		
-                if (!skip) {
-                    
-                    if (g_syncIsOrderPosted)
-                        sessionStorage.setItem('HistoryCacheAccountID', '');	
+    if (index == (g_syncPosted.length - 1)){
 
-                    g_syncDao.clear('Unsent');
-                }
-                
-		syncAll();
-		
-//		console.log('===== Sync completed OK =====');
-//		g_syncDao.clear('Unsent');
-//		$('#syncimg').attr('src','img/Tick-48.png');
-//		$('#message').text('Sync completed OK. Click Next button to continue');
-//		
-//		$.mobile.hidePageLoadingMsg();
-		
-	} else {
-		index = index + 1;
-		syncPostData(index);
-	}
+        if (!skip) {
+
+            if (g_syncIsOrderPosted)
+                sessionStorage.setItem('HistoryCacheAccountID', '');	
+
+            g_syncDao.clear('Unsent');
+        }
+
+        syncAll();		
+
+    } else {
+
+        index = index + 1;
+        syncPostData(index);
+    }
 }
 
 /*
@@ -320,7 +311,7 @@ function syncAll() {
     localStorage.setItem('lastSyncDate', g_today());
 
     $('#userid').addClass('ui-disabled');
-    $('#message').text('Please wait, downloading latest data');
+    $('#message').text(g_translateText('Please wait, downloading latest data'));
 
     g_syncTables = [];
     g_syncCount = 0;
@@ -500,7 +491,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 
 		console.log('===== Sync completed OK =====');
 	        $('#syncimg').attr('src', 'img/Tick-48.png');
-	        $('#message').text('Sync completed OK. Click Menu button to continue');
+	        $('#message').text(g_translateText(SYNC_OK_MESSAGE));
 	        $.mobile.hidePageLoadingMsg();
 		  
 		} else {	// go on to the next table
@@ -517,7 +508,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 
 		console.log('===== Sync completed OK =====');
                 $('#syncimg').attr('src', 'img/Tick-48.png');
-                $('#message').text('Sync completed OK. Click Menu button to continue');
+                $('#message').text(g_translateText(SYNC_OK_MESSAGE));
                 $.mobile.hidePageLoadingMsg();
 	    	
 	    } else {
@@ -668,16 +659,11 @@ function syncTryToPostData() {
 		
 	    $('#message').text('Please wait, sending your data');
 	    g_append('#results tbody', '<tr><td>Reading...</td></tr>');
-	    //$('#results tbody').append('<tr><td>Reading...</td></tr>');
 	    syncFetchPostData();
 	    
 	} else {
 		
 		syncAll();
-//		console.log('===== Sync completed OK =====');
-//        $('#syncimg').attr('src', 'img/Tick-48.png');
-//        $('#message').text('Sync completed OK. Click Menu button to continue');
-//        $.mobile.hidePageLoadingMsg();
 	}
 }
 

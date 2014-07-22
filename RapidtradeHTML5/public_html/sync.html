@@ -17,13 +17,11 @@
     <body>
         <div data-role="page" id="syncpage" class="ipadStatusBar">
 	        <script>
-                    $("#syncpage").bind("pagebeforeshow", g_loadTranslation);
-                    $("#syncpage").bind("pageshow", function() {
-                        syncOnPageShow();
-                    });
+                    $("#syncpage").bind("pagebeforeshow", syncOnPageBeforeCreate);
+                    $("#syncpage").bind("pageshow", syncOnPageShow);
 		</script>
             <div data-role="header">
-                <h3>
+                <h3 class="multiLanguage">
                     Synchronise
                 </h3>
                 <a id="signinagain" data-role="button" href="" data-icon="delete" data-iconpos="left" class="ui-btn-left">
@@ -31,7 +29,7 @@
         		</a>
                 <a id="syncMenu" data-role="button" data-icon="arrow-r" data-iconpos="right" data-transition="none" class="ui-btn-right">
             		Menu
-        		</a>
+                </a>
             </div>
            
             <div data-role="content">
@@ -61,7 +59,7 @@
                 <div class="syncResultsPanel greypanel">
                 	<table id="results"><tbody></tbody></table>
                 </div>
-                <div style=" text-align:center"></br> Support: 'support@rapidtrade.zendesk.com'</div>
+                <div style=" text-align:center"><br/> <span class="multiLanguage">Support</span>: 'support@rapidtrade.zendesk.com'</div>
                   <!--<div style=" text-align:center"></br> If you don't know your userid, please contact 'ITSM.WeCare@supergrp.com'</div>-->
             </div>
             <form action="post.aspx" method="post" id="sendForm">

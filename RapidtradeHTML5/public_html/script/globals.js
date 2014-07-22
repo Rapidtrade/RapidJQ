@@ -15,6 +15,7 @@ var g_vanSales = false;
 var g_indexedDB;
 var g_defaultDisplayFields = [];
 var g_builtInScanner = false;
+var g_translations = {};
 
 //phonegap functions
 var g_scandit = false;
@@ -94,10 +95,10 @@ var g_stockDescriptions = {'-9999': 'N/A', '-9998': 'Back Order'};
 
 function g_phonegapon(){
 	try {
-		$('#status').text('Ready');
-		g_phonegap = true;
-		g_canTakePhoto = true;
-		g_scandit = true;
+            $('#status').text('Ready');
+            g_phonegap = true;
+            g_canTakePhoto = true;
+            g_scandit = true;
 	    g_deviceVersion = parseFloat(window.device.version);
 	    $('#status').text('Device ready ' + g_deviceVersion);
 	} catch (err){
@@ -152,36 +153,62 @@ function g_loadMenu() {
 //	}
 }
 
-function g_loadTranslation() {
+function g_translatePage(pageId, onSuccess) {
     
-    sessionStorage.setItem('translationFinished', 'false');
+    // this must be done as a first thing due to a specific initialisation of the company page
+    if (!g_translations['companypage']) {
+        
+        $.getJSON('translations/companypage.json', function(translationsJSON) {
+            
+            g_translations['companypage'] = translationsJSON;
+            
+        }).fail(function() {
+            console.log('File companypage.js doesn\'t exist');
+        });
+    }  
     
-    var testLanguageOn = (localStorage.getItem('Portuguese') === 'on');
+    var translatePage = function(translations) {
+        
+        g_translations[pageId] = translations;
+        
+        $('#' + pageId + ' .multiLanguage').each(function() {
+            
+            $(this).text(g_translateText($.trim($(this).text()), pageId));
+        });    
+    };
+
     
-    var fileName = 'translations/' + $.mobile.activePage.attr('id') + '.json';
+    if (!g_translations[pageId]) {
     
-    $.getJSON(fileName, function(json) {
+        var fileName = 'translations/' + pageId + '.json';
 
-        $('#' + $.mobile.activePage.attr('id') + ' .multiLanguage').each(function() {
+        $.getJSON(fileName, function(translationsJSON) {
 
-            var translationObject = json[$.trim($(this).text())];
+            translatePage(translationsJSON);
 
-            if (translationObject) {
+        }).fail(function() {
 
-                var translation = translationObject[testLanguageOn ? 'pt' : navigator.language];
+            console.log('File ' + fileName + ' doesn\'t exist');
+            
+        }).always(onSuccess); 
+        
+    } else {
+        
+        translatePage(g_translations[pageId]);
+        
+        if (onSuccess)
+            onSuccess();
+    }
+}
 
-                if (translation)
-                    $(this).text(translation);
-            }
-        });            
+function g_translateText(text, pageId) {
+    
+    var testLanguageOn = (localStorage.getItem('Portuguese') === 'on');    
+    
+    var translationObject = g_translations[pageId || $.mobile.activePage.attr('id')][text];
+    var translation = translationObject && translationObject[testLanguageOn ? 'pt' : navigator.language];
 
-        sessionStorage.setItem('translationFinished', 'true');
-
-    }).error(function() {
-
-        sessionStorage.setItem('translationFinished', 'true');
-        console.log('File ' + fileName + 'doesn\'t exist');
-    });     
+    return translation || text;
 }
 
 function g_menuBind() {
