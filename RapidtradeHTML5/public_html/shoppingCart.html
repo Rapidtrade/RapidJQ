@@ -21,24 +21,23 @@
     <body>
 		<div data-role="page" id="shoppingCartpage" class="ipadStatusBar">
 			<script>
-			      $('#shoppingCartpage').bind("pageshow", function () {
-			          shoppingCartOnPageShow();
-			      });
+                            $('#shoppingCartpage').bind('pagebeforecreate', shoppingCartOnPageBeforeCreate);
+                            $('#shoppingCartpage').bind('pageshow', shoppingCartOnPageShow);
 			</script>
 			<div data-role="header"  data-position="fixed">
                 <table style="margin-left:auto; margin-right:auto; height:50px;">
             	<tr><td class="companyName"></td><td>&nbsp;</td></tr>
             	</table>
 
-           		<a id="shoppingCartBackButton" data-role="button" onclick="shoppingCartOnBack()" data-icon="arrow-l" data-iconpos="left" data-transition="none">Pricelist</a>
-			    <a id="saveShoppingCart" class="shopcartButtoms" data-role="button" data-inline="true" href="#"  data-icon="plus" data-iconpos="left">Checkout</a>
+           		<a id="shoppingCartBackButton" data-role="button" onclick="shoppingCartOnBack()" data-icon="arrow-l" data-iconpos="left" data-transition="none" class="multiLanguage">Pricelist</a>
+			    <a id="saveShoppingCart" class="shopcartButtoms multiLanguage" data-role="button" data-inline="true" href="#"  data-icon="plus" data-iconpos="left">Checkout</a>
 			</div>
 			<div  data-role="content">
 				<div  class="ui-grid-a shopcartHeader">
 				    <div class="ui-block-a">
 				    	<div class="shopcartLabel hideonphone">
 				    		<img class="shopcartLabelImg" src="img/Empty-shopping-cart-64.png"/>
-				    		<h1 class="shopcartLabelText" id="shoppingCartLabel">Shopping Cart</h1>
+				    		<h1 class="shopcartLabelText" id="shoppingCartLabel" class="multiLanguage"></h1>
 				    	</div>
 				        <a href="#" data-theme="b" class="shopcartButtoms" id="deleteShoppingCart" data-role="button" data-icon="delete"  data-inline="true">Delete All
 				        </a>

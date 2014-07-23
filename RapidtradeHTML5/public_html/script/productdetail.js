@@ -88,43 +88,43 @@ function productdetailInit() {
 	
 	var dao = new Dao();
 	dao.get('BasketInfo',
-			(g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID).trim(),
-			function(basketInfo) {
-		
-				g_productdetailIsPriceChanged = basketInfo.RepChangedPrice ? basketInfo.RepChangedPrice : false;
-				
-				g_pricelistSelectedProduct.Discount = basketInfo.Discount;
-				g_pricelistSelectedProduct.Nett = basketInfo.Nett;
-				g_pricelistSelectedProduct.Gross = basketInfo.Gross;
-		
-				productdetailValue('nett', g_addCommas(parseFloat(g_productdetailIsPriceChanged ? basketInfo.RepNett : basketInfo.Nett).toFixed(2)));
-				productdetailValue('discount', g_addCommas(parseFloat(g_productdetailIsPriceChanged ? basketInfo.RepDiscount : basketInfo.Discount).toFixed(2)) + '%');
-				
-				$('#quantity').val(basketInfo.Quantity);
-				//productdetailSetFocus();
-				
-				
-			},
-			function() {
-				if (sessionStorage.getItem('currentordertype')=='repl') {
-					$('#gross').hide();
-					$('#discount').hide();
-					$('#nettlabel').text('Cost');
-					$('#pricelistview').listview('refresh');
-					productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Cost).toFixed(2)));
-					productdetailValue('discount', '');					
-				} else {
-					productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
-					productdetailValue('discount', g_addCommas(parseFloat(g_pricelistSelectedProduct.Discount).toFixed(2)) + '%');					
-				}
-				$('#quantity').val('');
-				//productdetailSetFocus();
-				
-				
-				
-			},
-			undefined
-			);	
+                (g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID).trim(),
+                function(basketInfo) {
+
+                        g_productdetailIsPriceChanged = basketInfo.RepChangedPrice ? basketInfo.RepChangedPrice : false;
+
+                        g_pricelistSelectedProduct.Discount = basketInfo.Discount;
+                        g_pricelistSelectedProduct.Nett = basketInfo.Nett;
+                        g_pricelistSelectedProduct.Gross = basketInfo.Gross;
+
+                        productdetailValue('nett', g_addCommas(parseFloat(g_productdetailIsPriceChanged ? basketInfo.RepNett : basketInfo.Nett).toFixed(2)));
+                        productdetailValue('discount', g_addCommas(parseFloat(g_productdetailIsPriceChanged ? basketInfo.RepDiscount : basketInfo.Discount).toFixed(2)) + '%');
+
+                        $('#quantity').val(basketInfo.Quantity);
+                        //productdetailSetFocus();
+
+
+                },
+                function() {
+                        if (sessionStorage.getItem('currentordertype')=='repl') {
+                                $('#gross').hide();
+                                $('#discount').hide();
+                                $('#nettlabel').text('Cost');
+                                $('#pricelistview').listview('refresh');
+                                productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Cost).toFixed(2)));
+                                productdetailValue('discount', '');					
+                        } else {
+                                productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
+                                productdetailValue('discount', g_addCommas(parseFloat(g_pricelistSelectedProduct.Discount).toFixed(2)) + '%');					
+                        }
+                        $('#quantity').val('');
+                        //productdetailSetFocus();
+
+
+
+                },
+                undefined
+                );	
    
     $('#grossvalue').html(g_addCommas(parseFloat(g_pricelistSelectedProduct.Gross).toFixed(2)));
     $('.hproductId').text(g_pricelistSelectedProduct.ProductID);

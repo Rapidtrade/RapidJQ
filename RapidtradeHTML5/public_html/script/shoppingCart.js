@@ -12,6 +12,11 @@ var g_shoppingcartCnt = 0;
 var g_shoppingcartalpha = [];
 var g_shoppingCartSummaryItems = {};
 
+function shoppingCartOnPageBeforeCreate() {
+    
+    g_translatePage('shoppingCartpage');
+}
+
 function shoppingCartOnPageShow() {
 	
     g_showCurrentCompanyName();
@@ -231,7 +236,7 @@ function shoppingCartOnBack() {
 
 function shoppingCartInit() {
 
-	if (sessionStorage.getItem("currentordertype") == "grv") {
+    if (sessionStorage.getItem("currentordertype") == "grv") {
         $('#shoppingCartLabel').html('GRV Cart');
     } else if (sessionStorage.getItem("currentordertype") == "repl") {
         $('#shoppingCartLabel').html('Replenishment Cart');
@@ -241,9 +246,10 @@ function shoppingCartInit() {
         $('#shoppingCartLabel').html('Proof of Delivery');    
     } else {
     	var orderType = sessionStorage.getItem('currentordertype');  //ordertypecaption');
-    	$('#shoppingCartLabel').html((orderType ? orderType : 'Shopping') + ' Cart');
+    	$('#shoppingCartLabel').html(g_translateText((orderType ? orderType : 'Shopping') + ' Cart'));
     }
-	g_basketHTML = '';
+    
+    g_basketHTML = '';
     shoppingCartFetchBasket();
 }
 

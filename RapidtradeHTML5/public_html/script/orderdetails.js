@@ -163,26 +163,9 @@ function orderdetailsCheckBasket() {
         
         if (totalItems) {
             
-            $('.ui-btn-right .ui-btn-text').text('(' + totalItems + ')' + ' Shopping Cart');            
+            $('.ui-btn-right .ui-btn-text').text('(' + totalItems + ')' + ' ' + g_translateText('Shopping Cart'));            
         }
     });   
-    
-//    dao.count('BasketInfo', g_currentCompany().AccountID, 'index1',
-//    function (cnt) {        	
-//
-//        // on success
-//        
-//        $('.ui-btn-right').removeClass('ui-disabled');
-//        $('.ui-btn-right .ui-btn-text').text('(' + cnt + ')' + ' Shopping Cart');
-//        
-//    }, function() {
-//        
-//        // on failure
-//        
-//        g_pricelistIsAnyItemAdded = false;
-//        $('.ui-btn-right').addClass('ui-disabled');
-//        $('.ui-btn-right .ui-btn-text').text('Shopping Cart');
-//    });
 }
 
 /*

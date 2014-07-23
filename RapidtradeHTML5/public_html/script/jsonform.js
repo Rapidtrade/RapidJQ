@@ -87,12 +87,9 @@ function JsonForm() {
         var displayObjects = new Object();
          displayObjects = jsonArray.sort(function (a, b) { return parseFloat(a.SortOrder) - parseFloat(b.SortOrder); });
 
-        for (var i=0; i<displayObjects.length;i++) {
-        	
-            var label = displayObjects[i].Name;
-            if (displayObjects[i].Label) {
-                label = displayObjects[i].Label;
-        	}
+        for (var i=0; i<displayObjects.length;i++) {        	
+            
+            var label = g_translateText(displayObjects[i].Label || displayObjects[i].Name);
             
             var disable = "";
             var selectmenuDisable = false;

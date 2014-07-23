@@ -61,11 +61,11 @@ function overlayInit(pageId) {
 
             menuPanel += '<div id="pricelistMenu">' +   
                     '<ul data-role="listview" data-inset="true" data-divider-theme="d" >' +
-                    '<li data-role="list-divider" role="heading">Pricelist</li>' +
-                    '<li id="basic" class="ui-btn-active">Basic Search</li>';
+                    '<li data-role="list-divider" role="heading">' + g_translateText('Pricelist', pageId) + '</li>' +
+                    '<li id="basic" class="ui-btn-active">' + g_translateText('Basic Search', pageId) + '</li>';
 
             if (DaoOptions.getValue('MobileCategories') == 'true')			
-                menuPanel += '<li id="categories">Product Categories</li>';
+                menuPanel += '<li id="categories">' + g_translateText('Product Categories', pageId) + '</li>';
 
             if (DaoOptions.getValue('AllowAdvancedSearch') == 'true') {
 
@@ -160,7 +160,7 @@ function overlayBind() {
                   
                   if ($(this).hasClass('orderItem')) {
                       
-                    sessionStorage.setItem('currentordertype', $.trim($(this).text().replace('Create ', '')));
+                    sessionStorage.setItem('currentordertype', $.trim($(this).attr('id').replace('pricelist', '').replace('Item', '')));
                   }
                   
                   companyLoadPanel(this.id.replace('Item', 'Panel'));

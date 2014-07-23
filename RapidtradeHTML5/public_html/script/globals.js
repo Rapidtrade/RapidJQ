@@ -94,16 +94,16 @@ var g_stockDescriptions = {'-9999': 'N/A', '-9998': 'Back Order'};
  */
 
 function g_phonegapon(){
-	try {
-            $('#status').text('Ready');
-            g_phonegap = true;
-            g_canTakePhoto = true;
-            g_scandit = true;
-	    g_deviceVersion = parseFloat(window.device.version);
-	    $('#status').text('Device ready ' + g_deviceVersion);
-	} catch (err){
-		$('#status').text(err.message);
-	}
+    try {
+        $('#status').text('Ready');
+        g_phonegap = true;
+        g_canTakePhoto = true;
+        g_scandit = true;
+        g_deviceVersion = parseFloat(window.device.version);
+        $('#status').text('Device ready ' + g_deviceVersion);
+    } catch (err){
+            $('#status').text(err.message);
+    }
 }
 
 function g_isiPad() {
@@ -172,7 +172,7 @@ function g_translatePage(pageId, onSuccess) {
         g_translations[pageId] = translations;
         
         $('#' + pageId + ' .multiLanguage').each(function() {
-            
+                      
             $(this).text(g_translateText($.trim($(this).text()), pageId));
         });    
     };

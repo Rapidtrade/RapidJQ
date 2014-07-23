@@ -7,7 +7,8 @@ function companyOnPageBeforeCreate() {
     
     activityFormLoadIntoDiv('#activitydetails', true);
     activityFormLoadIntoDiv('#activityPopup', true);
-    overlayInit('companypage');    
+    overlayInit('companypage');   
+    g_translatePage('companypage');
 }
 
 function companyOnPageShow(){
@@ -103,33 +104,33 @@ function companyLoadPanel(panelId) {
 	
 	switch (panelId) {
 	
-		case 'companyPanel':			
-			companyOnPageShow();
-			break;
-			
-		case 'historyPanel':
-			historyOnPageShow();
-			companySetNextButton('Pricelist');
-			break;
-			
-		case 'pricelistPanel':
-			sessionStorage.removeItem('fromAdvanced');
-			sessionStorage.removeItem('fromCategory');	
-			pricelistOnPageShow();
-			companySetNextButton('Shopping Cart');
-			pricelistCheckBasket();
-			break;
-			
-		case 'activityPanel':			
-			activityOnPageShow();
-			companySetNextButton('Finished');
-			break;	
+            case 'companyPanel':			
+                    companyOnPageShow();
+                    break;
+
+            case 'historyPanel':
+                    historyOnPageShow();
+                    companySetNextButton('Pricelist');
+                    break;
+
+            case 'pricelistPanel':
+                    sessionStorage.removeItem('fromAdvanced');
+                    sessionStorage.removeItem('fromCategory');	
+                    pricelistOnPageShow();
+                    companySetNextButton('Shopping Cart');
+                    pricelistCheckBasket();
+                    break;
+
+            case 'activityPanel':			
+                    activityOnPageShow();
+                    companySetNextButton('Finished');
+                    break;	
 	}
 }
 
 function companySetNextButton(title) {
 	
-	$('#companyNextButton .ui-btn-text').text(title);
+	$('#companyNextButton .ui-btn-text').text(g_translateText(title));
 	
 	if ('Shopping Cart' != title)
             $('#companyNextButton').removeClass('ui-disabled');

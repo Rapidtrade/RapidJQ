@@ -20,16 +20,16 @@
         <!-- Home -->
         <div data-role="page" id="companypage" class="ipadStatusBar ui-responsive-panel">
                 <script>
-                        $('#companypage').bind("pagebeforecreate", companyOnPageBeforeCreate);
-                        $('#companypage').bind("pageshow", companyOnPageShow);
-                    </script>			
+                    $('#companypage').bind("pagebeforecreate", companyOnPageBeforeCreate);
+                    $('#companypage').bind("pageshow", companyOnPageShow);
+                </script>			
         	<div data-role="header">
                 <table style="margin-left:auto; margin-right:auto; height:50px;">
             	<tr><td class="companyName"></td><td>&nbsp;</td></tr>
             	</table>
             	<div data-role="controlgroup" data-type="horizontal" class="ui-btn-left">
                		<a id="menuButton" data-role="button" data-icon="home" data-iconpos="left">Menu</a>
-               		<a class="invisible" id="backbtn" data-role="button" href="#" data-icon="arrow-l" data-iconpos="left" data-direction="reverse" data-transition="none">Back</a>
+               		<a class="invisible multiLanguage" id="backbtn" data-role="button" href="#" data-icon="arrow-l" data-iconpos="left" data-direction="reverse" data-transition="none">Back</a>
                	</div>
                	<a id="companyNextButton" data-role="button" data-icon="arrow-r" data-iconpos="right" class="ui-btn-right" data-transition="none">History</a>
             </div>
@@ -40,21 +40,21 @@
             		<td class="hideonphone" width="68px">
             			<img src="img/Company-64.png"/>
             		</td>
-            		<td class="hideonphone"><h2>Details</h2></td>
+            		<td class="hideonphone"><h2 class="multiLanguage">Details</h2></td>
                         <!--<td id="syncMasterChart"><a data-role="button" data-inline="true">Sync Master Chart</a></td>-->
             		<td>
                             <div style="width:480px; float:right;" id="show" data-role="fieldcontain">
                                         <fieldset id="companyTabs" data-role="controlgroup" data-type="horizontal">
-                                            <input id="radio1" name="" value="details" type="radio" checked="checked">
+                                            <input id="radio1" name="" value="details" type="radio" checked="checked" class="multiLanguage">
                                             <label for="radio1">
                                                 Details
                                             </label>
-                                            <input id="radio2" name="" value="contacts" type="radio">
+                                            <input id="radio2" name="" value="contacts" type="radio" class="multiLanguage">
                                             <label for="radio2">
                                                 Contacts
                                             </label>
                                             <input id="radio3" name="" value="map" type="radio">
-                                            <label for="radio3">
+                                            <label for="radio3" class="multiLanguage">
                                                 Map
                                             </label>
                                             <div id="tpmDiv">
@@ -71,7 +71,7 @@
 		            <div id="details">
 		                <form id="companyform">
 		                </form>
-		                <a id="savecompany" data-role="button" data-inline="true" href="#page1" data-icon="plus" data-iconpos="left">
+		                <a id="savecompany" data-role="button" data-inline="true" href="#page1" data-icon="plus" data-iconpos="left" class="multiLanguage">
                                     Save
 				</a>
                                 <a data-role="button" data-inline="true" data-icon="refresh" id="syncHistoryButton" class="invisible">History</a>
@@ -126,16 +126,16 @@
                         <td class="image hideonphone">
                             <img src="img/History-Round-64.png" /></td>
                         <td class="label hideonphone">
-                            <h2 id="pagelabel">Customer History</h2>
+                            <h2 id="pagelabel" class="multiLanguage">Customer History</h2>
                         </td>
                         <td class="options invisible">
                             <fieldset style="width: 295px; float: right;" data-role="controlgroup" data-type="horizontal">
                                 <input id="radioActivity" name="" value="activities" type="radio" checked="checked">
-                                <label for="radioActivity">
+                                <label for="radioActivity" class="multiLanguage">
                                     Activity
                                 </label>
                                 <input id="radioOrders" name="" value="orders" type="radio">
-                                <label for="radioOrders">
+                                <label for="radioOrders" class="multiLanguage">
                                     Orders
                                 </label>
                             </fieldset>
@@ -185,7 +185,7 @@
 		    	<table class="rtTableLabel">
 		           	<tr>
 		            	<td class="image hideonphone"><img src="img/3D-Box-64.png"/></td>
-		            	<td class="hideonphone basicSearchWidget" ><h2 id="pagelabel" >Pricelist</h2></td>
+		            	<td class="hideonphone basicSearchWidget" ><h2 id="pagelabel" class="multiLanguage">Pricelist</h2></td>
 		            	<td class="hideonphone basicSearchWidget">     		
 		            		<div id="menuDiv" class="invisible" style="float:right;">
 							<select class="invisible" id="menu" data-mini="true" data-native-menu="false" data-inline="true">
@@ -373,13 +373,13 @@
 			                            <li data-theme="d" id="gross">
 			                                <div class="ui-btn-text" id="divgrossvalue">
 			                                    <!--<p class="ui-li-aside" id="grossvalue"></p>-->
-			                                    <label>Gross</label>
+			                                    <label class="multiLanguage">Gross</label>
 			                                </div>
 			                            </li>
 			                            <li data-theme="d" id="discount">
 			                                <div class="ui-btn-text pricelistvalue changediscountonly" id="divdiscountvalue">
 			                                    <!--<p class="ui-li-aside" id="discountvalue"></p>-->
-			                                    <label>Discount</label>
+			                                    <label class="multiLanguage">Discount</label>
 			                                    <img src="img/busy.png" class="pricelistBusyImg"/>
 			                                </div>
 			                                <!--  
@@ -392,7 +392,7 @@
 			                            <li data-theme="d">
 			                                <div class="ui-btn-text pricelistvalue" id="divnettvalue" style="position:relative">
 			                                    <!--<p class="ui-li-aside " id="nettvalue"></p>-->
-			                                    <label id="nettlabel">Nett</label>
+			                                    <label class="multiLanguage" id="nettlabel">Nett</label>
 			                                    <img src="img/busy.png" class="pricelistBusyImg"/>
 			                                </div>
 			                                <!--
@@ -404,7 +404,7 @@
 			                            </li>
 			                              <li data-theme="d">
 			                                <div class="ui-btn-text" id="divstockvalue">
-			                                    <label>Stock</label>
+			                                    <label class="multiLanguage">Stock</label>
 			                                </div>
 						            		<div id="whChoiceDiv" class="invisible" style="position:relative" data-role="fieldcontain">
 												<select data-mini="true" data-native-menu="true" data-inline="true">

@@ -706,7 +706,7 @@ function pricelistCheckBasket(setOverlay) {
     dao.count('BasketInfo', g_currentCompany().AccountID, 'index1',
     function (cnt) {        	
         $('.ui-btn-right').removeClass('ui-disabled');
-        $('.ui-btn-right .ui-btn-text').text('(' + cnt + ')' + ' Shopping Cart');
+        $('.ui-btn-right .ui-btn-text').text('(' + cnt + ')' + ' ' + g_translateText('Shopping Cart'));
         isBaksetEmpty = false;
         g_pricelistIsAnyItemAdded = true;
         
@@ -715,7 +715,7 @@ function pricelistCheckBasket(setOverlay) {
     }, function() {
         g_pricelistIsAnyItemAdded = false;
         $('.ui-btn-right').addClass('ui-disabled');
-        $('.ui-btn-right .ui-btn-text').text('Shopping Cart');
+        $('.ui-btn-right .ui-btn-text').text(g_translateText('Shopping Cart'));
     });
 }
 
