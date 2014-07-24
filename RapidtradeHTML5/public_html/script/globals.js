@@ -209,7 +209,6 @@ function g_translateText(text, pageId) {
         return text;
     
     pageId = pageId || $.mobile.activePage.attr('id');
-      
   
     var translationObject = g_translations[pageId] && g_translations[pageId][text];
     var translation = translationObject && translationObject[testLanguageOn ? 'pt' : navigator.language];
@@ -220,6 +219,11 @@ function g_translateText(text, pageId) {
 function g_translateButton(buttonId, caption) {
     
     $('#' + buttonId + ' .ui-btn-text').text(g_translateText(caption));
+}
+
+function g_translationLoaded(pageId) {
+    
+    return (g_translations[pageId || $.mobile.activePage.attr('id')] !== undefined);
 }
 
 function g_menuBind() {
@@ -781,7 +785,7 @@ function g_busy(show) {
     }
 }
 
-var g_popup = (function(popupSelector) {
+var g_popup = (function() {
     
     var onClose;
     

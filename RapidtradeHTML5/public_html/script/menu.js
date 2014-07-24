@@ -1,31 +1,36 @@
+g_menuPageTranslation = {};
+
 function menuOnPageBeforeCreate() {
-    
-    g_translatePage('menupage');
+ 
+    g_menuPageTranslation = translation('menupage');
 }
 
 function menuOnPageShow() {
-	
-    g_iPadBar('#menupage');
-    if (window.MSApp) {
-        WinJS.Application.onsettings = function (e) {
-            e.detail.applicationcommands = {
-                "About": { title: "About", href: "/about.html" }
-            };
-            WinJS.UI.SettingsFlyout.populateSettings(e);
-        };
-        WinJS.Application.start();
-    }
-    
-    menuOnPageShowSmall();
-	
-    sessionStorage.setItem('orderheaderNext', 'menu');
-	
-    var dao = new Dao();
-    dao.openDB(function (user) { menuInit(); });
-    $('#nosync').hide();
 
-    menuFetchMandatoryActivities();
-    menuBind();
+    g_menuPageTranslation.safeExecute(function() {
+        
+        g_iPadBar('#menupage');
+        if (window.MSApp) {
+            WinJS.Application.onsettings = function (e) {
+                e.detail.applicationcommands = {
+                    "About": { title: "About", href: "/about.html" }
+                };
+                WinJS.UI.SettingsFlyout.populateSettings(e);
+            };
+            WinJS.Application.start();
+        }
+
+        menuOnPageShowSmall();
+
+        sessionStorage.setItem('orderheaderNext', 'menu');
+
+        var dao = new Dao();
+        dao.openDB(function (user) { menuInit(); });
+        $('#nosync').hide();
+
+        menuFetchMandatoryActivities();
+        menuBind();        
+    });
 }
 
 function menuBind() {
