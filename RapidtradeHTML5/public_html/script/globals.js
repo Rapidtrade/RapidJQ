@@ -203,12 +203,23 @@ function g_translatePage(pageId, onSuccess) {
 
 function g_translateText(text, pageId) {
     
-    var testLanguageOn = (localStorage.getItem('Portuguese') === 'on');    
+    var testLanguageOn = (localStorage.getItem('Portuguese') === 'on');  
     
-    var translationObject = g_translations[pageId || $.mobile.activePage.attr('id')][text];
+    if (!testLanguageOn && navigator.language.indexOf('en') !== -1)
+        return text;
+    
+    pageId = pageId || $.mobile.activePage.attr('id');
+      
+  
+    var translationObject = g_translations[pageId] && g_translations[pageId][text];
     var translation = translationObject && translationObject[testLanguageOn ? 'pt' : navigator.language];
 
     return translation || text;
+}
+
+function g_translateButton(buttonId, caption) {
+    
+    $('#' + buttonId + ' .ui-btn-text').text(g_translateText(caption));
 }
 
 function g_menuBind() {

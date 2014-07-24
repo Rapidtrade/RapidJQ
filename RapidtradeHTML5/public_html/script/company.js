@@ -130,41 +130,41 @@ function companyLoadPanel(panelId) {
 
 function companySetNextButton(title) {
 	
-	$('#companyNextButton .ui-btn-text').text(g_translateText(title));
-	
-	if ('Shopping Cart' != title)
-            $('#companyNextButton').removeClass('ui-disabled');
-	
-	$('#companyNextButton').off();
-	$('#companyNextButton').on('click', function() {
-		
-            switch(title) {
-		
-		case 'Shopping Cart':
-                    $.mobile.changePage('shoppingCart.html');
-                    break;
-			
-		case 'Finished':
-//                    if (companyRequiredActivitiesSaved()) {
-                    //if we do have RequiredActivities then still activities to capture
-                    if (sessionStorage.getItem('RequiredActivities')) {
-                        $('#activityErrorMessagePopup p').text('Please complete all activities marked with a * before leaving this customer.');
-                        $('#activityErrorMessagePopup').popup('open');                        
-                    } else {
-                        overlayRemoveStorage();
-                        g_navigateBackFromCompanyView();
-                        g_activitySavedActivities = {};                        
-                    }
+    g_translateButton('companyNextButton', title);
 
-                    break;
-		
-		case 'Pricelist':
-                    overlayHighlightMenuItem('.orderItem');
-		
-		default:
-                    companyLoadPanel(title.toLowerCase() + 'Panel');
-            }
-	});
+    if ('Shopping Cart' != title)
+        $('#companyNextButton').removeClass('ui-disabled');
+
+    $('#companyNextButton').off();
+    $('#companyNextButton').on('click', function() {
+
+        switch(title) {
+
+            case 'Shopping Cart':
+                $.mobile.changePage('shoppingCart.html');
+                break;
+
+            case 'Finished':
+//                    if (companyRequiredActivitiesSaved()) {
+                //if we do have RequiredActivities then still activities to capture
+                if (sessionStorage.getItem('RequiredActivities')) {
+                    $('#activityErrorMessagePopup p').text('Please complete all activities marked with a * before leaving this customer.');
+                    $('#activityErrorMessagePopup').popup('open');                        
+                } else {
+                    overlayRemoveStorage();
+                    g_navigateBackFromCompanyView();
+                    g_activitySavedActivities = {};                        
+                }
+
+                break;
+
+            case 'Pricelist':
+                overlayHighlightMenuItem('.orderItem');
+
+            default:
+                companyLoadPanel(title.toLowerCase() + 'Panel');
+        }
+    });
 }
 
 function companyHideFooter() {

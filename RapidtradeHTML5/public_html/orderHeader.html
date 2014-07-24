@@ -24,14 +24,15 @@
     <body>
         <div data-role="page" id="orderHeaderpage" class="ipadStatusBar">
             <script>
-                    $('#orderHeaderpage').bind("pageshow", function () {
-                        orderHeaderOnPageShow();
-                        $("#signature").jSignature();
-                    });
+                $('#orderHeaderpage').bind("pagebeforecreate", orderHeaderOnPageBeforeCreate);
+                $('#orderHeaderpage').bind("pageshow", function () {
+                    orderHeaderOnPageShow();
+                    $("#signature").jSignature();
+                });
             </script>
             <div data-role="header">
                 <img class="logoSml" src="img/logoSml.png"/>
-                <a id="orderHeaderBackPage" data-role="button"  data-icon="arrow-l" data-iconpos="left"  data-transition="none" class="ui-btn-left">Back</a>
+                <a id="orderHeaderBackPage" data-role="button"  data-icon="arrow-l" data-iconpos="left"  data-transition="none" class="ui-btn-left"></a>
                  <a data-role="button" id ="saveorder" class="ui-btn-right"  data-icon="plus" data-iconpos="left">Save</a>
             </div>
             <div data-role="popup" data-history="false" id="infoPopup" data-theme="e">

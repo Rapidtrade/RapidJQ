@@ -18,6 +18,9 @@ function shoppingCartOnPageBeforeCreate() {
 }
 
 function shoppingCartOnPageShow() {
+    
+    $('#shoppingCartBackButton .ui-btn-text').text(g_translateText('Pricelist'));
+    $('#saveShoppingCart .ui-btn-text').text(g_translateText('Checkout'));
 	
     g_showCurrentCompanyName();
     if (sessionStorage.getItem('ShoppingCartReturnPage') == 'orderdetails.html')
@@ -116,7 +119,7 @@ function shoppingCartBind() {
     	shoppingCartRemoveAllItems();
     });
     
-	$('#checkTPMButton').unbind();
+    $('#checkTPMButton').unbind();
     $('#checkTPMButton').click(function() {
     	
         $.mobile.changePage("tpm.html", { transition: "none" });

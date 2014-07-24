@@ -8,12 +8,20 @@ var g_orderHeaderValidItems = [];
 var g_orderHeaderOrderItemsLoaded = false;
 var g_orderHeaderJsonForm = undefined;
 
+function orderHeaderOnPageBeforeCreate() {
+    
+    g_translatePage('orderHeaderpage');
+}
+
 /**description
  * Always call openDB, which in turn call's init
  * This is called from script tag inside page
  */
 function orderHeaderOnPageShow() {
-	
+    
+    g_translateButton('orderHeaderBackPage', 'Back');
+    g_translateButton('saveorder', 'Save');
+    
     var dao = new Dao();
     dao.openDB(function () {
         orderHeaderInit();
