@@ -12,67 +12,73 @@ var g_shoppingcartCnt = 0;
 var g_shoppingcartalpha = [];
 var g_shoppingCartSummaryItems = {};
 
+var g_shoppingCartPageTranslation = {};
+
 function shoppingCartOnPageBeforeCreate() {
     
-    g_translatePage('shoppingCartpage');
+    g_shoppingCartPageTranslation = translation('shoppingCartpage');
 }
 
 function shoppingCartOnPageShow() {
     
-    $('#shoppingCartBackButton .ui-btn-text').text(g_translateText('Pricelist'));
-    $('#saveShoppingCart .ui-btn-text').text(g_translateText('Checkout'));
-	
-    g_showCurrentCompanyName();
-    if (sessionStorage.getItem('ShoppingCartReturnPage') == 'orderdetails.html')
-        $('#shoppingCartBackButton .ui-btn-text').text('Order Details');
-
-    if (shoppingCartIsGRV())
-        $('#deleteShoppingCart').hide();
-    
-    var viewType = sessionStorage.getItem('shoppingCartViewType');
-    if (viewType)
-        $('#summaryButton .ui-btn-text').text(viewType === 'Summary' ? 'Detail' : 'Summary');
-
-    $('#shoppingCartFooter').toggle((sessionStorage.getItem('ShoppingCartNoFooter') == undefined) || (sessionStorage.getItem('ShoppingCartNoFooter') == 'false'));
+    g_shoppingCartPageTranslation.safeExecute(function() {
         
-    if (DaoOptions.getValue('AllowSummaryButt', 'false') === 'true') {
+        g_shoppingCartPageTranslation.translateButton('#shoppingCartBackButton', 'Pricelist');
+        g_shoppingCartPageTranslation.translateButton('#saveShoppingCart', 'Checkout');
+
+        g_showCurrentCompanyName();
+        if (sessionStorage.getItem('ShoppingCartReturnPage') == 'orderdetails.html')
+            g_shoppingCartPageTranslation.translateButton('#shoppingCartBackButton', 'Order Details');
+
+        if (shoppingCartIsGRV())
+            $('#deleteShoppingCart').hide();
+
+        var viewType = sessionStorage.getItem('shoppingCartViewType');
+        if (viewType)
+            g_shoppingCartPageTranslation.translateButton('#summaryButton', viewType === 'Summary' ? 'Detail' : 'Summary');
+
+        $('#shoppingCartFooter').toggle((sessionStorage.getItem('ShoppingCartNoFooter') == undefined) || (sessionStorage.getItem('ShoppingCartNoFooter') == 'false'));
+
+        if (DaoOptions.getValue('AllowSummaryButt', 'false') === 'true') {
+
+            $('#summaryButton').removeClass('invisible');
+        }    
+
+        g_shoppingCartTotalIncl = 0;
+        g_shoppingCartTotalExcl = 0;
+        g_shoppingCartVAT = 0;
+        shoppingCartOnPageShowSmall();
+        shoppingCartConfirmScanInit();
+
+        var dao = new Dao();
+        dao.openDB(function () {
+            shoppingCartInit();
+        });
+
+        if (DaoOptions.getValue('AllowTPM') == 'true') $('#checkTPMButton').removeClass('invisible');
+        if (DaoOptions.getValue('DoubleTax') == 'true') {
+            $('.shopcartHeader').css('height', '200px');
+                var wetNode =  $('<li data-theme="d"><div id="divTotalWET"><label>' + (DaoOptions.getValue('DoubleTaxText') || 'WET') +  ':</label></div></li>');  
+                wetNode.insertAfter($('#totallist li:first'));
+                $('#totallist').listview('refresh');
+        }
+
+        if (DaoOptions.getValue('LiveCreditCheckURL')) {
+            g_shoppingCartCredit = parseFloat(sessionStorage.getItem(g_currentCompany().AccountID + 'AvailableCredit'));
+            if ($('#creditLimit').length) {
+                    $('#creditLimit').text(g_addCommas(g_shoppingCartCredit.toFixed(2)));
+            } else {
+                    $('.shopcartHeader').css('height', '230px');
+                        var creditNode =  $('<li data-theme="d"><div id="divAvailableCredit"><label>Available Credit' +  ':</label></div></li>');
+                        creditNode.appendTo($('#totallist'));	  
+                        $('#divAvailableCredit').append('<p id="creditLimit" class="ui-li-aside">' + g_addCommas(g_shoppingCartCredit.toFixed(2)) + '</p>');
+                        $('#totallist').listview('refresh');
+                        $('#divAvailableCredit p').removeClass('ui-li-desc');
+            }
+        }
         
-        $('#summaryButton').removeClass('invisible');
-    }    
-	
-    g_shoppingCartTotalIncl = 0;
-    g_shoppingCartTotalExcl = 0;
-    g_shoppingCartVAT = 0;
-    shoppingCartOnPageShowSmall();
-    shoppingCartConfirmScanInit();
-	
-    var dao = new Dao();
-    dao.openDB(function () {
-        shoppingCartInit();
+        shoppingCartBind();        
     });
-    
-    if (DaoOptions.getValue('AllowTPM') == 'true') $('#checkTPMButton').removeClass('invisible');
-    if (DaoOptions.getValue('DoubleTax') == 'true') {
-    	$('.shopcartHeader').css('height', '200px');
-	    var wetNode =  $('<li data-theme="d"><div id="divTotalWET"><label>' + (DaoOptions.getValue('DoubleTaxText') || 'WET') +  ':</label></div></li>');  
-	    wetNode.insertAfter($('#totallist li:first'));
-	    $('#totallist').listview('refresh');
-    }
-    
-    if (DaoOptions.getValue('LiveCreditCheckURL')) {
-    	g_shoppingCartCredit = parseFloat(sessionStorage.getItem(g_currentCompany().AccountID + 'AvailableCredit'));
-    	if ($('#creditLimit').length) {
-    		$('#creditLimit').text(g_addCommas(g_shoppingCartCredit.toFixed(2)));
-    	} else {
-	    	$('.shopcartHeader').css('height', '230px');
-		    var creditNode =  $('<li data-theme="d"><div id="divAvailableCredit"><label>Available Credit' +  ':</label></div></li>');
-		    creditNode.appendTo($('#totallist'));	  
-		    $('#divAvailableCredit').append('<p id="creditLimit" class="ui-li-aside">' + g_addCommas(g_shoppingCartCredit.toFixed(2)) + '</p>');
-		    $('#totallist').listview('refresh');
-		    $('#divAvailableCredit p').removeClass('ui-li-desc');
-    	}
-    }
-    shoppingCartBind();
 }
 
 function shoppingCartOnPageShowSmall() {
@@ -249,7 +255,7 @@ function shoppingCartInit() {
         $('#shoppingCartLabel').html('Proof of Delivery');    
     } else {
     	var orderType = sessionStorage.getItem('currentordertype');  //ordertypecaption');
-    	$('#shoppingCartLabel').html(g_translateText((orderType ? orderType : 'Shopping') + ' Cart'));
+    	$('#shoppingCartLabel').html(g_shoppingCartPageTranslation.translateText((orderType ? orderType : 'Shopping') + ' Cart'));
     }
     
     g_basketHTML = '';

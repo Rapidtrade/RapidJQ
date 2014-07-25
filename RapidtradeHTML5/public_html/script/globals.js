@@ -29,6 +29,11 @@ var g_deviceVersion;
 var g_callCycleCurrentUserID;
 
 /*
+ * Company variables
+ */
+var g_companyPageTranslation = {};
+
+/*
  * Pricelist variables
  */
 var g_pricelistItemsHtml = '';

@@ -8,10 +8,21 @@ function companyOnPageBeforeCreate() {
     activityFormLoadIntoDiv('#activitydetails', true);
     activityFormLoadIntoDiv('#activityPopup', true);
     overlayInit('companypage');   
-    g_translatePage('companypage');
+    
+    g_companyPageTranslation = translation('companypage');
 }
 
-function companyOnPageShow(){
+function companyOnPageShow() {
+    
+    g_companyPageTranslation.safeExecute(function() {
+        
+        g_companyPageTranslation.translateButton('#backbtn', 'Back');
+        
+        g_companyPageTranslation.translateRadioButton('radio1', 'Details');
+        g_companyPageTranslation.translateRadioButton('radio2', 'Contacts');
+        g_companyPageTranslation.translateRadioButton('radio3', 'Map');  
+        g_companyPageTranslation.translateButton('#savecompany', 'Save');
+    });
 	
     companyHideFooter();
     overlaySetMenuItems();
@@ -81,56 +92,56 @@ function companyOnPageShowSmall() {
 
 function companyLoadPanel(panelId) {
 	
-	if (panelId != 'pricelistPanel') {
-	
-            var menuItemId = panelId.replace('Panel', 'Item');
+    if (panelId != 'pricelistPanel') {
 
-            if (sessionStorage.getItem('lastMenuItemId') != menuItemId) 
-                sessionStorage.setItem('lastMenuItemId', menuItemId);
-	}
-	
-	if (panelId.indexOf('pricelist') != -1) 
-            panelId = 'pricelistPanel';
-	
-	sessionStorage.setItem('lastPanelId', panelId);
-	
-	$('#' + panelId).siblings('div[data-role="content"]').hide().addClass('invisible');		
-	$('#' + panelId).show().removeClass('invisible');
-	
-	if ('pricelistPanel' == panelId)
-		$('#searchBarPanel').show().removeClass('invisible');
-	
-	$('#backbtn').hide();
-	
-	switch (panelId) {
-	
-            case 'companyPanel':			
-                    companyOnPageShow();
-                    break;
+        var menuItemId = panelId.replace('Panel', 'Item');
 
-            case 'historyPanel':
-                    historyOnPageShow();
-                    companySetNextButton('Pricelist');
-                    break;
+        if (sessionStorage.getItem('lastMenuItemId') != menuItemId) 
+            sessionStorage.setItem('lastMenuItemId', menuItemId);
+    }
 
-            case 'pricelistPanel':
-                    sessionStorage.removeItem('fromAdvanced');
-                    sessionStorage.removeItem('fromCategory');	
-                    pricelistOnPageShow();
-                    companySetNextButton('Shopping Cart');
-                    pricelistCheckBasket();
-                    break;
+    if (panelId.indexOf('pricelist') != -1) 
+        panelId = 'pricelistPanel';
 
-            case 'activityPanel':			
-                    activityOnPageShow();
-                    companySetNextButton('Finished');
-                    break;	
-	}
+    sessionStorage.setItem('lastPanelId', panelId);
+
+    $('#' + panelId).siblings('div[data-role="content"]').hide().addClass('invisible');		
+    $('#' + panelId).show().removeClass('invisible');
+
+    if ('pricelistPanel' == panelId)
+            $('#searchBarPanel').show().removeClass('invisible');
+
+    $('#backbtn').hide();
+
+    switch (panelId) {
+
+        case 'companyPanel':			
+                companyOnPageShow();
+                break;
+
+        case 'historyPanel':
+                historyOnPageShow();
+                companySetNextButton('Pricelist');
+                break;
+
+        case 'pricelistPanel':
+                sessionStorage.removeItem('fromAdvanced');
+                sessionStorage.removeItem('fromCategory');	
+                pricelistOnPageShow();
+                companySetNextButton('Shopping Cart');
+                pricelistCheckBasket();
+                break;
+
+        case 'activityPanel':			
+                activityOnPageShow();
+                companySetNextButton('Finished');
+                break;	
+    }
 }
 
 function companySetNextButton(title) {
 	
-    g_translateButton('companyNextButton', title);
+    g_companyPageTranslation.translateButton('#companyNextButton', title);
 
     if ('Shopping Cart' != title)
         $('#companyNextButton').removeClass('ui-disabled');

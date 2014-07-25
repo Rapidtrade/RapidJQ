@@ -77,17 +77,17 @@ function pricelistOnPageShow() {
     
     if (isAdvancedSearchAllowed && !sessionStorage.getItem('advancedLevel')) {
     	
-		sessionStorage.setItem('advancedLevel', DaoOptions.getValue('LiveAdvanceSearch') ? 1 : 0);
-		sessionStorage.setItem('advancedParentId', 'ADVANCED');
-		sessionStorage.setItem('advancedTip', 'null');
-	}
+        sessionStorage.setItem('advancedLevel', DaoOptions.getValue('LiveAdvanceSearch') ? 1 : 0);
+        sessionStorage.setItem('advancedParentId', 'ADVANCED');
+        sessionStorage.setItem('advancedTip', 'null');
+    }
     
     if ((DaoOptions.getValue('MobileCategories') == 'true') && !sessionStorage.getItem('categoriesLevel')) {
     	
-		sessionStorage.setItem('categoriesLevel', '0');
-		sessionStorage.setItem('categoriesParentId', 'PC');
-		sessionStorage.setItem('categoriesTip', 'null');
-		$('#tocategoriesBtn').show();
+        sessionStorage.setItem('categoriesLevel', '0');
+        sessionStorage.setItem('categoriesParentId', 'PC');
+        sessionStorage.setItem('categoriesTip', 'null');
+        $('#tocategoriesBtn').show();
     }
     
     if ($('#barcodetoggle').is(':visible')) {
@@ -109,8 +109,8 @@ function pricelistOnPageShow() {
     	
     	if ($('#filterForm :input').length == 0) {
     	
-			var jsonForm = new JsonForm();
-			jsonForm.show(g_currentUser().SupplierID, '#filterForm', {}, 'AdvSearch');
+            var jsonForm = new JsonForm();
+            jsonForm.show(g_currentUser().SupplierID, '#filterForm', {}, 'AdvSearch');
     	}
 		
     } else {
@@ -153,9 +153,9 @@ function pricelistOnBackButtonClick() {
     } else if (g_pricelistView == 'detail') {
     	
     	if (sessionStorage.getItem('fromCategory') == 'true')
-            $('#backbtn .ui-btn-text').text('Categories');
+            g_companyPageTranslation.translateButton('#backbtn', 'Categories');
     	else if (sessionStorage.getItem('fromAdvanced') == 'true')
-            $('#backbtn .ui-btn-text').text('Advanced Search');
+            g_companyPageTranslation.translateButton('#backbtn', 'Advanced Search');
     	else
             $('#backbtn').hide();    		
 
@@ -185,13 +185,13 @@ function pricelistOnBackButtonClick() {
     } else if (sessionStorage.getItem('fromCategory') == 'true') {
     	
     	pricelistDoSearch('categories');
-        $('#backbtn .ui-btn-text').text('Back');
+        g_companyPageTranslation.translateButton('#backbtn', 'Back');
     	$('#backbtn').hide();
     	
     } else if (sessionStorage.getItem('fromAdvanced') == 'true') {
     	
     	pricelistDoSearch('advanced');
-        $('#backbtn .ui-btn-text').text('Back');
+        g_companyPageTranslation.translateButton('#backbtn', 'Back');
     	$('#backbtn').hide();    	
     	
     } else if ($('#advancedSearchPanel').is(':visible')) {
@@ -452,14 +452,14 @@ function pricelistInit() {
     //Initialise forms
     
     if (sessionStorage.getItem('fromCategory') == 'true') {
-        $('#backbtn .ui-btn-text').text('Categories');
+        g_companyPageTranslation.translateButton('#backbtn', 'Categories');
     	$('#backbtn').show();
     	pricelistShowExpandCategory(false);
     }
     
     
     if (sessionStorage.getItem('fromAdvanced') == 'true') {
-        $('#backbtn .ui-btn-text').text('Advanced Search');
+        g_companyPageTranslation.translateButton('#backbtn', 'Advanced Search');
     	$('#backbtn').show();
     }
     
@@ -633,7 +633,7 @@ function pricelistCategorySearch(category) {
 	g_pricelistSearchPricelistText = '"' + category + '"';
 	pricelistFetchPricelist(); 
     if (sessionStorage.getItem('fromCategory') == 'true') {
-        $('#backbtn .ui-btn-text').text('Categories');
+        g_companyPageTranslation.translateButton('#backbtn', 'Categories');
     	$('#backbtn').show();
     	pricelistShowExpandCategory(false);
     }
@@ -705,8 +705,8 @@ function pricelistCheckBasket(setOverlay) {
     var dao = new Dao();
     dao.count('BasketInfo', g_currentCompany().AccountID, 'index1',
     function (cnt) {        	
-        $('.ui-btn-right').removeClass('ui-disabled');
-        $('.ui-btn-right .ui-btn-text').text('(' + cnt + ')' + ' ' + g_translateText('Shopping Cart'));
+        $('.ui-btn-right').removeClass('ui-disabled');        
+        $('.ui-btn-right .ui-btn-text').text('(' + cnt + ')' + ' ' +  g_companyPageTranslation.translateText('Shopping Cart'));
         isBaksetEmpty = false;
         g_pricelistIsAnyItemAdded = true;
         
@@ -715,7 +715,7 @@ function pricelistCheckBasket(setOverlay) {
     }, function() {
         g_pricelistIsAnyItemAdded = false;
         $('.ui-btn-right').addClass('ui-disabled');
-        $('.ui-btn-right .ui-btn-text').text(g_translateText('Shopping Cart'));
+        g_companyPageTranslation.translateButton('.ui-btn-right', 'Shopping Cart');
     });
 }
 
@@ -1389,7 +1389,7 @@ function pricelistOnItemClicked(itemIndex) {
         pricelistStoreItemData(itemIndex);
         
         g_lastScrollPosition = $(window).scrollTop();
-        $('#backbtn .ui-btn-text').text('Back');
+        g_companyPageTranslation.translateButton('#backbtn', 'Back');
         productdetailInit();
     }
 }

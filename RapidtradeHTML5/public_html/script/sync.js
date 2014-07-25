@@ -17,10 +17,11 @@ var g_syncDownloadOrderURL = '';
 var g_syncDownloadOrderType = '';
 
 var SYNC_OK_MESSAGE = 'Sync completed OK. Click Menu button to continue';
+var g_syncPageTranslation = {};
 
 function syncOnPageBeforeCreate() {
     
-    g_translatePage('syncpage');
+    g_syncPageTranslation = translation('syncpage');
 }
 
 /*
@@ -28,21 +29,11 @@ function syncOnPageBeforeCreate() {
  * openDB will call init()
  */
 function syncOnPageShow() {
-    
-//    if (sessionStorage.getItem('translationFinished') === 'false') {
-//        
-//        setTimeout(syncOnPageShow, 5);
-//        console.log('Loading translation...');
-//        return;   
-//    }
-    
+
     //first open database and it will call init
     g_syncDao = new Dao();
-    g_syncDao.openDB(function(user) {
-                                    syncInit();	
-                            });
-
-    syncBind();
+    g_syncDao.openDB(syncInit);
+    syncBind();        
 }
 
 /*
@@ -244,7 +235,7 @@ function syncPostData(index) {
         g_append('#results tbody', '<tr><td>Error: The last invoice number not sent.</td></tr>');
 
         $.mobile.hidePageLoadingMsg();
-        $('#message').text(g_translateText(SYNC_OK_MESSAGE));
+        $('#message').text(g_syncPageTranslation.translateText(SYNC_OK_MESSAGE));
     };
     
     if ((g_syncPosted[index].Table == 'Options') && (g_syncPosted[index].Method == 'QuickModify')) {
@@ -311,7 +302,7 @@ function syncAll() {
     localStorage.setItem('lastSyncDate', g_today());
 
     $('#userid').addClass('ui-disabled');
-    $('#message').text(g_translateText('Please wait, downloading latest data'));
+    $('#message').text(g_syncPageTranslation.translateText('Please wait, downloading latest data'));
 
     g_syncTables = [];
     g_syncCount = 0;
@@ -491,7 +482,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 
 		console.log('===== Sync completed OK =====');
 	        $('#syncimg').attr('src', 'img/Tick-48.png');
-	        $('#message').text(g_translateText(SYNC_OK_MESSAGE));
+	        $('#message').text(g_syncPageTranslation.translateText(SYNC_OK_MESSAGE));
 	        $.mobile.hidePageLoadingMsg();
 		  
 		} else {	// go on to the next table
@@ -508,7 +499,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 
 		console.log('===== Sync completed OK =====');
                 $('#syncimg').attr('src', 'img/Tick-48.png');
-                $('#message').text(g_translateText(SYNC_OK_MESSAGE));
+                $('#message').text(g_syncPageTranslation.translateText(SYNC_OK_MESSAGE));
                 $.mobile.hidePageLoadingMsg();
 	    	
 	    } else {

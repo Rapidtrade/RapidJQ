@@ -8,9 +8,11 @@ var g_orderHeaderValidItems = [];
 var g_orderHeaderOrderItemsLoaded = false;
 var g_orderHeaderJsonForm = undefined;
 
+var g_orderHeaderPageTranslation = {};
+
 function orderHeaderOnPageBeforeCreate() {
     
-    g_translatePage('orderHeaderpage');
+    g_orderHeaderPageTranslation = translation('orderHeaderpage');
 }
 
 /**description
@@ -19,8 +21,14 @@ function orderHeaderOnPageBeforeCreate() {
  */
 function orderHeaderOnPageShow() {
     
-    g_translateButton('orderHeaderBackPage', 'Back');
-    g_translateButton('saveorder', 'Save');
+    g_orderHeaderPageTranslation.safeExecute(function(){
+        
+        g_orderHeaderPageTranslation.translateButton('#orderHeaderBackPage', 'Back');
+        g_orderHeaderPageTranslation.translateButton('#saveorder', 'Save'); 
+        g_orderHeaderPageTranslation.translateButton('#signatureButton', 'Signature'); 
+        g_orderHeaderPageTranslation.translateButton('#a4PrinterButton', 'A4 Printer'); 
+        g_orderHeaderPageTranslation.translateButton('#smallPrinterButton', 'Small Printer'); 
+    });
     
     var dao = new Dao();
     dao.openDB(function () {
@@ -691,7 +699,7 @@ function orderHeaderOnOrderSaved() {
     sessionStorage.setItem('HistoryCacheAccountID', '');
     
     $('#infoPopup').popup('close');
-    g_alert('Your order was saved OK');
+    g_alert(g_orderHeaderPageTranslation.translateText('Your order was saved OK'));
     sessionStorage.setItem('HistoryCacheAccountID', '');
 
     if (DaoOptions.getValue('DeliveryOrderType'))

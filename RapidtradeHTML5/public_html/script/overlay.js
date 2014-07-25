@@ -5,9 +5,9 @@ function overlayInit(pageId) {
     if (g_currentUser().Role != 'CUST') {
 
             menuPanel += '<ul id="mainMenu" data-role="listview" data-inset="true" data-divider-theme="d" >' +
-                                                    '<li data-role="list-divider" role="heading">' + g_translateText('Main Menu', pageId) + '</li>' +
-                                                    '<li id="companyItem">' + g_translateText('Company Details', pageId) + '</li>' +
-                                                    '<li id="historyItem">' + g_translateText('Customer History', pageId) + '</li>';
+                                                    '<li data-role="list-divider" role="heading">' + g_companyPageTranslation.translateText('Main Menu') + '</li>' +
+                                                    '<li id="companyItem">' + g_companyPageTranslation.translateText('Company Details') + '</li>' +
+                                                    '<li id="historyItem">' + g_companyPageTranslation.translateText('Customer History') + '</li>';
 
             if (!g_vanSales) {
 
@@ -32,8 +32,8 @@ function overlayInit(pageId) {
 
                         $.each(orderTypes, function(key, value) {   
 
-                            var orderTypeItemText = ('Create ' + value).replace('Create Invoice', g_translateText('Create Invoice', pageId))
-                                    .replace('Create Order', g_translateText('Create Order', pageId));
+                            var orderTypeItemText = ('Create ' + value).replace('Create Invoice', g_companyPageTranslation.translateText('Create Invoice'))
+                                    .replace('Create Order', g_companyPageTranslation.translateText('Create Order'));
                             
                             menuPanel += '<li id="pricelist' + value + 'Item" class="orderItem">' + orderTypeItemText + '</li>';
                         });
@@ -41,15 +41,15 @@ function overlayInit(pageId) {
 
                 } else {
 
-                    menuPanel += '<li id="pricelistOrderItem" class="orderItem">' + g_translateText('Create Order', pageId) + '</li>';
+                    menuPanel += '<li id="pricelistOrderItem" class="orderItem">' + g_companyPageTranslation.translateText('Create Order') + '</li>';
                 }
 
             } else {
 
-                menuPanel += '<li id="pricelistOrderItem" class="orderItem">' + g_translateText('Create Order', pageId) + '</li>';
+                menuPanel += '<li id="pricelistOrderItem" class="orderItem">' + g_companyPageTranslation.translateText('Create Order') + '</li>';
             }	
 
-            menuPanel += '<li id="activityItem">' + g_translateText('Add Activity', pageId) + '</li>' +
+            menuPanel += '<li id="activityItem">' + g_companyPageTranslation.translateText('Add Activity') + '</li>' +
                                      '</ul>';
     }
 
@@ -61,11 +61,11 @@ function overlayInit(pageId) {
 
             menuPanel += '<div id="pricelistMenu">' +   
                     '<ul data-role="listview" data-inset="true" data-divider-theme="d" >' +
-                    '<li data-role="list-divider" role="heading">' + g_translateText('Pricelist', pageId) + '</li>' +
-                    '<li id="basic" class="ui-btn-active">' + g_translateText('Basic Search', pageId) + '</li>';
+                    '<li data-role="list-divider" role="heading">' + g_companyPageTranslation.translateText('Pricelist') + '</li>' +
+                    '<li id="basic" class="ui-btn-active">' + g_companyPageTranslation.translateText('Basic Search') + '</li>';
 
             if (DaoOptions.getValue('MobileCategories') == 'true')			
-                menuPanel += '<li id="categories">' + g_translateText('Product Categories', pageId) + '</li>';
+                menuPanel += '<li id="categories">' + g_companyPageTranslation.translateText('Product Categories') + '</li>';
 
             if (DaoOptions.getValue('AllowAdvancedSearch') == 'true') {
 
@@ -121,9 +121,9 @@ function overlayInit(pageId) {
                  '</div>';
 
     if (g_currentUser().Role != 'CUST') 
-        menuPanel += '<a data-role="button" href="myterritory.html" data-icon="search" data-theme="b">' + g_translateText('My Customers', pageId) + '</a>';
+        menuPanel += '<a data-role="button" href="myterritory.html" data-icon="search" data-theme="b">' + g_companyPageTranslation.translateText('My Customers') + '</a>';
 
-    menuPanel += '<p><a id="home" data-role="button" data-icon="home" data-theme="e">' + g_translateText('Home', pageId) + '</a>';
+    menuPanel += '<p><a id="home" data-role="button" data-icon="home" data-theme="e">' + g_companyPageTranslation.translateText('Home') + '</a>';
 
     menuPanel += '</p></div>';
 

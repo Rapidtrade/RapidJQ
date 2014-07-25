@@ -1,36 +1,34 @@
-g_menuPageTranslation = {};
-
 function menuOnPageBeforeCreate() {
  
-    g_menuPageTranslation = translation('menupage');
+     // this must be done as a first thing due to a specific initialisation of the company page
+    g_companyPageTranslation = translation('companypage');
+ 
+    translation('menupage');    
 }
 
 function menuOnPageShow() {
-
-    g_menuPageTranslation.safeExecute(function() {
         
-        g_iPadBar('#menupage');
-        if (window.MSApp) {
-            WinJS.Application.onsettings = function (e) {
-                e.detail.applicationcommands = {
-                    "About": { title: "About", href: "/about.html" }
-                };
-                WinJS.UI.SettingsFlyout.populateSettings(e);
+    g_iPadBar('#menupage');
+    if (window.MSApp) {
+        WinJS.Application.onsettings = function (e) {
+            e.detail.applicationcommands = {
+                "About": { title: "About", href: "/about.html" }
             };
-            WinJS.Application.start();
-        }
+            WinJS.UI.SettingsFlyout.populateSettings(e);
+        };
+        WinJS.Application.start();
+    }
 
-        menuOnPageShowSmall();
+    menuOnPageShowSmall();
 
-        sessionStorage.setItem('orderheaderNext', 'menu');
+    sessionStorage.setItem('orderheaderNext', 'menu');
 
-        var dao = new Dao();
-        dao.openDB(function (user) { menuInit(); });
-        $('#nosync').hide();
+    var dao = new Dao();
+    dao.openDB(function (user) { menuInit(); });
+    $('#nosync').hide();
 
-        menuFetchMandatoryActivities();
-        menuBind();        
-    });
+    menuFetchMandatoryActivities();
+    menuBind();        
 }
 
 function menuBind() {

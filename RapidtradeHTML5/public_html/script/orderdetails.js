@@ -1,10 +1,17 @@
 var g_orderdetailsOrderItems = [];
 var g_orderdetailsCurrentOrder = {};
 
+var g_orderdetailsPageTranslation = {};
+
 /**
  * Always call openDB, which in turn call's init
  * This is called from script tag inside page
  */
+
+function orderdetailsOnPageBeforeCreate() {
+    
+    g_orderdetailsPageTranslation = translation('orderdetailspage');
+}
 
 function orderdetailsOnPageShow() {
 	
@@ -17,20 +24,20 @@ function orderdetailsOnPageShow() {
  */
 function orderdetailsBind() {
 	
-	$('#radioOrder').click(function () {
+    $('#radioOrder').click(function () {
     	sessionStorage.setItem('orderdetailsradio','radioOrder');
     	sessionStorage.setItem('currentordertype','Order');
     	$("#radioDelivery").attr("checked",false).checkboxradio("refresh");
     });
 	
-	$('#radioDelivery').click(function () {
+    $('#radioDelivery').click(function () {
     	sessionStorage.setItem('orderdetailsradio','radioDelivery');
     	sessionStorage.setItem('currentordertype','Delivery');
     	$("#radioOrder").attr("checked",false).checkboxradio("refresh");
     	$("#radioDelivery").attr("checked",true).checkboxradio("refresh");
     });
 	
-	$('#radioCredit').click(function () {
+    $('#radioCredit').click(function () {
     	sessionStorage.setItem('orderdetailsradio','radioCredit');
     	sessionStorage.setItem('creatingCredit', orderdetailsIsCreditSelected());
     	$('#saveCreditButton').toggleClass('invisible', !orderdetailsIsCreditSelected()); 
@@ -40,13 +47,13 @@ function orderdetailsBind() {
     	if (orderdetailsIsCreditSelected()) $('#creditInfoPopup').popup('open');
     });
 	
-	$('#shoppingcartButton').unbind();
+    $('#shoppingcartButton').unbind();
     $('#shoppingcartButton').click(function () {
     	sessionStorage.setItem('ShoppingCartReturnPage', 'orderdetails.html');
 		$.mobile.changePage("shoppingCart.html");
     });
 	
-	$('#sendToBasketButton').unbind();
+    $('#sendToBasketButton').unbind();
     $('#sendToBasketButton').click(function () {
     	var orderItemsNumber = g_orderdetailsOrderItems.length;
     	g_grvCachedBasketItems = [];
@@ -129,14 +136,6 @@ function orderdetailsInit() {
 }
 
 function orderdetailsCheckBasket() {
-    
-//    var dao = new Dao();
-//    dao.cursor('BasketInfo', undefined, undefined,
-//    function (basketinfo) {
-//    	
-//        if (basketinfo.AccountID == g_currentCompany().AccountID)        	
-//            $('#shoppingcartButton').removeClass('ui-disabled');
-//    },undefined, undefined);
 
     var totalItems = 0;
     
@@ -163,7 +162,7 @@ function orderdetailsCheckBasket() {
         
         if (totalItems) {
             
-            $('.ui-btn-right .ui-btn-text').text('(' + totalItems + ')' + ' ' + g_translateText('Shopping Cart'));            
+            $('.ui-btn-right .ui-btn-text').text('(' + totalItems + ')' + ' ' + g_orderdetailsPageTranslation.translateText('Shopping Cart'));            
         }
     });   
 }

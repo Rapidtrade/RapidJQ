@@ -1,4 +1,4 @@
-﻿var g_historyLastRadioButton;
+var g_historyLastRadioButton;
 
 /**
  * Always call openDB, which in turn call's init
@@ -6,6 +6,12 @@
  */
 
 function historyOnPageShow() {
+    
+    g_companyPageTranslation.safeExecute(function() {
+        
+        g_companyPageTranslation.translateRadioButton('radioActivity', 'Activity');
+        g_companyPageTranslation.translateRadioButton('radioOrders', 'Orders');
+    });
 
     $('#noorders, #noactivities').hide();
     

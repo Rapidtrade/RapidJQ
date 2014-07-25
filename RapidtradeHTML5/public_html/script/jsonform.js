@@ -1,4 +1,4 @@
-﻿var vformid = '';
+var vformid = '';
 var vjson = '';
 var vid = '';
 var vsupplierid = '';
@@ -84,16 +84,20 @@ function JsonForm() {
     }
 	
     function jsonformDisplayFieldOnComplete() {
+        
         var displayObjects = new Object();
-         displayObjects = jsonArray.sort(function (a, b) { return parseFloat(a.SortOrder) - parseFloat(b.SortOrder); });
+        displayObjects = jsonArray.sort(function (a, b) { return parseFloat(a.SortOrder) - parseFloat(b.SortOrder); });
 
-        for (var i=0; i<displayObjects.length;i++) {        	
+        var activePageTranslation = translation();
+        activePageTranslation.safeExecute(function() {
             
-            var label = g_translateText(displayObjects[i].Label || displayObjects[i].Name);
+        for (var i=0; i<displayObjects.length;i++) {        	            
+            
+            var label = activePageTranslation.translateText(displayObjects[i].Label || displayObjects[i].Name);
             
             var disable = "";
             var selectmenuDisable = false;
-        		var gray = "";
+            var gray = "";
 
                 if (displayObjects[i].ReadOnly == true) {
                 	
@@ -190,5 +194,6 @@ function JsonForm() {
         	};
         	
         	g_append(vformid + ' div:first', '<div id="errorMessage"></div>');
+            });
     }
 }
