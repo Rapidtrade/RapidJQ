@@ -117,8 +117,8 @@ function shoppingCartBind() {
             $('#creditLimitPopup').popup('open');
             
         } else {
-            
-            var isTPMOrder = ($.inArray(sessionStorage.getItem('currentordertype'), DaoOptions.getValue('TPMOrderTypes').split(',')) !== -1);            
+                        
+            var isTPMOrder = ($.inArray(sessionStorage.getItem('currentordertype'), DaoOptions.getValue('TPMOrderTypes') && DaoOptions.getValue('TPMOrderTypes').split(',') || []) !== -1);            
             $.mobile.changePage((isTPMOrder ? "tpm.html" : "orderHeader.html"), { transition: "none" });
         }
     });

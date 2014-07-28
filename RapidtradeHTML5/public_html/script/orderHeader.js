@@ -755,7 +755,7 @@ function orderHeaderCreateOrderObject() {
 	    g_orderHeaderOrder.Type = 'GRV';
 	}
 	else {
-	    g_orderHeaderOrder.Type = 'Order';
+	    g_orderHeaderOrder.Type = sessionStorage.getItem("currentordertype");
 	}
 	var date = new Date();
 	g_orderHeaderOrder.CreateDate = date.getFullYear() + "-" + g_setLeadingZero((date.getMonth() + 1)) + "-" + g_setLeadingZero(date.getDate()) + "T" +

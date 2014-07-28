@@ -18,10 +18,9 @@
     <body>
         <div data-role="page" id="myterritorypage" class="ipadStatusBar"> 
         	<script>
-			    $("#myterritorypage").bind("pageshow", function() {
-			    	myterritoryOnPageShow();
-			    });
-			</script> 
+                    $("#myterritorypage").bind("pagebeforecreate", myterritoryOnPageBeforeCreate);
+                    $("#myterritorypage").bind("pageshow", myterritoryOnPageShow);
+                </script> 
             <div data-role="header" >
             	<table style="margin-left:auto; margin-right:auto;">
 		       	<tr><td><img class="logoSml" src="img/logoSml.png"/> </td><td>&nbsp;</td></tr>
@@ -37,7 +36,7 @@
              	<table class="rtTableLabel">
              	<tr>
 	             	<td class="image"><img src="img/City-64.png"/></td>
-	             	<td class="label"><h2 >My Territory</h2></td>
+	             	<td class="label"><h2 class="multiLanguage">My Territory</h2></td>
 	             	<td class="options">
 	             		<div class="hidden" id="SGforBranch" data-role="fieldcontain">
 		                    <fieldset style="width: 295px;float:right;"  data-role="controlgroup" data-type="horizontal">

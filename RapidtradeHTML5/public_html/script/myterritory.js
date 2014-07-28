@@ -4,12 +4,27 @@
 
 var g_myterritoryCustomerList;
 var g_myterritoryItems = [];
+
+var g_myterritoryPageTranslation = {};
+
+function myterritoryOnPageBeforeCreate() {
+    
+    g_myterritoryPageTranslation = translation('myterritorypage');
+}
+
 /**
  * Always call openDB, which in turn call's init
  * This is called from script tag inside page
  */
 
 function myterritoryOnPageShow() {
+    
+    g_myterritoryPageTranslation.safeExecute(function() {
+        
+        g_myterritoryPageTranslation.translateButton('#addcustomer', 'Add Customer');
+        g_myterritoryPageTranslation.translateButton('#savecustomer', 'Save');
+        g_myterritoryPageTranslation.translateButton('#cancelcustomer', 'Cancel');
+    });
     
     myterritoryOnPageShowSmall();
 	
