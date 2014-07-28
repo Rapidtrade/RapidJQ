@@ -21,5 +21,7 @@
     "Gross": {"pt": "Grosso"},
     "Discount": {"pt": "Desconto"},
     "Nett": {"pt": "Netto"},
-    "Back": {"pt": "Voltar"}     
+    "Back": {"pt": "Voltar"},
+    "Contacts": {"pt": "Contatos"},
+    "Map": {"pt": "Mapa"}
 }
