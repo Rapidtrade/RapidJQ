@@ -19,12 +19,11 @@
     <body>
 		<div data-role="page" id="printinvoicepage" style="width:400px; margin-left:10px;">
 		    <script>
-		        $('#printinvoicepage').bind("pageshow", function () {
-		            printinvoiceOnPageShow();
-		        });
+                        $('#printinvoicepage').bind("pagebeforecreate", printinvoiceOnPageBeforeCreate);
+		        $('#printinvoicepage').bind("pageshow", printinvoiceOnPageShow);
 		    </script>
 	        <div data-role="header" class="printinvoiceHeader">
-		        <h3>
+		        <h3 class="multiLanguage">
 		            SG Invoice
 		        </h3>
 	       		<a data-role="button" id="printButton" data-transition="none"  class="ui-btn-left">
@@ -40,30 +39,30 @@
 	            	<div id="invoiceBarcode">
 	            	</div>
 					<table>
-						<tr><td>Inv. Number</td><td id="invoiceNumber"></td></tr>
-						<tr><td class="printinvoicesmlh2">Invoice Date</td><td id="date"></td></tr>
+						<tr><td class="multiLanguage">Inv. Number</td><td id="invoiceNumber"></td></tr>
+						<tr><td class="printinvoicesmlh2 multiLanguage">Invoice Date</td><td id="date"></td></tr>
 					</table>
 	            </div>
 	            <div>
-	            <p class="printinvoicesmlh2">Supplied By:</p>
+	            <p class="printinvoicesmlh2 multiLanguage">Supplied By:</p>
 	            	<span id="details"></span>
 	            </div>
 		        <div class="printinvoicesmlbox">
-		        	<p  class="printinvoicesmlh2">Bill To:</p>
+		        	<p  class="printinvoicesmlh2 multiLanguage">Bill To:</p>
 		        	<span id="acc"></span><br/>
 		        	<span id="customer"></span><br/>
 		        	<span id="customerVAT"></span><br/>
 		        </div>
 		        <div printinvoicesmlbox>
-		        	<p class="printinvoicesmlh2">Deliver To:</p>
+		        	<p class="printinvoicesmlh2 multiLanguage">Deliver To:</p>
 		        	<span id="address"></span>
 		        </div>
-				<p  class="printinvoicesmlh2">
+				<p  class="printinvoicesmlh2 multiLanguage">
 					Reference: <span id="comment"></span>
 				</p>
 				<table class="printinvoicesmlProducts" rules=groups id="productListTable">
 					<thead>	
-						<tr><th>Products</th><th class="right">Qty</th><th class="right">Price</th><th class="right">Value</th></tr>
+						<tr><th class="multiLanguage">Products</th><th class="right multiLanguage">Qty</th><th class="right multiLanguage">Price</th><th class="right multiLanguage">Value</th></tr>
 					</thead>
 					<tbody>
 					</tbody>
@@ -75,12 +74,14 @@
 				</table>	
 				<p>
 				<hr noshade="noshade" size="1">
+                                <span class="multiLanguage">
 				I / We acknowledge receipt of goods as detailed.
+                                </span>
 				</p>
 				<table style="border-spacing: 20px; width:100%">
-					<tr><td>Authorised Name:</td><td>Signature:</td></tr>
+					<tr><td class="multiLanguage">Authorised Name:</td><td class="multiLanguage">Signature:</td></tr>
 					<tr><td><hr class="printinvoiceHorizontalRule"></td><td><hr class="printinvoiceHorizontalRule"></td></tr>
-					<tr><td>Store Stamp</td><td>GRN Number</td></tr>
+					<tr><td class="multiLanguage">Store Stamp</td><td class="multiLanguage">GRN Number</td></tr>
 					<tr><td><hr class="printinvoiceHorizontalRule"></td><td><hr class="printinvoiceHorizontalRule"></td></tr>					
 				</table>
 				<hr noshade="noshade" size="1">

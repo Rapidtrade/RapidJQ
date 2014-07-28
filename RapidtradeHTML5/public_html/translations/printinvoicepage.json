@@ -1,0 +1,23 @@
+{
+    "SG Invoice": {"pt": "Factura"},
+    "Inv. Number": {"pt": "Nъmero da factura"},
+    "Invoice Date": {"pt": "Data"},
+    "Details": {"pt": "Detalhes"},
+    "Bill To:": {"pt": "Cobrar a:"},
+    "Acc Num:": {"pt": "Nъmero do cliente:"},
+    "Customer:": {"pt": "Cliente:"},
+    "Deliver To:": {"pt": "Entregar a:"},
+    "Addr:": {"pt": "Morada:"},
+    "Product": {"pt": "Produto"},
+    "Description": {"pt": "Descriзao"},
+    "Price": {"pt": "Preзo"},
+    "Discount": {"pt": "Desconto"},    
+    "Value": {"pt": "Valor"},    
+    "I / We acknowledge receipt of goods as detailed.": {"pt": "Confirmamos a recepзao das mercadorias na factura."},
+    "Authorised Name:": {"pt": "Pessoa autorizada"},
+    "Store Stamp": {"pt": "Carimbo da companhia"},
+    "Signature": {"pt": "Assinatura"},
+    "Reference:": {"pt": "Referкncia:"},
+    "Print": {"pt": "Impressгo"},
+    "Continue": {"pt": "Continuar"}    
+}
