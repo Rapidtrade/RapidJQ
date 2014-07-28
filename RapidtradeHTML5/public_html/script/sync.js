@@ -30,6 +30,13 @@ function syncOnPageBeforeCreate() {
  */
 function syncOnPageShow() {
 
+    g_syncPageTranslation.safeExecute(function() {
+        
+        g_syncPageTranslation.translateButton('#signinagain', 'Log out');
+         
+        g_syncPageTranslation.translateButton('#syncButton', 'Submit');
+    });
+
     //first open database and it will call init
     g_syncDao = new Dao();
     g_syncDao.openDB(syncInit);

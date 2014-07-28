@@ -4,5 +4,8 @@
     "Password": {"pt": "Palavra passe"},
     "Please wait, downloading latest data": {"pt": "Espere por favor... A fazer download de ficheiros"},
     "Sync completed OK. Click Menu button to continue": {"pt": "Sincronizaзгo completa, clique menu para continuar"},
-    "Support": {"pt": "Linha de ajuda"}
+    "Support": {"pt": "Linha de ajuda"},
+    "Log out": {"pt": "Sair"},
+    "Submit": {"pt": "Submeter"},
+    "Enter your password and click OK": {"pt": "Digite a sua senha e clique OK"}
 }
