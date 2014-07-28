@@ -1,5 +1,9 @@
 {
     "Shopping Cart": {"pt": "Carrinho de compras"},
-    "Checkout": {"pt": "Sair"},
-    "Pricelist": {"pt": "Lista de preзos"} 
+    "Checkout": {"pt": "guardar"},
+    "Pricelist": {"pt": "lista de preços"} ,
+    "Delete All": {"pt": "cancelar todos"},
+    "Total Excl:": {"pt": "Tot sem Taxa"},
+    "VAT": {"pt": "Taxa:"},
+    "Total Incl:": {"pt": "Tot como Taxa"}
 }

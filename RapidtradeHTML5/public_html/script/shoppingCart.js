@@ -25,7 +25,8 @@ function shoppingCartOnPageShow() {
         
         g_shoppingCartPageTranslation.translateButton('#shoppingCartBackButton', 'Pricelist');
         g_shoppingCartPageTranslation.translateButton('#saveShoppingCart', 'Checkout');
-
+        g_shoppingCartPageTranslation.translateButton('#deleteShoppingCart', 'Delete All');
+        
         g_showCurrentCompanyName();
         if (sessionStorage.getItem('ShoppingCartReturnPage') == 'orderdetails.html')
             g_shoppingCartPageTranslation.translateButton('#shoppingCartBackButton', 'Order Details');

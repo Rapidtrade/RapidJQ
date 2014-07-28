@@ -970,6 +970,8 @@ function productdetailOkClicked(checkStock) {
         var stock = productdetailGetStock();
         if (g_vanSales && g_currentUser().RepID.toUpperCase() == g_currentCompany().BranchID.toUpperCase() && type == 'Order' && (stock < qty || isNaN(stock))) {
             g_alert('You can\'t order more than you have in stock.');  
+        } else if (type.substring(0,7) == DaoOptions.getValue('VanOrderType','') && (stock < qty || isNaN(stock))) {
+            g_alert('You can\'t order more than you have in stock.');  
         } else {        
             $('.productimage').hide();          
             g_pricelistSelectedProduct.RepChangedPrice = (productdetailValue('nett') != g_addCommas(g_pricelistSelectedProduct.Nett.toFixed(2)));
