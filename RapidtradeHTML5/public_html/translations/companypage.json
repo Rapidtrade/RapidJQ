@@ -23,5 +23,8 @@
     "Nett": {"pt": "Netto"},
     "Back": {"pt": "Voltar"},
     "Contacts": {"pt": "Contatos"},
-    "Map": {"pt": "Mapa"}
+    "Map": {"pt": "Mapa"},
+    "Zoom in": {"pt": "subida rápida dentro"},
+    "Zoom out": {"pt": "subida rápida de fora"},
+    "Quantity": {"pt": "Quantidade"}
 }
