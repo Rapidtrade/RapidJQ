@@ -299,7 +299,7 @@ function orderHeaderSaveOrder() {
 
 function orderHeaderCaptureGPSAndSave() {
     
-    if (g_phonegap && navigator.geolocation)
+    if (/*g_phonegap && */ navigator.geolocation)
         navigator.geolocation.getCurrentPosition(orderHeaderSaveFormedOrder, orderHeaderSaveFormedOrder, {timeout:10000});
     else
         orderHeaderSaveFormedOrder();
