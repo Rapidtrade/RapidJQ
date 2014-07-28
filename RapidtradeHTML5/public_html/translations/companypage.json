@@ -26,5 +26,6 @@
     "Map": {"pt": "Mapa"},
     "Zoom in": {"pt": "subida rápida dentro"},
     "Zoom out": {"pt": "subida rápida de fora"},
-    "Quantity": {"pt": "Quantidade"}
+    "Quantity": {"pt": "Quantidade"},
+    "not available for purchase / out of stock": {"pt": "fora de stock"}
 }
