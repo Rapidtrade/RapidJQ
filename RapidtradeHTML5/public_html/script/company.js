@@ -22,6 +22,10 @@ function companyOnPageShow() {
         g_companyPageTranslation.translateRadioButton('radio2', 'Contacts');
         g_companyPageTranslation.translateRadioButton('radio3', 'Map');  
         g_companyPageTranslation.translateButton('#savecompany', 'Save');
+        
+        g_companyPageTranslation.translateButton('#zoomOutButton', 'Zoom out');
+        g_companyPageTranslation.translateButton('#zoomInButton', 'Zoom in');
+        g_companyPageTranslation.translateButton('#quantity', 'Quantity');
     });
 	
     companyHideFooter();
