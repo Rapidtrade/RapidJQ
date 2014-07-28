@@ -55,7 +55,6 @@ function shoppingCartOnPageShow() {
             shoppingCartInit();
         });
 
-        if (DaoOptions.getValue('AllowTPM') == 'true') $('#checkTPMButton').removeClass('invisible');
         if (DaoOptions.getValue('DoubleTax') == 'true') {
             $('.shopcartHeader').css('height', '200px');
                 var wetNode =  $('<li data-theme="d"><div id="divTotalWET"><label>' + (DaoOptions.getValue('DoubleTaxText') || 'WET') +  ':</label></div></li>');  
@@ -113,22 +112,21 @@ function shoppingCartBind() {
     $('#saveShoppingCart').unbind();
     $('#saveShoppingCart').click(function() {
     	
-    	if (DaoOptions.getValue('LiveCreditCheckURL') && (sessionStorage.getItem('currentordertype').toLowerCase() == 'order') && (g_shoppingCartTotalExcl > g_shoppingCartCredit))    		
+    	if (DaoOptions.getValue('LiveCreditCheckURL') && (sessionStorage.getItem('currentordertype').toLowerCase() === 'order') && (g_shoppingCartTotalExcl > g_shoppingCartCredit)) {
+            
             $('#creditLimitPopup').popup('open');
-    	else
-            $.mobile.changePage("orderHeader.html", { transition: "none" });
+            
+        } else {
+            
+            var isTPMOrder = ($.inArray(sessionStorage.getItem('currentordertype'), DaoOptions.getValue('TPMOrderTypes').split(',')) !== -1);            
+            $.mobile.changePage((isTPMOrder ? "tpm.html" : "orderHeader.html"), { transition: "none" });
+        }
     });
 
     $('#deleteShoppingCart').unbind();
     $('#deleteShoppingCart').click(function() {
     	
     	shoppingCartRemoveAllItems();
-    });
-    
-    $('#checkTPMButton').unbind();
-    $('#checkTPMButton').click(function() {
-    	
-        $.mobile.changePage("tpm.html", { transition: "none" });
     });
     
     $('#barcode').unbind();
