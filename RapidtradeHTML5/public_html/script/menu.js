@@ -254,10 +254,15 @@ function menuShowButtons() {
 
                         var role = g_currentUser().Role.toUpperCase();
                         
-                        $('#vansalesonlyreplenishstock')[(role.indexOf('REPL') != -1) ? 'show' : 'hide']();
+                        $('#vansalesonlyreplenishstock').hide();
+                        $('#vansalesonlyreceivestock').hide();
+                        $('#vanonlydelivery').hide();
+                        $('#vansalesonlystocktake').hide();
+                        
+                        /**$('#vansalesonlyreplenishstock')[(role.indexOf('REPL') != -1) ? 'show' : 'hide']();
 			$('#vansalesonlyreceivestock')[(role.indexOf('GRV') != -1) ? 'show' : 'hide']();
 			$('#vanonlydelivery')[(role.indexOf('POD') != -1) ? 'show' : 'hide']();
-			$('#vansalesonlystocktake')[(role.indexOf('STOCK') != -1) ? 'show' : 'hide']();
+			$('#vansalesonlystocktake')[(role.indexOf('STOCK') != -1) ? 'show' : 'hide']();**/
 		}
 		
 	} else {
