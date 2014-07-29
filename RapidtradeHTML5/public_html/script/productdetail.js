@@ -974,7 +974,11 @@ function productdetailOkClicked(checkStock) {
             g_alert('You can\'t order more than you have in stock.');  
         } else {        
             $('.productimage').hide();          
-            g_pricelistSelectedProduct.RepChangedPrice = (productdetailValue('nett') != g_addCommas(g_pricelistSelectedProduct.Nett.toFixed(2)));
+            
+            if (typeof g_pricelistSelectedProduct.Nett !== 'number')
+                g_pricelistSelectedProduct.Nett = Number(g_pricelistSelectedProduct.Nett);
+            
+            g_pricelistSelectedProduct.RepChangedPrice = (productdetailValue('nett') !== g_addCommas(g_pricelistSelectedProduct.Nett.toFixed(2)));
             
             if (g_pricelistSelectedProduct.RepChangedPrice) {
                 

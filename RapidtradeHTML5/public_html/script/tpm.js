@@ -17,7 +17,7 @@ function tpmBind() {
         
         var isOrder = ('saveTPM' === this.id);
         
-        var postType = isOrder ? 'Order' : 'Verify|' + + g_orderHeaderOrder.Type;
+        var postType = isOrder ? 'Order' : 'Verify|' + sessionStorage.getItem('currentordertype');
         var onSuccess = isOrder ? tpmOrderSuccess : tpmVerifySuccess;
         
         tpmPost(postType, onSuccess);
@@ -64,7 +64,7 @@ function tpmFetchBasket() {
         },
         undefined,
         function(){
-            tpmPost('Qualify|' + g_orderHeaderOrder.Type,tpmQualifySuccess);
+            tpmPost('Qualify|' + g_orderHeaderOrder.Type, tpmQualifySuccess);
         });    	
 }
 
