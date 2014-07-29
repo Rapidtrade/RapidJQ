@@ -148,10 +148,10 @@ function productdetailInit() {
     	$('.pricelistBusyImg').hide();
     	$.mobile.hidePageLoadingMsg();
     	
-    	var price = g_roundToTwoDecimals($('#li' + g_pricelistSelectedProduct.ProductID + ' .price').text().replace(/,/g, ''));
+    	var price = g_roundToTwoDecimals($('#li' + g_pricelistSelectedProduct.ItemIndex + ' .price').text().replace(/,/g, ''));
     	
     	g_pricelistSelectedProduct.Nett = g_pricelistSelectedProduct.Gross = parseFloat(price); 
-    	$('.hdescription').val($('#li' + g_pricelistSelectedProduct.ProductID + ' .ui-li-desc').text());
+    	$('.hdescription').val($('#li' + g_pricelistSelectedProduct.ItemIndex + ' .ui-li-desc').text());
     	
 		$('#grossvalue').text(g_addCommas(price));
 		$('#divnettvalue input').val(price);
@@ -938,10 +938,10 @@ function productdetailOkClicked(checkStock) {
         if (!$.trim($('.hdescription').val()))
                 return;
 
-        $('#li' + g_pricelistSelectedProduct.ProductID + ' .ui-li-desc').text($('.hdescription').val());
+        $('#li' + g_pricelistSelectedProduct.ItemIndex + ' .ui-li-desc').text($('.hdescription').val());
     }
 
-    $('#li' + g_pricelistSelectedProduct.ProductID + ' .price').text(g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
+    $('#li' + g_pricelistSelectedProduct.ItemIndex + ' .price').text(g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
 
     var quantity = Number($('#quantity').attr('value'));
     if (!quantity /*&& confirm('Are you sure you want to remove the item from basket?')*/) {
@@ -998,7 +998,7 @@ function productdetailOkClicked(checkStock) {
             productdetailSave(qty, type, g_pricelistSelectedProduct);
             g_clearCacheDependantOnBasket(false);
             pricelistCheckBasket();
-            $('#' + g_pricelistSelectedProduct.ProductID).html(qty);
+            $('#' + g_pricelistSelectedProduct.ItemIndex).html(qty);
             if (!g_vanSales && !g_pricelistIsAnyItemAdded) {
             	sessionStorage.setItem('ordertypecaption', $('#menu').val());
             	g_pricelistIsAnyItemAdded = true;

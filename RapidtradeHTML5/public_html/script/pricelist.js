@@ -1236,13 +1236,13 @@ function pricelistAddLine(pricelist) {
 
         //TODO below input box needs to only be for Midas. ie. which we have an option variable
         var pricelistHtml =       
-            '<li id="li' + pricelist.id + '" style="position:relative" ' + pricelistScrollToPos(pricelist) + ' ' + alphaFilter.getInstance().addClass(pricelist.des) + '>' +
+            '<li id="li' + g_pricelistItems.length + '" style="position:relative" ' + pricelistScrollToPos(pricelist) + ' ' + alphaFilter.getInstance().addClass(pricelist.des) + '>' +
             '<a href="#" onclick="pricelistOnItemClicked(\'' + g_pricelistItems.length + '\');">' +   
             (DaoOptions.getValue('MobileThumbnails') == 'true' ? '<td rowspan="2" class="quantity" align="right"><img src="' + productdetailGetImageUrl(pricelist.id, 80) + '"></td>' : '') +
             '<span style="font-size:11px;">' + pricelist.id + '</span>' + special + '<br/>' +
             '<span class="ui-li-desc" style="font-size:16px; padding-top:10px; display:inline-block; width:70%">' + pricelist.des + '</span>' +
             quantityInputHtml +        
-            '<span id="' + pricelist.id + '" class="quantity" style="color:red;width:5%; position:relative; top:-10px; left:-15px; display:inline-block;text-align:right">' + quantityText + '</span>' +
+            '<span id="' + g_pricelistItems.length + '" class="quantity" style="color:red;width:5%; position:relative; top:-10px; left:-15px; display:inline-block;text-align:right">' + quantityText + '</span>' +
             '<span class="price" style="width:10%; position:relative; top:-10px; display:inline-block;text-align:right">' + nett + '</span>' +
             stockText +
             '</a>';
