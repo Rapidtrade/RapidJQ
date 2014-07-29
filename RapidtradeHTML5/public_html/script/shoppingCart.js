@@ -11,6 +11,7 @@ var g_basketHTML = '';
 var g_shoppingcartCnt = 0;
 var g_shoppingcartalpha = [];
 var g_shoppingCartSummaryItems = {};
+var g_shoppingCartItemKeys = [];
 
 var g_shoppingCartPageTranslation = {};
 
@@ -213,7 +214,7 @@ function shoppingCartConfirmScanResetBarcode() {
 	$('#barcode').val('').focus();
 }
 
-function shoppingCartRemoveAllItems(changePage) {
+function shoppingCartRemoveAllItems() {
 	$.mobile.showPageLoadingMsg();
     var dao = new Dao();
     dao.cursor('BasketInfo', undefined, undefined,
@@ -272,29 +273,35 @@ function shoppingCartFetchBasket() {
     $('#shoppingCartitemlist').empty();
     var option = DaoOptions.get('TaxText');
     $('#vatLabel').html(option && ('ONLINE' == option.Group) ? option.Value + ':' : 'VAT:'); 
+    
     var isArrayCached = false;
     for (var key in g_grvCachedBasketItems) {
+        
         if (g_grvCachedBasketItems.hasOwnProperty(key)) {
+            
             isArrayCached = true;
             shoppingCartAddItem(g_grvCachedBasketItems[key]);
         }
     }
     if (isArrayCached) {
-            g_grvCachedBasketItems = [];
-            shoppingCartOnAllItemsAdded();
+        
+        g_grvCachedBasketItems = [];
+        shoppingCartOnAllItemsAdded();
+        
     } else {
-            alphaFilter.getInstance().init('#alphabet');
-            var dao = new Dao();
-            dao.indexsorted('BasketInfo',g_currentCompany().AccountID, 'index1', 'index4', shoppingCartAddItem, shoppingCartNoItems, shoppingCartOnAllItemsAdded);
+        
+        alphaFilter.getInstance().init('#alphabet');
+        var dao = new Dao();
+        dao.indexsorted('BasketInfo',g_currentCompany().AccountID, 'index1', 'index4', shoppingCartAddItem, shoppingCartNoItems, shoppingCartOnAllItemsAdded);
     }
 }
 
 function shoppingCartNoItems(){
-	shoppingCartOnBack();
+    shoppingCartOnBack();
 }
 
 function shoppingCartItemNett(item) {
-	return item.RepChangedPrice ? item.RepNett : item.Nett;
+    return item.RepChangedPrice ? item.RepNett : item.Nett;
 }
 
 function shoppingCartAddItem(item, checkSummary) {
@@ -330,20 +337,22 @@ function shoppingCartAddItem(item, checkSummary) {
 	if (shoppingCartIsGRV()) maxValue = 'max="' + qty + '"';
 	if (sessionStorage.getItem("currentordertype") == "Credit") maxValue = 'max="' +  item.UserField02 + '"';
 	
+        var itemIndex = g_shoppingCartItemKeys.length;
+        g_shoppingCartItemKeys.push(item.key)
 	
 	g_basketHTML +=
-        '<li id="LI' + item.key + '"' + alphaFilter.getInstance().addClass(item.Description) + '>' +
+        '<li id="LI' + itemIndex + '"' + alphaFilter.getInstance().addClass(item.Description) + '>' +
         '<a href="#" onclick="pricelistOnItemClicked(\'' + g_pricelistItems.length + '\')">' +
         '  <table class="shopcartItems" >' +
         '    <tr>' +
         '       <td class="descr">' + item.Description + '</td>' +
         '       <td rowspan="2" align="right" class="quantity">' +
-        '              <input id="' + item.key + '" style="width: 100px;" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset quantity" class="qtybox" type="number"' + 
+        '              <input id="' + itemIndex + '" style="width: 100px;" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset quantity" class="qtybox" type="number"' + 
         		     	(g_isPackSizeUnitValid(item.Unit) ? ' step=' + item.Unit : 'step=1') + ' min="0" ' + maxValue + 
-        '        		class="quantity" onchange ="shoppingCartOnQuantityChanged(\'' + item.key + '\', value' + (shoppingCartIsGRV() || (sessionStorage.getItem('currentordertype') == 'Credit') ? ', ' + qty  + ', \'' + item.Description + '\'': '') + ')"  value="' + qty + '" />' +
+        '        		class="quantity" onchange ="shoppingCartOnQuantityChanged(\'' + itemIndex + '\', value' + (shoppingCartIsGRV() || (sessionStorage.getItem('currentordertype') == 'Credit') ? ', ' + qty  + ', \'' + item.Description + '\'': '') + ')"  value="' + qty + '" />' +
         '       </td>' +
-        '       <td rowspan="2" align="right" class="nett" id="' + item.key + 'nett">' + nett + '</td>' +
-        '       <td rowspan="2" align="right" class="total" id="' + item.key + 'total">' + formattedValue + '</td>' +
+        '       <td rowspan="2" align="right" class="nett" id="' + itemIndex + 'nett">' + nett + '</td>' +
+        '       <td rowspan="2" align="right" class="total" id="' + itemIndex + 'total">' + formattedValue + '</td>' +
         '       <td rowspan="2" align="right" class="unconfirmed message" id="' + item.ProductID + 'uc"></td>' +
         '    </tr>' +
         '    <tr>'+
@@ -351,7 +360,7 @@ function shoppingCartAddItem(item, checkSummary) {
         '  </table>' +
         '</a>' +
         (shoppingCartIsGRV() ? '' :
-             ' <a href="#" onclick = "shoppingCartDeleteItem(\'' + item.key + '\', ' +  (DaoOptions.getValue('LostSaleActivityID') != undefined) + ', true)" class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
+             ' <a href="#" onclick = "shoppingCartDeleteItem(\'' + itemIndex + '\', ' +  (DaoOptions.getValue('LostSaleActivityID') != undefined) + ', true)" class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
              '<span class="ui-btn-inner ui-btn-corner-all">' +
              '<span class="ui-icon ui-icon-delete ui-icon-shadow">delete</span>' +
              '</span>' +
@@ -435,28 +444,6 @@ function shoppingCartAddSummaryItems() {
             shoppingCartAddItem(summaryItem, false);            
         }
     }
-        
-//    $.each(g_shoppingCartSummaryItems.keys().sort(), function(key, itemArray) {
-//        
-//        var summaryItem = {};
-//        summaryItem.Quantity = 0;
-//
-//        for (var i = 0; i < itemArray.length; ++i) {
-//
-//            if (i === 0) {
-//                
-//                summaryItem = itemArray[i];
-//                summaryItem.ProductID = '';
-//                summaryItem.Description = itemArray[i][DaoOptions.getValue('SummaryReportField')];
-//                
-//            } else {
-//                
-//                summaryItem.Quantity += itemArray[i].Quantity;           
-//            }
-//        }
-//       
-//        shoppingCartAddItem(summaryItem, false);
-//    });
 }
 
 function shoppingCartCheckItemsCount() {
@@ -467,8 +454,11 @@ function shoppingCartCheckItemsCount() {
     }
 }
 
-function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetItemsOnPageNumber) {
+function shoppingCartDeleteItem(itemIndex, saveLostSale, removeNode, onSuccess, resetItemsOnPageNumber) {
     //g_shoppingCartTotalExcl = g_shoppingCartVAT = g_shoppingCartTotalIncl = 0;
+    
+    var key = g_shoppingCartItemKeys[itemIndex];
+    
     var dao = new Dao();
     g_clearCacheDependantOnBasket(resetItemsOnPageNumber);
     if (shoppingCartIsGRV()) {
@@ -477,7 +467,7 @@ function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetI
     } else {
 	    dao.deleteItem('BasketInfo', key, undefined, undefined, undefined, function (event) {
 	    	
-	    	if ($.mobile.activePage.attr('id') != 'shoppingCartpage') {
+	    	if ($.mobile.activePage.attr('id') !== 'shoppingCartpage') {
 	    		
 	            g_clearCacheDependantOnBasket(resetItemsOnPageNumber);
 	    		pricelistCheckBasket();
@@ -489,13 +479,13 @@ function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetI
 	    		
                     if (removeNode) { 
                             try {
-                                    var val = parseFloat($('#' + key + 'total').text().replace(/[,]/g, '')); 
+                                    var val = parseFloat($('#' + itemIndex + 'total').text().replace(/[,]/g, '')); 
                                     g_shoppingCartTotalExcl -= val;
                                     shoppingCartRecalcTotals();
                             } catch (err){
                                     console.log(err.message);
                             }
-                            $('#LI' + key).remove();
+                            $('#LI' + itemIndex).remove();
                             shoppingCartCheckItemsCount();		    		
                     } 
 	    	}
@@ -509,30 +499,27 @@ function shoppingCartSaveLostSales(key){
     var dao = new Dao();
     dao.get('BasketInfo', key,
   	      function (basketInfo) {
-  	          if (basketInfo.key == key) {
+  	          if (basketInfo.key === key) {
   	              g_saveLostSale(basketInfo.ProductID, basketInfo.Quantity, basketInfo.Stock);
   	          }
-  	      }, undefined, 
-  			function() {
-  	    	  	//shoppingCartDeleteItem(key, false, removeNode);
   	      });	
 }
 
-function shoppingCartOnQuantityChanged(key, value, maxValue, productName) {
+function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) {    
 	
     if (sessionStorage.getItem('ShoppingCartNoChangeAllowed') == 'true') {
     	g_alert("You are not allowed to change the quantity");
-    	$('#' + key).attr('value', maxValue);
+    	$('#' + itemIndex).attr('value', maxValue);
     	return;
     }
     
-    var step = parseInt($('#' + key).attr('step'), 10);
+    var step = parseInt($('#' + itemIndex).attr('step'), 10);
 	
     var quantity = parseInt(value, 10);
     if (!quantity) {
     	
 //    	if (confirm('Are you sure you want to remove the item from basket?')) {
-    		shoppingCartDeleteItem(key, DaoOptions.getValue('LostSaleActivityID') != undefined, true);
+    		shoppingCartDeleteItem(itemIndex, DaoOptions.getValue('LostSaleActivityID') != undefined, true);
     		return;
 //    	}
     	
@@ -543,20 +530,20 @@ function shoppingCartOnQuantityChanged(key, value, maxValue, productName) {
     
     if (!g_isQuantityValid(quantity, step)) {
     	
-    	$('#' + key).attr('value', step);
-    	shoppingCartOnQuantityChanged(key, step, maxValue, productName);
+    	$('#' + itemIndex).attr('value', step);
+    	shoppingCartOnQuantityChanged(itemIndex, step, maxValue, productName);
     	return;
     }
     
     if ((sessionStorage.getItem('ShoppingCartLessThan') == 'true') && (quantity > maxValue)) {
     	
     	g_alert("The quantity cannot be greater than " + maxValue);
-    	$('#' + key).attr('value', maxValue);
+    	$('#' + itemIndex).attr('value', maxValue);
     	return;
     }
     
     var dao = new Dao();
-    dao.get("BasketInfo", key, function(basketInfo) {
+    dao.get("BasketInfo", g_shoppingCartItemKeys[itemIndex], function(basketInfo) {
     	
     	var volumePrice = g_pricelistVolumePrices[basketInfo.ProductID];
     	
@@ -605,8 +592,8 @@ function shoppingCartOnQuantityChanged(key, value, maxValue, productName) {
                  basketInfo.Stock
                  );
         
-        $('#' + key + 'nett').text('' + basketInfo.Nett);
-        $('#' + key + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  == 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * quantity));
+        $('#' + itemIndex + 'nett').text('' + basketInfo.Nett);
+        $('#' + itemIndex + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  == 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * quantity));
         g_shoppingCartTotalExcl = 0;
         $.each($(".total") ,function() {
             var value = $(this).text().replace(',','');
