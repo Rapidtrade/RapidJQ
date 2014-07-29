@@ -251,11 +251,13 @@ function menuShowButtons() {
 			
 			$('.menuIconPanel').show();
 			$('.customerMenuItem').hide();
-		
-			$('#vansalesonlyreplenishstock').toggle(g_currentUser().Role.toUpperCase().indexOf('REPL') != -1);
-			$('#vansalesonlyreceivestock').toggle(g_currentUser().Role.toUpperCase().indexOf('GRV') != -1);
-			$('#vanonlydelivery').toggle(g_currentUser().Role.toUpperCase().indexOf('POD') != -1);
-			$('#vansalesonlystocktake').toggle(g_currentUser().Role.toUpperCase().indexOf('STOCK') != -1);
+
+                        var role = g_currentUser().Role.toUpperCase();
+                        
+                        $('#vansalesonlyreplenishstock')[(role.indexOf('REPL') != -1) ? 'show' : 'hide']();
+			$('#vansalesonlyreceivestock')[(role.indexOf('GRV') != -1) ? 'show' : 'hide']();
+			$('#vanonlydelivery')[(role.indexOf('POD') != -1) ? 'show' : 'hide']();
+			$('#vansalesonlystocktake')[(role.indexOf('STOCK') != -1) ? 'show' : 'hide']();
 		}
 		
 	} else {
