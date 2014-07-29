@@ -1,5 +1,5 @@
 ﻿CACHE MANIFEST
-# Explicitly cached 'master entries'...........................................
+# Explicitly cached 'master entries'............................................
 
 # Version 7.6.4
 
