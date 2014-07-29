@@ -166,14 +166,14 @@ function menuInit(){
 	
 	if (!g_defaultDisplayFields.length) g_createDefaultDisplayFields();
 	
-	if (g_currentUser()) {
+	/**if (g_currentUser()) {
             
             $('#welcome').text(g_currentUser().Name);		
             menuFetchConfigData();
             menuShowButtons();
             menuFetchDefaultCustomer();
             return;
-	}
+	}**/
 	
 	var dao = new Dao();	
 	dao.get('Users', 
