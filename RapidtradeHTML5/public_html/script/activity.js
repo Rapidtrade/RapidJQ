@@ -59,7 +59,7 @@ function activityFetchActivityTypes() {
                 }                                              
 				
                 if (mustadd && !activityType.Deleted) {
-                    g_append('#activitytypelist', '<li data-theme="c"><a href="#" data-transition="none">' + activityType.Label + '</a></li>');
+                    g_append('#activitytypelist', '<li data-theme="c"><a href="#" data-transition="none">' + g_companyPageTranslation.translateText(activityType.Label) + '</a></li>');
                         $( '#activitytypelist li:last' ).click(function(event) {
                             activityTypeOnClick(activityType);	
                         });

@@ -27,5 +27,10 @@
     "Zoom in": {"pt": "subida rápida dentro"},
     "Zoom out": {"pt": "subida rápida de fora"},
     "Quantity": {"pt": "Quantidade"},
-    "not available for purchase / out of stock": {"pt": "fora de stock"}
+    "not available for purchase / out of stock": {"pt": "fora de stock"},
+    "Customer Visit": {"pt": "Visita ao cliente"},
+    "Customer Issue": {"pt": "Problema do cliente"},
+    "Create your call report now by selecting" : {"pt": "Criar um relatуrio de chamada, basta seleccionar"},
+    "the desired activities on the left." : {"pt": "as atividades desejadas"},
+    "Finished": {"pt": "Acabado"}
 }

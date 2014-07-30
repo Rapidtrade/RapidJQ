@@ -8,8 +8,6 @@ function companyOnPageBeforeCreate() {
     activityFormLoadIntoDiv('#activitydetails', true);
     activityFormLoadIntoDiv('#activityPopup', true);
     overlayInit('companypage');   
-    
-    g_companyPageTranslation = translation('companypage');
 }
 
 function companyOnPageShow() {

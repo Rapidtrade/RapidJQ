@@ -6,22 +6,25 @@ function activityFormLoadIntoDiv(divSelector, canEdit) {
 		
 	$(divSelector).load('activityform.html', function() {
 		
-		if (canEdit) {
-			
-			var $divSave = $('<div class="divSave"><a id="saveActivityButton" class="activityCommandButton" data-theme="b" data-role="button" data-transition="none" data-icon="plus" data-iconpos="left" data-inline="true">' +
-        	'Save</a><a id="cancelActivityButton" class="activityCommandButton" data-theme="c" data-role="button" data-transition="none" data-icon="minus" data-iconpos="left" data-inline="true">Cancel</a></div>');
-		
-			$(this).data('role') == 'popup' ? $divSave.prependTo(divSelector + ' form') : $divSave.appendTo(divSelector + ' form');
-			
-		}
-		
-		$(this).on('create', function() {
-			
-			var dao = new Dao();
-			 dao.openDB(function() {activityFormInit(divSelector);});
-		});
-		
-		$(this).trigger('create');
+            if (canEdit) {
+
+                g_companyPageTranslation.safeExecute(function() {
+                    
+                    var $divSave = $('<div class="divSave"><a id="saveActivityButton" class="activityCommandButton" data-theme="b" data-role="button" data-transition="none" data-icon="plus" data-iconpos="left" data-inline="true">' +
+                        g_companyPageTranslation.translateText('Save') + '</a><a id="cancelActivityButton" class="activityCommandButton" data-theme="c" data-role="button" data-transition="none" data-icon="minus" data-iconpos="left" data-inline="true">' + 
+                        g_companyPageTranslation.translateText('Cancel') + '</a></div>');         
+                
+                    $(this).data('role') === 'popup' ? $divSave.prependTo(divSelector + ' form') : $divSave.appendTo(divSelector + ' form');
+                });                
+            }
+
+            $(this).on('create', function() {
+
+                    var dao = new Dao();
+                     dao.openDB(function() {activityFormInit(divSelector);});
+            });
+
+            $(this).trigger('create');
 	});
 }
 
@@ -96,7 +99,7 @@ function activityFormShow(activityType, parentDivSelector) {
 	g_activityFormSelectedActivityType = activityType;
 	
 	$(g_activityFormParentDivSelector + ' .activityInfoPanel').hide();
-	$(g_activityFormParentDivSelector + ' .activityTypeLabel').text(activityType.Label);
+	$(g_activityFormParentDivSelector + ' .activityTypeLabel').text(g_companyPageTranslation.translateText(activityType.Label));
 	
 	$(g_activityFormParentDivSelector + ' #divDuedate').toggle(activityType.DueDateAllowed);
 	$(g_activityFormParentDivSelector + ' #divTime').toggle(activityType.DueTimeAllowed);
@@ -221,13 +224,17 @@ function activityFormHide(parentDivSelector) {
 
 	if (g_isScreenSmall()) {
 	
-		activityShowPanel(g_activityFormPanels.activityList);
+            activityShowPanel(g_activityFormPanels.activityList);
 	
 	} else {
 	
-		$(g_activityFormParentDivSelector + ' #activityFormPanel').hide();
-		$(g_activityFormParentDivSelector + ' .infoPanelText').html('Create your call report now by selecting<br>the desired activities on the left.');
-		$(g_activityFormParentDivSelector + ' .activityInfoPanel').show();
+            $(g_activityFormParentDivSelector + ' #activityFormPanel').hide();
+            
+            var infoPanelHtml = g_companyPageTranslation.translateText('Create your call report now by selecting') + '<br>' + 
+                    g_companyPageTranslation.translateText('the desired activities on the left.');
+
+            $(g_activityFormParentDivSelector + ' .infoPanelText').html(infoPanelHtml);
+            $(g_activityFormParentDivSelector + ' .activityInfoPanel').show();
 	}
 }
 
