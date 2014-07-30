@@ -1,11 +1,12 @@
 {
     "Back":  {"pt": "Voltar"},
     "Save":  {"pt": "Guardar"},
-    "Reference": {"pt": "referência"},
-    "Comments": {"pt": "comentários"},
+    "Reference": {"pt": "Referência"},
+    "Comments": {"pt": "Comentários"},
     "Signature": {"pt": "Assinatura"},
     "Your order was saved OK": {"pt": "Sua encomenda foi guardada ok"},
     "Which size?": {"pt": "Tamanho da impressгo?"},
     "A4 Printer": {"pt": "impressão A4"},
-    "Small Printer": {"pt": "impressão pequena"}    
+    "Small Printer": {"pt": "impressão pequena"},
+    "Please wait, processing order": {"pt": "Espere por favor, ordem de processamento"}    
 }

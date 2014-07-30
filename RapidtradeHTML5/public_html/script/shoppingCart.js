@@ -272,7 +272,7 @@ function shoppingCartFetchBasket() {
     
     $('#shoppingCartitemlist').empty();
     var option = DaoOptions.get('TaxText');
-    $('#vatLabel').html(option && ('ONLINE' == option.Group) ? option.Value + ':' : 'VAT:'); 
+    $('#vatLabel').html(option && ('ONLINE' === option.Group) ? option.Value + ':' : g_shoppingCartPageTranslation.translateText('VAT:')); 
     
     var isArrayCached = false;
     for (var key in g_grvCachedBasketItems) {

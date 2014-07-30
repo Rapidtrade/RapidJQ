@@ -219,7 +219,7 @@ function orderHeaderSaveOrder() {
         return;
     }
     
-    $('#infoPopup p').text('Please wait, processing order');
+    $('#infoPopup p').text(g_orderHeaderPageTranslation.translateText('Please wait, processing order'));
     $('#infoPopup').popup('open');    
 
     g_markCustomerAsVisited(g_currentCompany().AccountID);	
