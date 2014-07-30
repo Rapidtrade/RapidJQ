@@ -7,124 +7,124 @@ var g_productdetailCurrentImageNumber = 0;
 
 function productdetailInit() {
 	
-	$.mobile.showPageLoadingMsg();
-	
-	//reset screen
-	$('.pricelistBusyImg').show();
-	g_productdetailIsPriceChanged = false;
-	
-	if ($('#quantity').hasClass('ui-disabled'))
-            $('#quantity').removeClass('ui-disabled');
-	
-	g_pricelistView = 'detail';
-	$('#pricelistPanel, #searchBarPanel').hide();
-	$('#productDetailPanel').show();	
-	$('#productDetailsMenu').show();
-	$('#productInfoMsgDiv').hide();
-	$('#pricelistMenu').hide();
-	$('#techicalInfoTextarea').hide();
-	$('#backbtn').show();
-        
-        if (DaoOptions.getValue('CanMultiImages') == 'true')
-            $('#prevImage, #nextImage').removeClass('invisible');
-	
-	overlaySetMenuItems();
-	
-	if (!g_productDetailInitialized) {		
-		
-		$('#divgrossvalue').append('<p class="ui-li-aside" id="grossvalue"></p>');
-		$('#divdiscountvalue').append('<p class="ui-li-aside" id="discount-r"></p>');	
-		
-		$('#divnettvalue').append('<p class="ui-li-aside" id="nett-r"></p>');
-		
-		if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true')
-			$('#whChoiceDiv').append('<p class="ui-li-aside" id="stockvalue" style="position:relative; top:-32px;"></p>');
-		else
-			$('#divstockvalue').append('<p class="ui-li-aside" id="stockvalue"></p>');
-		
-		g_productDetailInitialized = true;
-	}
-	
-	if (productdetailCanChangeNett(g_pricelistSelectedProduct.ProductID))
-		$('#nett-r').replaceWith('<input class="ui-li-aside ui-input-text ui-body-c ui-corner-all ui-shadow-inset" style="position:relative;top:-17px;width:90px" type="text" value="" onchange="productdetailOnNettChange()"/>');
-	else
-		$('#divnettvalue input').replaceWith('<p class="ui-li-aside" id="nett-r"></p>');
-	
-	$('#discount').toggle(DaoOptions.getValue('ProductDetHideDisc') != 'true');
-	
-	if (g_pricelistCanChangeDiscount) {		
-		sessionStorage.removeItem('maxdiscount');
-		var changeid = '.pricelistvalue';
-		if (DaoOptions.getValue('changediscountonly','false') == 'true') changeid = '.changediscountonly'; //check if can only change discount
-		
-		$(changeid).append('<a data-role="button"  data-transition="pop" data-rel="popup"  data-position-to="window" data-inline="true" href="#valuePopup"><img class="pricelistChangePriceImg" src="img/Money-Dollar-32.png"/></a>');
-		$(changeid).each(function() {			
-			$(this).click(function() {
-				var valueType = $(this).attr('id').replace('div', '').replace('value', '');
-				productdetailEditValue(valueType);
-			});
-		});
-		
-		$('p').css('margin-right', '10px');
-		$('img').attr('title', 'Change');
-	}
+    $.mobile.showPageLoadingMsg();
 
-	$('.hidden').removeClass('hidden');
-	
-	if (!g_pricelistSelectedProduct.Nett)
-		g_pricelistSelectedProduct.Nett = g_pricelistSelectedProduct.Gross * (1 - g_pricelistSelectedProduct.Discount / 100);
-	
-	$('#stockvalue').text('');
-	
-	// TEST CODE
+    //reset screen
+    $('.pricelistBusyImg').show();
+    g_productdetailIsPriceChanged = false;
+
+    if ($('#quantity').hasClass('ui-disabled'))
+        $('#quantity').removeClass('ui-disabled');
+
+    g_pricelistView = 'detail';
+    $('#pricelistPanel, #searchBarPanel').hide();
+    $('#productDetailPanel').show();	
+    $('#productDetailsMenu').show();
+    $('#productInfoMsgDiv').hide();
+    $('#pricelistMenu').hide();
+    $('#techicalInfoTextarea').hide();
+    $('#backbtn').show();
+
+    if (DaoOptions.getValue('CanMultiImages') == 'true')
+        $('#prevImage, #nextImage').removeClass('invisible');
+
+    overlaySetMenuItems();
+
+    if (!g_productDetailInitialized) {		
+
+            $('#divgrossvalue').append('<p class="ui-li-aside" id="grossvalue"></p>');
+            $('#divdiscountvalue').append('<p class="ui-li-aside" id="discount-r"></p>');	
+
+            $('#divnettvalue').append('<p class="ui-li-aside" id="nett-r"></p>');
+
+            if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true')
+                    $('#whChoiceDiv').append('<p class="ui-li-aside" id="stockvalue" style="position:relative; top:-32px;"></p>');
+            else
+                    $('#divstockvalue').append('<p class="ui-li-aside" id="stockvalue"></p>');
+
+            g_productDetailInitialized = true;
+    }
+
+    if (productdetailCanChangeNett(g_pricelistSelectedProduct.ProductID))
+            $('#nett-r').replaceWith('<input class="ui-li-aside ui-input-text ui-body-c ui-corner-all ui-shadow-inset" style="position:relative;top:-17px;width:90px" type="text" value="" onchange="productdetailOnNettChange()"/>');
+    else
+            $('#divnettvalue input').replaceWith('<p class="ui-li-aside" id="nett-r"></p>');
+
+    $('#discount').toggle(DaoOptions.getValue('ProductDetHideDisc') != 'true');
+
+    if (g_pricelistCanChangeDiscount) {		
+            sessionStorage.removeItem('maxdiscount');
+            var changeid = '.pricelistvalue';
+            if (DaoOptions.getValue('changediscountonly','false') == 'true') changeid = '.changediscountonly'; //check if can only change discount
+
+            $(changeid).append('<a data-role="button"  data-transition="pop" data-rel="popup"  data-position-to="window" data-inline="true" href="#valuePopup"><img class="pricelistChangePriceImg" src="img/Money-Dollar-32.png"/></a>');
+            $(changeid).each(function() {			
+                    $(this).click(function() {
+                            var valueType = $(this).attr('id').replace('div', '').replace('value', '');
+                            productdetailEditValue(valueType);
+                    });
+            });
+
+            $('p').css('margin-right', '10px');
+            $('img').attr('title', 'Change');
+    }
+
+    $('.hidden').removeClass('hidden');
+
+    if (!g_pricelistSelectedProduct.Nett)
+            g_pricelistSelectedProduct.Nett = g_pricelistSelectedProduct.Gross * (1 - g_pricelistSelectedProduct.Discount / 100);
+
+    $('#stockvalue').text('');
+
+    // TEST CODE
 //	productdetailSetStock(-9998);
-	// TEST CODE END
-	
-	if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true') {
-		
-		$('#divstockvalue').addClass('invisible');
-		$('#whChoiceDiv').removeClass('invisible');	
-	}
-	
-	var dao = new Dao();
-	dao.get('BasketInfo',
-                (g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID).trim(),
-                function(basketInfo) {
+    // TEST CODE END
 
-                        g_productdetailIsPriceChanged = basketInfo.RepChangedPrice ? basketInfo.RepChangedPrice : false;
+    if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true') {
 
-                        g_pricelistSelectedProduct.Discount = basketInfo.Discount;
-                        g_pricelistSelectedProduct.Nett = basketInfo.Nett;
-                        g_pricelistSelectedProduct.Gross = basketInfo.Gross;
+        $('#divstockvalue').addClass('invisible');
+        $('#whChoiceDiv').removeClass('invisible');	
+    }
 
-                        productdetailValue('nett', g_addCommas(parseFloat(g_productdetailIsPriceChanged ? basketInfo.RepNett : basketInfo.Nett).toFixed(2)));
-                        productdetailValue('discount', g_addCommas(parseFloat(g_productdetailIsPriceChanged ? basketInfo.RepDiscount : basketInfo.Discount).toFixed(2)) + '%');
+    var dao = new Dao();
+    dao.get('BasketInfo',
+            (g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID).trim(),
+            function(basketInfo) {
 
-                        $('#quantity').val(basketInfo.Quantity);
-                        //productdetailSetFocus();
+                    g_productdetailIsPriceChanged = basketInfo.RepChangedPrice ? basketInfo.RepChangedPrice : false;
 
+                    g_pricelistSelectedProduct.Discount = basketInfo.Discount;
+                    g_pricelistSelectedProduct.Nett = basketInfo.Nett;
+                    g_pricelistSelectedProduct.Gross = basketInfo.Gross;
 
-                },
-                function() {
-                        if (sessionStorage.getItem('currentordertype')=='repl') {
-                                $('#gross').hide();
-                                $('#discount').hide();
-                                $('#nettlabel').text('Cost');
-                                $('#pricelistview').listview('refresh');
-                                productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Cost).toFixed(2)));
-                                productdetailValue('discount', '');					
-                        } else {
-                                productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
-                                productdetailValue('discount', g_addCommas(parseFloat(g_pricelistSelectedProduct.Discount).toFixed(2)) + '%');					
-                        }
-                        $('#quantity').val('');
-                        //productdetailSetFocus();
+                    productdetailValue('nett', g_addCommas(parseFloat(g_productdetailIsPriceChanged ? basketInfo.RepNett : basketInfo.Nett).toFixed(2)));
+                    productdetailValue('discount', g_addCommas(parseFloat(g_productdetailIsPriceChanged ? basketInfo.RepDiscount : basketInfo.Discount).toFixed(2)) + '%');
+
+                    $('#quantity').val(basketInfo.Quantity);
+                    //productdetailSetFocus();
 
 
+            },
+            function() {
+                    if (sessionStorage.getItem('currentordertype')=='repl') {
+                            $('#gross').hide();
+                            $('#discount').hide();
+                            $('#nettlabel').text('Cost');
+                            $('#pricelistview').listview('refresh');
+                            productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Cost).toFixed(2)));
+                            productdetailValue('discount', '');					
+                    } else {
+                            productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
+                            productdetailValue('discount', g_addCommas(parseFloat(g_pricelistSelectedProduct.Discount).toFixed(2)) + '%');					
+                    }
+                    $('#quantity').val('');
+                    //productdetailSetFocus();
 
-                },
-                undefined
-                );	
+
+
+            },
+            undefined
+            );	
    
     $('#grossvalue').html(g_addCommas(parseFloat(g_pricelistSelectedProduct.Gross).toFixed(2)));
     $('.hproductId').text(g_pricelistSelectedProduct.ProductID);
@@ -729,7 +729,7 @@ function productdetailFetchLocalStock() {
 	if (g_pricelistSelectedProduct.Stock) {
 		productdetailSetStock(g_pricelistSelectedProduct.Stock);
 	} else {
-	    var key = g_currentUser().SupplierID + g_pricelistSelectedProduct.ProductID + g_currentCompany().BranchID;
+	    var key = g_currentUser().SupplierID + g_pricelistSelectedProduct.ProductID + g_currentBranch();
 	    var dao = new Dao();
 	    dao.get('Stock', key,
 			    function (json) {
