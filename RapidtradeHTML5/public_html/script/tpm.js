@@ -124,23 +124,23 @@ function tpmQualifySuccess() {
                     
                     console.log(json);
                                         
-                    if (json._getStatus === false) {
-                        
-                        g_busy(false);
+                    g_busy(false);  
+                    
+                    if (json._getStatus === false) {                        
                         
                         $('#infoPopup p').text(json._getErrorMsg || 'Unknown error');
                         $('#infoPopup').popup('open');
                         setTimeout(function() {
 
                             $('#infoPopup').popup('close');
+                            jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);
                         //    $.mobile.changePage('orderHeader.html');        
                             
                         }, 2000);
                         
                     } else {
-                    
-                        g_busy(false);
-                        jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);
+                        
+                        jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);                        
                     }
                 }, 
                 undefined);	
@@ -392,6 +392,19 @@ function tpmBuildNewCart() {
  */
 function tpmVerifySuccess() {	
     
+    var showTable = function(json) {
+        
+        for (var i = 0; i < json._order.orderItems.length; ++i) {
+
+            if ((json._order.orderItems[i].Userfield08 !== 'Y') && (!json._order.orderItems[i].Userfield10)) {
+
+                json._order.orderItems[i].hidden = true;
+            }
+        }
+
+        jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmverified','','list','table',tpmVerifyTableLoaded);        
+    };
+    
     g_busy(false);
     
     $('#verifyTPM').addClass('invisible');
@@ -404,19 +417,19 @@ function tpmVerifySuccess() {
         function (json) {
             if (!json._getStatus) {
                 
-                alert (json._getErrorMsg);  
-            }
-            else {                
+                $('#infoPopup p').text(json._getErrorMsg || 'Unknown error');
+                $('#infoPopup').popup('open');
+                setTimeout(function() {
+
+                    $('#infoPopup').popup('close');
+                    showTable(json);
+                //    $.mobile.changePage('orderHeader.html');        
+
+                }, 2000);                 
                 
-                for (var i = 0; i < json._order.orderItems.length; ++i) {
-                    
-                    if ((json._order.orderItems[i].Userfield08 !== 'Y') && (!json._order.orderItems[i].Userfield10)) {
-                        
-                        json._order.orderItems[i].hidden = true;
-                    }
-                }
+            } else {                
                 
-                jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmverified','','list','table',tpmVerifyTableLoaded);
+                showTable(json);
             }
         }, 
         undefined);	
