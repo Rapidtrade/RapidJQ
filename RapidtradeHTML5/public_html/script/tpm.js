@@ -147,7 +147,7 @@ function tpmQualifySuccess() {
                     
                     var messageHtml = '';
                     
-                    if (lineMessageField) {
+                    if (lineMessageField && json._order) {
                         
                         for (var items = json._order.orderItems, i = 0; i < items.length; ++i) {
                             
