@@ -769,42 +769,53 @@ function productdetailFetchLiveStockDiscount(livePriceUrl, checkUrl) {
 
 
 function productdetailPriceOnSuccess (json) {
-	
-	if (json.Message)
-		$('#pricePanel h2').html('Price<span style="color:red; padding-left:20px; font-size:0.8em">' + json.Message + '</span>');
-	
-	if (json.MaxDiscount){
-		if (json.MaxDiscount.MaxDiscount){
-			sessionStorage.setItem('maxdiscount', json.MaxDiscount.MaxDiscount);
-		} else {
-			sessionStorage.setItem('maxdiscount', 0);
-		}
-	}
-	
-	//show previous changed price
-	if (!g_productdetailIsPriceChanged) {		
-	    if (json.volumePrice && json.volumePrice[0]) {		    	
-	        productdetailCalculateDiscount(json.volumePrice);
-	        sessionStorage.setItem('volumePrice', JSON.stringify(json.volumePrice));
-	        g_pricelistVolumePrices[g_pricelistSelectedProduct.ProductID] = json.volumePrice[0];
-	    } else {	    	
-	        sessionStorage.setItem('volumePrice', JSON.stringify(""));
-	        productdetailValue('discount', '0.00%');
-	        $('#grossvalue').html(g_addCommas(parseFloat(g_pricelistSelectedProduct.Gross).toFixed(2)));
-	        productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
-	    }
-	}
-	
-	var setStockUnit = function (stockIndex) {
-		
-		productdetailSetStock(json.StockInf[stockIndex].Stock);
-		
-		if ((DaoOptions.getValue('LivePackSizeCheck') == 'true') && json.StockInf[stockIndex].Unit)
-			g_pricelistSelectedProduct.Unit = parseInt(json.StockInf[stockIndex].Unit, 10);
-	};
-	
-	//show live stock
-	var stockDataArray = json.StockInf;	
+        
+    if (json.Errormsg) {
+        
+        $('#productMessagePopup p').text(json.Errormsg)
+        $('#productMessagePopup a').hide();
+        
+        g_popup('#productMessagePopup').show(2000, function() {
+            
+            $('#productMessagePopup a').show();
+        });            
+    }
+        
+    if (json.Message)
+        $('#pricePanel h2').html('Price<span style="color:red; padding-left:20px; font-size:0.8em">' + json.Message + '</span>');
+
+    if (json.MaxDiscount){
+            if (json.MaxDiscount.MaxDiscount){
+                    sessionStorage.setItem('maxdiscount', json.MaxDiscount.MaxDiscount);
+            } else {
+                    sessionStorage.setItem('maxdiscount', 0);
+            }
+    }
+
+    //show previous changed price
+    if (!g_productdetailIsPriceChanged) {		
+        if (json.volumePrice && json.volumePrice[0]) {		    	
+            productdetailCalculateDiscount(json.volumePrice);
+            sessionStorage.setItem('volumePrice', JSON.stringify(json.volumePrice));
+            g_pricelistVolumePrices[g_pricelistSelectedProduct.ProductID] = json.volumePrice[0];
+        } else {	    	
+            sessionStorage.setItem('volumePrice', JSON.stringify(""));
+            productdetailValue('discount', '0.00%');
+            $('#grossvalue').html(g_addCommas(parseFloat(g_pricelistSelectedProduct.Gross).toFixed(2)));
+            productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
+        }
+    }
+
+    var setStockUnit = function (stockIndex) {
+
+            productdetailSetStock(json.StockInf[stockIndex].Stock);
+
+            if ((DaoOptions.getValue('LivePackSizeCheck') == 'true') && json.StockInf[stockIndex].Unit)
+                    g_pricelistSelectedProduct.Unit = parseInt(json.StockInf[stockIndex].Unit, 10);
+    };
+
+    //show live stock
+    var stockDataArray = json.StockInf;	
 	
     if (stockDataArray) {
     	
