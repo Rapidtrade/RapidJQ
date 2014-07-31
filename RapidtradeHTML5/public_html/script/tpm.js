@@ -17,7 +17,7 @@ function tpmBind() {
         
         var isOrder = ('saveTPM' === this.id);
         
-        var postType = isOrder ? 'Order' : 'Verify|' + sessionStorage.getItem('currentordertype');
+        var postType = isOrder ? sessionStorage.getItem('currentordertype') : 'Verify|' + sessionStorage.getItem('currentordertype');
         var onSuccess = isOrder ? tpmOrderSuccess : tpmVerifySuccess;
         
         tpmPost(postType, onSuccess);
@@ -117,33 +117,63 @@ function tpmPost(type, onSuccess) {
  */
 function tpmQualifySuccess() {	
     
+    var showTable = function(json) {
+        
+        g_busy(false);  
+
+        if (json._getStatus === false) {                        
+
+            $('#infoPopup p').text(json._getErrorMsg || 'Unknown error');
+            g_popup('#infoPopup').show(2000, function(){
+                
+                    jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);
+                //    $.mobile.changePage('orderHeader.html');                       
+            });            
+
+        } else {
+
+            jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);                        
+        }        
+    };
+    
     var url = DaoOptions.getValue('LiveGetResultsURL');
     if (!url) url = g_restUrl + 'Orders/Exists';	
     g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', 
                 function (json) {
                     
                     console.log(json);
-                                        
-                    g_busy(false);  
                     
-                    if (json._getStatus === false) {                        
+                    var lineMessageField = DaoOptions.getValue('TPMLineMessage');
+                    
+                    var messageHtml = '';
+                    
+                    if (lineMessageField) {
                         
-                        $('#infoPopup p').text(json._getErrorMsg || 'Unknown error');
-                        $('#infoPopup').popup('open');
-                        setTimeout(function() {
-
-                            $('#infoPopup').popup('close');
-                            jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);
-                        //    $.mobile.changePage('orderHeader.html');        
+                        for (var items = json._order.orderItems, i = 0; i < items.length; ++i) {
                             
-                        }, 2000);
+                            if (messageHtml)
+                                messageHtml += '<br />';
+                            
+                            messageHtml += items[i][lineMessageField] || '';
+                        }                    
+                    }
+                    
+                    if (messageHtml) {
+                        
+                        $('#infoPopup p').html(messageHtml);
+                        
+                        g_busy(false);
+                        
+                        g_popup('#infoPopup').show(2000, function() {
+                            
+                            showTable(json);                            
+                        });                                                   
                         
                     } else {
-                        
-                        jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);                        
+                                          
+                        showTable(json);
                     }
-                }, 
-                undefined);	
+                });	
 }
 
 /*
