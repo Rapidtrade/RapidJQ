@@ -215,7 +215,8 @@ function shoppingCartConfirmScanResetBarcode() {
 }
 
 function shoppingCartRemoveAllItems() {
-	$.mobile.showPageLoadingMsg();
+    
+    $.mobile.showPageLoadingMsg();
     var dao = new Dao();
     dao.cursor('BasketInfo', undefined, undefined,
      function (basketInfo) {
@@ -338,7 +339,7 @@ function shoppingCartAddItem(item, checkSummary) {
 	if (sessionStorage.getItem("currentordertype") == "Credit") maxValue = 'max="' +  item.UserField02 + '"';
 	
         var itemIndex = g_shoppingCartItemKeys.length;
-        g_shoppingCartItemKeys.push(item.key)
+        g_shoppingCartItemKeys.push(item.key);
 	
 	g_basketHTML +=
         '<li id="LI' + itemIndex + '"' + alphaFilter.getInstance().addClass(item.Description) + '>' +
@@ -360,7 +361,7 @@ function shoppingCartAddItem(item, checkSummary) {
         '  </table>' +
         '</a>' +
         (shoppingCartIsGRV() ? '' :
-             ' <a href="#" onclick = "shoppingCartDeleteItem(\'' + itemIndex + '\', ' +  (DaoOptions.getValue('LostSaleActivityID') != undefined) + ', true)" class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
+             ' <a href="#" onclick="shoppingCartDeleteItem(\'' + item.key + '\', ' +  (DaoOptions.getValue('LostSaleActivityID') != undefined) + ', true)" class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
              '<span class="ui-btn-inner ui-btn-corner-all">' +
              '<span class="ui-icon ui-icon-delete ui-icon-shadow">delete</span>' +
              '</span>' +
@@ -454,10 +455,8 @@ function shoppingCartCheckItemsCount() {
     }
 }
 
-function shoppingCartDeleteItem(itemIndex, saveLostSale, removeNode, onSuccess, resetItemsOnPageNumber) {
+function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetItemsOnPageNumber) {
     //g_shoppingCartTotalExcl = g_shoppingCartVAT = g_shoppingCartTotalIncl = 0;
-    
-    var key = g_shoppingCartItemKeys[itemIndex];
     
     var dao = new Dao();
     g_clearCacheDependantOnBasket(resetItemsOnPageNumber);
@@ -478,15 +477,22 @@ function shoppingCartDeleteItem(itemIndex, saveLostSale, removeNode, onSuccess, 
 	    	} else {
 	    		
                     if (removeNode) { 
-                            try {
-                                    var val = parseFloat($('#' + itemIndex + 'total').text().replace(/[,]/g, '')); 
-                                    g_shoppingCartTotalExcl -= val;
-                                    shoppingCartRecalcTotals();
-                            } catch (err){
-                                    console.log(err.message);
-                            }
-                            $('#LI' + itemIndex).remove();
-                            shoppingCartCheckItemsCount();		    		
+                        
+                        var itemIndex = $.inArray(key, g_shoppingCartItemKeys);
+                        
+                        try {
+                            
+                            var val = parseFloat($('#' + itemIndex + 'total').text().replace(/[,]/g, '')); 
+                            g_shoppingCartTotalExcl -= val;
+                            shoppingCartRecalcTotals();
+                            
+                        } catch (err){
+                            
+                            console.log(err.message);
+                        }
+                        
+                        $('#LI' + itemIndex).remove();
+                        shoppingCartCheckItemsCount();		    		
                     } 
 	    	}
                 
@@ -519,7 +525,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
     if (!quantity) {
     	
 //    	if (confirm('Are you sure you want to remove the item from basket?')) {
-    		shoppingCartDeleteItem(itemIndex, DaoOptions.getValue('LostSaleActivityID') != undefined, true);
+    		shoppingCartDeleteItem(g_shoppingCartItemKeys[itemIndex], DaoOptions.getValue('LostSaleActivityID') != undefined, true);
     		return;
 //    	}
     	
