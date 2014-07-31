@@ -699,7 +699,9 @@ function orderHeaderOnOrderSaved() {
     sessionStorage.setItem('HistoryCacheAccountID', '');
     
     $('#infoPopup').popup('close');
-    g_alert(g_orderHeaderPageTranslation.translateText('Your order was saved OK'));
+    var text = 'Your order was saved OK';
+ 
+    g_alert($.isEmptyObject(g_orderHeaderPageTranslation) ? text : g_orderHeaderPageTranslation.translateText(text));
     sessionStorage.setItem('HistoryCacheAccountID', '');
 
     if (DaoOptions.getValue('DeliveryOrderType'))
