@@ -261,43 +261,58 @@ function orderdetailsSendOrderItem(itemIndex) {
 	};
 	
 	$('#sendItemButton').click(function(event) {
+            
+            $(this).unbind(event);
+            
+            if (enteredQuantity() === 0) {
+                
+                var deleteItemOnSuccess = function() {
+                    
+                    $('#' + syncGetKeyField(item, 'OrderItems')).find('.orderedQuantity').empty();               
+                };                
+                
+                shoppingCartDeleteItem($.trim(item.ProductID) + $.trim(item.SupplierID) + g_currentUser().UserID + $.trim(item.AccountID), 
+                        DaoOptions.getValue('LostSaleActivityID') != undefined, 
+                        undefined, 
+                        deleteItemOnSuccess);
+                        
+                return;                
+            }            
 		
-		var isValid = (enteredQuantity() > 0);
-		
-		if (isValid && orderdetailsIsCreditSelected())
-                    isValid = (enteredQuantity() <= parseInt(item.Quantity, 10));
-		
-		if (!isValid)
-			alert('Please enter a valid quantity');
-		
-		if (isValid && item.Unit) {
-			
-                    isValid = enteredQuantity() % item.Unit > 0;
+            var isValid = (enteredQuantity() > 0);
 
-                    if (!isValid) {
+            if (isValid && orderdetailsIsCreditSelected())
+                isValid = (enteredQuantity() <= parseInt(item.Quantity, 10));
 
-                        alert('You are ordering in incorrect units. The pack size requires you to order in units of ' + g_pricelistSelectedProduct.Unit);
-                        isValid = false;
-                    }
-		} 
-		
-		$(this).unbind(event);
-		
-                if ($('#creditReasonDiv option:selected').val())
-                    item.UserField01 = $('#creditReasonDiv option:selected').val();
+            if (!isValid)
+                    alert('Please enter a valid quantity');
+
+            if (isValid && item.Unit) {
+
+                isValid = enteredQuantity() % item.Unit > 0;
+
+                if (!isValid) {
+
+                    alert('You are ordering in incorrect units. The pack size requires you to order in units of ' + g_pricelistSelectedProduct.Unit);
+                    isValid = false;
+                }
+            } 		
+
+            if ($('#creditReasonDiv option:selected').val())
+                item.UserField01 = $('#creditReasonDiv option:selected').val();
+
+            if (orderdetailsIsCreditSelected())
+                item.UserField02 = item.Quantity;
+
+            if (isValid) {
+
+                item.Quantity = enteredQuantity();
+
+                orderdetailsSendItemToBasket(item, true);
 
                 if (orderdetailsIsCreditSelected())
-                    item.UserField02 = item.Quantity;
-				
-		if (isValid) {
-                    
-                    item.Quantity = enteredQuantity();
-			
-                    orderdetailsSendItemToBasket(item, true);
-                   
-                    if (orderdetailsIsCreditSelected())
-                        $('.historyOrderItems tr:contains("' + item.ProductID + '") .descr').text(item.Quantity + ' [-' + enteredQuantity() + ']');
-		}
+                    $('.historyOrderItems tr:contains("' + item.ProductID + '") .descr').text(item.Quantity + ' [-' + enteredQuantity() + ']');
+            }
 	});
 }
 
@@ -484,19 +499,19 @@ function orderdetailsFetchOrderItems() {
 	 
 	 var onFetchLiveSuccess = function(json) {
 		 
-			var stockDataArray = json.StockInf;	
-			
-		    if (stockDataArray) {    	 
-		    	
-		    	for (var i = 0; i < stockDataArray.length; ++i) {   		
-		    		
-		    		if  (!g_currentCompany().BranchID  || ($.trim(stockDataArray[i].Warehouse.split(':')[0]) == g_currentCompany().BranchID)) {
-		    			
-		    			setStock(json.StockInf[i].Stock);
-		    			break;
-		    		}
-		    	}
-		    } 
+                var stockDataArray = json.StockInf;	
+
+                if (stockDataArray) {    	 
+
+                    for (var i = 0; i < stockDataArray.length; ++i) {   		
+
+                            if  (!g_currentCompany().BranchID  || ($.trim(stockDataArray[i].Warehouse.split(':')[0]) == g_currentCompany().BranchID)) {
+
+                                    setStock(json.StockInf[i].Stock);
+                                    break;
+                            }
+                    }
+                } 
 	 };
 	 
 	if (DaoOptions.getValue('MobileLiveStockDiscount') == 'true') {
