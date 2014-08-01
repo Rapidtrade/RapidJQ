@@ -180,8 +180,13 @@ function menuInit(){
                 'user',
                 function(user) {
 
-                    if (localStorage.getItem('lastSyncDate') != g_today())
+                    if (localStorage.getItem('lastSyncDate') != g_today()) {
+                        
                         alert('You haven\'t synchronised today. You should do so now to keep up to date. After clicking OK, click on the Syncronise button');
+                        
+                        dao.clear('Orders');
+                        dao.clear('OrderItems');
+                    }
 
                     sessionStorage.setItem('currentUser', JSON.stringify(user));
                     g_callCycleCurrentUserID = user.UserID;

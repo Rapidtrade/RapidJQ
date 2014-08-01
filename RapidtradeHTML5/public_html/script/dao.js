@@ -1,4 +1,4 @@
-﻿var db;
+var db;
 function Dao() {
     /*
 	 * this method is used to read the database.
@@ -803,6 +803,8 @@ function Dao() {
                 return item.ProductID;
             } else if ((table == 'ProductCategories2') || (table == 'ProductCategory2Link')) {
                 return item.p;
+            } else if (table == 'Orders') {
+                return $.trim(item.AccountID);
             } else if (table == 'OrderItems') {
                 return $.trim(item.AccountID) + $.trim(item.ProductID);
             }
@@ -828,6 +830,8 @@ function Dao() {
                 return item.Warehouse;	
             } else if ((table == 'ProductCategories2') || (table == 'ProductCategory2Link')) {
                 return item.c;
+            } else if (table == 'OrderItems') {
+                return item.OrderID;
             };
             
             return '';

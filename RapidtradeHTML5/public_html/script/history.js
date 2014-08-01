@@ -167,6 +167,7 @@ function historyFetchActivities() {
     var error = function (e) {
     	alert('You dont seem to be online');
         console.log(e.message);
+        historyFetchOrders();        
     };
     
     g_ajaxget(url, success, error);	 
@@ -177,8 +178,8 @@ function historyFetchActivities() {
  */
 function historyActivitiesListView(activities){
 	
-	var prevdate = '';
-	$("#activityUL").empty();
+    var prevdate = '';
+    $("#activityUL").empty();
    
     if (!activities  || !activities.length) {
     	
@@ -229,7 +230,7 @@ function historyActivitiesListView(activities){
 
 function historyAttachActivityToItem(activity, itemSelector) {
 	
-	$(itemSelector).off('click');
+    $(itemSelector).off('click');
     $(itemSelector).on('click', function(activity) {
     	
     	return function() {
@@ -241,60 +242,84 @@ function historyAttachActivityToItem(activity, itemSelector) {
 
 function historyEditActivity(activity) {
 
-	activityFormShowInPopup(activity, '#activityPopup');
-	
-	$('#activityPopup').on('popupafterclose', function(event) {
-		
-		if (sessionStorage.getItem('activitySavedItems')) {
-			
-			activity = JSON.parse(sessionStorage.getItem('currentActivity'));				
-			
-			var activitySavedItems = JSON.parse(sessionStorage.getItem('activitySavedItems'));
-			
-			activity.Data = activitySavedItems.Data;
-			activity.Notes = activitySavedItems.Notes;
-			
-			sessionStorage.removeItem('activitySavedItems');
-			
-			$('#' + activity.EventID).find('.data').text(activity.Data);
-			$('#' + activity.EventID).find('.notes').html('<strong>' + activity.Notes + '</strong>');
-			
-			historyAttachActivityToItem(activity, $('#' + activity.EventID).find('.activityLink'));
-		};
-		
-		sessionStorage.removeItem('currentActivity');
-	});	
+    activityFormShowInPopup(activity, '#activityPopup');
+
+    $('#activityPopup').on('popupafterclose', function(event) {
+
+            if (sessionStorage.getItem('activitySavedItems')) {
+
+                    activity = JSON.parse(sessionStorage.getItem('currentActivity'));				
+
+                    var activitySavedItems = JSON.parse(sessionStorage.getItem('activitySavedItems'));
+
+                    activity.Data = activitySavedItems.Data;
+                    activity.Notes = activitySavedItems.Notes;
+
+                    sessionStorage.removeItem('activitySavedItems');
+
+                    $('#' + activity.EventID).find('.data').text(activity.Data);
+                    $('#' + activity.EventID).find('.notes').html('<strong>' + activity.Notes + '</strong>');
+
+                    historyAttachActivityToItem(activity, $('#' + activity.EventID).find('.activityLink'));
+            };
+
+            sessionStorage.removeItem('currentActivity');
+    });	
 }
 
 function historyShowPhotoForActivity(id) {
 	
-	$('#imagePopup img').attr('src', g_restUrl + 'Files/GetImage?id=' + id + '&supplierID=' + g_currentUser().SupplierID + '&width=700&height=700');
-	$('#imagePopup').popup('open');
+    $('#imagePopup img').attr('src', g_restUrl + 'Files/GetImage?id=' + id + '&supplierID=' + g_currentUser().SupplierID + '&width=700&height=700');
+    $('#imagePopup').popup('open');
 }
 
 /*
  * fetch orders history for a company 
  */
 function historyFetchOrders() {
-	
-        var url = DaoOptions.getValue('LiveHistoryOrders') || g_restUrl + 'Orders/GetCollection';
+    
+    if (!g_isOnline(false)) {
 
-        url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&skip=0&top=100&format=json';
+        var orders = [];
         
-        console.log(url);
-        
-        var success = function (json) {
-        	
-            sessionStorage.setItem('CacheHistoryOrders',JSON.stringify(json)); //cache results
-            historyOrderListView(json);            
+        var showOrders = function() {            
+            
+            sessionStorage.setItem('CacheHistoryOrders',JSON.stringify(orders));
+            historyOrderListView(orders);           
+            $.mobile.hidePageLoadingMsg();
         };
-        
-        var error = function (e) {
-            console.log(e.message);
-        };
-        
-        g_ajaxget(url, success, error);
+
+        $.mobile.showPageLoadingMsg();
+
+        var dao = new Dao;
+        dao.index('Orders', g_currentCompany().AccountID, 'index1', function(order) {
+
+            orders.push(order);
+
+        }, undefined, showOrders);
+
+        g_busy(false);
+        return;        
     }
+
+    var url = DaoOptions.getValue('LiveHistoryOrders') || g_restUrl + 'Orders/GetCollection';
+
+    url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&skip=0&top=100&format=json';
+
+    console.log(url);
+
+    var success = function (json) {
+
+        sessionStorage.setItem('CacheHistoryOrders',JSON.stringify(json)); //cache results
+        historyOrderListView(json);            
+    };
+
+    var error = function (e) {
+        console.log(e.message);
+    };
+
+    g_ajaxget(url, success, error);
+}
 
 /*
  * create table of orders, Onclick, show popup with order details and ordered items
@@ -347,14 +372,14 @@ function historyOrderListView(orders) {
         	order.ERPOrderNumber = "";
         
         ordersList = ordersList +   '<li>' +
-        							'	<a onclick="historyOrderOnClick(' + i + ')">' + 
-        							'        <h3 class="ui-li-heading">' + order.Reference + '</h3>' +
-        							'        <p class="ui-li-desc">' + order.Comments + '</p>' +
-        							'        <p class="ui-li-desc"><strong>' + order.ERPOrderNumber + '</strong></p>' +
-        							'        <p class="ui-li-aside ui-li-desc"><strong>' + displayedDate + '</strong></p>' +
-        							'        <p><strong>' + (order.Type ? order.Type.toUpperCase() : '') +  '</strong></p>' +
-        							'   </a>' +
-        							'</li>';   		
+                                    '	<a onclick="historyOrderOnClick(' + i + ')">' + 
+                                    '        <h3 class="ui-li-heading">' + order.Reference + '</h3>' +
+                                    '        <p class="ui-li-desc">' + order.Comments + '</p>' +
+                                    '        <p class="ui-li-desc"><strong>' + order.ERPOrderNumber + '</strong></p>' +
+                                    '        <p class="ui-li-aside ui-li-desc"><strong>' + displayedDate + '</strong></p>' +
+                                    '        <p><strong>' + (order.Type ? order.Type.toUpperCase() : '') +  '</strong></p>' +
+                                    '   </a>' +
+                                    '</li>';   		
     }
     
     g_append('#orderlist', ordersList);

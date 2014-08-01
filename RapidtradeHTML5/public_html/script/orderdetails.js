@@ -320,103 +320,137 @@ function orderdetailsSendOrderItem(itemIndex) {
  * 
  */
 function orderdetailsFetchOrderItems() {
-    
-    var isMasterChartSynced = sessionStorage.getItem('MasterChartSynced');
-	
-	g_orderdetailsOrderItems = [];
 
 //	var testorder = new Object();
 //	testorder.SupplierID = "DS";
 //	testorder.Type = "DatePicker";
 //	testorder.Name = "display";
 //	testorder.Visible = true;
-	
-	$.mobile.showPageLoadingMsg(); 
-	
-        var isMasterOrder = (g_orderdetailsCurrentOrder.Type === DaoOptions.getValue('DownloadOrderType'));
+
+    var orderItems = [];
+    var itemsShown = false;
+
+    var showOrderItems = function() {
         
-        var url = (isMasterOrder ? DaoOptions.getValue('DownloadOrderURL') + '/rest/' : (DaoOptions.getValue('LiveHistoryItems') || g_restUrl)) + 'Orders/';
-        
-	url +=  'GetOrderItems' + (isMasterOrder ? 'ByType3' : '');
-	
-	url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&orderID=' + g_orderdetailsCurrentOrder.OrderID + '&skip=0&top=100&format=json';
-        
-        console.log(url);
-	
-	var success = function (json) {
-		
-	    $('#orderitemlist').empty();
-
-	    var jsonForm = new JsonForm();
-	    jsonForm.show(g_currentUser().SupplierID, '#orderDetailspopup', g_orderdetailsCurrentOrder, 'StatusOrderHeader');
-	    
-	    for (var i = 0; i < json.length; i++) {
-	    	
-	        var orderItem = json[i];
-	        
-	        var nettValue = orderItem.RepNett ? orderItem.RepNett : orderItem.Nett;
-                var itemKey = syncGetKeyField(orderItem, 'OrderItems');
-
-                var quantityInputHtml = '';
-                
-                if (isMasterChartSynced === 'true') {
-  		
-                    var step = 'step=' + (g_isPackSizeUnitValid(pricelist.Unit) ? pricelist.Unit : 1) + ' min=0';
-
-                    quantityInputHtml = '<td class="value"><input type="number" style="width:85px;position:relative;top:0px;display:inline" ' + step + 
-                            ' class="captureQuantity ui-input-text ui-body-c ui-corner-all ui-shadow-inset" onkeydown="orderdetailsQuickCapture(event, this, \'' + itemKey + '\',' + g_orderdetailsOrderItems.length + ')"/></td>';
-                }
-
-                orderItem.Description = orderItem.Description.replace(/'/g, '&quot;');
-
-	        g_append('#orderitemlist', '<li data-theme="c" id="' + itemKey + '">' +
-                    '   <a><p class="ui-li-heading"><strong>' + orderItem.Description + '</strong></p>' +
-                    '   <table class="ui-li-desc historyOrderItems"><tr><td class="itemId">' + orderItem.ItemID + '</td><td class="productId">' + orderItem.ProductID + 
-                    '</td><td class="quantity">' + orderItem.Quantity + '</td><td class="value">' + g_roundToTwoDecimals(nettValue) + 
-                    '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td><td class="orderedQuantity"></td>' + quantityInputHtml + '</tr></table></a>' +
-                    '	<a onclick="orderdetailsSendOrderItem(' + g_orderdetailsOrderItems.length + ')" data-role="button" data-transition="pop" data-rel="popup"  data-position-to="window" data-inline="true"' +
-                    '	class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
-                    '	<span class="ui-btn-inner ui-btn-corner-all">' +
-                    '	<span class="ui-icon ui-icon-plus ui-icon-shadow">Send to Basket</span>' +
-                    '	</span>' +
-                    '	</a></a>' +
-                    '	</li>');
-
-	        g_orderdetailsOrderItems.push(orderItem);
-	    }
+        if (!itemsShown) {
             
-            console.log($('#orderitemlist li:first').html());
-	  
-	    $.mobile.changePage("#orderdetails", { transition: "none" });
-	    $('#orderitemlist').listview('refresh');
-            
+            $.mobile.hidePageLoadingMsg();
+            orderdetailsShowOrderItems(orderItems);
+            itemsShown = true;
             orderdetailsCheckBasket();
-            
-            if ((DaoOptions.getValue('AllowHistoryDownload', 'false') == 'true')) {
-            
-                $('#orderitemlist li').each(function() {
+        }
+    }; 
 
-                    var that = this;
+    if (!g_isOnline(false) && (g_orderdetailsCurrentOrder.Type === DaoOptions.getValue('DownloadOrderType'))) {
+        
+        itemsShown = false;
+        
+        $.mobile.showPageLoadingMsg();
+        
+        var dao = new Dao;
+        dao.index('OrderItems', g_orderdetailsCurrentOrder.OrderID, 'index2', function(order) {
 
-                    orderdetailsFetchMasterChartBarcode(this.id, function(barcode) {
+            orderItems.push(order);
 
-                       var $description = $(that).find('p.ui-li-heading strong');
-                       $description.text($description.text() + ' (' + barcode + ' )');                    
-                    });
-                });
-            }
-            
-	    $.mobile.hidePageLoadingMsg();
-	};
-	
-	var error = function (e) {
-		
-	    console.log(e.message);
-	    $.mobile.hidePageLoadingMsg();
-	};
-	
-	g_ajaxget(url, success, error);
+        }, showOrderItems, showOrderItems); 
+        
+        return;
+    }
+
+
+    $.mobile.showPageLoadingMsg(); 
+
+    var isSpecialOrder = (g_orderdetailsCurrentOrder.Type === DaoOptions.getValue('DownloadOrderType'));
+
+    var url = (isSpecialOrder ? DaoOptions.getValue('DownloadOrderURL') + '/rest/' : (DaoOptions.getValue('LiveHistoryItems') || g_restUrl)) + 'Orders/';
+
+    url +=  'GetOrderItems' + (isSpecialOrder ? 'ByType3' : '');
+
+    url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&orderID=' + g_orderdetailsCurrentOrder.OrderID + '&skip=0&top=100&format=json';
+
+    console.log(url);
+
+    var success = function (json) {
+
+        orderdetailsShowOrderItems(json);
+
+        orderdetailsCheckBasket();
+
+        $.mobile.hidePageLoadingMsg();
+    };
+
+    var error = function (e) {
+
+        console.log(e.message);
+        $.mobile.hidePageLoadingMsg();
+    };
+
+    g_ajaxget(url, success, error);
  };
+ 
+ function orderdetailsShowOrderItems(orderItems) {
+     
+    g_orderdetailsOrderItems = [];
+     
+    $('#orderitemlist').empty();
+
+    var jsonForm = new JsonForm();
+    jsonForm.show(g_currentUser().SupplierID, '#orderDetailspopup', g_orderdetailsCurrentOrder, 'StatusOrderHeader');
+
+    for (var i = 0; i < orderItems.length; i++) {
+
+        var orderItem = orderItems[i];
+
+        var nettValue = orderItem.RepNett ? orderItem.RepNett : orderItem.Nett;
+        var itemKey = syncGetKeyField(orderItem, 'OrderItems');
+
+        var quantityInputHtml = '';
+
+        if (g_orderdetailsCurrentOrder.Type === DaoOptions.getValue('DownloadOrderType')) {
+
+            var step = 'step=' + (g_isPackSizeUnitValid(pricelist.Unit) ? pricelist.Unit : 1) + ' min=0';
+
+            quantityInputHtml = '<td class="value"><input type="number" style="width:85px;position:relative;top:0px;display:inline" ' + step + 
+                    ' class="captureQuantity ui-input-text ui-body-c ui-corner-all ui-shadow-inset" onkeydown="orderdetailsQuickCapture(event, this, \'' + itemKey + '\',' + g_orderdetailsOrderItems.length + ')"/></td>';
+        }
+
+        orderItem.Description = orderItem.Description.replace(/'/g, '&quot;');
+
+        g_append('#orderitemlist', '<li data-theme="c" id="' + itemKey + '">' +
+            '   <a><p class="ui-li-heading"><strong>' + orderItem.Description + '</strong></p>' +
+            '   <table class="ui-li-desc historyOrderItems"><tr><td class="itemId">' + orderItem.ItemID + '</td><td class="productId">' + orderItem.ProductID + 
+            '</td><td class="quantity">' + orderItem.Quantity + '</td><td class="value">' + g_roundToTwoDecimals(nettValue) + 
+            '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td><td class="orderedQuantity"></td>' + quantityInputHtml + '</tr></table></a>' +
+            '	<a onclick="orderdetailsSendOrderItem(' + g_orderdetailsOrderItems.length + ')" data-role="button" data-transition="pop" data-rel="popup"  data-position-to="window" data-inline="true"' +
+            '	class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
+            '	<span class="ui-btn-inner ui-btn-corner-all">' +
+            '	<span class="ui-icon ui-icon-plus ui-icon-shadow">Send to Basket</span>' +
+            '	</span>' +
+            '	</a></a>' +
+            '	</li>');
+
+        g_orderdetailsOrderItems.push(orderItem);
+    }
+
+    console.log($('#orderitemlist li:first').html());
+
+    $.mobile.changePage("#orderdetails", { transition: "none" });
+    $('#orderitemlist').listview('refresh');  
+    
+    if ((DaoOptions.getValue('AllowHistoryDownload', 'false') === 'true')) {
+
+        $('#orderitemlist li').each(function() {
+
+            var that = this;
+
+            orderdetailsFetchMasterChartBarcode(this.id, function(barcode) {
+
+               var $description = $(that).find('p.ui-li-heading strong');
+               $description.text($description.text() + ' (' + barcode + ' )');                    
+            });
+        });
+    }    
+ }
  
  function orderdetailsQuickCapture(event, inputElement, itemKey, rowIndex) {
      
