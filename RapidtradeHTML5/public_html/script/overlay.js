@@ -1,6 +1,6 @@
 function overlayInit(pageId) {
 	
-    var menuPanel = '<div data-role="panel" data-dismissible="false" id="menuPanel" class="overlayMenu invisible" data-theme="b">';
+    var menuPanel = '<div data-role="panel" data-dismissible="false" data-display="push" id="menuPanel" class="overlayMenu invisible" data-theme="b">';
 
     if (g_currentUser().Role != 'CUST') {
 
