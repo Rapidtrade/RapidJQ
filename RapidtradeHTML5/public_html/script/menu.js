@@ -50,6 +50,7 @@ function menuOnPageShowSmall() {
 	
     if (g_isScreenSmall()) {
 
+            $('#syncImg').attr('src', 'img/sync32.png');
             $('#todayImg').attr('src', 'img/Calendar-32.png');
             $('#myTerritoryImg').attr('src', 'img/Client-Male-Light-32.png');
             $('#myKPIsImg').attr('src', 'img/Bar-Graph-32.png');
@@ -249,8 +250,7 @@ function menuShowButtons() {
 			sessionStorage.setItem('HistoryNoFooter','true');
 			
 			$('.menuIconPanel').hide();
-			$('#syncMenuItem').show();
-			$('.customerMenuItem').show();
+			$('#syncMenuItem, .customerMenuItem').show();
 			
 		} else {
 			
