@@ -14,6 +14,14 @@ function orderdetailsOnPageBeforeCreate() {
 }
 
 function orderdetailsOnPageShow() {
+    
+    g_orderdetailsPageTranslation.safeExecute(function(){
+        
+        g_orderdetailsPageTranslation.translateButton('#shoppingcartButton', 'Shopping Cart');
+        g_orderdetailsPageTranslation.translateButton('#sendToBasketButton', 'Send all to Cart');
+        g_orderdetailsPageTranslation.translateButton('#orderDetailsBackButton', 'Back');
+        g_orderdetailsPageTranslation.translateRadioButton('radioOrder', 'Order');
+    });
 	
     orderdetailsInit();
     orderdetailsBind();

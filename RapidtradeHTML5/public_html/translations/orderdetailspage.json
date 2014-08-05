@@ -1,3 +1,16 @@
 {
-    "Shopping Cart": {"pt": "Carrinho de compras"}
+    "Shopping Cart": {"pt": "Carrinho de compras"},
+    "ID": {"pt": "Identidade"},
+    "PostedToERP": {"pt": "Enviada para o ERP"},
+    "Comments": {"pt": "Comentários"},
+    "Reference": {"pt": "Referência"},
+    "CreateDate": {"pt": "Data de criaзгo"},
+    "Required By": {"pt": "Data de entrega"},
+    "Order Number": {"pt": "Nъmero dar ordem"},
+    "Status": {"pt": "Estado"},
+    "Items": {"pt": "Itens"},
+    "Send all to Cart": {"pt": "Enviar para carrinho de compras"},
+    "Back": {"pt": "Voltar"},
+    "Order Details": {"pt": "Detalhes da encomenda"},
+    "Order": {"pt": "Encomenda"}    
 }
