@@ -561,10 +561,10 @@ function orderHeaderOnLineSaveError(error) {
 
 function orderHeaderOfflineSaveSuccess() {
 	
-	$('#infoPopup').popup('close');
-	g_alert('Your order was saved locally. Please sync later to send this order');
-	sessionStorage.setItem('HistoryCacheAccountID', '');
-	orderHeaderRemoveFromCart();
+    $('#infoPopup').popup('close');
+    g_alert(g_orderHeaderPageTranslation.translateText('Your order was saved locally. Please sync later to send this order.'));
+    sessionStorage.setItem('HistoryCacheAccountID', '');
+    orderHeaderRemoveFromCart();
 }
 
 
