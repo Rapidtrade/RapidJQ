@@ -12,5 +12,11 @@
     "Send all to Cart": {"pt": "Enviar para carrinho de compras"},
     "Back": {"pt": "Voltar"},
     "Order Details": {"pt": "Detalhes da encomenda"},
-    "Order": {"pt": "Encomenda"}    
+    "Order": {"pt": "Encomenda"},
+    "Items have been sent to your shopping cart. Would you like to go to the shopping cart now?": {"pt": "Itens foram enviados para o carrinho de compras, gostaria de visitar o carrinho de compras agora?"},
+    "Stock on hand:": {"pt": "Estoque disponнvel:"},
+    "Quantity required:": {"pt": "Quantidade necessбria:"},  
+    "Send": {"pt": "Enviar"},
+    "Cancel": {"pt": "Cancelar"},
+    "Item sent successfully.": {"pt": "Artigo enviada com sucesso!"}
 }

@@ -20,6 +20,8 @@ function orderdetailsOnPageShow() {
         g_orderdetailsPageTranslation.translateButton('#shoppingcartButton', 'Shopping Cart');
         g_orderdetailsPageTranslation.translateButton('#sendToBasketButton', 'Send all to Cart');
         g_orderdetailsPageTranslation.translateButton('#orderDetailsBackButton', 'Back');
+        g_orderdetailsPageTranslation.translateButton('#sendItemButton', 'Send');
+        g_orderdetailsPageTranslation.translateButton('#cancel', 'Cancelar');
         g_orderdetailsPageTranslation.translateRadioButton('radioOrder', 'Order');
     });
 	
@@ -75,7 +77,7 @@ function orderdetailsBind() {
     	g_clearCacheDependantOnBasket();
     	orderdetailsCheckBasket();
 
-    	if (confirm('Items have been sent to your shopping cart. Would you like to go to the shopping cart now?')) {    		
+    	if (confirm(g_orderdetailsPageTranslation.translateText('Items have been sent to your shopping cart. Would you like to go to the shopping cart now?'))) {    		
     		sessionStorage.setItem('ShoppingCartReturnPage', 'orderdetails.html');
     		$.mobile.changePage("shoppingCart.html");
     	}

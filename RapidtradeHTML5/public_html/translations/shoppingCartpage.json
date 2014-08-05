@@ -1,9 +1,11 @@
 {
     "Shopping Cart": {"pt": "Carrinho de compras"},
-    "Checkout": {"pt": "guardar"},
-    "Pricelist": {"pt": "lista de preços"} ,
-    "Delete All": {"pt": "cancelar todos"},
+    "Order Details": {"pt": "Detalhes da encomenda"},    
+    "Checkout": {"pt": "Guardar"},
+    "Pricelist": {"pt": "Lista de preços"} ,
+    "Delete All": {"pt": "Cancelar todos"},
     "Total Excl:": {"pt": "Tot sem Taxa"},
     "VAT:": {"pt": "Taxa"},
-    "Total Incl:": {"pt": "Tot como Taxa"}
+    "Total Incl:": {"pt": "Tot como Taxa"},
+    "Are you sure you want to clear the shopping cart?": {"pt": "Vocк tem certeza que vocк deseja limpar o carrinho de compras?"}
 }
