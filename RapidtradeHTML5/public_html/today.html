@@ -16,13 +16,12 @@
     </head>
     <body>
         <div data-role="page" id="todaypage" class="ipadStatusBar">
-	         <script>
-			    $("#todaypage").bind("pageinit", function() {
-			    	todayOnPageShow();
-			    });
-		    </script>
+                <script>
+                    $("#todaypage").bind("pageinit", todayOnPageShow);
+                    $("#todaypage").bind("pagebeforecreate", todayOnPageBeforeCreate);
+                </script>
             <div data-role="header" id="todayHeader">
-            	<h3>Today</h3>             
+                <h3 class="multiLanguage">Today</h3>             
                 <a id="todayToMenu" data-role="button" data-icon="arrow-l" data-transition="none" data-iconpos="left" class="ui-btn-left">
                     Menu
                 </a>
@@ -32,24 +31,24 @@
             </div>
             <div data-role="content">
             	<div class="rtlabel">
-	           		<img class="rtlabelimg" src="img/Calendar-64.png"/>
-	           		<h2 class="rtlabeltext">Today's Customer list</h2>
-		        </div>
-		        <div class="ui-grid-a">
-		        	<div class="ui-block-a panel-white-rounded">
-           				Call Cycle
-	                	<ul id="customerlist" data-role="listview" data-inset="true"></ul>
-	                	<div id="noCallCycleDiv" class="hidden infoPanel yellowpanel">
-	                		<img src="img/info-48.png"><div id="message" class="infoText">No customers on your call cycle for today.</div>
-	               		</div>
-	            	</div>
-	            	<div class="ui-block-b panel-white-rounded">
-           				<span class="activityLabel"></span>
-	                	<ul id="activityCustomerList" data-role="listview" data-inset="true"></ul>
-	                	<div id="noActivityDiv" class="hidden infoPanel yellowpanel">
-	                		<img src="img/info-48.png"><div id="activityMessage" class="infoText">No customers on your <span class="activityLabel"></span> for today.</div>
-	               		</div>
-	            	</div>
+                    <img class="rtlabelimg" src="img/Calendar-64.png"/>
+                    <h2 class="rtlabeltext multiLanguage">Today's Customer List</h2>
+                    </div>
+                    <div class="ui-grid-a">
+                        <div class="ui-block-a panel-white-rounded">
+                            <span class="multiLanguage">Call Cycle</span>
+                                <ul id="customerlist" data-role="listview" data-inset="true"></ul>
+                                <div id="noCallCycleDiv" class="hidden infoPanel yellowpanel">
+                                        <img src="img/info-48.png"><div id="message" class="infoText multiLanguage">No customers on your call cycle for today.</div>
+                                </div>
+                        </div>
+                        <div class="ui-block-b panel-white-rounded">
+                            <span class="activityLabel"></span>
+                                <ul id="activityCustomerList" data-role="listview" data-inset="true"></ul>
+                                <div id="noActivityDiv" class="hidden infoPanel yellowpanel">
+                                        <img src="img/info-48.png"><div id="activityMessage" class="infoText">No customers on your <span class="activityLabel"></span> for today.</div>
+                                </div>
+                        </div>
             	</div>
             </div>
         </div>

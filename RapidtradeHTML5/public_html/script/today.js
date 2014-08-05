@@ -1,26 +1,38 @@
-﻿function todayOnPageShow() {
+var g_todayPageTranslation = {};
+
+function todayOnPageBeforeCreate() {
+    
+    g_todayPageTranslation = translation('todaypage');
+}
+
+function todayOnPageShow() {
+    
+    g_todayPageTranslation.safeExecute(function() {
+        
+        g_todayPageTranslation.translateButton('.ui-btn-right', 'Refresh');
+    });
 	
-	g_iPadBar('#todaypage');
-	
-	var dao = new Dao();
-	dao.openDB(function (user) { todayInit(); });
-	todayBind();
-	
-	if (!DaoOptions.get('TodayActivityList')) {
-		
-		$('#todaypage div.ui-grid-a').removeClass('ui-grid-a').addClass('ui-grid-solo');
-		$('#todaypage div.ui-block-b').hide();
-		
-	} else {
-		
-		var onSuccess = function(activity) {
-			
-			$('.activityLabel').text(activity.Label);
-		};
-		
-		var dao = new Dao();
-		dao.get('ActivityTypes', g_currentUser().SupplierID + DaoOptions.getValue('TodayActivityList'), onSuccess);
-	}
+    g_iPadBar('#todaypage');
+
+    var dao = new Dao();
+    dao.openDB(function (user) { todayInit(); });
+    todayBind();
+
+    if (!DaoOptions.get('TodayActivityList')) {
+
+            $('#todaypage div.ui-grid-a').removeClass('ui-grid-a').addClass('ui-grid-solo');
+            $('#todaypage div.ui-block-b').hide();
+
+    } else {
+
+            var onSuccess = function(activity) {
+
+                    $('.activityLabel').text(activity.Label);
+            };
+
+            var dao = new Dao();
+            dao.get('ActivityTypes', g_currentUser().SupplierID + DaoOptions.getValue('TodayActivityList'), onSuccess);
+    }
 }
 
 function todayBind() {
