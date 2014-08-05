@@ -216,17 +216,20 @@ function shoppingCartConfirmScanResetBarcode() {
 
 function shoppingCartRemoveAllItems() {
     
-    $.mobile.showPageLoadingMsg();
-    var dao = new Dao();
-    dao.cursor('BasketInfo', undefined, undefined,
-     function (basketInfo) {
-         if ((basketInfo.AccountID == g_currentCompany().AccountID) /*&& (basketInfo.Type == sessionStorage.getItem("currentordertype"))*/)
-             shoppingCartDeleteItem(basketInfo.key, DaoOptions.getValue('LostSaleActivityID') != undefined);
-     },
-     undefined,
-     function (event) {
-    	 shoppingCartFetchBasket();
-     });
+    if (confirm(g_shoppingCartPageTranslation.translateText('Are you sure you want to clear the shopping cart?'))) {
+    
+        $.mobile.showPageLoadingMsg();
+        var dao = new Dao();
+        dao.cursor('BasketInfo', undefined, undefined,
+         function (basketInfo) {
+             if ((basketInfo.AccountID == g_currentCompany().AccountID) /*&& (basketInfo.Type == sessionStorage.getItem("currentordertype"))*/)
+                 shoppingCartDeleteItem(basketInfo.key, DaoOptions.getValue('LostSaleActivityID') != undefined);
+         },
+         undefined,
+         function (event) {
+             shoppingCartFetchBasket();
+         });
+    }
 }
 
 function shoppingCartOnBack() {

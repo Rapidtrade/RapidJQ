@@ -127,7 +127,7 @@ function syncFetchUser() {
 	$.mobile.allowCrossDomainPages = true;
 	$.mobile.pushState = false;
 	 
-	$('#message').text('Please wait, verifying your userid');
+	$('#message').text(g_syncPageTranslation.translateText('Please wait, verifying your userid'));
 	$('#syncimg').attr('src','img/Sand-Timer-48.png');
 	g_syncUserID = $('#userid').val();
 	var userPassword = $('#password').val();
