@@ -32,5 +32,6 @@
     "Customer Issue": {"pt": "Problema do cliente"},
     "Create your call report now by selecting" : {"pt": "Criar um relatуrio de chamada, basta seleccionar"},
     "the desired activities on the left." : {"pt": "as atividades desejadas"},
-    "Finished": {"pt": "Acabado"}
+    "Finished": {"pt": "Acabado"},
+    "We are experiencing a problem with your account. Please contact accounts department": {"pt": "Estamos passando por um problema com a sua conta, entre em contato com departamento de contas"}
 }
