@@ -42,7 +42,7 @@ function companyOnPageShow() {
 
     if (DaoOptions.getValue('AllowHistoryDownload', 'false') == 'true') {
         
-        var field = DaoOptions.getValue('MasterChartFieldIndic', ''); 
+        field = DaoOptions.getValue('MasterChartFieldIndic', ''); 
 
         if ((!field || g_currentCompany()[field] === 'Y')) {    
 

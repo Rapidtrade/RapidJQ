@@ -1,4 +1,8 @@
+var g_companyOnHoldMessageShown;
+
 function overlayInit(pageId) {
+    
+    g_companyOnHoldMessageShown = false;
 	
     var menuPanel = '<div data-role="panel" data-dismissible="false" data-display="push" id="menuPanel" class="overlayMenu invisible" data-theme="b">';
 
@@ -35,7 +39,9 @@ function overlayInit(pageId) {
                             var orderTypeItemText = ('Create ' + value).replace('Create Invoice', g_companyPageTranslation.translateText('Create Invoice'))
                                     .replace('Create Order', g_companyPageTranslation.translateText('Create Order'));
                             
-                            menuPanel += '<li id="pricelist' + value + 'Item" class="orderItem">' + orderTypeItemText + '</li>';
+                            var classes = 'orderItem' + (value.indexOf('Invoice') !== -1 ? ' invoiceItem' : ''); 
+                            
+                            menuPanel += '<li id="pricelist' + value + 'Item" class="' + classes + '">' + orderTypeItemText + '</li>';
                         });
                     }
 
@@ -136,77 +142,77 @@ function overlayInit(pageId) {
 
 function overlayBind() {
 	
-	  $('#menuPanel li').click(function() {
-		  
-		  if ($(this).closest('ul').attr('id') != 'mainMenu')
-			  return;
-		  		  
-		  sessionStorage.setItem('lastMenuItemId', this.id);
-		  
-		  if (sessionStorage.getItem('lastPanelId') == 'pricelistPanel') {
-			  
-                    if ($(this).hasClass('orderItem')) {
+    $('#menuPanel li').click(function() {
 
-                          sessionStorage.removeItem('fromAdvanced');
-                          sessionStorage.removeItem('fromCategory');
-                          
-                    }
-                          
-		  } else {
-                      
-                    advancedSearchResetStorage();
-                    sessionStorage.removeItem('cachePricelist');                      
-                  }
-                  
-                  if ($(this).hasClass('orderItem')) {
-                      
-                    sessionStorage.setItem('currentordertype', $.trim($(this).attr('id').replace('pricelist', '').replace('Item', '')));
-                  }
-                  
-                  companyLoadPanel(this.id.replace('Item', 'Panel'));
-		  
-		  overlayOnItemClick(this);
-	  });
-	  
-	  $('#pricelistMenu, #productDetailsMenu').on('click', 'li', function() {
-		  
-		  overlayOnItemClick(this);
-		  
-		  if ('pricelistMenu' == $(this).closest('div').attr('id')) { 
-			  
-			  pricelistDoSearch(this.id);
-			  sessionStorage.setItem('lastPricelistMenuItemId', this.id);
-			  
-		  } else {
-			  
-			  productdetailShowPanel($(this).text());
-		  }
-	  });
-	  	  
-	  $('#menuPanel a[data-role="button"]').click(function() {
-		  
-		  if ('home' == this.id)
-			  g_loadMenu();
-		  
-		  overlayRemoveStorage();
-	  });
+        if ($(this).closest('ul').attr('id') != 'mainMenu')
+                return;
+
+        sessionStorage.setItem('lastMenuItemId', this.id);
+
+        if (sessionStorage.getItem('lastPanelId') == 'pricelistPanel') {
+
+          if ($(this).hasClass('orderItem')) {
+
+                sessionStorage.removeItem('fromAdvanced');
+                sessionStorage.removeItem('fromCategory');
+
+          }
+
+        } else {
+
+          advancedSearchResetStorage();
+          sessionStorage.removeItem('cachePricelist');                      
+        }
+
+        if ($(this).hasClass('orderItem')) {
+
+          sessionStorage.setItem('currentordertype', $.trim($(this).attr('id').replace('pricelist', '').replace('Item', '')));
+        }
+
+        companyLoadPanel(this.id.replace('Item', 'Panel'));
+
+        overlayOnItemClick(this);
+    });
+
+    $('#pricelistMenu, #productDetailsMenu').on('click', 'li', function() {
+
+        overlayOnItemClick(this);
+
+        if ('pricelistMenu' == $(this).closest('div').attr('id')) { 
+
+            pricelistDoSearch(this.id);
+            sessionStorage.setItem('lastPricelistMenuItemId', this.id);
+
+        } else {
+
+            productdetailShowPanel($(this).text());
+        }
+    });
+
+    $('#menuPanel a[data-role="button"]').click(function() {
+
+        if ('home' == this.id)
+            g_loadMenu();
+
+        overlayRemoveStorage();
+    });
 }
 
 function overlayRemoveStorage() {
 	
-	  sessionStorage.removeItem('lastMenuItemId');
-	  sessionStorage.removeItem('lastPricelistMenuItemId');
-	  sessionStorage.removeItem('lastPanelId');
-	  sessionStorage.removeItem('fromCategory');
-	  sessionStorage.removeItem('fromAdvanced');
+        sessionStorage.removeItem('lastMenuItemId');
+        sessionStorage.removeItem('lastPricelistMenuItemId');
+        sessionStorage.removeItem('lastPanelId');
+        sessionStorage.removeItem('fromCategory');
+        sessionStorage.removeItem('fromAdvanced');
 }
 
 function overlayOnItemClick(item) {
 	
-        overlayHighlightMenuItem(item);
-        
-	if (g_phonegap || $( window ).width() < 900) 
-            $('#menuPanel').panel('close');
+    overlayHighlightMenuItem(item);
+
+    if (g_phonegap || $( window ).width() < 900) 
+        $('#menuPanel').panel('close');
 }
 
 function overlayHighlightMenuItem(item) {
@@ -220,25 +226,47 @@ function overlayHighlightMenuItem(item) {
 
 function overlaySetMenuButton() {
 	
-	$('#menuButton').unbind();
-		 
-	 $('#menuButton').attr('data-icon', 'bars').find('.ui-icon').addClass('ui-icon-bars').removeClass('ui-icon-home');
-	 $('#menuButton').attr('href', '#menuPanel');
-	 
-	 $('#menuPanel').removeClass('invisible');
-	 
-	 overlayOpenMenu();
+    $('#menuButton').unbind();
+
+     $('#menuButton').attr('data-icon', 'bars').find('.ui-icon').addClass('ui-icon-bars').removeClass('ui-icon-home');
+     $('#menuButton').attr('href', '#menuPanel');
+
+     $('#menuPanel').removeClass('invisible');
+
+     overlayOpenMenu();
 }
 
 function overlayOpenMenu() {
 	
-	if (!g_phonegap && $( window ).width() > 900)
-		$('#menuPanel').panel('open');
+    if (!g_phonegap && $( window ).width() > 900)
+        $('#menuPanel').panel('open');
 }
 
 function overlaySetMenuItems() {
     
     $('#companyItem, #historyItem, #activityItem').toggleClass('ui-disabled', g_vanSales && g_currentCompany().AccountID.toUpperCase() == g_currentUser().RepID.toUpperCase());
+    
+    if (DaoOptions.getValue('StopOnHoldOrders') === 'true') {
+        
+        var field = DaoOptions.getValue('StopOnHoldField');
+
+        if (field && g_currentCompany()[field] === 'Y') {
+
+            if (!g_companyOnHoldMessageShown) {
+                
+                $('#companyInfoPopup p').text(g_companyPageTranslation.translateText(DaoOptions.getValue('StopOnHoldMessage')));
+                g_popup('#companyInfoPopup').show(2000, function() {
+
+                    g_companyOnHoldMessageShown = true;
+                });
+            }
+            
+            $.each(DaoOptions.getValue('StopOnHoldOrderType').split(','), function(index, orderType) {
+                
+                (orderType === 'Invoice') ? $('.invoiceItem').addClass('ui-disabled') : $('#pricelist' + orderType + 'Item').addClass('ui-disabled'); 
+            });
+        }
+    }    
     
     overlayHighlightMenuItem(document.getElementById(sessionStorage.getItem('lastMenuItemId') || 'companyItem'));
     
