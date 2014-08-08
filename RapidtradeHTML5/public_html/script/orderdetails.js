@@ -372,9 +372,7 @@ function orderdetailsFetchOrderItems() {
 
     var isSpecialOrder = (g_orderdetailsCurrentOrder.Type === DaoOptions.getValue('DownloadOrderType'));
 
-    var url = (isSpecialOrder ? DaoOptions.getValue('DownloadOrderURL') + '/rest/' : (DaoOptions.getValue('LiveHistoryItems') || g_restUrl)) + 'Orders/';
-
-    url +=  'GetOrderItems' + (isSpecialOrder ? 'ByType3' : '');
+    var url = (DaoOptions.getValue('DownloadOrderURL') ? DaoOptions.getValue('DownloadOrderURL') + '/rest/Orders/GetOrderItems' +  (isSpecialOrder ? 'ByType3' : '') : (DaoOptions.getValue('LiveHistoryItems') || g_restUrl));
 
     url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&orderID=' + g_orderdetailsCurrentOrder.OrderID + '&skip=0&top=100&format=json';
 
