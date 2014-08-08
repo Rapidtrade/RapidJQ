@@ -753,6 +753,8 @@ function productdetailFetchLiveStockDiscount(livePriceUrl, checkUrl) {
 		livePriceUrl = DaoOptions.getValue('LivePriceURL') ? DaoOptions.getValue('LivePriceURL') : g_restUrl + 'prices/getprice3';
 	 
     var url = livePriceUrl + '?supplierID=' + g_currentUser().SupplierID + '&productID=' + g_pricelistSelectedProduct.ProductID + '&accountid=' + g_currentCompany().AccountID + '&branchid=' + g_currentCompany().BranchID + '&quantity=1&gross=' + g_pricelistSelectedProduct.Gross + '&nett=' + g_pricelistSelectedProduct.Nett + '&checkStock=true&checkPrice=true&format=json';
+    
+    console.log(url);
  
     g_ajaxget(url, 
     		productdetailPriceOnSuccess, 
@@ -854,9 +856,11 @@ function productdetailPriceOnSuccess (json) {
 } 
 
 function productdetailCalculateDiscount(volumePrice) {
-	var gross = 0;
-	var nett = 0;
-	var discount = 0;
+    
+    var gross = 0;
+    var nett = 0;
+    var discount = 0;
+    var type;
 
     var qty = parseInt($('#quantity').attr('value')) || 0;
  
@@ -869,27 +873,30 @@ function productdetailCalculateDiscount(volumePrice) {
     	
     	while (j < 5) {
     		
-    		if (qty < volumePrice[i]['Qty' + j]) 
-    			break;    			
-    		
-    		j++;
+            if (qty < volumePrice[i]['Qty' + j]) 
+                    break;    			
+
+            j++;
     	}
 	    
-		gross = parseFloat(volumePrice[i].Gross);
-		nett  = parseFloat(volumePrice[i]['Nett' + j]);
-		discount = parseFloat(volumePrice[i]['Discount' + j]);			
+        gross = parseFloat(volumePrice[i].Gross);
+        nett  = parseFloat(volumePrice[i]['Nett' + j]);
+        discount = parseFloat(volumePrice[i]['Discount' + j]);	
+        
+        type = volumePrice[i]['Type'];
     }
     
-	if (g_pricelistMobileLiveStockDiscount && (nett > gross))
-		gross = nett;
-	
-	g_pricelistSelectedProduct.Discount = discount;
-	g_pricelistSelectedProduct.Nett = nett;
-	g_pricelistSelectedProduct.Gross = gross;
-    
-	productdetailValue('discount', g_addCommas(discount.toFixed(2)) + '%');
-	$('#grossvalue').html(g_addCommas(gross.toFixed(2)));
-	productdetailValue('nett', g_addCommas(nett.toFixed(2)));
+    if (g_pricelistMobileLiveStockDiscount && (nett > gross))
+        gross = nett;
+
+    g_pricelistSelectedProduct.Discount = discount;
+    g_pricelistSelectedProduct.Nett = nett;
+    g_pricelistSelectedProduct.Gross = gross;
+    g_pricelistSelectedProduct.UserField15 = type;
+
+    productdetailValue('discount', g_addCommas(discount.toFixed(2)) + '%');
+    $('#grossvalue').html(g_addCommas(gross.toFixed(2)));
+    productdetailValue('nett', g_addCommas(nett.toFixed(2)));
 
 }
 
@@ -1057,7 +1064,8 @@ function productdetailSave(qty, type, product) {
         product.UserField07,
         product.UserField08,
         product.UserField09,
-        product.UserField10
+        product.UserField10,
+        product.UserField15
     );
 }
 

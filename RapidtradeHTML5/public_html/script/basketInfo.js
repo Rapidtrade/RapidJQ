@@ -1,7 +1,7 @@
 ﻿
 function BasketInfo(productID, supplierID, accountID, quantity, userID, nett, description, discount, gross, type, userField01, 
 		repChangedPrice, repNett, repDiscount, unit, userField02, warehouse, vat, stock, userField03, userField04,
-		userField05, userField06, userField07, userField08, userField09, userField10) {
+		userField05, userField06, userField07, userField08, userField09, userField10, userField15) {
    
     this.ProductID = productID;
     this.SupplierID = supplierID;
@@ -36,6 +36,7 @@ function BasketInfo(productID, supplierID, accountID, quantity, userID, nett, de
     	this.UserField08 = userField08;
     	this.UserField09 = userField09;
     	this.UserField10 = userField10;
+        this.UserField15 = userField15;
     
     	this.Warehouse = warehouse;
     	this.VAT = vat;
@@ -96,6 +97,9 @@ function BasketInfo(productID, supplierID, accountID, quantity, userID, nett, de
         
         if (this.UserField10)
             basketinfo.UserField10 = this.UserField10;
+        
+        if (this.UserField15)
+            basketinfo.UserField15 = this.UserField15;        
         
         if (this.Warehouse)
             basketinfo.Warehouse = this.Warehouse;
