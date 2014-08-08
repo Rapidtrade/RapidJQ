@@ -19,7 +19,7 @@ function tpmBind() {
         var postType = isOrder ? sessionStorage.getItem('currentordertype') : 'Verify|' + sessionStorage.getItem('currentordertype');
         var onSuccess = isOrder ? tpmOrderSuccess : tpmVerifySuccess;
         
-        tpmPost(postType, onSuccess);
+        tpmPost(postType, onSuccess, isOrder);
     });
     
     $('#cancelbtn').click(function() {
@@ -72,13 +72,14 @@ function tpmFetchBasket() {
  * @returns {undefined}
  */
 
-function tpmPost(type, onSuccess) {
+function tpmPost(type, onSuccess, isOrder) {
+    
     try {    
         
         g_busy(true);
         g_tpmOnSuccess = onSuccess;
         
-        if (type === 'Order') {
+        if (isOrder) {
             
             if ($('#reference').val()) {
                 
@@ -105,6 +106,7 @@ function tpmPost(type, onSuccess) {
         if (!url) url = g_restUrl + 'post/post.aspx';
         console.log(orderHeaderInfo);    
         g_ajaxpost(jQuery.param(orderHeaderInfo), url, onSuccess, tpmSaveError);  
+        
     } catch (error) {  		
         alert('You must be online...');
     } 
