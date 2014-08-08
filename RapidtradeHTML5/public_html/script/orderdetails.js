@@ -422,7 +422,8 @@ function orderdetailsFetchOrderItems() {
                     ' class="captureQuantity ui-input-text ui-body-c ui-corner-all ui-shadow-inset" onkeydown="orderdetailsQuickCapture(event, this, \'' + itemKey + '\',' + g_orderdetailsOrderItems.length + ')"/></td>';
         }
 
-        orderItem.Description = orderItem.Description.replace(/'/g, '&quot;');
+        var barcode = (g_orderdetailsCurrentOrder.Type === DaoOptions.getValue('DownloadOrderType') ? orderItem[DaoOptions.getValue('MasterChrtBCodeField')] : '');
+        orderItem.Description = orderItem.Description.replace(/'/g, '&quot;') + (barcode ? ' (' + barcode + ')' : '');
 
         g_append('#orderitemlist', '<li data-theme="c" id="' + itemKey + '">' +
             '   <a><p class="ui-li-heading"><strong>' + orderItem.Description + '</strong></p>' +
@@ -443,21 +444,7 @@ function orderdetailsFetchOrderItems() {
     console.log($('#orderitemlist li:first').html());
 
     $.mobile.changePage("#orderdetails", { transition: "none" });
-    $('#orderitemlist').listview('refresh');  
-    
-    if ((DaoOptions.getValue('AllowHistoryDownload', 'false') === 'true')) {
-
-        $('#orderitemlist li').each(function() {
-
-            var that = this;
-
-            orderdetailsFetchMasterChartBarcode(this.id, function(barcode) {
-
-               var $description = $(that).find('p.ui-li-heading strong');
-               $description.text($description.text() + ' (' + barcode + ' )');                    
-            });
-        });
-    }    
+    $('#orderitemlist').listview('refresh'); 
  }
  
  function orderdetailsQuickCapture(event, inputElement, itemKey, rowIndex) {
