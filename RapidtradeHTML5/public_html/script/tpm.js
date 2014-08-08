@@ -84,6 +84,7 @@ function tpmPost(type, onSuccess, isOrder) {
             if ($('#reference').val()) {
                 
                 g_orderHeaderOrder.Reference = $('#reference').val();
+                g_orderHeaderOrder.Comments = $('#comment').val();
                 
             } else {
                 

@@ -6,13 +6,13 @@
         <!-- Home -->
     <div data-role="page" id="tpmpage" class="ipadStatusBar">
    	<script>
-			    $('#tpmpage').bind("pagebeforeshow", function() {
-			    	tpmOnPageShow();
-			    });
-			    $('#tpmpage').bind("pageinit", function() {
-			    	tpmOnPageInit();
-			    });
-			</script>
+            $('#tpmpage').bind("pagebeforeshow", function() {
+                tpmOnPageShow();
+            });
+            $('#tpmpage').bind("pageinit", function() {
+                tpmOnPageInit();
+            });
+        </script>
 	<div data-role="header">
             <a data-role="button" id="tpmBack" href="shoppingCart.html" data-icon="arrow-l" data-transition="none" data-iconpos="left">
             Shopping Cart
@@ -31,9 +31,11 @@
                     <h2>Order Details</h2>
                     <div class="greypanel">
                     <label for="reference">Reference</label>
-                    <input type="text" name="reference" id="reference" value="" placeholder="Enter your order reference">
-                    <a id="saveTPM" data-role="button" >Save your Order</a>                        
-                    </div>
+                    <input type="text" name="reference" id="reference" value="" placeholder="Enter your order reference">          
+                    <label for="comment">Comment</label>
+                    <input type="text" name="comment" id="comment" value="" placeholder="Enter your comment">   
+                    <a id="saveTPM" data-role="button" >Save your Order</a>                     
+                    </div>               
                 </div>
                 
             </div>
