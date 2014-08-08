@@ -12,10 +12,9 @@ function tpmOnPageInit() {
 
 function tpmBind() {
     $('#verifyTPM, #saveTPM').click(function() {        
-        
-        g_tpmjson = tpmBuildNewCart();    
-        
+           
         var isOrder = ('saveTPM' === this.id);
+        g_tpmjson = tpmBuildNewCart(isOrder); 
         
         var postType = isOrder ? sessionStorage.getItem('currentordertype') : 'Verify|' + sessionStorage.getItem('currentordertype');
         var onSuccess = isOrder ? tpmOrderSuccess : tpmVerifySuccess;
@@ -375,7 +374,7 @@ function tpmSaveError(error) {
     }
 }
 
-function tpmBuildNewCart() {
+function tpmBuildNewCart(isOrder) {
     
     //create a new cart with original products & selected TPM's
     var oldcart = jsonform.getInstance().jsonArray;
@@ -392,11 +391,14 @@ function tpmBuildNewCart() {
             itemidx++;
         } else if (row.UserField01 !== '') {
             
-            if (!row.Userfield08 && row.selected !== undefined) {
-                row.Userfield08 = row.selected ? 'Y' : 'N';
-            } else if (row.selected == undefined) {
-                // If the row.selected is undefined - set userfield08 to 'N'
-                row.Userfield08 = 'N';
+            if (!isOrder) {
+                
+                if (!row.Userfield08 && row.selected !== undefined) {
+                    row.Userfield08 = row.selected ? 'Y' : 'N';
+                } else if (row.selected == undefined) {
+                    // If the row.selected is undefined - set userfield08 to 'N'
+                    row.Userfield08 = 'N';
+                }
             }
                 
             
