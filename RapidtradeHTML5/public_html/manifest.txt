@@ -1,7 +1,7 @@
 ﻿CACHE MANIFEST
 # Explicitly cached 'master entries'.....................................
 
-# Version 7.6.38
+# Version 7.6.40
 
 CACHE:
 
@@ -9,7 +9,7 @@ CACHE:
 jquery/barcode-2.0.3/jquery-barcode.min.js
 jquery/image/datebox.png
 jquery/images/ajax-loader.gif
-jquery/images/icons-18-black.png
+jquery/images/icons-18-black.pngF
 jquery/images/icons-18-white.png
 jquery/images/icons-36-black.png
 jquery/images/icons-36-white.png

@@ -21,7 +21,7 @@ function orderdetailsOnPageShow() {
         g_orderdetailsPageTranslation.translateButton('#sendToBasketButton', 'Send all to Cart');
         g_orderdetailsPageTranslation.translateButton('#orderDetailsBackButton', 'Back');
         g_orderdetailsPageTranslation.translateButton('#sendItemButton', 'Send');
-        g_orderdetailsPageTranslation.translateButton('#cancel', 'Cancelar');
+        g_orderdetailsPageTranslation.translateButton('#cancel', 'Cancel');
         g_orderdetailsPageTranslation.translateRadioButton('radioOrder', 'Order');
     });
 	
@@ -150,7 +150,7 @@ function orderdetailsCheckBasket() {
     var totalItems = 0;
     
     var dao = new Dao();
-    dao.cursor('BasketInfo', g_currentCompany().AccountID, 'index1',
+    dao.indexsorted('BasketInfo',g_currentCompany().AccountID, 'index1', 'index4',
     function (item) {
         
         totalItems++;
@@ -267,14 +267,20 @@ function orderdetailsSendOrderItem(itemIndex) {
 	
 	var enteredQuantity = function() {
 		
-		return parseInt($('#quantityEdit').attr('value'), 10);
+            return parseInt($('#quantityEdit').attr('value'), 10);
 	};
+        
+        $('#deleteItemButton').off().on('click', function() {
+            
+            $('#quantityEdit').val('');
+            $('#sendItemButton').trigger('click');
+        });
 	
 	$('#sendItemButton').click(function(event) {
             
             $(this).unbind(event);
             
-            if (enteredQuantity() === 0) {
+            if (!enteredQuantity()) {
                 
                 var deleteItemOnSuccess = function() {
                     
@@ -283,7 +289,7 @@ function orderdetailsSendOrderItem(itemIndex) {
                 
                 shoppingCartDeleteItem($.trim(item.ProductID) + $.trim(item.SupplierID) + g_currentUser().UserID + $.trim(item.AccountID), 
                         DaoOptions.getValue('LostSaleActivityID') != undefined, 
-                        undefined, 
+                        false, 
                         deleteItemOnSuccess);
                         
                 return;                
@@ -453,14 +459,22 @@ function orderdetailsFetchOrderItems() {
      
      if (keyCode === 13) {
          
-         $('#' + itemKey).find('.orderedQuantity').text(inputElement.value);
+        if (!inputElement.value) {
+            
+            $('#' + itemKey).find('.orderedQuantity').empty(); 
+            shoppingCartDeleteItem(itemKey, DaoOptions.getValue('LostSaleActivityID') != undefined, false, orderdetailsCheckBasket);
+
+        } else {
+            
+            $('#' + itemKey).find('.orderedQuantity').text(inputElement.value);
          
-         var item = g_orderdetailsOrderItems[rowIndex];         
-         item.Description = item.Description && item.Description.replace(/'/g, '&quot;') || '';
-         item.Quantity = inputElement.value;
-         
-         orderdetailsSendItemToBasket(item);
-         orderdetailsCheckBasket();
+            var item = g_orderdetailsOrderItems[rowIndex];         
+            item.Description = item.Description && item.Description.replace(/'/g, '&quot;') || '';
+            item.Quantity = inputElement.value;
+
+            orderdetailsSendItemToBasket(item);
+            orderdetailsCheckBasket();
+        }
      }
  }
  
