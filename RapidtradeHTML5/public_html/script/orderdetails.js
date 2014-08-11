@@ -15,47 +15,62 @@ function orderdetailsOnPageBeforeCreate() {
 
 function orderdetailsOnPageShow() {
     
+    orderdetailsResetFlags();
+    
+    var cnt = parseInt(sessionStorage.getItem('currentOrderCount'));
+    var json = JSON.parse(sessionStorage.getItem('CacheHistoryOrders'));
+    g_orderdetailsCurrentOrder = json[cnt];
+    
     g_orderdetailsPageTranslation.safeExecute(function(){
         
         g_orderdetailsPageTranslation.translateButton('#shoppingcartButton', 'Shopping Cart');
         g_orderdetailsPageTranslation.translateButton('#sendToBasketButton', 'Send all to Cart');
         g_orderdetailsPageTranslation.translateButton('#orderDetailsBackButton', 'Back');
         g_orderdetailsPageTranslation.translateButton('#sendItemButton', 'Send');
-        g_orderdetailsPageTranslation.translateButton('#cancel', 'Cancel');
-        g_orderdetailsPageTranslation.translateRadioButton('radioOrder', 'Order');
+        g_orderdetailsPageTranslation.translateButton('#cancel', 'Cancel');        
+        
+        g_orderdetailsPageTranslation.translateRadioButton('radioOrder', orderdetailsOrderType());
     });
 	
     orderdetailsInit();
     orderdetailsBind();
 }
 
+function orderdetailsOrderType() {
+    
+    var field = DaoOptions.getValue('HistUseOrderTyp');
+    return field ? (g_orderdetailsCurrentOrder[field] || 'Order') : 'Order';
+}
+
 /*
  * All binding to buttons etc. should happen in this <yyy>Bind function() method
  */
 function orderdetailsBind() {
-	
-    $('#radioOrder').click(function () {
-    	sessionStorage.setItem('orderdetailsradio','radioOrder');
-    	sessionStorage.setItem('currentordertype','Order');
-    	$("#radioDelivery").attr("checked",false).checkboxradio("refresh");
-    });
-	
-    $('#radioDelivery').click(function () {
-    	sessionStorage.setItem('orderdetailsradio','radioDelivery');
-    	sessionStorage.setItem('currentordertype','Delivery');
-    	$("#radioOrder").attr("checked",false).checkboxradio("refresh");
-    	$("#radioDelivery").attr("checked",true).checkboxradio("refresh");
-    });
-	
-    $('#radioCredit').click(function () {
-    	sessionStorage.setItem('orderdetailsradio','radioCredit');
-    	sessionStorage.setItem('creatingCredit', orderdetailsIsCreditSelected());
-    	$('#saveCreditButton').toggleClass('invisible', !orderdetailsIsCreditSelected()); 
-    	$('#sendToBasketButton').toggleClass('invisible', orderdetailsIsCreditSelected());    	
-    	sessionStorage.setItem('currentordertype', 'Credit');  
-    	$("#creditDelivery").attr("checked",true).checkboxradio("refresh");
-    	if (orderdetailsIsCreditSelected()) $('#creditInfoPopup').popup('open');
-    });
+
+    // Unnecessary code, we are using just 1 radio button (!?)
+    
+//    $('#radioOrder').click(function () {
+//    	sessionStorage.setItem('orderdetailsradio','radioOrder');
+//    	sessionStorage.setItem('currentordertype', orderdetailsOrderType());
+//    	$("#radioDelivery").attr("checked",false).checkboxradio("refresh");
+//    });
+
+//    $('#radioDelivery').click(function () {
+//    	sessionStorage.setItem('orderdetailsradio','radioDelivery');
+//    	sessionStorage.setItem('currentordertype','Delivery');
+//    	$("#radioOrder").attr("checked",false).checkboxradio("refresh");
+//    	$("#radioDelivery").attr("checked",true).checkboxradio("refresh");
+//    });
+//	
+//    $('#radioCredit').click(function () {
+//    	sessionStorage.setItem('orderdetailsradio','radioCredit');
+//    	sessionStorage.setItem('creatingCredit', orderdetailsIsCreditSelected());
+//    	$('#saveCreditButton').toggleClass('invisible', !orderdetailsIsCreditSelected()); 
+//    	$('#sendToBasketButton').toggleClass('invisible', orderdetailsIsCreditSelected());    	
+//    	sessionStorage.setItem('currentordertype', 'Credit');  
+//    	$("#creditDelivery").attr("checked",true).checkboxradio("refresh");
+//    	if (orderdetailsIsCreditSelected()) $('#creditInfoPopup').popup('open');
+//    });
 	
     $('#shoppingcartButton').unbind();
     $('#shoppingcartButton').click(function () {
@@ -128,19 +143,13 @@ function orderdetailsBind() {
  */
 function orderdetailsInit() {
 	
-	orderdetailsResetFlags();
-	
-	var cnt = parseInt(sessionStorage.getItem('currentOrderCount'));
-	var json = JSON.parse(sessionStorage.getItem('CacheHistoryOrders'));
-	g_orderdetailsCurrentOrder = json[cnt]; 
-	
 	try {
             $('#headerlabel').text(g_orderdetailsCurrentOrder.Type + ' Details');
 	} catch (err){
 		
 	}
 	
-	$('#reprintButton').toggle(g_vanSales && (g_currentUser().RepID.toUpperCase() == g_orderdetailsCurrentOrder.BranchID.toUpperCase()));
+	$('#reprintButton').toggle(g_vanSales && (g_currentUser().RepID.toUpperCase() === g_orderdetailsCurrentOrder.BranchID.toUpperCase()));
 	orderdetailsInitOrderType();
 	orderdetailsFetchOrderItems();
 }
@@ -178,7 +187,7 @@ function orderdetailsCheckBasket() {
 }
 
 /*
- * INitialise the to shopping cart buttons
+ * Initialise the to shopping cart buttons
  */
 function orderdetailsInitOrderType(){
 	
@@ -216,24 +225,24 @@ function orderdetailsIsCreditSelected() {
 
 function orderdetailsResetFlags() {
 	
-	sessionStorage.removeItem('ShoppingCartNoFooter'); 
-	sessionStorage.setItem('currentordertype', 'Order');
-	sessionStorage.removeItem('CurrentOrderDetailOrder'); 
-	sessionStorage.removeItem('ShoppingCartLessThan'); 
-	sessionStorage.removeItem('OrderHeaderReturnPage');
+    sessionStorage.removeItem('ShoppingCartNoFooter'); 
+    sessionStorage.setItem('currentordertype', 'Order');
+    sessionStorage.removeItem('CurrentOrderDetailOrder'); 
+    sessionStorage.removeItem('ShoppingCartLessThan'); 
+    sessionStorage.removeItem('OrderHeaderReturnPage');
 }
 
 function orderdetailsSaveCredit() {
 	
-	sessionStorage.setItem('ShoppingCartNoFooter', true); 
-	sessionStorage.setItem('ShoppingCartReturnPage', 'orderdetails.html');
-	sessionStorage.setItem('CurrentOrderDetailOrder', JSON.stringify(g_orderdetailsCurrentOrder));
-	sessionStorage.setItem('ShoppingCartLessThan', true);
-	sessionStorage.setItem('ordertypecaption','Credit');
-	sessionStorage.setItem('OrderHeaderReturnPage', 'orderdetails.html');
-	sessionStorage.setItem('referenceDocID', g_orderdetailsCurrentOrder.OrderID);
-	sessionStorage.setItem('orderheaderNext', 'history');
-	$.mobile.changePage('shoppingCart.html');
+    sessionStorage.setItem('ShoppingCartNoFooter', true); 
+    sessionStorage.setItem('ShoppingCartReturnPage', 'orderdetails.html');
+    sessionStorage.setItem('CurrentOrderDetailOrder', JSON.stringify(g_orderdetailsCurrentOrder));
+    sessionStorage.setItem('ShoppingCartLessThan', true);
+    sessionStorage.setItem('ordertypecaption','Credit');
+    sessionStorage.setItem('OrderHeaderReturnPage', 'orderdetails.html');
+    sessionStorage.setItem('referenceDocID', g_orderdetailsCurrentOrder.OrderID);
+    sessionStorage.setItem('orderheaderNext', 'history');
+    $.mobile.changePage('shoppingCart.html');
 }
 
 function orderdetailsSendOrderItem(itemIndex) {
@@ -376,12 +385,11 @@ function orderdetailsFetchOrderItems() {
         return;
     }
 
-
     $.mobile.showPageLoadingMsg(); 
 
     var isSpecialOrder = (g_orderdetailsCurrentOrder.Type === DaoOptions.getValue('DownloadOrderType'));
 
-    var url = (DaoOptions.getValue('DownloadOrderURL') ? DaoOptions.getValue('DownloadOrderURL') + '/rest/Orders/GetOrderItems' +  (isSpecialOrder ? 'ByType3' : '') : (DaoOptions.getValue('LiveHistoryItems') || (g_restUrl + 'Orders/GetOrderItems')));
+    var url = (DaoOptions.getValue('DownloadOrderURL') ? DaoOptions.getValue('DownloadOrderURL') + '/rest/Orders/GetOrderItems' +  (isSpecialOrder ? 'ByType3' : '') : (DaoOptions.getValue('LiveHistoryItems', g_restUrl + 'Orders/GetOrderItems')));
 
     url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&orderID=' + g_orderdetailsCurrentOrder.OrderID + '&skip=0&top=100&format=json';
 
@@ -504,7 +512,7 @@ function orderdetailsFetchOrderItems() {
                     item.Description, 
                     item.Discount,
                     item.Gross,
-                    sessionStorage.getItem("currentordertype"),
+                    orderdetailsOrderType(),
                     item.UserField01,
                     item.RepNett,
                     item.RepDiscount,
