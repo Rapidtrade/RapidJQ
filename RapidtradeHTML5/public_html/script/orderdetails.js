@@ -284,7 +284,10 @@ function orderdetailsSendOrderItem(itemIndex) {
                 
                 var deleteItemOnSuccess = function() {
                     
-                    $('#' + syncGetKeyField(item, 'OrderItems')).find('.orderedQuantity').empty();               
+                    $itemRow = $('#' + syncGetKeyField(item, 'OrderItems'));
+                    
+                    $itemRow.find('.orderedQuantity').empty();
+                    $itemRow.find('.captureQuantity').val('');
                 };                
                 
                 shoppingCartDeleteItem($.trim(item.ProductID) + $.trim(item.SupplierID) + g_currentUser().UserID + $.trim(item.AccountID), 
@@ -461,8 +464,8 @@ function orderdetailsFetchOrderItems() {
          
         if (!inputElement.value) {
             
-            $('#' + itemKey).find('.orderedQuantity').empty(); 
-            shoppingCartDeleteItem(itemKey, DaoOptions.getValue('LostSaleActivityID') != undefined, false, orderdetailsCheckBasket);
+//            $('#' + itemKey).find('.orderedQuantity').empty(); 
+//            shoppingCartDeleteItem(itemKey, DaoOptions.getValue('LostSaleActivityID') != undefined, false, orderdetailsCheckBasket);
 
         } else {
             
