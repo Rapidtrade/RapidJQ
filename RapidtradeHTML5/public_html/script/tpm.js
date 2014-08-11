@@ -121,21 +121,33 @@ function tpmQualifySuccess() {
     
     var showTable = function(json) {
         
-        g_busy(false);  
-
-        if (json._getStatus === false) {                        
-
-            $('#infoPopup p').text(json._getErrorMsg || 'Unknown error');
-            g_popup('#infoPopup').show(2000, function(){
+        g_busy(false); 
+        
+        var message = json._getErrorMsg || json._getWarnMsg;
+        var isError = (json._getStatus === false);
+        
+        if (message || isError) {
+            
+            var stopOrdering = isError && (json._getRslttype === 'Q1');
+            
+            if (stopOrdering) {
                 
+                $('#verifyTPM').addClass('ui-disabled');
+            }
+            
+            $('#infoPopup p').text(message || 'Unknown error');            
+            g_popup('#infoPopup').show(2000, function() {
+                                
+                if (json._getRslttype === 'Q2') {
+
+                    $.mobile.changePage('orderHeader.html');
+
+                } else if (!stopOrdering) {
+
                     jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);
-                //    $.mobile.changePage('orderHeader.html');                       
-            });            
-
-        } else {
-
-            jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);                        
-        }        
+                }                   
+            }); 
+        }       
     };
     
     var url = DaoOptions.getValue('LiveGetResultsURL');
