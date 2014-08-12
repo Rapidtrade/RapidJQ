@@ -725,17 +725,21 @@ function tpmIsUOMValid() {
 			var quantity = parseInt($(this).find('td.quantity input').val(), 10);
 			
 			if (quantity % uom > 0) {
-				
-				isValid = false;
-				g_alert('Please enter a valid quantity for the ' + $(this).find('td.productId').text() + ' product.');
-				$(this).find('td.quantity input').focus();
-				
-				return false;
+                            
+                            isValid = confirm('The UOM for the product ' + $(this).find('td.productId').text() + ' is ' + uom + '. Are you sure you want to order ' + quantity + '?');                            
+                            //break the each loop
+                            return false;
+                                
+//				isValid = false;
+//				g_alert('Please enter a valid quantity for the ' + $(this).find('td.productId').text() + ' product.');
+//				$(this).find('td.quantity input').focus();
+//				
+//				return false;
 			}			
 		});
 		
 		if (!isValid)
-			return false;
+                    return false;
 	});
 	
 	return isValid;
