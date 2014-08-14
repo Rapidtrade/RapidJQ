@@ -147,7 +147,11 @@ function tpmQualifySuccess() {
                     jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);
                 }                   
             }); 
-        }       
+            
+        } else {
+        
+            jsonform.getInstance().show('promotionsDiv',json._order.orderItems,'tpmtable','','list','table',tpmTableLoaded);
+        }
     };
     
     var url = DaoOptions.getValue('LiveGetResultsURL');
