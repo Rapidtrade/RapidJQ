@@ -623,9 +623,9 @@ function g_alert(message) {
 	}
 }
 
-function g_print(html) {    
+function g_print(selector) {    
     if (g_isiPad()) {
-        cordova.exec(null, null, "PrintPlugin", "print", [{'printHTML': html}]);
+        cordova.exec(null, null, "PrintPlugin", "print", [{'printHTML': $(selector).html()}]);
     } else {
         print();
     }
@@ -653,12 +653,12 @@ function g_isQuantityValid(quantity, unit) {
 
 function g_showInvoice(popupId) {
 	
-	var printer = localStorage.getItem('printer');
-	
-	if (printer)
-		$.mobile.changePage('printinvoice' + printer + '.html');
-	else
-		$('#' + popupId).popup('open');
+    var printer = localStorage.getItem('printer');
+
+    if (printer)
+        $.mobile.changePage('printinvoice' + printer + '.html');
+    else
+        $('#' + popupId).popup('open');
 }
 
 function g_saveLostSale(productId, quantity, stock) {

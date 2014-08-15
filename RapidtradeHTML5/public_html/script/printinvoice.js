@@ -28,8 +28,8 @@ function printinvoiceInit() {
 
     localStorage.setItem('printer', printer);
 
-    if ('small' == printer)
-            $('.printinvoiceHeader h3').empty();
+    if ('small' === printer)
+        $('.printinvoiceHeader h3').empty();
 
     printinvoiceFetchOrder();
 }
@@ -37,7 +37,7 @@ function printinvoiceInit() {
 function printinvoiceBind() {
 	
     $('#printButton').click(function() {
-            g_print($('#printinvoicepage').html());
+        g_print('#printinvoicepage');
     });
 }
 
@@ -178,8 +178,8 @@ function printinvoiceOnContinueClicked() {
 
     if ('activity' == nextPage) {
 
-            sessionStorage.setItem('lastPanelId', 'activityPanel');
-            nextPage = 'company.html';
+        sessionStorage.setItem('lastPanelId', 'activityPanel');
+        nextPage = 'company.html';
     }
 
     $.mobile.changePage(nextPage);

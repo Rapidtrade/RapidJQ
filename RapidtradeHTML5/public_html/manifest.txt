@@ -1,7 +1,7 @@
 ﻿CACHE MANIFEST
 # Explicitly cached 'master entries'.....................................
 
-# Version 7.6.46
+# Version 7.7.0
 
 CACHE:
 
@@ -9,7 +9,7 @@ CACHE:
 jquery/barcode-2.0.3/jquery-barcode.min.js
 jquery/image/datebox.png
 jquery/images/ajax-loader.gif
-jquery/images/icons-18-black.pngF
+jquery/images/icons-18-black.png
 jquery/images/icons-18-white.png
 jquery/images/icons-36-black.png
 jquery/images/icons-36-white.png
@@ -130,6 +130,7 @@ script/advancedsearch.js
 script/basketInfo.js
 script/callcycle.js
 script/callcycleedit.js
+script/catalogue.js
 script/company.js
 script/dao.js
 script/daooptions.js
@@ -162,6 +163,7 @@ about.html
 activityform.html
 callcycle.html
 callcycleedit.html
+catalogue.html
 company.html
 dashboard.html
 grv.html

@@ -335,27 +335,36 @@ function orderHeaderRemoveFromCart() {
     }
 }
 
-function orderHeaderRemovedFromCartSuccess(){
+function orderHeaderRemovedFromCartSuccess() {
 	
     if (!g_vanSales){  
     	
-    	if ('LENSO' == g_currentUser().SupplierID.toUpperCase()) {   	
+    	if ('LENSO' === g_currentUser().SupplierID.toUpperCase()) {   	
     		
-    		var randomDigit = Math.floor((Math.random() * 10));
-    		var date = new Date();
-    		var y = date.getFullYear().toString().slice(3);
-    		g_orderHeaderOrder.UserField01 = g_currentUser().UserID + randomDigit + y + g_dayOfYear() + orderHeaderInvoiceSequenceNumber();
+            var randomDigit = Math.floor((Math.random() * 10));
+            var date = new Date();
+            var y = date.getFullYear().toString().slice(3);
+            g_orderHeaderOrder.UserField01 = g_currentUser().UserID + randomDigit + y + g_dayOfYear() + orderHeaderInvoiceSequenceNumber();
             sessionStorage.setItem("currentOrder", JSON.stringify(g_orderHeaderOrder));
             sessionStorage.setItem('invoiceContinue', 'activity');          
-    		$.mobile.changePage('orderprint.html');
-    		return;
+            $.mobile.changePage('orderprint.html');
+            return;
     	} 
     	
-    	if (sessionStorage.getItem('currentordertype').indexOf('Invoice') != -1) {
+        var orderType = sessionStorage.getItem('currentordertype');
+        
+    	if (orderType.indexOf('Invoice') !== -1) {
     	
-    		g_showInvoice('orderHeaderInvoicePopup');
-    		return;
+            g_showInvoice('orderHeaderInvoicePopup');
+            return;
     	}
+        
+        if ((orderType === 'Quote') && (DaoOptions.getValue('PrintQuote') === 'true')) {
+            
+            sessionStorage.setItem("currentOrder", JSON.stringify(g_orderHeaderOrder));
+            $.mobile.changePage('catalogue.html');
+            return;
+        }
     	
     } else {
     	

@@ -544,12 +544,15 @@ function productdetailFetchLargeImage() {
         console.log(productdetailGetImageUrl(g_pricelistSelectedProduct.ProductID, 500));
 }
 
-function productdetailGetImageUrl(productId, size) {
+function productdetailGetImageUrl(productId, size, checkImageNumber) {
     
-        if (g_productdetailCurrentImageNumber)
-            productId = productId + '_' + g_productdetailCurrentImageNumber;
-	
-	return g_url.replace('app.r', 'app1.r').replace('https','http') + 'getimage.aspx?imagename=' + productId + '&subfolder=' + g_currentUser().SupplierID + '&width=' + size + '&height=' + size;
+    if (checkImageNumber === undefined)
+        checkImageNumber = true;
+    
+    if (checkImageNumber && g_productdetailCurrentImageNumber)
+        productId = productId + '_' + g_productdetailCurrentImageNumber;
+
+    return g_url.replace('app.r', 'app1.r').replace('https','http') + 'getimage.aspx?imagename=' + productId + '&subfolder=' + g_currentUser().SupplierID + '&width=' + size + '&height=' + size;
 }
 
 function productdetailFillWarehouses(stockArray) {

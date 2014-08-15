@@ -635,22 +635,30 @@
 }
 
 @media print {	
-	.printinvoiceHeader {
-		display: none;
-	}
-	
-	.printinvoiceProductListTable { 
-		page-break-inside:auto;
-	}
-		
-	.printinvoiceProductListTable thead {
-		display: table-header-group;
-	}
+    .printinvoiceHeader {
+        display: none;
+    }
+
+    .printinvoiceProductListTable { 
+        page-break-inside:auto;
+    }
+
+    .printinvoiceProductListTable > thead {
+        display: table-header-group;
+    }
+    
+    .printinvoiceProductListTable > tfoot {
+        display: table-footer-group;
+    } 
+    
+    .printinvoiceProductListTable > tbody {
+        display: table-row-group;
+    }     
    
-   .printinvoiceProductListTable tr { 
-   		page-break-inside:avoid; 
-   		page-break-after:auto 
-   	}
+   .printinvoiceProductListTable > tr { 
+        page-break-inside:avoid; 
+        page-break-after:auto 
+    }
 }
 
 @page {margin: 0;}

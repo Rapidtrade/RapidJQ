@@ -21,7 +21,7 @@ function orderprintInit() {
 function orderprintBind() {
 	
 	$('#printButton').click(function() {
-		g_print($('#orderprintpage').html());
+            g_print('#orderprintpage');
 	});
 
 }
