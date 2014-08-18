@@ -323,11 +323,12 @@ function orderHeaderRemoveFromCart() {
     try {
     	
         g_clearCacheDependantOnBasket();
-//      localStorage.setItem('currentReplenishment', g_orderHeaderOrder.OrderID);
-//        sessionStorage.setItem("currentordertype", 'Order');       
+        
         var dao = new Dao();
-        //g_orderHeaderNextSavingStep = g_vanSales ? orderHeaderSaveOrderStep3 : undefined;
-        dao.clearBasket('BasketInfo', g_currentCompany().AccountID, sessionStorage.getItem('currentordertype'), orderHeaderRemovedFromCartError, orderHeaderRemovedFromCartSuccess);        
+        dao.clearBasket('BasketInfo', g_currentCompany().AccountID, sessionStorage.getItem('currentordertype'), orderHeaderRemovedFromCartError, orderHeaderRemovedFromCartSuccess);  
+
+        // TEST
+//        orderHeaderRemovedFromCartSuccess();
     }
     catch (error) {
     	

@@ -5,12 +5,23 @@
  */
 
 var catalogue = (function() {
+
+    var ITEMS_PER_PAGE = 8;
+    var ITEMS_PER_ROW = 2;
+
+    var catalogueHTML = '';
+    var currentPage = 0;
+    var order = {};
     
     // Public
     
     return {
         
         init: function() {
+            
+            catalogueHTML = '';
+            currentPage = 0;
+            order = JSON.parse(sessionStorage.getItem('currentOrder'));
             
             bind();
             fetch();
@@ -33,38 +44,67 @@ var catalogue = (function() {
         });
     }
     
-    function fetch() {
+    function fetch() {              
         
-        var order = JSON.parse(sessionStorage.getItem('currentOrder'));
+        var totalPages = Math.ceil(order.orderItems.length / ITEMS_PER_PAGE);        
         
-        var productLinesHtml = '';
-        
-        for (var i = 0, length = order.orderItems.length; i < length; ++i) {            
+        for (var i = 0; i < totalPages; ++i) {
             
-            if (i % 2 === 0) {
+            addHeader();
+            addItems();
+            addFooter();
+        }
+        
+        showCatalogue();
+    }
+    
+    function addHeader() {
+        
+        catalogueHTML += '<div class="header">--- HEADER ---</div>';         
+    }
+    
+    function addFooter() {
+        
+        catalogueHTML += '<div class="footer">--- FOOTER ---</div><div class="page-break"></div>';        
+    }    
+    
+    function addItems() {
+        
+        var currentIndex = currentPage++ *  ITEMS_PER_PAGE;
+        
+        catalogueHTML += '<table>';
+        
+        for (var i = 0; order.orderItems[currentIndex] && (i < ITEMS_PER_PAGE); ++i, ++currentIndex) {            
             
-                productLinesHtml += '<tr>';
+            if (i % ITEMS_PER_ROW === 0) {
+            
+                catalogueHTML += '<tr>';
             }
             
-            var item = order.orderItems[i];
+            var item = order.orderItems[currentIndex];
             
-            productLinesHtml += '<td>';          
+            catalogueHTML += '<td>';          
             
-            productLinesHtml += '<img src="' + productdetailGetImageUrl(item.ProductID, 300, false) + '"><br>' +
+            catalogueHTML += '<img src="' + productdetailGetImageUrl(item.ProductID, 300, false) + '"><br>' +
                     '<table><tr><td>Item</td><td>' + item.ProductID + '</td></tr>' +
                     '<tr><td>Descr</td><td>' + item.Description  + '</td></tr>' +
                     '<tr><td>Pack Size</td><td>' + item.Unit  + '</td></tr>' +
                     '<tr><td>Price (Excl)</td><td>' + item.Nett  + '</td></tr></table>';
             
-            productLinesHtml += '</td>';
+            catalogueHTML += '</td>';
             
-            if (i % 2 === 1) {
+            if (i % ITEMS_PER_ROW === ITEMS_PER_ROW - 1) {
             
-                productLinesHtml += '</tr>';
+                catalogueHTML += '</tr>';
             }
-        }
+        } 
         
-        $('#productListTable tbody').html(productLinesHtml);               
+        catalogueHTML += '</table>';
+    }
+    
+    function showCatalogue() {
+        
+        $('.printinvoiceContent').html(catalogueHTML);
     }
     
 })();
