@@ -628,20 +628,30 @@
 }
 
 .printinvoiceHorizontalRule {
-	margin-left:0;
-	height:1px;
-	width:150px;
-	border-width:0;
-	color:gray;
-	background-color:gray;
+    margin-left:0;
+    height:1px;
+    width:150px;
+    border-width:0;
+    color:gray;
+    background-color:gray;
 }
 
 .productImageZoomButton {
-	float: right;
+    float: right;
 }
 
 .page-break { 
-    display: none; 
+    page-break-after: always; 
+}
+
+.printinvoiceContent .page:not(:first-child) .header {
+    
+    display: none;
+}
+
+.printinvoiceContent .page:not(:last-child) .footer {
+    
+    display: none;
 }
 
 @media print {	
@@ -670,7 +680,27 @@
         page-break-after:auto 
     }
     
-    .page-break	{ display: block; page-break-before: always; }
+    .printinvoiceContent .header {
+        height:200px;
+    }
+    
+    .printinvoiceContent .footer {
+        height:100px;
+    } 
+    
+    .printinvoiceContent .items {
+        height:800px;
+    }     
+    
+    .printinvoiceContent .page:not(:first-child) .header {
+
+        display: block;
+    }
+
+    .printinvoiceContent .page:not(:last-child) .footer {
+
+        display: block;
+    }    
 }
 
 @page {margin: 0;}

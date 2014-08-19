@@ -10,7 +10,6 @@ var catalogue = (function() {
     var ITEMS_PER_ROW = 2;
 
     var catalogueHTML = '';
-    var currentPage = 0;
     var order = {};
     
     // Public
@@ -20,7 +19,6 @@ var catalogue = (function() {
         init: function() {
             
             catalogueHTML = '';
-            currentPage = 0;
             order = JSON.parse(sessionStorage.getItem('currentOrder'));
             
             bind();
@@ -48,31 +46,18 @@ var catalogue = (function() {
         
         var totalPages = Math.ceil(order.orderItems.length / ITEMS_PER_PAGE);        
         
-        for (var i = 0; i < totalPages; ++i) {
-            
-            addHeader();
-            addItems();
-            addFooter();
-        }
+        for (var i = 0; i < totalPages; addPage(i++, totalPages));
         
         showCatalogue();
     }
     
-    function addHeader() {
+    function addPage(pageIndex, totalPages) {        
         
-        catalogueHTML += '<div class="header">--- HEADER ---</div>';         
-    }
-    
-    function addFooter() {
+        catalogueHTML += '<div class="page' + (pageIndex < totalPages - 1 ? ' page-break' : '') + '"><div class="header">--- HEADER ---</div>';
+             
+        var currentIndex = pageIndex *  ITEMS_PER_PAGE;
         
-        catalogueHTML += '<div class="footer">--- FOOTER ---</div><div class="page-break"></div>';        
-    }    
-    
-    function addItems() {
-        
-        var currentIndex = currentPage++ *  ITEMS_PER_PAGE;
-        
-        catalogueHTML += '<table>';
+        catalogueHTML += '<div class="items"><table>';
         
         for (var i = 0; order.orderItems[currentIndex] && (i < ITEMS_PER_PAGE); ++i, ++currentIndex) {            
             
@@ -85,11 +70,12 @@ var catalogue = (function() {
             
             catalogueHTML += '<td>';          
             
-            catalogueHTML += '<img src="' + productdetailGetImageUrl(item.ProductID, 300, false) + '"><br>' +
+            catalogueHTML += '<div style="width:300px"><img src="' + productdetailGetImageUrl(item.ProductID, 300, false) + '"></div>' +
                     '<table><tr><td>Item</td><td>' + item.ProductID + '</td></tr>' +
                     '<tr><td>Descr</td><td>' + item.Description  + '</td></tr>' +
-                    '<tr><td>Pack Size</td><td>' + item.Unit  + '</td></tr>' +
-                    '<tr><td>Price (Excl)</td><td>' + item.Nett  + '</td></tr></table>';
+                    '<tr><td>Inn/Ctn Qty</td><td>' + (item.UserField02 || 'N/A')  + '</td></tr>' +
+                    '<tr><td>Price (Excl)</td><td>$' + item.Nett  + '</td></tr>' +
+                    '<tr><td>Bar Code</td><td>' + (item.Barcode || 'N/A')  + '</td></tr></table>';
             
             catalogueHTML += '</td>';
             
@@ -99,8 +85,10 @@ var catalogue = (function() {
             }
         } 
         
-        catalogueHTML += '</table>';
-    }
+        catalogueHTML += '</table></div>';        
+        
+        catalogueHTML += '<div class="footer">--- FOOTER ---</div></div>';
+    }   
     
     function showCatalogue() {
         
