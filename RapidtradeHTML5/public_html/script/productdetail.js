@@ -905,25 +905,25 @@ function productdetailCalculateDiscount(volumePrice) {
 
 function productdetailDeleteItem() {
 	
-	var deleteItemOnSuccess = function() {
-		
-		if (productdetailCanChangeNett(g_pricelistSelectedProduct.ProductID)) {
-			
-        	pricelistShowExpandCategory(true);
-        	pricelistBasicSearch();
-        	
-		} else {
-			
-			$('#' + g_pricelistSelectedProduct.ProductID).text('');
-		}
-		  			
-		pricelistOnBackButtonClick();
-	};
-	
-	shoppingCartDeleteItem(g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID, 
-				DaoOptions.getValue('LostSaleActivityID') != undefined, 
-				undefined, 
-				deleteItemOnSuccess);		
+    var deleteItemOnSuccess = function() {
+
+            if (productdetailCanChangeNett(g_pricelistSelectedProduct.ProductID)) {
+
+                pricelistShowExpandCategory(true);
+                pricelistBasicSearch();
+
+            } else {
+
+                $('#' + g_pricelistSelectedProduct.ItemIndex).text('');
+            }
+
+            pricelistOnBackButtonClick();
+    };
+
+    shoppingCartDeleteItem(g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID, 
+                            DaoOptions.getValue('LostSaleActivityID') != undefined, 
+                            undefined, 
+                            deleteItemOnSuccess);		
 }
 
 function productdetailOkClicked(checkStock) {

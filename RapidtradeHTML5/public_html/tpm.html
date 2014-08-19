@@ -33,7 +33,53 @@
                     <label for="reference">Reference</label>
                     <input type="text" name="reference" id="reference" value="" placeholder="Enter your order reference">          
                     <label for="comment">Comment</label>
-                    <input type="text" name="comment" id="comment" value="" placeholder="Enter your comment">   
+                    <input type="text" name="comment" id="comment" value="" placeholder="Enter your comment">  
+                    <div class="rtlabel">
+                        <img class="rtlabelimg" src="img/Address-Book-64.png"/>
+                        <h3 class="rtlabeltext">Address</h3>
+                    </div>                    
+                    <form id="addressForm" class="ui-body ui-body-c">
+                            <div data-role="fieldcontain">
+                                <label for="email">Email</label>
+                                <input type="text" id="email" value=""/>
+                                <a  data-transition="pop" data-rel="popup" data-position-to="window" id="emailChooseBtn" data-role="button" data-inline="true" href="#popupEmail">Choose</a>
+                            </div>
+                            <div data-role="popup" id="popupEmail" data-history="false" class="ui-content">   	
+                               <div data-role="fieldcontain">
+                                 <fieldset data-role="controlgroup" id="emailfieldset" data-type="vertical">
+                                     <legend></legend>
+                                 </fieldset>                      
+                                </div>    
+                            </div>           
+                            <div data-role="fieldcontain">
+                                 <label for="name">Name</label>
+                                 <input type="text" name="name" id="name" value="" />
+                                 <a  data-transition="pop" data-rel="popup" data-position-to="window" id="choosebtn" data-role="button" data-inline="true" href="#popupAddressChoose">Choose</a>
+                             </div>
+                             <div data-role="popup" id="popupAddressChoose" data-history="false" class="ui-content" >   	
+                               <div data-role="fieldcontain">
+                                 <fieldset data-role="controlgroup" id ="fieldset">
+                                     <legend></legend>
+                                 </fieldset>                      
+                                </div>                
+                             </div>	             
+                             <div data-role="fieldcontain">
+                                 <label for="address1">Address1</label>
+                                 <input type="text" name="address1" id="address1" value=""/>
+                             </div>
+                              <div data-role="fieldcontain">
+                                 <label for="address2">Address2</label>
+                                 <input type="text" name="address2" id="address2" value=""/>
+                             </div>
+                              <div data-role="fieldcontain">
+                                 <label for="address3">Address3</label>
+                                 <input type="text" name="address3" id="address3" value=""/>
+                             </div>
+                              <div data-role="fieldcontain">
+                                 <label for="postalCode">Postal Code</label>
+                                 <input type="text" name="postalCode" id="postalCode" value=""/>
+                             </div>
+                     </form>                     
                     <a id="saveTPM" data-role="button" >Save your Order</a>                     
                     </div>               
                 </div>

@@ -6,7 +6,9 @@ function tpmOnPageShow() {
     tpmRemovePromotions();
 }
 
-function tpmOnPageInit() {	
+function tpmOnPageInit() {
+    
+    $('#addressForm input').parent('.ui-input-text').css('width', '50%');
     tpmBind();
 }
 
@@ -26,7 +28,15 @@ function tpmBind() {
         $.mobile.changePage("ShoppingCart.html");
     });
 
-    $('#complexPopup #okButton').off().on('click', tpmSaveComplexPromotion);    
+    $('#complexPopup #okButton').off().on('click', tpmSaveComplexPromotion);   
+    
+    $('#choosebtn').click(function () {
+    	orderHeaderChooseOnClick();
+    });
+    
+    $('#emailChooseBtn').click(function () {
+    	orderHeaderEmailChooseOnClick();
+    });    
 }
 /*
  * First remove any items added due to promotions to ensure we start a fresh
@@ -85,6 +95,13 @@ function tpmPost(type, onSuccess, isOrder) {
                 
                 g_orderHeaderOrder.Reference = $('#reference').val();
                 g_orderHeaderOrder.Comments = $('#comment').val();
+                
+                g_orderHeaderOrder.Email = $('#email').val();
+                g_orderHeaderOrder.DeliveryName = $('#name').val();
+                for (var index = 1; index < 4; ++index)
+                    g_orderHeaderOrder['DeliveryAddress' + index] = $('#address' + index).val();
+
+                g_orderHeaderOrder.DeliveryPostCode = $('#postalCode').val();                  
                 
             } else {
                 
