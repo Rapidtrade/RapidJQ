@@ -295,6 +295,8 @@ function shoppingCartFetchBasket() {
     } else {
         
         alphaFilter.getInstance().init('#alphabet');
+        
+        g_shoppingCartItemKeys = [];
         var dao = new Dao();
         dao.indexsorted('BasketInfo',g_currentCompany().AccountID, 'index1', 'index4', shoppingCartAddItem, shoppingCartNoItems, shoppingCartOnAllItemsAdded);
     }
