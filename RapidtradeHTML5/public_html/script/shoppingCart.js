@@ -334,9 +334,9 @@ function shoppingCartAddItem(item, checkSummary) {
     nett = g_addCommas(parseFloat(shoppingCartItemNett(item)).toFixed(2));
     // deal with over 1,000
     if (isNaN(shoppingCartItemNett(item))) {
-    	value = shoppingCartItemNett(item).replace(',','') / ((DaoOptions.getValue('DividePriceByUnit')  == 'true') && g_isPackSizeUnitValid(item.Unit) ? item.Unit : 1) * item.Quantity;
+    	value = shoppingCartItemNett(item).replace(',','') / ((DaoOptions.getValue('DividePriceByUnit') === 'true') && g_isPackSizeUnitValid(item.Unit) ? item.Unit : 1) * item.Quantity;
     } else {
-    	value = shoppingCartItemNett(item) / ((DaoOptions.getValue('DividePriceByUnit')  == 'true') && g_isPackSizeUnitValid(item.Unit) ? item.Unit : 1) * item.Quantity;
+    	value = shoppingCartItemNett(item) / ((DaoOptions.getValue('DividePriceByUnit') === 'true') && g_isPackSizeUnitValid(item.Unit) ? item.Unit : 1) * item.Quantity;
     }
     var formattedValue = g_addCommas(parseFloat(value).toFixed(2));
 	var maxValue = '';

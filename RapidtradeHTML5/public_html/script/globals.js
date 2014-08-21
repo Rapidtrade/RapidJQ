@@ -496,22 +496,22 @@ function g_createDefaultDisplayFields() {
 
 function g_getDefaultDisplayFieldsById(id) {
 
-	return jQuery.grep(g_defaultDisplayFields, function(field) {
-		return field.ID == id;
-	});
-
+    return jQuery.grep(g_defaultDisplayFields, function(field) {
+        return field.ID == id;
+    });
 }
 
 function g_append(element, text) {
-	if (window.MSApp) {
-		MSApp.execUnsafeLocalFunction(function() {
-			$(element).append(text);
-		});
-	} else {
-		$(element).append(text);
-	}
-
+    
+    if (window.MSApp) {
+        MSApp.execUnsafeLocalFunction(function() {
+                $(element).append(text);
+        });
+    } else {
+        $(element).append(text);
+    }
 }
+
 function g_html(element, text) {
 	if (window.MSApp) {
 		MSApp.execUnsafeLocalFunction(function() {

@@ -654,6 +654,25 @@
     display: none;
 }
 
+#complexProductTable {
+    
+    border-collapse: collapse;
+    margin: 20px 0;    
+}
+
+#complexProductTable th, #complexProductTable td {
+    
+    border: 1px solid black;
+    padding: 5px;
+    line-height: 25px;
+}
+
+#complexProductTable input {
+    
+    height: 20px;
+    font-size: 15px;
+}
+
 @media print {	
     .printinvoiceHeader {
         display: none;

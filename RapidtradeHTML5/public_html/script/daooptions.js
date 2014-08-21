@@ -1,4 +1,4 @@
-﻿var DaoOptions = (function () {
+var DaoOptions = (function () {
 	
 	var optionsArray = [];
 	

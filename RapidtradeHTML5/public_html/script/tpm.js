@@ -383,7 +383,7 @@ function tpmShowComplexPopup(promotionId) {
             'font-size': '15px'
     }); 
 
-    $('#complexPromotionDiv.tpmTable th, td').css({
+    $('#complexPromotionDiv.tpmTable th, #complexPromotionDiv.tpmTable td').css({
             'border': '1px solid black',
             'padding': '5px',
             'line-height': '25px'

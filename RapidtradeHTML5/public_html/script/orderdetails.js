@@ -1,4 +1,5 @@
 var g_orderdetailsOrderItems = [];
+var g_orderdetailsComplexItems = {};
 var g_orderdetailsCurrentOrder = {};
 
 var g_orderdetailsPageTranslation = {};
@@ -242,106 +243,173 @@ function orderdetailsSaveCredit() {
     sessionStorage.setItem('OrderHeaderReturnPage', 'orderdetails.html');
     sessionStorage.setItem('referenceDocID', g_orderdetailsCurrentOrder.OrderID);
     sessionStorage.setItem('orderheaderNext', 'history');
+    
     $.mobile.changePage('shoppingCart.html');
 }
 
-function orderdetailsSendOrderItem(itemIndex) {
+function orderdetailsSendOrderItem(itemKey, isComplexView) {
     
-        var item = g_orderdetailsOrderItems[itemIndex];
-	
-	$('#stockValue').text('');
-	$('#quantityPopup').popup('open');
-	
-	orderdetailsFetchStock(item.ProductID, item.Gross, item.Nett);
-	
-	$('#quantityEdit').val(item.Quantity);
-        $('#quantityEdit').attr('step', item.Unit || 1);	
-	
-	var creditReasons = DaoOptions.getValue('CreditReasons') ?  DaoOptions.getValue('CreditReasons').split(',') : undefined;
-	
-	if (creditReasons && creditReasons.length) {
-		
-		$('#creditReasonDiv select').empty();
-		
-		$.each(creditReasons, function(index, value) {             
-			
-            var option = '<option value="' + value + '">'+ value + '</option>';            
-            $('#creditReasonDiv select').append(option);
-        });
-		
-		$('select').selectmenu('refresh');
-	}
-	
-	$('#creditReasonDiv').toggle(orderdetailsIsCreditSelected());
-	
-	var enteredQuantity = function() {
-		
-            return parseInt($('#quantityEdit').attr('value'), 10);
-	};
+    if (isComplexView) {
         
-        $('#deleteItemButton').off().on('click', function() {
+        $('#complexProductId').text(itemKey);
+        var unit = g_orderdetailsCurrentOrder[DaoOptions.getValue('MasterChartComplexUnit')] || 1;
+        $('#complexProductUOM').text('UOM: ' + unit);
+
+        var tableRowsHTML = '';
+        
+        for (var i = 0; i < g_orderdetailsComplexItems[itemKey].length; ++i) {
             
-            $('#quantityEdit').val('');
-            $('#sendItemButton').trigger('click');
-        });
-	
-	$('#sendItemButton').click(function(event) {
+            var item = g_orderdetailsComplexItems[itemKey][i];
+            tableRowsHTML += '<tr><td>' + item.ProductID + '</td><td>' + item.Description + '</td><td><input type="number" min="0" step="' + unit + '"></td></tr>';
+        }
+        
+        $('#complexProductTable tbody').html(tableRowsHTML);
+        
+        g_popup('#complexProductPopup').show(undefined, function() {
             
-            $(this).unbind(event);
+            var isAnyItemOrdered = false;
             
-            if (!enteredQuantity()) {
-                
-                var deleteItemOnSuccess = function() {
+            $('#complexProductTable tbody tr').each(function() {
+                                
+                var quantity = $(this).find('input').val();                                
+               
+                if (quantity) {
                     
-                    $itemRow = $('#' + syncGetKeyField(item, 'OrderItems'));
-                    
-                    $itemRow.find('.orderedQuantity').empty();
-                    $itemRow.find('.captureQuantity').val('');
-                };                
-                
-                shoppingCartDeleteItem($.trim(item.ProductID) + $.trim(item.SupplierID) + g_currentUser().UserID + $.trim(item.AccountID), 
-                        DaoOptions.getValue('LostSaleActivityID') != undefined, 
-                        false, 
-                        deleteItemOnSuccess);
+                    if (quantity % unit > 0) {
                         
-                return;                
-            }            
-		
-            var isValid = (enteredQuantity() > 0);
-
-            if (isValid && orderdetailsIsCreditSelected())
-                isValid = (enteredQuantity() <= parseInt(item.Quantity, 10));
-
-            if (!isValid)
-                    alert('Please enter a valid quantity');
-
-            if (isValid && item.Unit) {
-
-                isValid = enteredQuantity() % item.Unit > 0;
-
-                if (!isValid) {
-
-                    alert('You are ordering in incorrect units. The pack size requires you to order in units of ' + g_pricelistSelectedProduct.Unit);
-                    isValid = false;
+                        g_alert('Please enter a valid quantity for the ' + $(this).find('td:first').text() + ' product.');
+                        
+                    } else {
+                        
+                        isAnyItemOrdered = true;
+                    }
                 }
-            } 		
+            });
+            
+//            if (tpmIsUOMValid()) {
+//
+//                var isAnyItemSelected = false;
+//
+//                for (var key in g_tpmLastValidQuantities) {
+//
+//                    var promotionId = key.split('|')[0];
+//                    var productId = key.split('|')[1];
+//
+//                    $.each(jsonform.getInstance().jsonArray, function(index, item) {
+//
+//                        if ((item.UserField02 === promotionId) && ($.trim(item.ProductID) === productId)) {
+//
+//                            item.Quantity = g_tpmLastValidQuantities[key];
+//                            item.selected = (item.Quantity > 0);
+//
+//                            isAnyItemSelected = isAnyItemSelected || item.selected;
+//                        }
+//                    });
+//                }
+//
+//                $('#complexPopup').popup('close');            
+//                $('#jsontable td:visible:nth-child(1):contains("' + promotionId + '")').parent().find('#Selected').prop('checked', isAnyItemSelected)/*.checkboxradio('refresh')*/; 
+//            }
+        });
+        
+        return;
+    }
+    
+    var item = g_orderdetailsOrderItems[itemKey];
 
-            if ($('#creditReasonDiv option:selected').val())
-                item.UserField01 = $('#creditReasonDiv option:selected').val();
+    $('#stockValue').text('');
+    $('#quantityPopup').popup('open');
+
+    orderdetailsFetchStock(item.ProductID, item.Gross, item.Nett);
+
+    $('#quantityEdit').val(item.Quantity);
+    $('#quantityEdit').attr('step', item.Unit || 1);	
+
+    var creditReasons = DaoOptions.getValue('CreditReasons') ?  DaoOptions.getValue('CreditReasons').split(',') : undefined;
+
+    if (creditReasons && creditReasons.length) {
+
+        $('#creditReasonDiv select').empty();
+
+        $.each(creditReasons, function(index, value) {             
+
+        var option = '<option value="' + value + '">'+ value + '</option>';            
+        $('#creditReasonDiv select').append(option);
+    });
+
+        $('select').selectmenu('refresh');
+    }
+
+    $('#creditReasonDiv').toggle(orderdetailsIsCreditSelected());
+
+    var enteredQuantity = function() {
+
+        return parseInt($('#quantityEdit').attr('value'), 10);
+    };
+
+    $('#deleteItemButton').off().on('click', function() {
+
+        $('#quantityEdit').val('');
+        $('#sendItemButton').trigger('click');
+    });
+
+    $('#sendItemButton').click(function(event) {
+
+        $(this).unbind(event);
+
+        if (!enteredQuantity()) {
+
+            var deleteItemOnSuccess = function() {
+
+                $itemRow = $('#' + syncGetKeyField(item, 'OrderItems'));
+
+                $itemRow.find('.orderedQuantity').empty();
+                $itemRow.find('.captureQuantity').val('');
+            };                
+
+            shoppingCartDeleteItem($.trim(item.ProductID) + $.trim(item.SupplierID) + g_currentUser().UserID + $.trim(item.AccountID), 
+                    DaoOptions.getValue('LostSaleActivityID') != undefined, 
+                    false, 
+                    deleteItemOnSuccess);
+
+            return;                
+        }            
+
+        var isValid = (enteredQuantity() > 0);
+
+        if (isValid && orderdetailsIsCreditSelected())
+            isValid = (enteredQuantity() <= parseInt(item.Quantity, 10));
+
+        if (!isValid)
+                alert('Please enter a valid quantity');
+
+        if (isValid && item.Unit) {
+
+            isValid = enteredQuantity() % item.Unit > 0;
+
+            if (!isValid) {
+
+                alert('You are ordering in incorrect units. The pack size requires you to order in units of ' + g_pricelistSelectedProduct.Unit);
+                isValid = false;
+            }
+        } 		
+
+        if ($('#creditReasonDiv option:selected').val())
+            item.UserField01 = $('#creditReasonDiv option:selected').val();
+
+        if (orderdetailsIsCreditSelected())
+            item.UserField02 = item.Quantity;
+
+        if (isValid) {
+
+            item.Quantity = enteredQuantity();
+
+            orderdetailsSendItemToBasket(item, true);
 
             if (orderdetailsIsCreditSelected())
-                item.UserField02 = item.Quantity;
-
-            if (isValid) {
-
-                item.Quantity = enteredQuantity();
-
-                orderdetailsSendItemToBasket(item, true);
-
-                if (orderdetailsIsCreditSelected())
-                    $('.historyOrderItems tr:contains("' + item.ProductID + '") .descr').text(item.Quantity + ' [-' + enteredQuantity() + ']');
-            }
-	});
+                $('.historyOrderItems tr:contains("' + item.ProductID + '") .descr').text(item.Quantity + ' [-' + enteredQuantity() + ']');
+        }
+    });
 }
 
 /*
@@ -349,21 +417,18 @@ function orderdetailsSendOrderItem(itemIndex) {
  */
 function orderdetailsFetchOrderItems() {
 
-//	var testorder = new Object();
-//	testorder.SupplierID = "DS";
-//	testorder.Type = "DatePicker";
-//	testorder.Name = "display";
-//	testorder.Visible = true;
-
     var orderItems = [];
     var itemsShown = false;
+    
+    var complexIndicator = DaoOptions.getValue('MasterChartComplexIndic');
+    var isComplexView = complexIndicator && (g_orderdetailsCurrentOrder[complexIndicator] === 'Y');    
 
     var showOrderItems = function() {
         
         if (!itemsShown) {
             
             $.mobile.hidePageLoadingMsg();
-            orderdetailsShowOrderItems(orderItems);
+            orderdetailsShowOrderItems(orderItems, isComplexView);
             itemsShown = true;
             orderdetailsCheckBasket();
         }
@@ -397,7 +462,7 @@ function orderdetailsFetchOrderItems() {
 
     var success = function (json) {
 
-        orderdetailsShowOrderItems(json);
+        orderdetailsShowOrderItems(json, isComplexView);
 
         orderdetailsCheckBasket();
 
@@ -413,25 +478,44 @@ function orderdetailsFetchOrderItems() {
     g_ajaxget(url, success, error);
  };
  
- function orderdetailsShowOrderItems(orderItems) {
+ function orderdetailsShowOrderItems(orderItems, isComplexView) {
      
     g_orderdetailsOrderItems = [];
+    g_orderdetailsComplexItems = {};
      
     $('#orderitemlist').empty();
 
     var jsonForm = new JsonForm();
-    jsonForm.show(g_currentUser().SupplierID, '#orderDetailspopup', g_orderdetailsCurrentOrder, 'StatusOrderHeader');
+    jsonForm.show(g_currentUser().SupplierID, '#orderDetailspopup', g_orderdetailsCurrentOrder, 'StatusOrderHeader');    
 
     for (var i = 0; i < orderItems.length; i++) {
 
         var orderItem = orderItems[i];
+        
+        if (isComplexView) {
+            
+            var complexProductId = orderItem[DaoOptions.getValue('MasterChartComplexProd')];
+            var isFirstComplexProduct = !g_orderdetailsComplexItems[complexProductId];
+            
+            if (isFirstComplexProduct) {
+                
+                g_orderdetailsComplexItems[complexProductId] = [];
+            }
+            
+            g_orderdetailsComplexItems[complexProductId].push(orderItem);
+            
+            if (!isFirstComplexProduct) {
+                
+                continue;
+            }                
+        }
 
         var nettValue = orderItem.RepNett ? orderItem.RepNett : orderItem.Nett;
         var itemKey = syncGetKeyField(orderItem, 'OrderItems');
 
         var quantityInputHtml = '';
 
-        if (g_orderdetailsCurrentOrder.Type === DaoOptions.getValue('DownloadOrderType')) {
+        if (!isComplexView && (g_orderdetailsCurrentOrder.Type === DaoOptions.getValue('DownloadOrderType'))) {
 
             var step = 'step=' + (g_isPackSizeUnitValid(pricelist.Unit) ? pricelist.Unit : 1) + ' min=0';
 
@@ -443,11 +527,11 @@ function orderdetailsFetchOrderItems() {
         orderItem.Description = orderItem.Description.replace(/'/g, '&quot;') + (barcode ? ' (' + barcode + ')' : '');
 
         g_append('#orderitemlist', '<li data-theme="c" id="' + itemKey + '">' +
-            '   <a><p class="ui-li-heading"><strong>' + orderItem.Description + '</strong></p>' +
-            '   <table class="ui-li-desc historyOrderItems"><tr><td class="itemId">' + orderItem.ItemID + '</td><td class="productId">' + orderItem.ProductID + 
+            '   <a><p class="ui-li-heading"><strong>' + (isComplexView ? orderItem[DaoOptions.getValue('MasterChartComplexDesc')] : orderItem.Description) + '</strong></p>' +
+            '   <table class="ui-li-desc historyOrderItems"><tr><td class="itemId">' + orderItem.ItemID + '</td><td class="productId">' + (isComplexView ? complexProductId : orderItem.ProductID) + 
             '</td><td class="quantity">' + orderItem.Quantity + '</td><td class="value">' + g_roundToTwoDecimals(nettValue) + 
             '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td><td class="orderedQuantity"></td>' + quantityInputHtml + '</tr></table></a>' +
-            '	<a onclick="orderdetailsSendOrderItem(' + g_orderdetailsOrderItems.length + ')" data-role="button" data-transition="pop" data-rel="popup"  data-position-to="window" data-inline="true"' +
+            '	<a onclick="orderdetailsSendOrderItem(' + (isComplexView ? '\'' + complexProductId + '\', true' : g_orderdetailsOrderItems.length) + ')" data-role="button" data-transition="pop" data-rel="popup"  data-position-to="window" data-inline="true"' +
             '	class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
             '	<span class="ui-btn-inner ui-btn-corner-all">' +
             '	<span class="ui-icon ui-icon-plus ui-icon-shadow">Send to Basket</span>' +
