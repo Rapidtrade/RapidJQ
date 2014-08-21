@@ -6,8 +6,11 @@ var g_productdetailStockValues = [];
 var g_productdetailCurrentImageNumber = 0;
 
 function productdetailInit() {
-	
-    $.mobile.showPageLoadingMsg();
+
+    // close menu if needed 
+    overlayOnItemClick();
+    
+    $.mobile.showPageLoadingMsg();    
 
     //reset screen
     $('.pricelistBusyImg').show();

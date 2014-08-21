@@ -209,7 +209,8 @@ function overlayRemoveStorage() {
 
 function overlayOnItemClick(item) {
 	
-    overlayHighlightMenuItem(item);
+    if (item)    
+        overlayHighlightMenuItem(item);
 
     if (g_phonegap || $( window ).width() < 900) 
         $('#menuPanel').panel('close');
@@ -217,7 +218,7 @@ function overlayOnItemClick(item) {
 
 function overlayHighlightMenuItem(item) {
 	
-    var $item = ('.orderItem' == item) ? $(item).first() : $(item);			
+    var $item = ('.orderItem' === item) ? $(item).first() : $(item);			
     $item.addClass('ui-btn-active').siblings('li').removeClass('ui-btn-active');
 
     if ($item.closest('ul').attr('id') === 'mainMenu')
