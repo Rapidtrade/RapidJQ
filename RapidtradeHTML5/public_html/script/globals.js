@@ -663,20 +663,20 @@ function g_showInvoice(popupId) {
 
 function g_saveLostSale(productId, quantity, stock) {
 	
-	var activity = {};
+    var activity = {};
 	
     activity.EventID = createId();
-	activity.Deleted = false;
-	activity.EventTypeID = DaoOptions.getValue('LostSaleActivityID');
-	activity.AccountID = g_currentCompany().AccountID;
-	activity.SupplierID = g_currentCompany().SupplierID;
-	activity.UserID = g_currentUser().UserID;
-	activity.Data = productId + ';' + quantity + ';' + stock;
-	activity.DueDate = moment().toDate(); 
-	
-	activity.key = g_currentCompany().SupplierID + g_currentCompany().AccountID + activity.EventID;
-	
-	g_saveObjectForSync(activity, activity.key, "Activities", "Modify", undefined);
+    activity.Deleted = false;
+    activity.EventTypeID = DaoOptions.getValue('LostSaleActivityID');
+    activity.AccountID = g_currentCompany().AccountID;
+    activity.SupplierID = g_currentCompany().SupplierID;
+    activity.UserID = g_currentUser().UserID;
+    activity.Data = productId + ';' + quantity + ';' + stock;
+    activity.DueDate = moment().toDate(); 
+
+    activity.key = g_currentCompany().SupplierID + g_currentCompany().AccountID + activity.EventID;
+
+    g_saveObjectForSync(activity, activity.key, "Activities", "Modify", undefined);
 }
 
 function g_fetchAvailableCredit() {
@@ -723,16 +723,23 @@ var g_popup = (function() {
     
     return function(popupSelector) {
         
-        return {
+        return {            
       
-            show: function(miliseconds, callback) {
+            show: function(miliseconds, callback, validate) {
+                
+                var that = this;
                                
-                onClose = callback;
+                onClose = callback;                
 
                 $(popupSelector).popup('open');
-                $(popupSelector).off().on('click', 'a', this.hide);
+                $(popupSelector).off().on('click', 'a', function() {
+                    
+                    if (!validate || validate())
+                        that.hide();
+                });
                 
                 $(popupSelector).bind({
+                    
                     popupafterclose: function() { 
                         
                         if (onClose)
