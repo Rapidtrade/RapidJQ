@@ -635,7 +635,7 @@ function g_isQuantityValid(quantity, unit) {
 	
         quantity = Number(quantity);
         
-	var isValid = (quantity > 0) && (quantity < 10000);
+	var isValid = (quantity > 0) /*&& (quantity < 10000)*/;
 	
 	if (isValid && g_isPackSizeUnitValid(unit)) {
 		
