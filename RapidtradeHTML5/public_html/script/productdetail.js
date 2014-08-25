@@ -644,7 +644,7 @@ function productdetailSaveValue() {
             
             try {
                 var maxdiscount = parseFloat(sessionStorage.getItem('maxdiscount'));
-                if (discount > maxdiscount){
+                if ((maxdiscount > 0) && (discount > maxdiscount)){
                     g_alert('Maximum discount is ' + maxdiscount + '%');
                     return;
                 }			
