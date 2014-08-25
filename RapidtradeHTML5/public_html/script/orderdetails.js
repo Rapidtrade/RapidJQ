@@ -81,21 +81,37 @@ function orderdetailsBind() {
 	
     $('#sendToBasketButton').unbind();
     $('#sendToBasketButton').click(function () {
-    	var orderItemsNumber = g_orderdetailsOrderItems.length;
-    	g_grvCachedBasketItems = [];
-    	for (var index = 0; index < orderItemsNumber; ++index) {
+        
+        if (orderdetailsIsComplexView()) {
+            
+            g_orderdetailsOrderItems = [];
+            
+            $.each(g_orderdetailsComplexItems, function(id, items) {
+                
+                $.each(items, function(i, item) {
+                    
+                    g_orderdetailsOrderItems.push(item);
+                    orderdetailsSendItemToBasket(item); 
+                });                
+            });
+            
+        }
+        
+        var orderItemsNumber = g_orderdetailsOrderItems.length;
+        g_grvCachedBasketItems = [];
+        for (var index = 0; index < orderItemsNumber; ++index) {
             orderdetailsSendItemToBasket(g_orderdetailsOrderItems[index]);
             var key = (g_orderdetailsOrderItems[index].ProductID + g_orderdetailsOrderItems[index].SupplierID + g_currentUser().UserID + g_orderdetailsOrderItems[index].AccountID).trim();
             g_orderdetailsOrderItems[index].key = key;
             g_grvCachedBasketItems[key] = g_orderdetailsOrderItems[index];
-    	}
+        }
     	
     	g_clearCacheDependantOnBasket();
     	orderdetailsCheckBasket();
 
     	if (confirm(g_orderdetailsPageTranslation.translateText('Items have been sent to your shopping cart. Would you like to go to the shopping cart now?'))) {    		
-    		sessionStorage.setItem('ShoppingCartReturnPage', 'orderdetails.html');
-    		$.mobile.changePage("shoppingCart.html");
+            sessionStorage.setItem('ShoppingCartReturnPage', 'orderdetails.html');
+            $.mobile.changePage("shoppingCart.html");
     	}
     });
     
@@ -316,12 +332,13 @@ function orderdetailsSendOrderItem(itemKey) {
             $('#complexProductTable tbody tr').each(function() {
                                 
                 var quantity = Number($(this).find('input').val()); 
+                var productId = $(this).find('td:first').text();
                
                 if (quantity) {
                     
                     if (quantity % unit > 0) {
                         
-                        g_alert('Please enter a valid quantity for the ' + $(this).find('td:first').text() + ' product.');
+                        g_alert('Please enter a valid quantity for the ' + productId + ' product.');
                         isValid = false;
                         // break
                         return false;
@@ -331,8 +348,25 @@ function orderdetailsSendOrderItem(itemKey) {
                         var item = g_orderdetailsComplexItems[itemKey][this.id];
                         item.Quantity = quantity;
                         orderedItems.push(item);                        
-                    }                    
-                }          
+                    }   
+                    
+                } else {
+                    
+                    var isProductInBasket = g_orderdetailsComplexQuantities[itemKey] && (g_orderdetailsComplexQuantities[itemKey][productId] > 0);
+                    
+                    if (isProductInBasket) {
+                        
+                        shoppingCartDeleteItem($.trim(productId) + g_currentUser().SupplierID + g_currentUser().UserID + $.trim(g_currentCompany().AccountID), 
+                                DaoOptions.getValue('LostSaleActivityID') != undefined, 
+                                false, 
+                                function() {
+                                    
+                                    $('#orderitemlist td.productId:contains("' + itemKey + '")').nextAll('.orderedQuantity').empty();
+                                    orderdetailsCheckBasket();
+                                }
+                                );
+                    }
+                }         
             });
             
             if (isValid) {

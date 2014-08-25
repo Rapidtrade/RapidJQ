@@ -393,7 +393,7 @@ function g_addProductToBasket(productID, supplierID, accountID, quantity,
 		repDiscount, unit, userField02, warehouse, vat, stock, userField03, userField04,
 		userField05, userField06, userField07, userField08, userField09, userField10, userField15) {
 
-        nett = nett.toFixed(2);
+//        nett = nett.toFixed(2);
 
 	var repChangedPrice = repNett && (nett != repNett);
 	

@@ -345,6 +345,19 @@ function shoppingCartAddItem(item, checkSummary) {
 	
         var itemIndex = g_shoppingCartItemKeys.length;
         g_shoppingCartItemKeys.push(item.key);
+        
+        var step = 1;
+        
+        if (orderdetailsIsComplexView()) {
+            
+            step = g_orderdetailsCurrentOrder[DaoOptions.getValue('MasterChartComplexUnit')] || 1;
+            
+        } else if (g_isPackSizeUnitValid(item.Unit)) {
+            
+            step = item.Unit;
+        }
+        
+        step = 'step=' + step;
 	
 	g_basketHTML +=
         '<li id="LI' + itemIndex + '"' + alphaFilter.getInstance().addClass(item.Description) + '>' +
@@ -353,8 +366,8 @@ function shoppingCartAddItem(item, checkSummary) {
         '    <tr>' +
         '       <td class="descr">' + item.Description + '</td>' +
         '       <td rowspan="2" align="right" class="quantity">' +
-        '              <input id="' + itemIndex + '" style="width: 100px;" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset quantity" class="qtybox" type="number"' + 
-        		     	(g_isPackSizeUnitValid(item.Unit) ? ' step=' + item.Unit : 'step=1') + ' min="0" ' + maxValue + 
+        '              <input id="' + itemIndex + '" style="width: 100px;" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset quantity" class="qtybox" type="number" ' + step +
+        		     	' min="0" ' + maxValue + 
         '        		class="quantity" onchange ="shoppingCartOnQuantityChanged(\'' + itemIndex + '\', value' + (shoppingCartIsGRV() || (sessionStorage.getItem('currentordertype') == 'Credit') ? ', ' + qty  + ', \'' + item.Description + '\'': '') + ')"  value="' + qty + '" />' +
         '       </td>' +
         '       <td rowspan="2" align="right" class="nett" id="' + itemIndex + 'nett">' + nett + '</td>' +
@@ -583,25 +596,28 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
     	}
     	
         g_addProductToBasket(
-                 basketInfo.ProductID,
-                 basketInfo.SupplierID,
-                 basketInfo.AccountID,
-                 quantity,
-                 basketInfo.UserID,
-                 basketInfo.Nett,
-                 basketInfo.Description,
-                 basketInfo.Discount,
-                 basketInfo.Gross,
-                 basketInfo.Type,
-                 basketInfo.UserField01,
-                 basketInfo.RepNett,
-                 basketInfo.RepDiscount,
-                 basketInfo.Unit,
-                 basketInfo.UserField02,
-                 basketInfo.Warehouse,
-                 basketInfo.VAT,
-                 basketInfo.Stock
-                 );
+                basketInfo.ProductID,
+                basketInfo.SupplierID,
+                basketInfo.AccountID,
+                quantity,
+                basketInfo.UserID,
+                basketInfo.Nett,
+                basketInfo.Description,
+                basketInfo.Discount,
+                basketInfo.Gross,
+                basketInfo.Type,
+                basketInfo.UserField01,
+                basketInfo.RepNett,
+                basketInfo.RepDiscount,
+                basketInfo.Unit,
+                basketInfo.UserField02,
+                basketInfo.Warehouse,
+                basketInfo.VAT,
+                basketInfo.Stock,
+                basketInfo.UserField03,
+                basketInfo.UserField04,
+                basketInfo.UserField05                 
+                );
         
         $('#' + itemIndex + 'nett').text('' + basketInfo.Nett);
         $('#' + itemIndex + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  == 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * quantity));
