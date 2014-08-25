@@ -893,15 +893,15 @@ function pricelistBarcodeOnSuccessRead(product) {
 	
 	var addProduct = function(productObject) {
 		
-		productdetailSave(quantity, type, productObject);
-		pricelistCheckBasket();
+            productdetailSave(quantity, type, productObject);
+            pricelistCheckBasket();
 		
 	    $('#barcodescanned').text(quantity + ' added for ' + productObject.Description);
 	    $('#barcodescanned').addClass('greypanel');
 	    $('#barcodescanned').removeClass('redpanel');
 	    $('#barcodescanned').show();
 	    $('#NextPrevButtons').hide();
-		$.mobile.hidePageLoadingMsg();
+            $.mobile.hidePageLoadingMsg();
 	};
     
 //	if (pricelistIsSGScan()) {
@@ -1174,6 +1174,7 @@ function pricelistBindCaptureQuantity() {
 	 	    	
 	 	    	var itemIndex = Number(this.id.replace('quantity', ''));
 	 	    	pricelistAddItemToBasket(itemIndex);
+                        $(this).siblings('.quantity').text($(this).val());
 	 	    }
 		});
 	}
@@ -1363,11 +1364,11 @@ function pricelistIsPricelistVisible() {
 
 function pricelistOnItemClicked(itemIndex) {
 	
-	if (g_pricelistCaptureQuantityClicked) {
-		
-		g_pricelistCaptureQuantityClicked = false;
-		return;
-	}		
+    if (g_pricelistCaptureQuantityClicked) {
+
+            g_pricelistCaptureQuantityClicked = false;
+            return;
+    }		
 	
     if (itemIndex >= 0 && itemIndex < g_pricelistItems.length) {
         if (itemIndex > 0) {
