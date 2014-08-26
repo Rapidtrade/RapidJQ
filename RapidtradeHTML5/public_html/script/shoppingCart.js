@@ -113,15 +113,18 @@ function shoppingCartBind() {
             
     $('#saveShoppingCart').unbind();
     $('#saveShoppingCart').click(function() {
+        
+        if (shoppingCartIsTotalQuantityValid()) {
     	
-    	if (DaoOptions.getValue('LiveCreditCheckURL') && (sessionStorage.getItem('currentordertype').toLowerCase() === 'order') && (g_shoppingCartTotalExcl > g_shoppingCartCredit)) {
-            
-            $('#creditLimitPopup').popup('open');
-            
-        } else {
-                        
-            var isTPMOrder = ($.inArray(sessionStorage.getItem('currentordertype'), DaoOptions.getValue('TPMOrderTypes') && DaoOptions.getValue('TPMOrderTypes').split(',') || []) !== -1);            
-            $.mobile.changePage((isTPMOrder ? "tpm.html" : "orderHeader.html"), { transition: "none" });
+            if (DaoOptions.getValue('LiveCreditCheckURL') && (sessionStorage.getItem('currentordertype').toLowerCase() === 'order') && (g_shoppingCartTotalExcl > g_shoppingCartCredit)) {
+
+                $('#creditLimitPopup').popup('open');
+
+            } else {
+
+                var isTPMOrder = ($.inArray(sessionStorage.getItem('currentordertype'), DaoOptions.getValue('TPMOrderTypes') && DaoOptions.getValue('TPMOrderTypes').split(',') || []) !== -1);            
+                $.mobile.changePage((isTPMOrder ? "tpm.html" : "orderHeader.html"), { transition: "none" });
+            }
         }
     });
 
@@ -350,7 +353,7 @@ function shoppingCartAddItem(item, checkSummary) {
         
         if (orderdetailsIsComplexView()) {
             
-            step = g_orderdetailsCurrentOrder[DaoOptions.getValue('MasterChartComplexUnit')] || 1;
+//            step = g_orderdetailsCurrentOrder[DaoOptions.getValue('MasterChartComplexUnit')] || 1;
             
         } else if (g_isPackSizeUnitValid(item.Unit)) {
             
@@ -366,7 +369,7 @@ function shoppingCartAddItem(item, checkSummary) {
         '    <tr>' +
         '       <td class="descr">' + item.Description + '</td>' +
         '       <td rowspan="2" align="right" class="quantity">' +
-        '              <input id="' + itemIndex + '" style="width: 100px;" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset quantity" class="qtybox" type="number" ' + step +
+        '              <input id="' + itemIndex + '" style="width: 100px;" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset qtybox" type="number" ' + step +
         		     	' min="0" ' + maxValue + 
         '        		class="quantity" onchange ="shoppingCartOnQuantityChanged(\'' + itemIndex + '\', value' + (shoppingCartIsGRV() || (sessionStorage.getItem('currentordertype') == 'Credit') ? ', ' + qty  + ', \'' + item.Description + '\'': '') + ')"  value="' + qty + '" />' +
         '       </td>' +
@@ -529,6 +532,27 @@ function shoppingCartSaveLostSales(key){
   	      });	
 }
 
+function shoppingCartIsTotalQuantityValid() {
+    
+    if (orderdetailsIsComplexView()) {        
+        
+        var totalQuantity = 0;
+        var unit = (g_orderdetailsCurrentOrder[DaoOptions.getValue('MasterChartComplexUnit')] || 1);
+        
+        $.each($('.qtybox'), function() {
+            totalQuantity += +$(this).val();
+        });
+        
+        if (totalQuantity % unit > 0) {
+            
+            g_alert('Total quantity needs to be in unit of ' + unit);
+            return false;
+        }
+    }    
+    
+    return true;
+}
+
 function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) {    
 	
     if (sessionStorage.getItem('ShoppingCartNoChangeAllowed') == 'true') {
@@ -536,6 +560,9 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
     	$('#' + itemIndex).attr('value', maxValue);
     	return;
     }
+    
+    if (!shoppingCartIsTotalQuantityValid())
+        return;
     
     var step = parseInt($('#' + itemIndex).attr('step'), 10);
 	

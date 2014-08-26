@@ -327,7 +327,7 @@ function orderdetailsSendOrderItem(itemKey) {
                 quantity = g_orderdetailsComplexQuantities[itemKey][item.ProductID] || 0;
             }
             
-            tableRowsHTML += '<tr id="' + i +'"><td>' + item.ProductID + '</td><td>' + item.Description + '</td><td><input type="number" min="0" step="' + unit + '" value="' + quantity + '" onchange="orderdetailsOnComplexQuantityChange(this)"></td></tr>';
+            tableRowsHTML += '<tr id="' + i +'"><td>' + item.ProductID + '</td><td>' + item.Description + '</td><td><input type="number" min="0" value="' + quantity + '" onchange="orderdetailsOnComplexQuantityChange(this)"></td></tr>';
         }
         
         $('#complexProductTable tbody').html(tableRowsHTML);                
@@ -339,6 +339,8 @@ function orderdetailsSendOrderItem(itemKey) {
             var isValid = true;
             var orderedItems = [];
             
+            var totalQuantity = 0;
+            
             $('#complexProductTable tbody tr').each(function() {
                                 
                 var quantity = Number($(this).find('input').val()); 
@@ -346,19 +348,11 @@ function orderdetailsSendOrderItem(itemKey) {
                
                 if (quantity) {
                     
-                    if (quantity % unit > 0) {
-                        
-                        g_alert('Please enter a valid quantity for the ' + productId + ' product.');
-                        isValid = false;
-                        // break
-                        return false;
-                        
-                    } else {
-                        
-                        var item = g_orderdetailsComplexItems[itemKey][this.id];
-                        item.Quantity = quantity;
-                        orderedItems.push(item);                        
-                    }   
+                    totalQuantity += quantity;  
+                    
+                    var item = g_orderdetailsComplexItems[itemKey][this.id];
+                    item.Quantity = quantity;
+                    orderedItems.push(item);                        
                     
                 } else {
                     
@@ -378,6 +372,12 @@ function orderdetailsSendOrderItem(itemKey) {
                     }
                 }         
             });
+            
+            if (totalQuantity % unit > 0) {
+                
+                g_alert('The total quantity must be in unit of ' + unit);
+                isValid = false;
+            }
             
             if (isValid) {
                 
