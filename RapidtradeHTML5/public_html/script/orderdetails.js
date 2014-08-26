@@ -160,15 +160,15 @@ function orderdetailsBind() {
  */
 function orderdetailsInit() {
 	
-	try {
-            $('#headerlabel').text(g_orderdetailsCurrentOrder.Type + ' Details');
-	} catch (err){
-		
-	}
-	
-	$('#reprintButton').toggle(g_vanSales && (g_currentUser().RepID.toUpperCase() === g_orderdetailsCurrentOrder.BranchID.toUpperCase()));
-	orderdetailsInitOrderType();
-	orderdetailsFetchOrderItems();
+    try {
+        $('#headerlabel').text(g_orderdetailsCurrentOrder.Type + ' Details');
+    } catch (err){
+
+    }
+
+    $('#reprintButton').toggle(g_vanSales && (g_currentUser().RepID.toUpperCase() === g_orderdetailsCurrentOrder.BranchID.toUpperCase()));
+    orderdetailsInitOrderType();
+    orderdetailsFetchOrderItems();
 }
 
 function orderdetailsIsComplexView() {
@@ -242,31 +242,31 @@ function orderdetailsCheckBasket() {
  */
 function orderdetailsInitOrderType(){
 	
-	if (DaoOptions.get('MobileToBasketOptions') == undefined) return;
-	var orderType = sessionStorage.getItem('currentordertype');	
-	
-	//Only allowed to convert orders
-	if (orderType != 'Order') {
-		$('#orderTypeDiv').hide();
-		return;
-	} 
-	
-	var orderTypes = DaoOptions.getValue('MobileToBasketOptions');
-	if (orderTypes) {
-		if (orderTypes.indexOf('Credi') != -1) {
-		    g_append('#buttondiv fieldset', '<input id="radioCredit" value="Credit" type="radio"><label for="radioCredit">Credit</label>');
-		    $("#radioCredit").checkboxradio().checkboxradio("refresh");
-		}
-		if (orderTypes.indexOf('Deliv') != -1) {		    
-			$("input#radioOrder").after ('<label for="radioDelivery">Delivery</label><input id="radioDelivery" value="Delivery" type="radio">');			
-			//g_append('#buttondiv fieldset', '<input id="radioDelivery" value="Delivery" type="radio"><label for="radioDelivery">Delivery</label>');
-		    $("#radioDelivery").checkboxradio().checkboxradio("refresh");
-		    $("#radioDelivery").checkboxradio("refresh");
-		}
-	} else {
-		$('#orderTypeDiv').hide();	
-	}
-	$('#buttondiv').trigger('create');
+    if (DaoOptions.get('MobileToBasketOptions') == undefined) return;
+    var orderType = sessionStorage.getItem('currentordertype');	
+
+    //Only allowed to convert orders
+    if (orderType != 'Order') {
+            $('#orderTypeDiv').hide();
+            return;
+    } 
+
+    var orderTypes = DaoOptions.getValue('MobileToBasketOptions');
+    if (orderTypes) {
+            if (orderTypes.indexOf('Credi') != -1) {
+                g_append('#buttondiv fieldset', '<input id="radioCredit" value="Credit" type="radio"><label for="radioCredit">Credit</label>');
+                $("#radioCredit").checkboxradio().checkboxradio("refresh");
+            }
+            if (orderTypes.indexOf('Deliv') != -1) {		    
+                    $("input#radioOrder").after ('<label for="radioDelivery">Delivery</label><input id="radioDelivery" value="Delivery" type="radio">');			
+                    //g_append('#buttondiv fieldset', '<input id="radioDelivery" value="Delivery" type="radio"><label for="radioDelivery">Delivery</label>');
+                $("#radioDelivery").checkboxradio().checkboxradio("refresh");
+                $("#radioDelivery").checkboxradio("refresh");
+            }
+    } else {
+            $('#orderTypeDiv').hide();	
+    }
+    $('#buttondiv').trigger('create');
 }
 
 function orderdetailsIsCreditSelected() {
@@ -298,6 +298,16 @@ function orderdetailsSaveCredit() {
 }
 
 function orderdetailsSendOrderItem(itemKey) {
+    
+    if (DaoOptions.getValue('ExcludeProdCatbyUser') === 'true') {
+        
+        if ($.inArray(g_pricelistSelectedProduct.CategoryName, g_currentCompany()[DaoOptions.getValue('ExcludeProdCatbyUserUF')].split(',')) !== -1) {
+            
+            $('#itemInfoPopup p').text(DaoOptions.getValue('ExcludeProdCatbyUserMess'));
+            g_popup('#itemInfoPopup').show(2000);
+            return;
+        }        
+    }
     
     if (orderdetailsIsComplexView()) {
         
@@ -689,6 +699,7 @@ function orderdetailsFetchOrderItems() {
 
             $('#quantityPopup').popup('close');
             orderdetailsCheckBasket();
+            $('#itemInfoPopup p').text('Item sent successfully.');
             window.setTimeout( function(){ $('#itemSentPopup').popup('open'); }, 500 );
             window.setTimeout( function(){ $('#itemSentPopup').popup('close'); }, 2500 );
     }

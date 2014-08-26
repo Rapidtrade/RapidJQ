@@ -931,6 +931,15 @@ function productdetailDeleteItem() {
 
 function productdetailOkClicked(checkStock) {
     
+    if (DaoOptions.getValue('ExcludeProdCatbyUser') === 'true') {
+        
+        if ($.inArray(g_pricelistSelectedProduct.CategoryName, g_currentCompany()[DaoOptions.getValue('ExcludeProdCatbyUserUF')].split(',')) !== -1) {
+            
+            showMessage(DaoOptions.getValue('ExcludeProdCatbyUserMess'));
+            return;
+        }        
+    }
+    
     checkStock = (checkStock != undefined) ? checkStock : true;
         
     var stock = productdetailGetStock();
