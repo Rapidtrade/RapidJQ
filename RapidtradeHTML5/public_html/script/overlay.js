@@ -20,7 +20,7 @@ function overlayInit(pageId) {
                 //Check if we can invoice, then add order types
                 if (g_currentUser().Role) {
 
-                    if (g_currentUser().Role.indexOf('canInv') != -1) {		
+                    if (g_currentUser().Role.indexOf('canInv') !== -1) {		
 
                         var warehouses = ((g_currentUser().Role.split(',')[1]).split('=')[1]).split('|');
                         $.each(warehouses, function(key, value) {   
@@ -247,11 +247,15 @@ function overlaySetMenuItems() {
     
     $('#companyItem, #historyItem, #activityItem').toggleClass('ui-disabled', g_vanSales && g_currentCompany().AccountID.toUpperCase() == g_currentUser().RepID.toUpperCase());
     
-    if (DaoOptions.getValue('StopOnHoldOrders') === 'true') {
+    isVan = (g_currentUser().Role.indexOf('canInv') != -1);
+    
+    if ((DaoOptions.getValue('StopOnHoldOrders') === 'true') || isVan) {
         
         var field = DaoOptions.getValue('StopOnHoldField');
+        
+        var isOnHold = (field && g_currentCompany()[field] === 'Y');
 
-        if (field && g_currentCompany()[field] === 'Y') {
+        if (isOnHold) {
 
             if (!g_companyOnHoldMessageShown) {
                 
@@ -260,13 +264,15 @@ function overlaySetMenuItems() {
 
                     g_companyOnHoldMessageShown = true;
                 });
-            }
-            
-            $.each(DaoOptions.getValue('StopOnHoldOrderType').split(','), function(index, orderType) {
-                
-                (orderType === 'Invoice') ? $('.invoiceItem').addClass('ui-disabled') : $('#pricelist' + orderType + 'Item').addClass('ui-disabled'); 
-            });
+            }            
         }
+        
+        var disabledTypesCSV = (isOnHold ? DaoOptions.getValue('StopOnHoldOrderType') : (isVan ? DaoOptions.getValue('ExcludeVanOrderType') : []));        
+            
+        $.each(disabledTypesCSV.split(','), function(index, orderType) {
+
+            (orderType === 'Invoice') ? $('.invoiceItem').addClass('ui-disabled') : $('#pricelist' + orderType + 'Item').addClass('ui-disabled'); 
+        });            
     }    
     
     overlayHighlightMenuItem(document.getElementById(sessionStorage.getItem('lastMenuItemId') || 'companyItem'));
