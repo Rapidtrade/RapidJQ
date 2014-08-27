@@ -23,6 +23,25 @@ var g_pricelistIsPrevNextPressed = false;
 
 function pricelistOnPageShow() {
     
+    if (DaoOptions.getValue('MyRange') === 'true') {
+        
+        $('#orderTypeDiv').removeClass('invisible');        
+        
+        var lastSelectedType = sessionStorage.getItem('lastRangeType') || 'none';
+        
+        var optionsHTML = '<option value="none">Choose...</option>';
+        
+        $.each(g_currentCompany()[DaoOptions.getValue('MyRangeUF')].split(','), function(index, value) {
+            
+            var selected = (value === lastSelectedType ? ' selected' : '');
+            optionsHTML += '<option value="' + value + '"' + selected + '>' + value + '</option>';
+        });        
+        
+        $('#orderTypeChoice').html(optionsHTML).selectmenu('refresh');        
+        $('#search').textinput(lastSelectedType === 'none' ? 'enable' : 'disable');                
+        $('#orderTypeChoice').change(pricelistFetchPricelist);
+    }
+    
     if (DaoOptions.getValue('VanandWareOrder', 'false') === 'true')
         sessionStorage.removeItem('cachePricelist');
     
@@ -484,7 +503,7 @@ function pricelistInit() {
     	$('#includeCategoryDiv').attr('class','invisible');
     	*/
 	
-	if (!pricelistShowPricelist()) return;
+    if (!pricelistShowPricelist()) return;
     
     pricelistSkip = 0;
     pricelistFetchPricelist();
@@ -730,7 +749,7 @@ function pricelistFetchPricelist() {
  */
 function pricelistLoadBasket() {
 
-    if (!g_indexedDB && (DaoOptions.getValue('MobileOnlinePricelist') != 'true') && (DaoOptions.getValue('CanDoNonStock') != 'true')) {
+    if (!g_indexedDB && (DaoOptions.getValue('MobileOnlinePricelist') !== 'true') && (DaoOptions.getValue('MyRange') !== 'true') && (DaoOptions.getValue('CanDoNonStock') !== 'true')) {
             pricelistFetchPricelistJob();
             return;
     } else {		    
@@ -757,13 +776,13 @@ function pricelistFetchPricelistLive() {
 		g_pricelistSearchPricelistText = DaoOptions.getValue('DefaultSearchString');
 		$('#search').val(g_pricelistSearchPricelistText);
 	}
-	*/
+	*/       
        
        if (g_pricelistIsPrevNextPressed) {
            
            g_pricelistIsPrevNextPressed = false;
            
-       } else if (DaoOptions.getValue('MustSearch', 'true') == 'true') {
+       } else if ((DaoOptions.getValue('MyRange') !== 'true') && DaoOptions.getValue('MustSearch', 'true') === 'true') {
                    
             if ($('#search').val() === '' && !sessionStorage.getItem('onlinePricelistCategory') && !g_advancedSearchProducts.length) {
 
@@ -778,19 +797,30 @@ function pricelistFetchPricelistLive() {
 	
 	if (g_advancedSearchProducts.length) {
 		
-		pricelistFetchPricelistLiveOnSuccess(g_advancedSearchProducts);
-		return;
+            pricelistFetchPricelistLiveOnSuccess(g_advancedSearchProducts);
+            return;
 	}
+        
+        var url;
+        
+        if (DaoOptions.getValue('MyRange') === 'true') {
+            
+            url = DaoOptions.getValue('MyRangeURL', g_restUrl) + '/Orders/GetOrderItemsByType3?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + 
+                    '&userID=' + g_currentUser().UserID + '&orderType=' + $('#orderTypeChoice').val();
+            
+        } else {
 	
-	$.mobile.showPageLoadingMsg();
-	var url = DaoOptions.getValue('LivePriceListSearchURL', g_restUrl + 'PriceLists/GetCollection') + '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + 
-	(g_pricelistSearchPricelistText ? '&searchString=' + g_pricelistSearchPricelistText : '') + '&offset=' + (g_pricelistCurrentPricelistPage - 1) *  g_numItemsPerPage + 
-	'&noRows=' + g_numItemsPerPage + '&myRange=false&includeCatalogues=false&branchID=' + g_currentCompany().BranchID;
+            url = DaoOptions.getValue('LivePriceListSearchURL', g_restUrl + 'PriceLists/GetCollection') + '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + 
+                (g_pricelistSearchPricelistText ? '&searchString=' + g_pricelistSearchPricelistText : '') + '&offset=' + (g_pricelistCurrentPricelistPage - 1) *  g_numItemsPerPage + 
+                '&noRows=' + g_numItemsPerPage + '&myRange=false&includeCatalogues=false&branchID=' + g_currentCompany().BranchID;
 	
-	if (sessionStorage.getItem('onlinePricelistCategory'))
-		url += '&category=' + sessionStorage.getItem('onlinePricelistCategory');
+            if (sessionStorage.getItem('onlinePricelistCategory'))
+                url += '&category=' + sessionStorage.getItem('onlinePricelistCategory');
+        }
 	
 	console.log(url);
+        
+        $.mobile.showPageLoadingMsg();
 	g_ajaxget(url, pricelistFetchPricelistLiveOnSuccess, pricelistFetchPricelistLiveOnError);
 	
 }
@@ -810,7 +840,16 @@ function pricelistFetchPricelistJob() {
     g_pricelistItems = [];
     g_pricelistItemsOnPage = 0;
     
-    if ((DaoOptions.getValue('MobileOnlinePricelist') == 'true') || g_advancedSearchProducts.length) { 
+    var isRangeSelected = (DaoOptions.getValue('MyRange') === 'true') && ($('#orderTypeChoice').val() !== 'none');
+    
+    $('#search').textinput(isRangeSelected ? 'disable' : 'enable');
+    
+    if (DaoOptions.getValue('MyRange') === 'true') {
+        
+        sessionStorage.setItem('lastRangeType', $('#orderTypeChoice').val());
+    }
+    
+    if (isRangeSelected || ((DaoOptions.getValue('MobileOnlinePricelist') == 'true') || g_advancedSearchProducts.length)) { 
     	
     	pricelistFetchPricelistLive();
     	
@@ -834,32 +873,39 @@ function pricelistFetchPricelistJob() {
 }
 
 function pricelistFetchPricelistLiveOnSuccess(json) {
+    
+    
 	if (json) {
-		$.each(json, function(index, pricelist) {
+            
+            var isRangeSelected = (DaoOptions.getValue('MyRange') === 'true');
+            
+		$.each(json, function(index, pricelist) {                    
+                    
+                    if (isRangeSelected) {
+                        
 			var newPricelist = {};
-			newPricelist.b = pricelist.b;
-			newPricelist.cn = pricelist.cn;
-			newPricelist.del = pricelist.del;
-			newPricelist.des = pricelist.des;
-			newPricelist.d = pricelist.d;
-			newPricelist.g = pricelist.g;
-			newPricelist.n = pricelist.n;
-			newPricelist.pl = pricelist.pl;
+                        
+			newPricelist.des = pricelist.Description;
+			newPricelist.d = pricelist.Discount;
+			newPricelist.g = pricelist.Gross;
+			newPricelist.n = pricelist.Nett;
 			newPricelist.Stock = pricelist.Stock;
-			newPricelist.onSpecial = pricelist.onSpecial;
-			newPricelist.id = pricelist.id;
-			newPricelist.u = parseInt(pricelist.u, 10);
-			newPricelist.u1 = pricelist.u1;
-			newPricelist.u2 = pricelist.u2;
-			newPricelist.u3 = pricelist.u3;
-			newPricelist.u4 = pricelist.u4;
-			newPricelist.u5 = pricelist.u5;
-			newPricelist.u6 = pricelist.u6;
-			newPricelist.u7 = pricelist.u7;
-			newPricelist.u8 = pricelist.u8;
-			newPricelist.u9 = pricelist.u9;
-			newPricelist.u10 = pricelist.u10;
-			pricelistOnSuccessRead(newPricelist);
+			newPricelist.id = pricelist.ProductID;
+			newPricelist.u = parseInt(pricelist.Unit, 10);
+			newPricelist.u1 = pricelist.UserField01;
+			newPricelist.u2 = pricelist.UserField02;
+			newPricelist.u3 = pricelist.UserField03;
+			newPricelist.u4 = pricelist.UserField04;
+			newPricelist.u5 = pricelist.UserField05;
+                        
+			pricelistOnSuccessRead(newPricelist);                        
+                        
+                    } else {
+                        
+                        pricelist.u = parseInt(pricelist.u, 10);
+                        pricelistOnSuccessRead(pricelist);
+                    }
+                    
 		});
 	}
 	pricelistOnComplete();
@@ -1187,7 +1233,7 @@ function pricelistAddLine(pricelist) {
     var canOrderItem = true;
     
     //Only use array for indexeddb or online search
-    if (g_indexedDB || (DaoOptions.getValue('MobileOnlinePricelist') == 'true')) {
+    if (g_indexedDB || (DaoOptions.getValue('MobileOnlinePricelist') == 'true') || (DaoOptions.getValue('MyRange') == 'true')) {
         for (var i = 0; i < g_pricelistCurrentBasket.length; i++) {
             if (pricelist.id == g_pricelistCurrentBasket[i].ProductID) {
                 quantityText = g_pricelistCurrentBasket[i].Quantity ;

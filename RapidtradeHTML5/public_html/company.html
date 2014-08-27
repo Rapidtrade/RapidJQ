@@ -187,28 +187,13 @@
 		           	<tr>
 		            	<td class="image hideonphone"><img src="img/3D-Box-64.png"/></td>
 		            	<td class="hideonphone basicSearchWidget" ><h2 id="pagelabel" class="multiLanguage">Pricelist</h2></td>
-		            	<td class="hideonphone basicSearchWidget">     		
-		            		<div id="menuDiv" class="invisible" style="float:right;">
-							<select class="invisible" id="menu" data-mini="true" data-native-menu="false" data-inline="true">
-				                <option value="Order">
-				                    Order
-				                </option>
-				               <option value="Quote">
-				                    Quote
-				                </option>
-				                <option value="Credit">
-				                    Credit
-				                </option>
-					         </select>
-					         </div>
-		            	</td>
 		            	<td style="width:100px" class="basicSearchWidget hidden invisible">
-		            		<div data-role="fieldcontain" id="pricelistQuantityDiv">
-		            		   <label for="pricelistQuantity" style="height:27px; padding-top:5px">
-		                	      Qty
-		            			</label>
-					         	<input name="" id="pricelistQuantity"  value="1" type="number" data-mini="true" style="width:70px" min="1">
-					         </div>
+                                    <div data-role="fieldcontain" id="pricelistQuantityDiv">
+                                    <label for="pricelistQuantity" style="height:27px; padding-top:5px">
+                                          Qty
+                                    </label>
+                                    <input name="" id="pricelistQuantity"  value="1" type="number" data-mini="true" style="width:70px" min="1">
+                                    </div>
 		            	</td>
 		            	<!-- Android -->
 		            	<td class="phoneonly hidden invisible">
@@ -245,6 +230,12 @@
                                         <a id="expandcategory" class="ui-disabled" href="#" data-role="button" data-iconpos="notext" data-icon="arrow-r" data-theme="c">Expand</a>
                                     </div>
                                     
+                                </td>
+                                <td align="right" style="width:170px;">
+                                    <div id="orderTypeDiv" class="invisible" style="float:right;">
+                                        <select id="orderTypeChoice" data-mini="false" data-native-menu="true" data-inline="false">
+                                        </select>
+                                    </div>                                    
                                 </td>
                                 <!--
                                 <td align="right" style="width:32px;">
@@ -408,9 +399,9 @@
 			                                    <label class="multiLanguage">Stock</label>
 			                                </div>
 						            		<div id="whChoiceDiv" class="invisible" style="position:relative" data-role="fieldcontain">
-												<select data-mini="true" data-native-menu="true" data-inline="true">
-										         </select>
-									         </div>
+                                                                            <select data-mini="true" data-native-menu="true" data-inline="true">
+                                                                             </select>
+                                                                        </div>
 			                            </li>
 			                        </ul>
 			                    </div>

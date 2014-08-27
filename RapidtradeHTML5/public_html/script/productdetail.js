@@ -565,8 +565,8 @@ function productdetailFillWarehouses(stockArray) {
 
     for ( var i = 0; i < stockArray.length; i++) {
 
-            g_productdetailStockValues[stockArray[i].Warehouse] = stockArray[i].Stock;		
-            $('#whChoiceDiv select').append($("<option></option>").attr("value", stockArray[i].Warehouse).text(stockArray[i].Warehouse));
+        g_productdetailStockValues[stockArray[i].Warehouse] = stockArray[i].Stock;		
+        $('#whChoiceDiv select').append($("<option></option>").attr("value", stockArray[i].Warehouse).text(stockArray[i].Warehouse));
     }
 			
     $("#whChoiceDiv select option").filter(function() {        	
@@ -940,7 +940,7 @@ function productdetailOkClicked(checkStock) {
         }        
     }
     
-    checkStock = (checkStock != undefined) ? checkStock : true;
+    checkStock = (checkStock !== undefined) ? checkStock : true;
         
     var stock = productdetailGetStock();
     
