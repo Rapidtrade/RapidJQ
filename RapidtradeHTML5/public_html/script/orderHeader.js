@@ -556,14 +556,13 @@ function orderHeaderOnLineSaveSuccess() {
     g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', orderHeaderOnOrderExistsSuccess, orderHeaderOnOrderExistsError);	
 }
 
-function orderHeaderOnLineSaveError(error) {
+function orderHeaderOnLineSaveError(error, msg) {
 	
-	if (((error.status == 0) || (error.status == 200)) /*&& error.statusText!=='error'*/) {
-		
-            orderHeaderOnLineSaveSuccess();
-		
-	} else {
-		
+        if(msg === "timeout") {
+            g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);            
+        } else if (((error.status == 0) || (error.status == 200)) /*&& error.statusText!=='error'*/) {		
+            orderHeaderOnLineSaveSuccess();		
+	} else {		
             console.log('Error in saving order: ' + error);
             g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
 	}

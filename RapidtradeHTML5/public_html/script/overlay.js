@@ -247,32 +247,29 @@ function overlaySetMenuItems() {
     
     $('#companyItem, #historyItem, #activityItem').toggleClass('ui-disabled', g_vanSales && g_currentCompany().AccountID.toUpperCase() == g_currentUser().RepID.toUpperCase());
     
-    isVan = (g_currentUser().Role.indexOf('canInv') != -1);
+    if (g_currentUser().Role) 
+        isVan = (g_currentUser().Role.indexOf('canInv') != -1);
+    else
+        isVan = false;
     
-    if ((DaoOptions.getValue('StopOnHoldOrders') === 'true') || isVan) {
-        
-        var field = DaoOptions.getValue('StopOnHoldField');
-        
+    if ((DaoOptions.getValue('StopOnHoldOrders', false) === 'true') || isVan) {
+        var field = DaoOptions.getValue('StopOnHoldField', '');
         var isOnHold = (field && g_currentCompany()[field] === 'Y');
-
         if (isOnHold) {
-
             if (!g_companyOnHoldMessageShown) {
-                
                 $('#companyInfoPopup p').text(g_companyPageTranslation.translateText(DaoOptions.getValue('StopOnHoldMessage')));
                 g_popup('#companyInfoPopup').show(2000, function() {
-
                     g_companyOnHoldMessageShown = true;
                 });
             }            
         }
         
-        var disabledTypesCSV = (isOnHold ? DaoOptions.getValue('StopOnHoldOrderType') : (isVan ? DaoOptions.getValue('ExcludeVanOrderType') : []));        
-            
-        $.each(disabledTypesCSV.split(','), function(index, orderType) {
-
-            (orderType === 'Invoice') ? $('.invoiceItem').addClass('ui-disabled') : $('#pricelist' + orderType + 'Item').addClass('ui-disabled'); 
-        });            
+        var disabledTypesCSV = (isOnHold ? DaoOptions.getValue('StopOnHoldOrderType','') : (isVan ? DaoOptions.getValue('ExcludeVanOrderType','') : [])); 
+		if (disabledTypesCSV.length > 0) {
+        	$.each(disabledTypesCSV.split(','), function(index, orderType) {
+            	(orderType === 'Invoice') ? $('.invoiceItem').addClass('ui-disabled') : $('#pricelist' + orderType + 'Item').addClass('ui-disabled'); 
+        	})
+		};            
     }    
     
     overlayHighlightMenuItem(document.getElementById(sessionStorage.getItem('lastMenuItemId') || 'companyItem'));
