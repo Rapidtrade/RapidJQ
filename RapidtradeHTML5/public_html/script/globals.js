@@ -606,7 +606,8 @@ function g_ajaxpost(data, url, success, error) {
 				data : data,
 				url : url,
 				success : success,
-				error : error
+				error : error,
+                                timeout: DaoOptions.getValue('AjaxTimeout', 30000)
 			});			
 		} catch (error){
 			alert("Oops");
