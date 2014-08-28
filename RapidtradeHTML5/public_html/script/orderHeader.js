@@ -560,9 +560,9 @@ function orderHeaderOnLineSaveError(error, msg) {
 	
         if(msg === "timeout") {
             g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);            
-        } else if (((error.status == 0) || (error.status == 200)) /*&& error.statusText!=='error'*/) {		
-            orderHeaderOnLineSaveSuccess();		
-	} else {		
+        //} else if (((error.status == 0) || (error.status == 200)) /*&& error.statusText!=='error'*/) {		
+        //    orderHeaderOnLineSaveSuccess();		
+		} else {		
             console.log('Error in saving order: ' + error);
             g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
 	}
