@@ -931,6 +931,14 @@ function productdetailDeleteItem() {
 
 function productdetailOkClicked(checkStock) {
     
+    var showMessage = function(message) {
+        
+        $('#productMessagePopup p').text(message || 'Not available to purchase');
+        $('#productMessagePopup').popup('open');
+        $('#productMessagePopup #cancelButton').removeClass('invisible').toggle(-9998 === stock);			
+        $('#quantity').toggleClass('ui-disabled', -9999 === stock);
+    }    
+    
     if (DaoOptions.getValue('ExcludeProdCatbyUser') === 'true') {
         
         if ($.inArray(g_pricelistSelectedProduct.CategoryName, g_currentCompany()[DaoOptions.getValue('ExcludeProdCatbyUserUF')].split(',')) !== -1) {
@@ -943,14 +951,6 @@ function productdetailOkClicked(checkStock) {
     checkStock = (checkStock !== undefined) ? checkStock : true;
         
     var stock = productdetailGetStock();
-    
-    var showMessage = function(message) {
-        
-        $('#productMessagePopup p').text(message || 'Not available to purchase');
-        $('#productMessagePopup').popup('open');
-        $('#productMessagePopup #cancelButton').removeClass('invisible').toggle(-9998 == stock);			
-        $('#quantity').toggleClass('ui-disabled', -9999 == stock);
-    }
     
     $('#quantity').blur();
     
