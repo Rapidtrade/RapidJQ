@@ -580,12 +580,6 @@
 	background-color: white;
 }
 
-.printinvoiceContent .header, .printinvoiceContent .footer {
-    height:50px;
-    background-color: blue;
-    color: white;
-}
-
 .printinvoiceFramedTable {
 	border:1px solid;
 	padding: 10px;
@@ -697,19 +691,7 @@
    .printinvoiceProductListTable tr { 
         page-break-inside:avoid; 
         page-break-after:auto 
-    }
-    
-    .printinvoiceContent .header {
-        height:200px;
-    }
-    
-    .printinvoiceContent .footer {
-        height:100px;
-    } 
-    
-    .printinvoiceContent .items {
-        height:800px;
-    }     
+    }    
     
     .printinvoiceContent .page:not(:first-child) .header {
 

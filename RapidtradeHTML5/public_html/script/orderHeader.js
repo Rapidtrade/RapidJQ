@@ -319,16 +319,17 @@ function orderHeaderOnStraightSaveError(error) {
 }
 
 function orderHeaderRemoveFromCart() {
-	
+    
+    // TEST
+//    orderHeaderRemovedFromCartSuccess();
+//    return;
+        
     try {
     	
         g_clearCacheDependantOnBasket();
         
         var dao = new Dao();
         dao.clearBasket('BasketInfo', g_currentCompany().AccountID, sessionStorage.getItem('currentordertype'), orderHeaderRemovedFromCartError, orderHeaderRemovedFromCartSuccess);  
-
-        // TEST
-//        orderHeaderRemovedFromCartSuccess();
     }
     catch (error) {
     	

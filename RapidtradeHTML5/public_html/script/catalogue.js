@@ -6,7 +6,7 @@
 
 var catalogue = (function() {
 
-    var ITEMS_PER_PAGE = 8;
+    var ITEMS_PER_PAGE = 6;
     var ITEMS_PER_ROW = 2;
 
     var catalogueHTML = '';
@@ -53,7 +53,7 @@ var catalogue = (function() {
     
     function addPage(pageIndex, totalPages) {        
         
-        catalogueHTML += '<div class="page' + (pageIndex < totalPages - 1 ? ' page-break' : '') + '"><div class="header">--- HEADER ---</div>';
+        catalogueHTML += '<div class="page' + (pageIndex < totalPages - 1 ? ' page-break' : '') + '"><div class="header"><img src="' + DaoOptions.getValue('QuoteHeader') + '"></div>';
              
         var currentIndex = pageIndex *  ITEMS_PER_PAGE;
         
@@ -68,9 +68,9 @@ var catalogue = (function() {
             
             var item = order.orderItems[currentIndex];
             
-            catalogueHTML += '<td>';          
+            catalogueHTML += '<td style="vertical-align: bottom;padding:10px 15px;">';          
             
-            catalogueHTML += '<div style="width:300px"><img src="' + productdetailGetImageUrl(item.ProductID, 300, false) + '"></div>' +
+            catalogueHTML += '<div style="width:300px"><img src="' + productdetailGetImageUrl(item.ProductID, 200, false) + '"></div>' +
                     '<table><tr><td>Item</td><td>' + item.ProductID + '</td></tr>' +
                     '<tr><td>Descr</td><td>' + item.Description  + '</td></tr>' +
                     '<tr><td>Inn/Ctn Qty</td><td>' + (item.UserField02 || 'N/A')  + '</td></tr>' +
@@ -87,7 +87,7 @@ var catalogue = (function() {
         
         catalogueHTML += '</table></div>';        
         
-        catalogueHTML += '<div class="footer">--- FOOTER ---</div></div>';
+        catalogueHTML += '<div class="footer"><img src="' + DaoOptions.getValue('QuoteFooter') + '"></div></div>';
     }   
     
     function showCatalogue() {
