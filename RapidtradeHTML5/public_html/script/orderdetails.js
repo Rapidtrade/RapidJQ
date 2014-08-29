@@ -197,16 +197,9 @@ function orderdetailsCheckBasket() {
             
             g_orderdetailsComplexQuantities[complexProductId][item.ProductID] = +item.Quantity;            
             
-        } else {
-                     
-            var orderItemInfo = {
-
-                'SupplierID': g_currentCompany().SupplierID,
-                'OrderID': g_orderdetailsCurrentOrder.OrderID,
-                'ProductID': item.ProductID
-            };          
+        } else {                            
             
-            $('#' + syncGetKeyField(orderItemInfo, 'OrderItems')).find('.orderedQuantity').text(item.Quantity);        
+            $('#orderitemlist td.productId:contains("' + item.ProductID + '")').nextAll('.orderedQuantity').text(item.Quantity);        
         }
         
     },
@@ -439,10 +432,10 @@ function orderdetailsSendOrderItem(itemKey) {
 
             var deleteItemOnSuccess = function() {
 
-                $itemRow = $('#' + syncGetKeyField(item, 'OrderItems'));
+                $itemRow = $('#orderitemlist td.productId:contains("' + item.ProductID + '")');
 
-                $itemRow.find('.orderedQuantity').empty();
-                $itemRow.find('.captureQuantity').val('');
+                $itemRow.nextAll('.orderedQuantity').empty();
+                $itemRow.nextAll('.value').find('.captureQuantity').val('');
             };                
 
             shoppingCartDeleteItem($.trim(item.ProductID) + $.trim(item.SupplierID) + g_currentUser().UserID + $.trim(item.AccountID), 
