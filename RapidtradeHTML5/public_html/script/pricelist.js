@@ -1450,7 +1450,7 @@ function pricelistAddItemToBasket(itemIndex) {
 	
 	var deleteItemOnSuccess = function() {
 		
-            $('#' + g_pricelistItems[itemIndex].id).html('');
+            $('#' + itemIndex).html('');
 	};
 	
 	if (!getQuantity(itemIndex)) {
@@ -1494,13 +1494,13 @@ function pricelistAddItemToBasket(itemIndex) {
 	    g_clearCacheDependantOnBasket(false);
 	    pricelistCheckBasket();
 	    //TODO also change here
-	    $('#' + g_pricelistItems[itemIndex].id).html(getQuantity(itemIndex));
+	    $('#' + itemIndex).html(getQuantity(itemIndex));
 	}
 }
 
 function pricelistGetNewQuantityForItem(itemIndex) {
 	
-	var currentValue = parseInt($('#' + g_pricelistItems[itemIndex].id).html(), 10);
+	var currentValue = parseInt($('#' + itemIndex).html(), 10);
 	
 	if (!currentValue)
 		currentValue = 0;
