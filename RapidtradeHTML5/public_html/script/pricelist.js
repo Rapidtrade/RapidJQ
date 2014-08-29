@@ -25,7 +25,7 @@ function pricelistOnPageShow() {
     
     if (DaoOptions.getValue('MyRange') === 'true') {
         
-        $('#orderTypeDiv').removeClass('invisible');        
+        $('#orderTypeTD').removeClass('invisible');        
         
         var lastSelectedType = sessionStorage.getItem('lastRangeType') || 'none';
         
