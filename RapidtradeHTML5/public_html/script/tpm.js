@@ -317,7 +317,7 @@ function tpmHideComplexRows() {
     
     $.each(complexRowGroups, function(promotionId, rows) {
        
-        $(rows[0]).siblings().hide();
+        /*$(rows[0]).siblings().hide();*/ for (i = 1; i < rows.length; ++i) rows[i].hide();
         
         $(rows[0]).find('#Selected').off().on('change', function() {
             
