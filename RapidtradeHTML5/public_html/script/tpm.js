@@ -9,6 +9,7 @@ function tpmOnPageShow() {
 function tpmOnPageInit() {
     
     $('#addressForm input').parent('.ui-input-text').css('width', '50%');
+    g_tpmLastValidQuantities = {};
     tpmBind();
 }
 
@@ -329,6 +330,7 @@ function tpmHideComplexRows() {
                    
                     if (item.UserField02 == promotionId)
                         item.selected = false;
+                        item.Quantity = 0;
                 });
         });
     });
@@ -692,7 +694,7 @@ function tpmSaveComplexPromotion() {
         }
         
         $('#complexPopup').popup('close');            
-        $('#jsontable td:visible:nth-child(1):contains("' + promotionId + '")').parent().find('#Selected').prop('checked', isAnyItemSelected)/*.checkboxradio('refresh')*/; 
+        //$('#jsontable td:visible:nth-child(1):contains("' + promotionId + '")').parent().find('#Selected').prop('checked', isAnyItemSelected)/*.checkboxradio('refresh')*/; 
     }
 }
 

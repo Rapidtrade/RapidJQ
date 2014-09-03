@@ -306,13 +306,24 @@ function orderdetailsSendOrderItem(itemKey) {
         
         $('#complexProductId').text(itemKey);
         var unit = g_orderdetailsCurrentOrder[DaoOptions.getValue('MasterChartComplexUnit')] || 1;
-        $('#complexProductUOM').text('UOM: ' + unit);
+        //$('#complexProductUOM').text('UOM: ' + unit);
 
         var tableRowsHTML = '';
         
         for (var i = 0; i < g_orderdetailsComplexItems[itemKey].length; ++i) {
             
             var item = g_orderdetailsComplexItems[itemKey][i];
+            if (i == 0) {
+				
+		if  (!jQuery.isArray( item.Unit ) && (item.Unit - parseFloat( item.Unit ) + 1) >= 0) {
+                    unit = item.Unit;
+                    $('#complexProductUOM').text('UOM: ' + unit);				
+		} else {
+				
+                    $('#complexProductUOM').text('UOM: ' + unit);
+		}				
+				
+            }
             var quantity = 0;
             
             if (g_orderdetailsComplexQuantities[itemKey]) {
