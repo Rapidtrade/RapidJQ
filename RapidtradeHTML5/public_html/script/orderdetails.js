@@ -80,6 +80,12 @@ function orderdetailsBind() {
     });
 	
     $('#sendToBasketButton').unbind();
+    var needToHideSendToBasket = DaoOptions.getValue('HideSendAllOrderType');
+    if ((needToHideSendToBasket !== undefined) && g_orderdetailsCurrentOrder.Type === needToHideSendToBasket) {
+        $('#sendToBasketButton').addClass('hidden');
+    } else {
+        $('#sendToBasketButton').removeClass('hidden');
+    }
     $('#sendToBasketButton').click(function () {
         
         if (orderdetailsIsComplexView()) {
@@ -313,17 +319,13 @@ function orderdetailsSendOrderItem(itemKey) {
         for (var i = 0; i < g_orderdetailsComplexItems[itemKey].length; ++i) {
             
             var item = g_orderdetailsComplexItems[itemKey][i];
-            if (i == 0) {
-				
+            if (i === 0) {
 		if  (!jQuery.isArray( item.Unit ) && (item.Unit - parseFloat( item.Unit ) + 1) >= 0) {
-                    unit = item.Unit;
-                    $('#complexProductUOM').text('UOM: ' + unit);				
-		} else {
-				
-                    $('#complexProductUOM').text('UOM: ' + unit);
+                    unit = item.Unit;				
 		}				
-				
+		$('#complexProductUOM').text('UOM: ' + unit);		
             }
+            item.Unit = unit;
             var quantity = 0;
             
             if (g_orderdetailsComplexQuantities[itemKey]) {

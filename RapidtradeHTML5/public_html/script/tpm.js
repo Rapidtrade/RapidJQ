@@ -328,9 +328,10 @@ function tpmHideComplexRows() {
                 // deselect all complex promotion items
                 $.each(jsonform.getInstance().jsonArray, function(index, item) {
                    
-                    if (item.UserField02 == promotionId)
+                    if (item.UserField02 === promotionId) {
                         item.selected = false;
                         item.Quantity = 0;
+                    }
                 });
         });
     });
