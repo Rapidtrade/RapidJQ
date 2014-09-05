@@ -25,7 +25,6 @@ function historyOnPageShow() {
     $('#companyHistoryRefresh').removeClass('invisible');
     $('#companyHistoryRefresh').off();
     $('#companyHistoryRefresh').on('click', function() {
-        alert('History Refresh button clicked');
         historyRefreshClicked();
     });
 
