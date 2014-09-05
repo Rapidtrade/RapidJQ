@@ -724,8 +724,8 @@ function pricelistCheckBasket(setOverlay) {
     var dao = new Dao();
     dao.count('BasketInfo', g_currentCompany().AccountID, 'index1',
     function (cnt) {        	
-        $('.ui-btn-right').removeClass('ui-disabled');        
-        $('.ui-btn-right .ui-btn-text').text('(' + cnt + ')' + ' ' +  g_companyPageTranslation.translateText('Shopping Cart'));
+        $('#companyNextButton').removeClass('ui-disabled');        
+        $('#companyNextButton .ui-btn-text').text('(' + cnt + ')' + ' ' +  g_companyPageTranslation.translateText('Shopping Cart'));
         isBaksetEmpty = false;
         g_pricelistIsAnyItemAdded = true;
         
@@ -733,8 +733,8 @@ function pricelistCheckBasket(setOverlay) {
             overlaySetMenuItems();
     }, function() {
         g_pricelistIsAnyItemAdded = false;
-        $('.ui-btn-right').addClass('ui-disabled');
-        g_companyPageTranslation.translateButton('.ui-btn-right', 'Shopping Cart');
+        $('#companyNextButton').addClass('ui-disabled');
+        g_companyPageTranslation.translateButton('#companyNextButton', 'Shopping Cart');
     });
 }
 

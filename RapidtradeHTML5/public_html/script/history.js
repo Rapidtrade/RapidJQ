@@ -9,6 +9,7 @@ function historyOnPageShow() {
     
     g_companyPageTranslation.safeExecute(function() {
         
+        g_companyPageTranslation.translateButton('#companyHistoryRefresh','Refresh');
         g_companyPageTranslation.translateRadioButton('radioActivity', 'Activity');
         g_companyPageTranslation.translateRadioButton('radioOrders', 'Orders');
     });
@@ -20,6 +21,13 @@ function historyOnPageShow() {
 
     historyOnPageShowSmall();
     historyBind();
+    
+    $('#companyHistoryRefresh').removeClass('invisible');
+    $('#companyHistoryRefresh').off();
+    $('#companyHistoryRefresh').on('click', function() {
+        alert('History Refresh button clicked');
+        historyRefreshClicked();
+    });
 
     g_showCurrentCompanyName();
 
@@ -434,4 +442,31 @@ function historyGetMonth(month) {
 			return 'December';
 			break;	
 	}
+}
+
+function historyRefreshClicked() {
+    $('#companyHistoryRefresh').addClass('ui-disabled');
+    
+     $('#noactivities').hide();
+    $('#noorders').hide();
+    $("#orders").hide();
+    $('.hidden').removeClass('hidden');
+    
+    sessionStorage.removeItem('CacheHistoryActivities');
+    sessionStorage.removeItem('CacheHistoryOrders');
+    var dao = new Dao;
+    dao.clear('Orders');
+    
+    //if (g_historyLastRadioButton==='radioActivity') {
+        historyFetchActivities();
+      //  $("#radioActivity").attr("checked", true).checkboxradio("refresh");
+        //$("#radioOrders").attr("checked", false).checkboxradio("refresh");
+		
+    //} else {
+    //    historyFetchOrders();
+     //   $("#radioActivity").attr("checked", false).checkboxradio("refresh");
+     //   $("#radioOrders").attr("checked", true).checkboxradio("refresh");
+    //}
+    historyFromCache();
+    $('#companyHistoryRefresh').removeClass('ui-disabled');
 }
