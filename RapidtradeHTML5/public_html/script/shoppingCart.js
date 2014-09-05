@@ -378,7 +378,7 @@ function shoppingCartAddItem(item, checkSummary) {
         '       <td rowspan="2" align="right" class="unconfirmed message" id="' + item.ProductID + 'uc"></td>' +
         '    </tr>' +
         '    <tr>'+
-        '      <td colspan=3 class="productid ui-li-desc">' + item.ProductID + '</td></tr>' +
+        '      <td colspan=3 class="productid ui-li-desc">' + item.ProductID + ((sessionStorage.getItem('shoppingCartViewType') === 'Summary') ? 'Case: ' + parseFloat(item.Quantity)/parseFloat(item.Unit) : '') + '</td></tr>' +
         '  </table>' +
         '</a>' +
         (shoppingCartIsGRV() ? '' :
