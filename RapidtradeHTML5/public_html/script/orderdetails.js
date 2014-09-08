@@ -467,6 +467,9 @@ function orderdetailsSendOrderItem(itemKey) {
         if (!isValid)
                 alert('Please enter a valid quantity');
 
+        if (g_pricelistSelectedProduct.Unit == undefined)
+            g_pricelistSelectedProduct.Unit == '1';
+        
         if (isValid && item.Unit) {
 
             isValid = enteredQuantity() % item.Unit > 0;
