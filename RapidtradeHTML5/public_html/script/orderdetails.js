@@ -179,7 +179,7 @@ function orderdetailsInit() {
 
 function orderdetailsIsComplexView() {
     
-    var complexIndicator = DaoOptions.getValue('MasterChartComplexIndic');
+    var complexIndicator = DaoOptions.getValue('MasterChartComplexIndic','N');
     return complexIndicator && (g_orderdetailsCurrentOrder[complexIndicator] === 'Y');       
 }
 
@@ -466,17 +466,24 @@ function orderdetailsSendOrderItem(itemKey) {
 
         if (!isValid)
                 alert('Please enter a valid quantity');
-
+        
         if (g_pricelistSelectedProduct.Unit == undefined)
             g_pricelistSelectedProduct.Unit == '1';
+        if (item.Unit.trim() == 'EA')
+            item.Unit='1';
         
         if (isValid && item.Unit) {
 
+            if (item.Unit = '1') {
+                isValid=true;
+            }
+            else {
             isValid = enteredQuantity() % item.Unit > 0;
-
+            }
+            
             if (!isValid) {
 
-                alert('You are ordering in incorrect units. The pack size requires you to order in units of ' + g_pricelistSelectedProduct.Unit);
+                alert('1. You are ordering in incorrect units. The pack size requires you to order in units of ' + g_pricelistSelectedProduct.Unit);
                 isValid = false;
             }
         } 		
