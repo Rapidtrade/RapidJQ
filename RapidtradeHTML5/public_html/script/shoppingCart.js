@@ -534,7 +534,7 @@ function shoppingCartSaveLostSales(key){
 
 function shoppingCartIsTotalQuantityValid() {
     
-    if (orderdetailsIsComplexView()) {        
+   /** if (orderdetailsIsComplexView()) {        
         
         var totalQuantity = 0;
         var unit = (g_orderdetailsCurrentOrder[DaoOptions.getValue('MasterChartComplexUnit')] || 1);
@@ -548,7 +548,7 @@ function shoppingCartIsTotalQuantityValid() {
             g_alert('Total quantity needs to be in unit of ' + unit);
             return false;
         }
-    }    
+    } **/   
     
     return true;
 }
