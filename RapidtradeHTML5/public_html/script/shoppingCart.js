@@ -369,7 +369,7 @@ function shoppingCartAddItem(item, checkSummary) {
         '    <tr>' +
         '       <td class="descr">' + item.Description + '</td>' +
         '       <td rowspan="2" align="right" class="quantity">' +
-        '              <input id="' + itemIndex + '" style="width: 100px;" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset qtybox" type="number" ' + step +
+        '              <input id="' + itemIndex + '" style="width: 60px;" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset qtybox" type="number" ' + step +
         		     	' min="0" ' + maxValue + 
         '        		class="quantity" onchange ="shoppingCartOnQuantityChanged(\'' + itemIndex + '\', value' + (shoppingCartIsGRV() || (sessionStorage.getItem('currentordertype') == 'Credit') ? ', ' + qty  + ', \'' + item.Description + '\'': '') + ')"  value="' + qty + '" />' +
         '       </td>' +
