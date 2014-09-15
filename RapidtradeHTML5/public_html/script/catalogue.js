@@ -70,7 +70,7 @@ var catalogue = (function() {
             
             catalogueHTML += '<td style="vertical-align: bottom;padding:10px 15px;">';          
             
-            catalogueHTML += '<div style="width:300px"><img src="' + productdetailGetImageUrl(item.ProductID, 200, false) + '"></div>' +
+            catalogueHTML += '<div style="width:300px;text-align:center"><img src="' + productdetailGetImageUrl(item.ProductID, 200, false) + '"></div>' +
                     '<table><tr><td>Item</td><td>' + item.ProductID + '</td></tr>' +
                     '<tr><td>Descr</td><td>' + item.Description  + '</td></tr>' +
                     '<tr><td>Inn/Ctn Qty</td><td>' + (item.UserField02 || 'N/A')  + '</td></tr>' +
@@ -87,7 +87,8 @@ var catalogue = (function() {
         
         catalogueHTML += '</table></div>';        
         
-        catalogueHTML += '<div class="footer"><img src="' + DaoOptions.getValue('QuoteFooter') + '"></div></div>';
+        var footerImageURL = DaoOptions.getValue('QuoteFooter');
+        catalogueHTML += '<div class="footer">' + (footerImageURL ? '<img src="' + footerImageURL + '">' : '') + '</div></div>';
     }   
     
     function showCatalogue() {
