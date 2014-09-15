@@ -550,6 +550,11 @@ function shoppingCartIsTotalQuantityValid() {
         }
     } **/   
     
+    if (DaoOptions.getValue('CalcChange') === 'true') {
+        
+        sessionStorage.setItem('totalIncl', $('#totalIncl').text());
+    }
+    
     return true;
 }
 

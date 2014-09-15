@@ -83,7 +83,7 @@ function JsonForm() {
         }
     }
 	
-    function jsonformDisplayFieldOnComplete() {
+    function jsonformDisplayFieldOnComplete() {                
         
         var displayObjects = new Object();
         displayObjects = jsonArray.sort(function (a, b) { return parseFloat(a.SortOrder) - parseFloat(b.SortOrder); });
@@ -188,12 +188,31 @@ function JsonForm() {
         		        savedjson[$(this).attr('name')] = $(this).is('select') ? $(this).attr('value').split(':')[0] : $(this).attr('value');
         		        sessionStorage.setItem('json' + id, JSON.stringify(savedjson));
         		    });
+                            
+                            $('#' + fieldId).keydown(function(event) {
+                                
+                                return isChangeCalculationSet(this) ? g_isValidQuantityCharPressed(event, true) : true;                                                              
+                            });
+                            
+                            $('#' + fieldId).keyup(function() {
+                               
+                                if (isChangeCalculationSet(this)) {
+
+                                    var change = (Number($(this).val()) - Number(sessionStorage.getItem('totalIncl'))).toFixed(2);
+                                     $('#' + $(this).attr('rel') + DaoOptions.getValue('CalcChangeInto')).val(change);
+                                }                               
+                            });                            
         		    
         		    $('#' + fieldId).trigger('change');
         		};
         	};
         	
         	g_append(vformid + ' div:first', '<div id="errorMessage"></div>');
+                
+                function isChangeCalculationSet(element) {
+                    
+                    return (DaoOptions.getValue('CalcChange') === 'true') && (DaoOptions.getValue('CalcAmntEntered') === $(element).attr('name'));
+                }
             });
     }
 }

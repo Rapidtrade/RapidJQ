@@ -423,12 +423,12 @@ function g_clearCacheDependantOnBasket(resetCounter) {
             g_pricelistItemsOnPage = 0;
 }
 
-function g_isValidQuantityCharPressed(event) {
+function g_isValidQuantityCharPressed(event, allowDecimals) {
 
 	var keyCode = (event.keyCode ? event.keyCode : event.which);
         
         // decimal point
-        if ((190 == keyCode) && (DaoOptions.getValue('AllPartfullUnit') == 'true'))
+        if ((190 == keyCode) && ((DaoOptions.getValue('AllPartfullUnit') == 'true') || allowDecimals))
             return true;
 	
 	// Numeric keypad
