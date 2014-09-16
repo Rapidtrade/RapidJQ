@@ -1,7 +1,7 @@
 {
     "SG Invoice": {"pt": "Factura"},
     "Inv. Number": {"pt": "Número da factura"},
-    "Invoice Date": {"pt": "Data"},
+    "Inv. and Deliv. Date": {"pt": "Data"},
     "Details": {"pt": "Detalhes"},
     "Bill To:": {"pt": "Cobrar a:"},
     "Acc Num:": {"pt": "Número do cliente:"},

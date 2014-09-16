@@ -50,6 +50,7 @@ function printinvoiceFetchOrder() {
     $('#invoiceBarcode').barcode(order.UserField01, "code128");
     $('#invoiceNumber').text(order.UserField01);
 
+    $('#customerVATLabel').text(g_printInvoicePageTranslation.translateText(DaoOptions.getValue('VATLineText', 'Cust VAT')));
     printinvoiceGetCustomerVAT();
 
     $('#date').text(g_today());
