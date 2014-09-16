@@ -53,11 +53,11 @@ var catalogue = (function() {
     
     function addPage(pageIndex, totalPages) {        
         
-        catalogueHTML += '<div class="page' + (pageIndex < totalPages - 1 ? ' page-break' : '') + '"><div class="header"><img src="' + DaoOptions.getValue('QuoteHeader') + '"></div>';
+        catalogueHTML += '<div class="page' + (pageIndex < totalPages - 1 ? ' page-break' : '') + '"><div class="header"><img src="' + DaoOptions.getValue('QuoteHeader') + '" style="width:100%"></div>';
              
         var currentIndex = pageIndex *  ITEMS_PER_PAGE;
         
-        catalogueHTML += '<div class="items"><table>';
+        catalogueHTML += '<div class="items"><table style="width:100%">';
         
         for (var i = 0; order.orderItems[currentIndex] && (i < ITEMS_PER_PAGE); ++i, ++currentIndex) {            
             
@@ -70,7 +70,7 @@ var catalogue = (function() {
             
             catalogueHTML += '<td style="vertical-align: bottom;padding:10px 15px;">';          
             
-            catalogueHTML += '<div style="width:300px;text-align:center;vertical-align:middle"><img src="' + productdetailGetImageUrl(item.ProductID, 190, false) + '" style="padding:10px"></div>' +
+            catalogueHTML += '<div style="width:300px;text-align:center;vertical-align:middle"><img src="' + productdetailGetImageUrl(item.ProductID, 160, false) + '" style="padding-bottom:20px"></div>' +
                     '<table><tr><td>Item</td><td>' + item.ProductID + '</td></tr>' +
                     '<tr><td>Descr</td><td>' + item.Description  + '</td></tr>' +
                     '<tr><td>Inn/Ctn Qty</td><td>' + (item.UserField02 || 'N/A')  + '</td></tr>' +
@@ -88,7 +88,7 @@ var catalogue = (function() {
         catalogueHTML += '</table></div>';        
         
         var footerImageURL = DaoOptions.getValue('QuoteFooter');
-        catalogueHTML += '<div class="footer">' + (footerImageURL ? '<img src="' + footerImageURL + '">' : '') + '</div></div>';
+        catalogueHTML += '<div class="footer">' + (footerImageURL ? '<img src="' + footerImageURL + '" style="width:100%">' : '') + '</div></div>';
     }   
     
     function showCatalogue() {
