@@ -4,13 +4,13 @@
 
 var g_logo = 'img/rapidtrade-logo-small.png';
 
-//var g_url = "http://www.dedicatedsolutions.co.za:8082/";
-//var g_restUrl = g_url + "rest2/";
-//var g_vanSales = true;
+var g_url = "http://www.dedicatedsolutions.co.za:8082/";
+var g_restUrl = g_url + "rest2/";
+var g_vanSales = true;
 
-var g_url = "https://app.rapidtrade.biz/";
-var g_restUrl = g_url + "rest/";
-var g_vanSales = false;
+//var g_url = "https://app.rapidtrade.biz/";
+//var g_restUrl = g_url + "rest/";
+//var g_vanSales = false;
 
 var g_indexedDB;
 var g_defaultDisplayFields = [];
@@ -721,6 +721,7 @@ function g_busy(show) {
 var g_popup = (function() {
     
     var onClose;
+    var clickedButtonId;
     
     return function(popupSelector) {
         
@@ -734,6 +735,8 @@ var g_popup = (function() {
 
                 $(popupSelector).popup('open');
                 $(popupSelector).off().on('click', 'a', function() {
+                    
+                    clickedButtonId = this.id;
                     
                     if (!validate || validate())
                         that.hide();
@@ -755,6 +758,11 @@ var g_popup = (function() {
             hide: function() {
 
                 $(popupSelector).popup('close');                
+            },
+            
+            clickedButton: function() {
+                
+                return clickedButtonId;
             }
         };
     };

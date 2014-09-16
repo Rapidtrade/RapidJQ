@@ -312,7 +312,7 @@ function orderHeaderShowError(error) {
 
 function orderHeaderOnStraightSaveError(error) {
 	
-    if (error.status != 200 && error.status != 0)
+    if (error.status !== 200 && error.status !== 0)
     	orderHeaderShowError(error);
     else
     	orderHeaderOnStraightSaveSuccess();
@@ -398,17 +398,18 @@ function orderHeaderRemovedFromCartError(){
 
 function orderHeaderVanSales() {
 	
-	if (g_orderHeaderOrder.Type.indexOf('Invoice') != -1) {
+    if (g_orderHeaderOrder.Type.indexOf('Invoice') != -1) {
 		
-		g_orderHeaderOrder.UserField01 = orderHeaderCreateInvoiceNumber();
+        g_orderHeaderOrder.UserField01 = orderHeaderCreateInvoiceNumber();
         sessionStorage.setItem("currentOrder", JSON.stringify(g_orderHeaderOrder));
         sessionStorage.setItem('invoiceContinue', 'activity');
 		
-	} else if (DaoOptions.getValue('DeliveryOrderType'))
+    } else if (DaoOptions.getValue('DeliveryOrderType')) {
         g_orderHeaderOrder.UserField01 = g_grv_replorderid;
+    }
 	
-	if (!g_vanSales) 
-		return;
+    if (!g_vanSales) 
+        return;
 	
     if (g_orderHeaderOrder.Type == 'REPL' || g_orderHeaderOrder.Type == 'GRV') {    	
         //g_loadMenu();
@@ -426,8 +427,8 @@ function orderHeaderVanSales() {
     }
     else {
     	
-    	sessionStorage.setItem('lastPanelId', 'activityPanel');
-        $.mobile.changePage('company.html');
+//    	sessionStorage.setItem('lastPanelId', 'activityPanel');
+//        $.mobile.changePage('company.html');
     };
 }
 
@@ -525,25 +526,73 @@ function orderHeaderSaveFormedOrder(position) {
     if (!orderHeaderAreItemsValid())
         return;
     
-    //if (g_isOnline(false)) {   	
+    var referenceCheckURL = DaoOptions.getValue('OrderCheckReference');
+    
+    if (referenceCheckURL && g_isOnline(false)) {
+                
+        var success = function(json) {
+          
+            if (json.Result === 0) {
+                
+                save();
+                
+            } else {
+                
+                $('#infoPopup').popup('close');
+                
+                $('#orderWarningPopup').off().on('click', 'a', function() {
+                    
+                    $('#orderWarningPopup').popup('close');
+                    
+                    if (this.id === 'okButton') 
+                        save();
+                });
+                
+                $('#orderWarningPopup').popup('open');
+            }
+        };
+        
+        var parameters = {
+          
+            ':SupplierID': g_currentUser().SupplierID,
+            ':AccountID': g_currentCompany().AccountID,
+            ':Reference': g_orderHeaderOrder.Reference
+        };
+        
+        var url = referenceCheckURL;
+        
+        $.each(parameters, function(key, value) {
+            url = url.replace(key, value);
+        });        
+        
+        g_ajaxget(url, success, save);
+        
+    } else {
+        
+        save();
+    }
+    
+    function save() {   
+        
     	try {		
-        	var orderHeaderInfo = {};  	
-        	orderHeaderInfo.Table = "Orders";
-        	orderHeaderInfo.Method = "Modify2";
-        	orderHeaderInfo.json = JSON.stringify(g_orderHeaderOrder);   
-        	console.log(JSON.stringify(g_orderHeaderOrder));
-        	var url = DaoOptions.getValue(g_orderHeaderOrder.Type + 'LiveURL');
-        	
-        	if (!url) 
-        		url = g_restUrl + 'post/post.aspx';
-        	
-        	g_ajaxpost(jQuery.param(orderHeaderInfo), url, orderHeaderOnLineSaveSuccess, orderHeaderOnLineSaveError);  
-    	} catch (error) {  		
-        	g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);   		
+            
+            var orderHeaderInfo = {};  	
+            orderHeaderInfo.Table = "Orders";
+            orderHeaderInfo.Method = "Modify2";
+            orderHeaderInfo.json = JSON.stringify(g_orderHeaderOrder);   
+            console.log(JSON.stringify(g_orderHeaderOrder));
+            var url = DaoOptions.getValue(g_orderHeaderOrder.Type + 'LiveURL');
+
+            if (!url) 
+                url = g_restUrl + 'post/post.aspx';
+
+            g_ajaxpost(jQuery.param(orderHeaderInfo), url, orderHeaderOnLineSaveSuccess, orderHeaderOnLineSaveError);
+            
+    	} catch (error) {  
+            
+            g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);   		
     	}    	
-    //} else {
-    //	g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
-    //}
+    }
 } 
 
 

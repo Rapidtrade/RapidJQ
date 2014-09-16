@@ -45,7 +45,12 @@
                 <p class="multiLanguage">Which size?</p>  
                 <a id="a4PrinterButton" href="printinvoiceA4.html" data-role="button" data-inline="true">A4 Printer</a>
                 <a id="smallPrinterButton" href="printinvoicesmall.html" data-role="button" data-inline="true">Small Printer</a>            
-            </div>   
+            </div> 
+            <div data-role="popup" data-history="false" id="orderWarningPopup" data-theme="e" style="padding:10px">
+                <p class="multiLanguage" style="padding-bottom: 20px">There is already an order with that reference.</p>  
+                <a id="okButton" data-role="button">OK</a>
+                <a id="cancelButton" data-role="button">Cancel</a>            
+            </div>             
             <div data-role="popup" data-history="false" id="orderErrorPopup">
 	           <p>
 	           	<img src="img/cancel.png"><span id="message" style="padding-left:10px"></span>
