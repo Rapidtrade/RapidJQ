@@ -45,7 +45,7 @@ function companyOnPageShow() {
 
     if (DaoOptions.getValue('AllowHistoryDownload', 'false') == 'true') {
         
-        field = DaoOptions.getValue('MasterChartFieldIndic', ''); 
+        field = DaoOptions.getValue('DownlOrderCallCycFieldIndic', ''); 
 
         if ((!field || g_currentCompany()[field] === 'Y')) {    
 
