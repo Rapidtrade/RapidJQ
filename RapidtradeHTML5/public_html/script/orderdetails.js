@@ -512,6 +512,11 @@ function orderdetailsOnComplexQuantityChange(inputElement) {
         inputElement.value = 0;
 }
 
+function orderdetailsIsSpecialOrder() {
+    
+    return ($.inArray(g_orderdetailsCurrentOrder.Type, DaoOptions.getValue('DownloadOrderType').split(',')) !== -1);
+}
+
 /*
  * 
  */
@@ -531,7 +536,7 @@ function orderdetailsFetchOrderItems() {
         }
     }; 
 
-    if (!g_isOnline(false) && (g_orderdetailsCurrentOrder.Type === DaoOptions.getValue('DownloadOrderType'))) {
+    if (!g_isOnline(false) && orderdetailsIsSpecialOrder()) {
         
         itemsShown = false;
         
@@ -549,9 +554,7 @@ function orderdetailsFetchOrderItems() {
 
     $.mobile.showPageLoadingMsg(); 
 
-    var isSpecialOrder = (g_orderdetailsCurrentOrder.Type === DaoOptions.getValue('DownloadOrderType'));
-
-    var url = (DaoOptions.getValue('DownloadOrderURL') ? DaoOptions.getValue('DownloadOrderURL') + '/rest/Orders/GetOrderItems' +  (isSpecialOrder ? 'ByType3' : '') : (DaoOptions.getValue('LiveHistoryItems', g_restUrl + 'Orders/GetOrderItems')));
+    var url = (DaoOptions.getValue('DownloadOrderURL') ? DaoOptions.getValue('DownloadOrderURL') + '/rest/Orders/GetOrderItems' +  (orderdetailsIsSpecialOrder() ? 'ByType3' : '') : (DaoOptions.getValue('LiveHistoryItems', g_restUrl + 'Orders/GetOrderItems')));
 
     url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&orderID=' + g_orderdetailsCurrentOrder.OrderID + '&skip=0&top=100&format=json';
 
@@ -614,7 +617,7 @@ function orderdetailsFetchOrderItems() {
 
         var quantityInputHtml = '';
 
-        if (!isComplexView && (g_orderdetailsCurrentOrder.Type === DaoOptions.getValue('DownloadOrderType'))) {
+        if (!isComplexView && orderdetailsIsSpecialOrder()) {
 
             var step = 'step=' + (g_isPackSizeUnitValid(pricelist.Unit) ? pricelist.Unit : 1) + ' min=0';
 
@@ -622,7 +625,7 @@ function orderdetailsFetchOrderItems() {
                     ' class="captureQuantity ui-input-text ui-body-c ui-corner-all ui-shadow-inset" onkeydown="orderdetailsQuickCapture(event, this, \'' + itemKey + '\',' + g_orderdetailsOrderItems.length + ')"/></td>';
         }
 
-        var barcode = (g_orderdetailsCurrentOrder.Type === DaoOptions.getValue('DownloadOrderType') ? orderItem[DaoOptions.getValue('MasterChrtBCodeField')] : '');
+        var barcode = (orderdetailsIsSpecialOrder() ? orderItem[DaoOptions.getValue('MasterChrtBCodeField')] : '');
         orderItem.Description = orderItem.Description.replace(/'/g, '&quot;') + (barcode ? ' (' + barcode + ')' : '');
 
         g_append('#orderitemlist', '<li data-theme="c" id="' + itemKey + '">' +
