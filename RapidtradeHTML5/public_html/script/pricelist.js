@@ -21,25 +21,26 @@ var g_pricelistIsPrevNextPressed = false;
  * This is called from script tag inside page
  */
 
-function pricelistOnPageShow() {
+function pricelistOnPageShow() {    
     
     if (DaoOptions.getValue('MyRange') === 'true') {
         
-        $('#orderTypeTD').removeClass('invisible');        
+        $('#chooseTemplate').removeClass('ui-disabled');        
         
-        var lastSelectedType = sessionStorage.getItem('lastRangeType') || 'none';
+        var lastSelectedType = sessionStorage.getItem('lastRangeType');
         
-        var optionsHTML = '<option value="none">Choose...</option>';
+        var templatesHTML = '<li data-role="divider" data-theme="e">Choose Template</li>';
         
-        $.each(g_currentCompany()[DaoOptions.getValue('MyRangeUF')].split(','), function(index, value) {
+        var templateArray = g_currentCompany()[DaoOptions.getValue('MyRangeUF')].split(',');
+        templateArray.unshift('None');
+        
+        $.each(templateArray, function(index, value) {
             
-            var selected = (value === lastSelectedType ? ' selected' : '');
-            optionsHTML += '<option value="' + value + '"' + selected + '>' + value + '</option>';
-        });        
+            templatesHTML += '<li><a onclick="pricelistSelectTemplate(\'' + value + '\')">' + value + '</a></li>';
+        });                
         
-        $('#orderTypeChoice').html(optionsHTML).selectmenu('refresh');        
-        $('#search').textinput(lastSelectedType === 'none' ? 'enable' : 'disable');                
-        $('#orderTypeChoice').change(pricelistFetchPricelist);
+        $('#popupCategory ul').html(templatesHTML).listview('refresh');        
+        $('#search').textinput(lastSelectedType === 'None' ? 'enable' : 'disable');                
     }
     
     if (DaoOptions.getValue('VanandWareOrder', 'false') === 'true')
@@ -71,24 +72,24 @@ function pricelistOnPageShow() {
     
     pricelistBind();
 	
-	sessionStorage.setItem('ShoppingCartReturnPage', 'pricelist');
-	//$('#scanbarcode').toggle(g_scandit);
-	//$('#pricelistQuantityDiv').toggle(DaoOptions.getValue('AllowPriceQuickCapt') != 'true');
+    sessionStorage.setItem('ShoppingCartReturnPage', 'pricelist');
+    //$('#scanbarcode').toggle(g_scandit);
+    //$('#pricelistQuantityDiv').toggle(DaoOptions.getValue('AllowPriceQuickCapt') != 'true');
     g_pricelistIsAnyItemAdded = false;
-	$('.phoneonly').toggle(g_builtInScanner || pricelistIsSGScan());
-	$('.hidden').removeClass('hidden');
-	$('#NextPrevButtons').hide();
-	$('#NextPrevButtonsTop').toggle(DaoOptions.getValue('mobileplnexttop') == 'true');
-	$('#barcodescanned').hide();
-	g_productDetailInitialized = false;
-	
-	if (g_currentUser().Role && (g_currentUser().Role.toUpperCase().indexOf('CUST') != -1)) {
-		g_pricelistCanChangeDiscount = false;	
-	} else {
-	    g_pricelistCanChangeDiscount = (DaoOptions.getValue('CanChangeDiscount')) && (DaoOptions.getValue('CanChangeDiscount').toLowerCase() == 'true');
-	}
+    $('.phoneonly').toggle(g_builtInScanner || pricelistIsSGScan());
+    $('.hidden').removeClass('hidden');
+    $('#NextPrevButtons').hide();
+    $('#NextPrevButtonsTop').toggle(DaoOptions.getValue('mobileplnexttop') == 'true');
+    $('#barcodescanned').hide();
+    g_productDetailInitialized = false;
+
+    if (g_currentUser().Role && (g_currentUser().Role.toUpperCase().indexOf('CUST') != -1)) {
+            g_pricelistCanChangeDiscount = false;	
+    } else {
+        g_pricelistCanChangeDiscount = (DaoOptions.getValue('CanChangeDiscount')) && (DaoOptions.getValue('CanChangeDiscount').toLowerCase() == 'true');
+    }
     
-	$('#scanbarcodetd').toggleClass('invisible', !g_scandit);
+    $('#scanbarcodetd').toggleClass('invisible', !g_scandit);
     $('#advancedButton').toggleClass('invisible', !isAdvancedSearchAllowed);   
     $('#advancedSearchClearButton').toggle(DaoOptions.getValue('AllowAdvancedFilter') == 'true');
     $('.productDetailsMenuButton').toggle(isAdvancedSearchAllowed);
@@ -155,6 +156,14 @@ function pricelistHideFooter() {
             $('#pricelistFooter, #backbtn').hide();
             $('#companyNextButton').show();
 	}
+}
+
+function pricelistSelectTemplate(template) {
+    
+    sessionStorage.setItem('lastRangeType', template);
+    $('#popupCategory').popup('close');
+    pricelistFetchPricelist();
+
 }
 
 function pricelistOnBackButtonClick() {
@@ -268,6 +277,11 @@ function pricelistBind() {
     $("#expandcategory").click(function (event) {
     	sessionStorage.setItem('expandcategory','true');
     	categories.getInstance().showPopup('#ulCategories', '#popupCategory');
+    });
+    
+    $('#chooseTemplate').off().on('click', function() {
+       
+        $('#popupCategory').popup('open');
     });
 
     $("#scrolltop").unbind();
@@ -740,7 +754,7 @@ function pricelistCheckBasket(setOverlay) {
 
 
 function pricelistFetchPricelist() {	
-	pricelistLoadBasket();
+    pricelistLoadBasket();
 }
 
 /*
@@ -806,7 +820,7 @@ function pricelistFetchPricelistLive() {
         if (DaoOptions.getValue('MyRange') === 'true') {
             
             url = DaoOptions.getValue('MyRangeURL', g_restUrl) + '/Orders/GetOrderItemsByType3?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + 
-                    '&userID=' + g_currentUser().UserID + '&orderType=' + $('#orderTypeChoice').val();
+                    '&userID=' + g_currentUser().UserID + '&orderType=' + sessionStorage.getItem('lastRangeType');
             
         } else {
 	
@@ -840,16 +854,12 @@ function pricelistFetchPricelistJob() {
     g_pricelistItems = [];
     g_pricelistItemsOnPage = 0;
     
-    var isRangeSelected = (DaoOptions.getValue('MyRange') === 'true') && ($('#orderTypeChoice').val() !== 'none');
+    var lastRangeType = sessionStorage.getItem('lastRangeType');
+    var isRangeSelected = ((DaoOptions.getValue('MyRange') === 'true') && lastRangeType && (lastRangeType !== 'None'));
     
     $('#search').textinput(isRangeSelected ? 'disable' : 'enable');
     
-    if (DaoOptions.getValue('MyRange') === 'true') {
-        
-        sessionStorage.setItem('lastRangeType', $('#orderTypeChoice').val());
-    }
-    
-    if (isRangeSelected || ((DaoOptions.getValue('MobileOnlinePricelist') == 'true') || g_advancedSearchProducts.length)) { 
+    if (isRangeSelected || ((DaoOptions.getValue('MobileOnlinePricelist') === 'true') || g_advancedSearchProducts.length)) { 
     	
     	pricelistFetchPricelistLive();
     	

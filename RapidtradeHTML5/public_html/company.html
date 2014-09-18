@@ -227,19 +227,20 @@
 		         <table style="width:97%; margin-left:10px;" class="options basicSearchWidget"  id="searchDiv">
                             <tr>
 		          	<td><input  type="search" name="search" id="search" value="" placeholder="Search for products" /></td>
-                                <td align="right" style="width:120px;">
+                                <td align="right" style="width:180px;">
                                     <div data-role="controlgroup" data-type="horizontal">
                                         <a id="resetsearch" href="#" data-role="button" data-iconpos="notext" data-icon="delete" data-theme="c">Reset</a>
+                                        <a id="chooseTemplate" class="ui-disabled" href="#" data-role="button" data-iconpos="notext" data-icon="arrow-d" data-theme="c">Choose Template</a>
                                         <a id="expandcategory" class="ui-disabled" href="#" data-role="button" data-iconpos="notext" data-icon="arrow-r" data-theme="c">Expand</a>
                                     </div>
                                     
                                 </td>
-                                <td id="orderTypeTD" align="right" style="width:170px;" class="invisible">
+<!--                                <td id="orderTypeTD" align="right" style="width:170px;" class="invisible">
                                     <div style="float:right;">
                                         <select id="orderTypeChoice" data-mini="false" data-native-menu="true" data-inline="false">
                                         </select>
                                     </div>                                    
-                                </td>
+                                </td>-->
                                 <!--
                                 <td align="right" style="width:32px;">
                                     <a id="resetsearch" href="#" data-role="button" data-icon="delete" data-iconpos="notext" data-theme="c" data-inline="true">Delete</a></td>
@@ -308,8 +309,8 @@
 		        </tr></table>
 		        
 		        <div data-role="popup" id="popupCategory" data-theme="d" data-overlay-theme="a">
-				        <ul id="ulCategories" data-role="listview" data-inset="true" style="min-width:210px;" data-theme="d"></ul>
-				</div>
+                            <ul id="ulCategories" data-role="listview" data-inset="true" style="min-width:210px;" data-theme="d"></ul>
+                        </div>
 		        
 		        <!-- Quantity popup -->
 		        <div data-role="popup" id="quantityPopup" data-history="false" data-theme="b" data-overlay-theme="a" class="ui-content">
