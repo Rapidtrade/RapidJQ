@@ -514,7 +514,7 @@ function orderdetailsOnComplexQuantityChange(inputElement) {
 
 function orderdetailsIsSpecialOrder() {
     
-    return ($.inArray(g_orderdetailsCurrentOrder.Type, DaoOptions.getValue('DownloadOrderType').split(',')) !== -1);
+    return ($.inArray(g_orderdetailsCurrentOrder.Type, DaoOptions.getValue('DownloadOrderType', '').split(',')) !== -1);
 }
 
 /*
