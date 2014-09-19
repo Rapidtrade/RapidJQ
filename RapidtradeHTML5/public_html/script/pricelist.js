@@ -84,7 +84,7 @@ function pricelistOnPageShow() {
     g_productDetailInitialized = false;
 
     if (g_currentUser().Role && (g_currentUser().Role.toUpperCase().indexOf('CUST') != -1)) {
-            g_pricelistCanChangeDiscount = false;	
+        g_pricelistCanChangeDiscount = false;	
     } else {
         g_pricelistCanChangeDiscount = (DaoOptions.getValue('CanChangeDiscount')) && (DaoOptions.getValue('CanChangeDiscount').toLowerCase() == 'true');
     }
@@ -784,6 +784,70 @@ function pricelistLoadBasket() {
     }
 }
 
+function pricelistFetchTemplateItems() {    
+    
+    if (g_indexedDB) {
+        
+        onLocalFetchFailure();
+        
+    } else {
+        
+        var dao = new Dao();   
+        dao.fetchTemplateItems(sessionStorage.getItem('lastRangeType')/*.replace('TE_', '')*/, onLocalFetchSuccess, onLocalFetchFailure, pricelistOnComplete);    
+    }
+   
+    function onLocalFetchSuccess(pricelist) {
+        
+        var newPricelist = {};
+
+        newPricelist.des = pricelist.Description;
+        newPricelist.d = pricelist.Discount;
+        newPricelist.g = pricelist.Gross;
+        newPricelist.n = pricelist.Nett;
+        newPricelist.Stock = pricelist.Stock;
+        newPricelist.id = pricelist.ProductID;
+        newPricelist.u = parseInt(pricelist.Unit, 10);
+        newPricelist.u1 = pricelist.UserField01;
+        newPricelist.u2 = pricelist.UserField02;
+        newPricelist.u3 = pricelist.UserField03;
+        newPricelist.u4 = pricelist.UserField04;
+        newPricelist.u5 = pricelist.UserField05;
+
+        pricelistOnSuccessRead(newPricelist);         
+    }
+    
+    function onLocalFetchFailure(error) {
+        
+        g_busy(true);    
+
+        var url = DaoOptions.getValue('MyRangeURL', g_restUrl) + '/Orders/GetOrderItemsByType3?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + 
+                '&userID=' + g_currentUser().UserID + '&orderType=' + sessionStorage.getItem('lastRangeType'); 
+
+        console.log(url);
+        g_ajaxget(url, onRemoteFetchSuccess, onRemoteFetchFailure);
+    }  
+    
+    function onRemoteFetchSuccess(json) {
+        
+        if (json.length) {
+            
+            g_syncDao = g_syncDao || new Dao();
+
+            syncSaveToDB(json, g_currentUser().SupplierID, g_currentUser().UserID, 0, 'Orders', 'GetOrderItemsByType3', 0);
+            setTimeout(function() {
+
+    //           g_busy(true);
+                pricelistFetchTemplateItems();
+            }, 2000);
+        }
+    }
+    
+    function onRemoteFetchFailure() {
+        
+        g_alert('ERROR: Cannot retrieve the data.');
+    }
+}
+
 function pricelistFetchPricelistLive() {
 	/*
 	if (($('#search').val() == '') && DaoOptions.get('DefaultSearchString')) {
@@ -819,8 +883,8 @@ function pricelistFetchPricelistLive() {
         
         if (DaoOptions.getValue('MyRange') === 'true') {
             
-            url = DaoOptions.getValue('MyRangeURL', g_restUrl) + '/Orders/GetOrderItemsByType3?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + 
-                    '&userID=' + g_currentUser().UserID + '&orderType=' + sessionStorage.getItem('lastRangeType');
+            pricelistFetchTemplateItems();   
+            return;
             
         } else {
 	
@@ -858,6 +922,13 @@ function pricelistFetchPricelistJob() {
     var isRangeSelected = ((DaoOptions.getValue('MyRange') === 'true') && lastRangeType && (lastRangeType !== 'None'));
     
     $('#search').textinput(isRangeSelected ? 'disable' : 'enable');
+    
+    if (isRangeSelected) {
+        
+        // check if there are data in the local DB
+        
+//        dao.count('OrderItems', )
+    }
     
     if (isRangeSelected || ((DaoOptions.getValue('MobileOnlinePricelist') === 'true') || g_advancedSearchProducts.length)) { 
     	
@@ -1243,7 +1314,7 @@ function pricelistAddLine(pricelist) {
     var canOrderItem = true;
     
     //Only use array for indexeddb or online search
-    if (g_indexedDB || (DaoOptions.getValue('MobileOnlinePricelist') == 'true') || (DaoOptions.getValue('MyRange') == 'true')) {
+    if (g_indexedDB || (DaoOptions.getValue('MobileOnlinePricelist') === 'true') || DaoOptions.getValue('MyRange') === 'true') {
         for (var i = 0; i < g_pricelistCurrentBasket.length; i++) {
             if (pricelist.id == g_pricelistCurrentBasket[i].ProductID) {
                 quantityText = g_pricelistCurrentBasket[i].Quantity ;

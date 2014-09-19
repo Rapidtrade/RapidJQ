@@ -202,6 +202,11 @@ function Dao() {
     		(g_indexedDB ? this.idbFetchPricelist : this.sqlFetchPricelist)(searchWords, ponsuccessread, ponerror, poncomplete, offset, limit, warehouse);
     	}
     };  
+    
+    this.fetchTemplateItems = function (template, ponsuccessread, ponerror, poncomplete) {
+    	
+        this[(g_indexedDB ? 'idb' : 'sql') + 'FetchTemplateItems'](template, ponsuccessread, ponerror, poncomplete);        
+    };      
 
     /***************** Indexed DB ********************************************************************************
 	 * this method is used to read the database.
@@ -683,12 +688,12 @@ function Dao() {
 	        		
 		        		if (g_pricelistItemsOnPage >= (g_pricelistCurrentPricelistPage - 1) * g_numItemsPerPage) {	               
 			            	
-			                if (ponsuccessread)
-				        		ponsuccessread(cursor.value);
+                                            if (ponsuccessread)
+                                                ponsuccessread(cursor.value);
 	     
 		        		} else {
 		        			
-		        			++g_pricelistItemsOnPage;
+                                            ++g_pricelistItemsOnPage;
 		        		}
 	        		}
 	                
@@ -700,6 +705,11 @@ function Dao() {
 	            }
         	}
         };    	
+    };
+    
+    this.idbFetchTemplateItems = function(template, ponsuccessread, ponerror, poncomplete) {
+        
+                
     };
 
     /**************************************** Web SQL **********************************************
@@ -852,7 +862,9 @@ function Dao() {
                 return item.Stock;	
             } else if (table == 'ProductCategories2') {
             	return item.des;
-            }
+            } else if (table == 'OrderItems') {
+                return $.trim(item.ProductID);
+            };
             return '';
         } catch (error) {
             return '';
@@ -1116,18 +1128,20 @@ function Dao() {
             	
 		                try {
 		                	
-		                	if (ponsuccessread)
+                                    if (ponsuccessread) {
+                                        
 		                        for (var i = 0; i < results.rows.length; ++i) {
                                             
-                                    var company = JSON.parse(results.rows.item(i).json);
-                                        ponsuccessread(company);
+                                            var company = JSON.parse(results.rows.item(i).json);
+                                            ponsuccessread(company);
 		                        }
+                                    }
 		                	
-		                	if (results.rows.length==0 && ponerror) 
-		                		ponerror("No record found");
-	                        
-		                	if (poncomplete) 
-	                        	poncomplete();
+                                    if (results.rows.length==0 && ponerror) 
+                                        ponerror("No record found");
+
+                                    if (poncomplete) 
+                                        poncomplete();
 		
 		                } catch (error) {
 		                	
@@ -1148,15 +1162,15 @@ function Dao() {
         	var includeCategoryToggle = 'off'; // (sessionStorage.getItem('expandcategory')) ? 'on' : 'off';
         	var query = ''; 
         	if (includeCategoryToggle != 'on') {
-        		query = 'select p.json, b.index3 as Basket, s.index3 as Stock from Pricelists p ' + 
-        	    		'left outer join basketinfo b on p.index3 = b.index2 and b.index1 = ? ' +  
-        	    		(DaoOptions.getValue('VanandWareOrder', 'false') === 'true' ? 'inner' : 'left outer') + ' join stock s on s.index1 = p.index3 and s.index2 = ? ' +  
-        	    		'WHERE p.index1 = ? AND ';
-            	for (var i = 0; i < searchWords.length; ++i) {        	        		
-            		query += 'p.json like \'%' + searchWords[i].replace(' ', '%') + '%\'';
-            		if (i < searchWords.length - 1)
-            			query += ' AND ';
-            	}
+                    query = 'select p.json, b.index3 as Basket, s.index3 as Stock from Pricelists p ' + 
+                            'left outer join basketinfo b on p.index3 = b.index2 and b.index1 = ? ' +  
+                            (DaoOptions.getValue('VanandWareOrder', 'false') === 'true' ? 'inner' : 'left outer') + ' join stock s on s.index1 = p.index3 and s.index2 = ? ' +  
+                            'WHERE p.index1 = ? AND ';
+                    for (var i = 0; i < searchWords.length; ++i) {        	        		
+                            query += 'p.json like \'%' + searchWords[i].replace(' ', '%') + '%\'';
+                            if (i < searchWords.length - 1)
+                                    query += ' AND ';
+                    }
         	} else {
         		// this search will include all other products in the products category
         		query = 'select p.json, b.index3 as Basket, s.index3 as Stock  ' +
@@ -1227,5 +1241,48 @@ function Dao() {
             		});
         });
     };
+    
+    this.sqlFetchTemplateItems = function(template, ponsuccessread, ponerror, poncomplete) {        
+        
+        var query = 'select oi.json, b.index3 as Basket, s.index3 as Stock from OrderItems oi' +
+                    ' left outer join basketinfo b on oi.index3 = b.index2 and b.index1 = \'' + g_currentCompany().AccountID + '\'' +
+                    ' left outer join stock s on s.index1 = oi.index3 and s.index2 = \'' + g_currentCompany().BranchID + '\'' +
+                    ' where oi.index2 = \'' + g_currentCompany().AccountID + '-' + template + '\'';     
+        
+        console.log(query);
+        
+        db.transaction(function (tx) {
+        
+            tx.executeSql(query,[], 
+                function (tx, results) {
+                    try {		              
+                        if (ponsuccessread) {
+
+                            for (var i = 0; i < results.rows.length; ++i) {
+
+                                var item = results.rows.item(i);                                                                                                            
+                                var product = JSON.parse(item.json);                                                    
+
+                                product.BasketQty = item.Basket;
+                                product.Stock = item.Stock;
+
+                                ponsuccessread(product);
+                            }
+                        }
+
+                        if (!results.rows.length && ponerror) 
+                            ponerror("No record found");
+
+                        if (poncomplete) 
+                            poncomplete();
+
+                    } catch (error) {
+
+                        if (ponerror) 
+                            ponerror("No record found");
+                    };
+                });    
+            });
+    };    
 }
         

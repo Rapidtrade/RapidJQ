@@ -34,6 +34,8 @@ function myterritoryOnPageShow() {
         dao.openDB(function () { myterritoryInit(); });
     }
     
+    sessionStorage.removeItem('lastRangeType');
+    
     myterritoryBind();
 }
 
