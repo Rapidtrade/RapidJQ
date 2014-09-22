@@ -786,6 +786,8 @@ function pricelistLoadBasket() {
 
 function pricelistFetchTemplateItems() {    
     
+//    g_busy(true);
+    
     if (g_indexedDB) {
         
         onLocalFetchFailure();
@@ -818,7 +820,7 @@ function pricelistFetchTemplateItems() {
     
     function onLocalFetchFailure(error) {
         
-        g_busy(true);    
+//        g_busy(true);    
 
         var url = DaoOptions.getValue('MyRangeURL', g_restUrl) + '/Orders/GetOrderItemsByType3?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + 
                 '&userID=' + g_currentUser().UserID + '&orderType=' + sessionStorage.getItem('lastRangeType'); 
@@ -831,6 +833,7 @@ function pricelistFetchTemplateItems() {
         
         if (json.length) {
             
+            g_busy(true);
             g_syncDao = g_syncDao || new Dao();
 
             syncSaveToDB(json, g_currentUser().SupplierID, g_currentUser().UserID, 0, 'Orders', 'GetOrderItemsByType3', 0);
@@ -839,11 +842,16 @@ function pricelistFetchTemplateItems() {
     //           g_busy(true);
                 pricelistFetchTemplateItems();
             }, 2000);
+            
+        } else {
+            
+            g_busy(false);
         }
     }
     
     function onRemoteFetchFailure() {
         
+        g_busy(false);
         g_alert('ERROR: Cannot retrieve the data.');
     }
 }
@@ -908,6 +916,12 @@ function pricelistIsCheckWarehouseEnabled() {
     return (DaoOptions.getValue('VanandWareOrder', 'false') == 'true') && (sessionStorage.getItem('currentordertype').indexOf('Invoice-') != -1);
 }
 
+function pricelistIsRangeSelected() {
+    
+    var lastRangeType = sessionStorage.getItem('lastRangeType');
+    return ((DaoOptions.getValue('MyRange') === 'true') && lastRangeType && (lastRangeType !== 'None'));
+}
+
 function pricelistFetchPricelistJob() {	
         
     $.mobile.showPageLoadingMsg();
@@ -918,25 +932,15 @@ function pricelistFetchPricelistJob() {
     g_pricelistItems = [];
     g_pricelistItemsOnPage = 0;
     
-    var lastRangeType = sessionStorage.getItem('lastRangeType');
-    var isRangeSelected = ((DaoOptions.getValue('MyRange') === 'true') && lastRangeType && (lastRangeType !== 'None'));
+    $('#search').textinput(pricelistIsRangeSelected() ? 'disable' : 'enable');    
     
-    $('#search').textinput(isRangeSelected ? 'disable' : 'enable');
-    
-    if (isRangeSelected) {
-        
-        // check if there are data in the local DB
-        
-//        dao.count('OrderItems', )
-    }
-    
-    if (isRangeSelected || ((DaoOptions.getValue('MobileOnlinePricelist') === 'true') || g_advancedSearchProducts.length)) { 
+    if (pricelistIsRangeSelected() || ((DaoOptions.getValue('MobileOnlinePricelist') === 'true') || g_advancedSearchProducts.length)) { 
     	
     	pricelistFetchPricelistLive();
     	
     } else {
     	
-    	if (DaoOptions.getValue('MustSearch','true') == 'true'){
+    	if (DaoOptions.getValue('MustSearch','true') == 'true') {
             if (g_pricelistSearchPricelistText == '') {
                     $.mobile.hidePageLoadingMsg();
                     return;
@@ -1124,12 +1128,13 @@ function pricelistBarcodeOnError(pricelist) {
 function pricelistOnComplete(event) {
 	
     $('#pricelists').toggle(g_pricelistItemsHtml != '');
-    $('#pricelistInfoDiv').toggle(g_pricelistItemsHtml == '');
-    $('#NextPrevButtons').toggle(g_pricelistItemsHtml != '');
+    
+    $('#pricelistInfoDiv').toggle(!g_pricelistItemsHtml && !pricelistIsRangeSelected());
+    $('#NextPrevButtons').toggle(!g_pricelistItemsHtml && !pricelistIsRangeSelected());
 
     if (pricelistIsPricelistVisible()) {
 
-        if (!g_pricelistItemsHtml) {			
+        if (!g_pricelistItemsHtml && !pricelistIsRangeSelected()) {			
 
             var infoText = sessionStorage.getItem('fromCategory') == 'true' || sessionStorage.getItem('fromAdvanced') == 'true' || $.trim($('#search').val()) != '' ?  'No products found.' : 'Enter in search criteria to list products.';			
             $('.infoPanelText').text(infoText);
