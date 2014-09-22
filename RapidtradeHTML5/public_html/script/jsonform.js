@@ -146,33 +146,37 @@ function JsonForm() {
     		            $('#' + fieldId).datebox('refresh');
     		            
         		    } else if (displayObjects[i].Type == "ListBox") {
-        		    	
-    		            var options = displayObjects[i].DefaultData;
-    		            var word = options.split(",");
-    		        
-    		            g_append(vformid + ' div:first','<div  data-role="fieldcontain" class="ui-field-contain ui-body ui-br">' +
-                            '   <label for="' + fieldId + '" class="select  ui-select">' + label + '</label>' +
-//                            '<div style ="width:115%" >' +
-                            ' <select name="' + fieldname + '" id="' + fieldId + '" rel="' + vid + '" >' +
-                             '</select></fieldset></div>');
+                                
+                                var options = displayObjects[i].DefaultData;
 
-    		            for (var j = 0; j < word.length; j++) {
-    		                g_append('#' + fieldId, ' <option  value="' + word[j] + '">' + word[j] + '</option>');
-    		            }
-    		           
-    		            $("select option").filter(function() {
-    		                return $(this).text().split(':')[0] == vjson[displayObjects[i].Name];
-           
-    		            }).attr('selected', true);
-    		            $('#' + fieldId).selectmenu();
-    		            if (selectmenuDisable == true) {
-    		                $('#' + fieldId).selectmenu('disable');
-    		            }
-    		            
-//    		            $('#' + fieldId).closest('.ui-select').css('width', (displayObjects[i].Length ? displayObjects[i].Length * 16 + 'px' : '90%'));
-    		            
-//    		            $('#' + fieldId).selectmenu('refresh');
-    		        }  
+                                if ((displayObjects[i].Name === 'DeliveryMethod') &&  (DaoOptions.getValue('DeliveryMethodPerBranch') === 'true'))
+                                    options = DaoOptions.getValue('DeliveryMethod_' + g_currentCompany().BranchID, options);                                
+        		    	
+                                var word = options.split(",");
+
+                                g_append(vformid + ' div:first','<div  data-role="fieldcontain" class="ui-field-contain ui-body ui-br">' +
+                                '   <label for="' + fieldId + '" class="select  ui-select">' + label + '</label>' +
+    //                            '<div style ="width:115%" >' +
+                                ' <select name="' + fieldname + '" id="' + fieldId + '" rel="' + vid + '" >' +
+                                 '</select></fieldset></div>');
+
+                                for (var j = 0; j < word.length; j++) {
+                                    g_append('#' + fieldId, ' <option  value="' + word[j] + '">' + word[j] + '</option>');
+                                }
+
+                                $("select option").filter(function() {
+                                    return $(this).text().split(':')[0] == vjson[displayObjects[i].Name];
+
+                                }).attr('selected', true);
+                                $('#' + fieldId).selectmenu();
+                                if (selectmenuDisable == true) {
+                                    $('#' + fieldId).selectmenu('disable');
+                                }
+
+    //    		            $('#' + fieldId).closest('.ui-select').css('width', (displayObjects[i].Length ? displayObjects[i].Length * 16 + 'px' : '90%'));
+
+    //    		            $('#' + fieldId).selectmenu('refresh');
+                            }  
         		    
         		    if (displayObjects[i].Mandatory) {
         		    	

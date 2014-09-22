@@ -480,7 +480,12 @@ var jsonform = (function(){
                     $('#' + fieldId).datebox('refresh');
 
                 } else if (displayObjects[i].Type === "ListBox") {
+                    
                     var options = displayObjects[i].DefaultData;
+                    
+                    if ((displayObjects[i].Name === 'DeliveryMethod') &&  (DaoOptions.getValue('DeliveryMethodPerBranch') === 'true'))
+                        options = DaoOptions.getValue('DeliveryMethod_' + g_currentCompany().BranchID, options);
+                    
                     var word = options.split(",");
 
                     g_append('#jsonform' + ' div:first','<div  data-role="fieldcontain" class="ui-field-contain ui-body ui-br">' +
