@@ -58,6 +58,16 @@ function orderHeaderBind() {
     });
 
     $('#signatureButton').click(function () {
+        
+        if (!g_orderHeaderJsonForm.isValid())
+            return;
+        
+        if (!$('#' + sessionStorage.getItem('currentordertype') + 'HeaderReference').val()){ 
+            
+            g_alert('You must enter a reference before you can continue');
+            $('#infoPopup').popup('close');
+            return;	
+        }        
     	
         g_orderHeaderSignature = true;
         $('#signatureFrame').removeClass('hidden');
@@ -778,9 +788,7 @@ function orderHeaderOnOrderSaved() {
 
 function orderHeaderSaveSignature(){
 	
-	var sigdiv = $("#signature");
-    sigdiv.jSignature();
-    var datapair = sigdiv.jSignature("getData", "svgbase64");
+    var datapair = $("#signature").jSignature("getData", "svgbase64");
 
     var image = new Object();
     image.Id = g_orderHeaderOrder.OrderID;
@@ -792,6 +800,7 @@ function orderHeaderSaveSignature(){
         image.Name = image.Id + '.svgx';
     
     g_saveObjectForSync(image, image.Id, 'File', 'UploadImage');
+    g_orderHeaderSignature = false;
 }
 
 function orderheaderResetSignature() {
