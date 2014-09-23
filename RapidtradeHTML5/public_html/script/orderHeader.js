@@ -67,7 +67,7 @@ function orderHeaderBind() {
         if (orderType.indexOf('Invoice') !== -1)  
             orderType = 'Invoice';
         
-        if (!$('#' + orderType + 'HeaderReference').val()){ 
+        if (!$('#' + orderType + 'HeaderReference').val() && !shoppingCartIsGroupingEnabled()){ 
             
             g_alert('You must enter a reference before you can continue');
             $('#infoPopup').popup('close');
@@ -271,7 +271,7 @@ function orderHeaderSaveOrder() {
         g_orderHeaderOrder.DeliveryPostCode = $('#postalCode').val();      
         g_orderHeaderOrder.orderItems = g_orderHeaderOrderItems;
         
-        if (g_orderHeaderOrder.Reference.length==0){      	
+        if (g_orderHeaderOrder.Reference.length==0 && !shoppingCartIsGroupingEnabled()){      	
             g_alert('You must enter a reference before you can continue');
             $('#infoPopup').popup('close');
             return;	

@@ -3,6 +3,8 @@
  * This is called from script tag inside page
  */
 
+var ITEMS_PER_REFERENCE = 18; 
+
 var g_shoppingCartTotalIncl = 0;
 var g_shoppingCartTotalExcl = 0;
 var g_shoppingCartVAT = 0;
@@ -14,6 +16,7 @@ var g_shoppingCartSummaryItems = {};
 var g_shoppingCartItemKeys = [];
 
 var g_shoppingCartPageTranslation = {};
+var g_shoppingCartCurrentItemIndex = 0;
 
 function shoppingCartOnPageBeforeCreate() {
     
@@ -85,36 +88,74 @@ function shoppingCartOnPageShow() {
 function shoppingCartOnPageShowSmall() {
     
     if (g_isScreenSmall()) {
-            $('.hideonphone').hide();
+        $('.hideonphone').hide();
     }
 }
 
 function shoppingCartBind() {
 
-    $('#summaryButton').off().on('click', function() {
-       
-       var nextButtonCaption = {
-           
-           Summary: 'Detail',
-           Detail: 'Summary'           
-       }
-       
-       $buttonCaption = $(this).find('.ui-btn-text');
-       
-       sessionStorage.setItem('shoppingCartViewType', $buttonCaption.text());
-       $buttonCaption.text(nextButtonCaption[$buttonCaption.text()]);
-       
-        g_shoppingCartTotalIncl = 0;
-        g_shoppingCartTotalExcl = 0;
-        g_shoppingCartVAT = 0;
-       
-        shoppingCartFetchBasket();
-    });
+    $('#summaryButton').off().on('click', shoppingCartChangeView);
             
     $('#saveShoppingCart').unbind();
     $('#saveShoppingCart').click(function() {
         
-        if (shoppingCartIsTotalQuantityValid()) {
+        var isValid = true;
+        if (shoppingCartIsGroupingEnabled()) {
+            
+            if (sessionStorage.getItem('shoppingCartViewType') !== 'Summary') {
+                
+                g_alert('This order must be done from the summary view.');
+                isValid = false;
+                shoppingCartChangeView();
+            }
+            
+            $('.summaryReference').each(function() {
+               
+                if (!$.trim($(this).val())) {
+                    
+                    g_alert('Please fill in all reference fields.');
+                    isValid = false;
+                    return false;
+                }
+            });
+            
+            if (isValid) {
+                
+               g_shoppingCartCurrentItemIndex = 0;
+                var dao = new Dao();
+                dao.indexsorted('BasketInfo',g_currentCompany().AccountID, 'index1', 'index4', function(basketInfo) {
+
+                    g_addProductToBasket(
+                            basketInfo.ProductID,
+                            basketInfo.SupplierID,
+                            basketInfo.AccountID,
+                            basketInfo.Quantity,
+                            basketInfo.UserID,
+                            basketInfo.Nett,
+                            basketInfo.Description,
+                            basketInfo.Discount,
+                            basketInfo.Gross,
+                            basketInfo.Type,
+                            basketInfo.UserField01,
+                            basketInfo.RepNett,
+                            basketInfo.RepDiscount,
+                            basketInfo.Unit,
+                            basketInfo.UserField02,
+                            basketInfo.Warehouse,
+                            basketInfo.VAT,
+                            basketInfo.Stock,
+                            basketInfo.UserField03,
+                            basketInfo.UserField04,
+                            basketInfo.UserField05,
+                            (shoppingCartIsGroupingEnabled() ? $('#reference' + Math.ceil((++g_shoppingCartCurrentItemIndex / ITEMS_PER_REFERENCE))).val() : '')
+                            );
+                }, undefined, function() {
+                    
+                    $.mobile.changePage("orderHeader.html", { transition: "none" });
+                });            
+            }   
+            
+        } else if (shoppingCartIsTotalQuantityValid()) {
     	
             if (DaoOptions.getValue('LiveCreditCheckURL') && (sessionStorage.getItem('currentordertype').toLowerCase() === 'order') && (g_shoppingCartTotalExcl > g_shoppingCartCredit)) {
 
@@ -125,7 +166,7 @@ function shoppingCartBind() {
                 var isTPMOrder = ($.inArray(sessionStorage.getItem('currentordertype'), DaoOptions.getValue('TPMOrderTypes') && DaoOptions.getValue('TPMOrderTypes').split(',') || []) !== -1);            
                 $.mobile.changePage((isTPMOrder ? "tpm.html" : "orderHeader.html"), { transition: "none" });
             }
-        }
+        }        
     });
 
     $('#deleteShoppingCart').unbind();
@@ -151,6 +192,26 @@ function shoppingCartBind() {
         }
     });
 
+}
+
+function shoppingCartChangeView() {
+    
+       var nextButtonCaption = {
+           
+           Summary: 'Detail',
+           Detail: 'Summary'           
+       }
+       
+       $buttonCaption = $('#summaryButton').find('.ui-btn-text');
+       
+       sessionStorage.setItem('shoppingCartViewType', $buttonCaption.text());
+       $buttonCaption.text(nextButtonCaption[$buttonCaption.text()]);
+       
+        g_shoppingCartTotalIncl = 0;
+        g_shoppingCartTotalExcl = 0;
+        g_shoppingCartVAT = 0;
+       
+        shoppingCartFetchBasket();    
 }
 
 function shoppingCartConfirmScanInit() {
@@ -465,11 +526,23 @@ function shoppingCartAddSummaryItems() {
 
             shoppingCartAddItem(summaryItem, false);            
         }
+        
+        if (shoppingCartIsGroupingEnabled()) {
+            
+            if (((i + 1) % ITEMS_PER_REFERENCE === 0) || (i === headings.length - 1))
+                 g_basketHTML += '<li>Reference <input id="reference' + Math.ceil(((i + 1) / ITEMS_PER_REFERENCE)) + '" class="summaryReference ui-input-text ui-body-c ui-corner-all ui-shadow-inset" style="width: 99%;"></li>';
+        }
     }
 }
 
+function shoppingCartIsGroupingEnabled() {
+    
+    return g_orderdetailsCurrentOrder && (g_orderdetailsCurrentOrder[/*DaoOptions.getValue('SummaryReportRefIndic')*/'UserField03'] === 'Y');
+}
+
 function shoppingCartCheckItemsCount() {
-    if (($.mobile.activePage.attr('id') == 'shoppingCartpage') && $('#shoppingCartitemlist li').length == 0) {
+    
+    if (($.mobile.activePage.attr('id') === 'shoppingCartpage') && $('#shoppingCartitemlist li').length === 0) {
         
         sessionStorage.removeItem('shoppingCartViewType');
     	shoppingCartOnBack();
