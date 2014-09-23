@@ -62,7 +62,12 @@ function orderHeaderBind() {
         if (!g_orderHeaderJsonForm.isValid())
             return;
         
-        if (!$('#' + sessionStorage.getItem('currentordertype') + 'HeaderReference').val()){ 
+        var orderType = sessionStorage.getItem('currentordertype');
+        
+        if (orderType.indexOf('Invoice') !== -1)  
+            orderType = 'Invoice';
+        
+        if (!$('#' + orderType + 'HeaderReference').val()){ 
             
             g_alert('You must enter a reference before you can continue');
             $('#infoPopup').popup('close');
