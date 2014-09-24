@@ -14,9 +14,9 @@ var g_shoppingcartCnt = 0;
 var g_shoppingcartalpha = [];
 var g_shoppingCartSummaryItems = {};
 var g_shoppingCartItemKeys = [];
+var g_shoppingCartDetailItems = [];
 
 var g_shoppingCartPageTranslation = {};
-var g_shoppingCartCurrentItemIndex = 0;
 
 function shoppingCartOnPageBeforeCreate() {
     
@@ -97,10 +97,11 @@ function shoppingCartBind() {
     $('#summaryButton').off().on('click', shoppingCartChangeView);
             
     $('#saveShoppingCart').unbind();
-    $('#saveShoppingCart').click(function() {
+    $('#saveShoppingCart').click(function() {        
         
-        var isValid = true;
         if (shoppingCartIsGroupingEnabled()) {
+            
+            var isValid = true;
             
             if (sessionStorage.getItem('shoppingCartViewType') !== 'Summary') {
                 
@@ -121,38 +122,31 @@ function shoppingCartBind() {
             
             if (isValid) {
                 
-               g_shoppingCartCurrentItemIndex = 0;
-                var dao = new Dao();
-                dao.indexsorted('BasketInfo',g_currentCompany().AccountID, 'index1', 'index4', function(basketInfo) {
-
-                    g_addProductToBasket(
-                            basketInfo.ProductID,
-                            basketInfo.SupplierID,
-                            basketInfo.AccountID,
-                            basketInfo.Quantity,
-                            basketInfo.UserID,
-                            basketInfo.Nett,
-                            basketInfo.Description,
-                            basketInfo.Discount,
-                            basketInfo.Gross,
-                            basketInfo.Type,
-                            basketInfo.UserField01,
-                            basketInfo.RepNett,
-                            basketInfo.RepDiscount,
-                            basketInfo.Unit,
-                            basketInfo.UserField02,
-                            basketInfo.Warehouse,
-                            basketInfo.VAT,
-                            basketInfo.Stock,
-                            basketInfo.UserField03,
-                            basketInfo.UserField04,
-                            basketInfo.UserField05,
-                            (shoppingCartIsGroupingEnabled() ? $('#reference' + Math.ceil((++g_shoppingCartCurrentItemIndex / ITEMS_PER_REFERENCE))).val() : '')
-                            );
-                }, undefined, function() {
+                g_busy(true);
+                
+                var dao = new Dao();                                 
+                $('.summaryReference').each(function() {
+                   
+                    var range = this.id.replace('reference', '').split('-');
                     
-                    $.mobile.changePage("orderHeader.html", { transition: "none" });
-                });            
+                    for (var i = range[0]; i <= range[1]; ++i) {
+                       
+                        var item = g_shoppingCartDetailItems[i]; 
+                        item.UserField01 = $(this).val();
+                        
+                        dao.put(item, 'BasketInfo', item.key, function() {
+                            console.log('Item ' + item.key + ' added to basket');
+                        });                        
+                    } 
+                });
+                
+                setTimeout(function() {
+                    
+                    g_busy(false);
+                    $.mobile.changePage('orderHeader.html', {transition:'none'});
+                }, 2000);
+                
+                return;
             }   
             
         } else if (shoppingCartIsTotalQuantityValid()) {
@@ -361,6 +355,10 @@ function shoppingCartFetchBasket() {
         alphaFilter.getInstance().init('#alphabet');
         
         g_shoppingCartItemKeys = [];
+        
+        if (sessionStorage.getItem('shoppingCartViewType') === 'Detail')
+            g_shoppingCartDetailItems = [];
+        
         var dao = new Dao();
         dao.indexsorted('BasketInfo',g_currentCompany().AccountID, 'index1', 'index4', shoppingCartAddItem, shoppingCartNoItems, shoppingCartOnAllItemsAdded);
     }
@@ -409,6 +407,10 @@ function shoppingCartAddItem(item, checkSummary) {
 	
         var itemIndex = g_shoppingCartItemKeys.length;
         g_shoppingCartItemKeys.push(item.key);
+        
+        var view = sessionStorage.getItem('shoppingCartViewType');
+        if (!view || view === 'Detail')
+            g_shoppingCartDetailItems.push(item);        
         
         var step = 1;
         
@@ -495,6 +497,11 @@ function shoppingCartOnAllItemsAdded() {
 
 function shoppingCartAddSummaryItems() {
     
+    var totalProductsAdded = 0;
+    var nextReferenceIndex = 0;
+    
+    g_shoppingCartDetailItems = [];
+    
     var headings = Object.keys(g_shoppingCartSummaryItems).sort();
     
     for (var i = 0; i < headings.length; ++i) {
@@ -516,21 +523,28 @@ function shoppingCartAddSummaryItems() {
 
                     summaryItem = itemArray[k];
                     summaryItem.ProductID = itemArray[k][DaoOptions.getValue('SummaryReportProdID')];
-                    summaryItem.Description = itemArray[k][DaoOptions.getValue('SummaryReportProdDes')];
+                    summaryItem.Description = itemArray[k][DaoOptions.getValue('SummaryReportProdDes')];                    
 
                 } else {
 
                     summaryItem.Quantity = Number(summaryItem.Quantity) + Number(itemArray[k].Quantity);           
                 }
+                
+                g_shoppingCartDetailItems.push(itemArray[k]);
             }
+            
+            totalProductsAdded += itemArray.length;
 
             shoppingCartAddItem(summaryItem, false);            
         }
         
         if (shoppingCartIsGroupingEnabled()) {
             
-            if (((i + 1) % ITEMS_PER_REFERENCE === 0) || (i === headings.length - 1))
-                 g_basketHTML += '<li>Reference <input id="reference' + Math.ceil(((i + 1) / ITEMS_PER_REFERENCE)) + '" class="summaryReference ui-input-text ui-body-c ui-corner-all ui-shadow-inset" style="width: 99%;"></li>';
+            if (((i + 1) % ITEMS_PER_REFERENCE === 0) || (i === headings.length - 1)) {
+                
+                 g_basketHTML += '<li>Reference <input id="reference' + nextReferenceIndex + '-' + (totalProductsAdded - 1) /*Math.ceil(((i + 1) / ITEMS_PER_REFERENCE))*/ + '" class="summaryReference ui-input-text ui-body-c ui-corner-all ui-shadow-inset" style="width: 99%;"></li>';
+                 nextReferenceIndex = totalProductsAdded;
+             }
         }
     }
 }
