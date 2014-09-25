@@ -163,19 +163,20 @@ function usersummaryShow(){
 }
 
 function fetchUsers(){
+
     var url = g_restUrl + 'Dashboard/GetUsers?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&format=json';
     
     //Clear user
     $('#usersummarylist').empty();
 
     $('#msName').empty();
-    $('#dsName').empty();
+    $('.userChoice').empty();
     $('#alName').empty();
     $('#mcsName').empty();
     $('#ccName').empty();
 
     $('#msName').append("<option>Select one...</option>");
-    $('#dsName').append("<option>" + selectUserText + "</option>");
+    $('.userChoice').append("<option>" + selectUserText + "</option>");
     $('#alName').append("<option value='ALL'>All users...</option>");
     $('#mcsName').append("<option value='SELECT'>Select a user...</option>");
     $('#ccName').append("<option value='ALL'>Select one...</option>");
@@ -195,7 +196,7 @@ function fetchUsers(){
 
                 //$('#msName').append('<option>' + item.UserID + '</option>');
                 $('#msName').append("<option value='" + item.UserID + "'>" + item.Name + "</option>");
-                $('#dsName').append("<option value='" + item.UserID + "'>" + item.Name + "</option>");
+                $('.userChoice').append("<option value='" + item.UserID + "'>" + item.Name + "</option>");
                 $('#alName').append("<option value='" + item.UserID + "'>" + item.Name + "</option>");
                 $('#mcsName').append("<option value='" + item.UserID + "'>" + item.Name + "</option>");
                 $('#ccName').append("<option value='" + item.UserID + "'>" + item.Name + "</option>");
@@ -769,6 +770,75 @@ function fetchOrderCountByUser() {
             $.mobile.loading("hide");
         }
     });
+}
+
+//******************************************************************************** User Daily Sales Detail
+
+function userDailySalesDetailOnPageShow() {
+      
+    $('#udsSubmit').off().on('click', fetchUserDailySalesDetail);
+}
+
+function fetchUserDailySalesDetail() {   
+    
+    var url = g_restPHPUrl + 'GetView?view=vView1&params=where%20SupplierID=%27' + g_currentUser().SupplierID + 
+            '%27%20and%20UserID=%27' + $("#udsName").val() + '%27%20and%20OrderDate=%27' + moment($("#udsduedate").val()).format("YYYY-MM-DD") +'%27';
+    
+    console.log(url);
+    
+    $.mobile.showPageLoadingMsg();
+    
+    g_ajaxget(url, onSuccess, onFailure);
+    
+    function onSuccess(json) {
+        
+        $('#userDailySalesDetailTable tbody').empty();
+        $.each(json, function (i, item) {
+            $('#userDailySalesDetailTable tbody').append('<tr><td>' +
+                    item.ProductID +
+                    '</td><td>'  +
+                    item.Description+
+                    '</td><td>' +
+                    item.Quantity +
+                    '</td><td>' +
+                    item.DailyAmount +
+            '</td></tr>');
+        });
+        
+        hideRepeatingValues('#userDailySalesDetailTable tbody tr');  
+        
+        var isVan = g_currentUser().Role && (g_currentUser().Role.indexOf('canInv') != -1);
+        
+        if (json.length && 1 /*(DaoOptions.getValue('CalcChange') === 'true')*/ && isVan) {
+            
+            $('#userDailySalesDetailTable tfoot').removeClass('invisible');
+            
+            url = g_restPHPUrl + 'GetView?view=vView2&params=where%20SupplierID=%27' + g_currentUser().SupplierID + 
+                    '%27%20and%20UserID=%27' + $("#udsName").val() + '%27%20and%20OrderDate=%27' + moment($("#udsduedate").val()).format("YYYY-MM-DD") +'%27';
+            
+            g_ajaxget(url, onSuccess2, onFailure);
+            
+        } else {
+            
+            $('#userDailySalesDetailTable tfoot').addClass('invisible');
+            $.mobile.hidePageLoadingMsg(); 
+        }
+
+               
+    }
+    
+    function onSuccess2(json) {
+        
+        $('#totalGiven').text(json[0].ChangeGiven);
+        $('#totalTaken').text(json[0].TotalAmount);
+        $.mobile.hidePageLoadingMsg(); 
+    }
+    
+    function onFailure() {
+        
+        $.mobile.hidePageLoadingMsg();
+        g_alert('ERROR: Data are not available.');
+    }
 }
 
 

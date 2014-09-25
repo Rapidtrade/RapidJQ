@@ -36,6 +36,7 @@
         <script type="application/javascript"  src="script/globals.js"></script>
         <script type="application/javascript"  src="script/dao.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+         <script type="application/javascript"  src="script/daooptions.js"></script>
 	    <script type="application/javascript"  src="script/dashboard.js"></script>
 	    <script type="application/javascript"  src="script/activityform.js"></script>
 	</head>
@@ -91,6 +92,11 @@
                             Order count by User
                         </a>
                     </li>
+                    <li data-theme="c">
+                        <a href="#userDailySalesDetail" data-transition="slide">
+                            User Daily Sales Detail
+                        </a>
+                    </li>                    
                 </ul>
             </div>
         </div>
@@ -192,11 +198,10 @@
                         <label for="dsName">
                             User:
                         </label>
-                        <select id="dsName" name="dsName">
-				            <option value="">Select a user...</option>
-			            </select>
-	                </div>
-
+                        <select id="dsName" name="dsName" class="userChoice">
+                            <option value="">Select a user...</option>
+                        </select>
+                    </div>
                     <div id="divDuedate" data-role="fieldcontain">
                         <fieldset data-role="controlgroup" class="ui-grid-b" >
                	            <div class="ui-block-a">
@@ -204,16 +209,15 @@
                                     Date:
                	                </label>
                             </div>
-				            <div class="ui-block-b">
+                            <div class="ui-block-b">
                                 <input style="width:100%" name="mydate" id="duedate" type="date" data-role="datebox" data-options='{"mode": "calbox", "useImmediate":true,"useButton": false, "useFocus": true, "useInlineBlind": true}' />
                             </div>
-			            </fieldset>	
-                     </div>
-
-	                 <a data-role="button" id="dsSubmit">
-	                     Submit
-	                 </a>
-				</div>
+                        </fieldset>	
+                    </div>
+                    <a data-role="button" id="dsSubmit">
+                        Submit
+                    </a>
+                </div>
 				
 				<div id="viewChoiceDiv" data-role="fieldcontain" class="invisible" style="width:230px;position:absolute; top:0; right:0">
 		            <fieldset data-role="controlgroup" data-type="horizontal" data-mini="false">
@@ -487,5 +491,63 @@
              </div>
         </div>   
 
+        <!-- User Daily Sales Detail -->
+        <div data-role="page" id="userDailySalesDetail" class="ipadStatusBar">	
+            <script>
+	            $('#userDailySalesDetail').bind("pageshow", userDailySalesDetailOnPageShow);
+            </script>
+            <div data-role="header" >
+     	        <h1>User Daily Sales Detail</h1>    
+                 <a data-role="button" data-rel="back" href="index.html" data-icon="arrow-l" data-direction="reverse" data-transition="slide" data-iconpos="left" class="ui-btn-left">
+                     Dashboard
+                 </a>
+            </div>
+            <div data-role="content">
+             	<div class="panel-white-rounded panel-Filter">
+                    <div data-role="fieldcontain">
+                        <label for="udsName">
+                            User:
+                        </label>
+                        <select id="udsName" name="udsName" class="userChoice">
+                            <option value="">Select a user...</option>
+                        </select>
+                    </div>
+                    <div id="divDuedate" data-role="fieldcontain">
+                        <fieldset data-role="controlgroup" class="ui-grid-b" >
+               	            <div class="ui-block-a">
+                                <label for="udsduedate">
+                                    Date:
+               	                </label>
+                            </div>
+                            <div class="ui-block-b">
+                                <input style="width:100%" name="mydate" id="udsduedate" type="date" data-role="datebox" data-options='{"mode": "calbox", "useImmediate":true,"useButton": false, "useFocus": true, "useInlineBlind": true}' />
+                            </div>
+                        </fieldset>	
+                    </div>
+                    <a data-role="button" id="udsSubmit">
+                        Submit
+                    </a>
+                </div>                
+             	<div class="panel-grey-rounded">
+                    <table class="box-table-a" style="width: 100%;" id="userDailySalesDetailTable" >
+                        <thead>
+                            <tr>
+                                <th scope="col">Product ID</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Qty</th>
+                                <th scope="col">Value Sold</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot class="invisible">
+                            <tr><td colspan="4">&nbsp;</tr>
+                            <tr><td colspan="3" class="total">Total Cach Taken</td><td id="totalTaken"></td></tr>
+                            <tr><td colspan="3" class="total">Total Cach Given</td><td id="totalGiven"></td></tr>
+                        </tfoot>
+                    </table>
+     	        </div>
+             </div>
+        </div>        
+        
     </body>
 </html>

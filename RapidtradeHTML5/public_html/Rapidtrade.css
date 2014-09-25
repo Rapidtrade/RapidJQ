@@ -873,3 +873,10 @@
     
     width: 50%;
 }
+
+#userDailySalesDetailTable .total {
+    
+    text-align: right;
+    font-weight: bolder;
+    padding-right: 20px;
+}
