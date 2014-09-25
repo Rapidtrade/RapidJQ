@@ -358,7 +358,9 @@ var jsonform = (function(){
                 if ('UserField10' ==  displayObjects[i].Name)
                     label = 'Error';
                 
-                htmlstr += '<th>' + label + '</th>';
+                var hidden = ($.inArray(label, ['Stock', 'Descr', 'Type']) !== -1 ? 'class="hidden"' : '');
+                
+                htmlstr += '<th ' + hidden + ' >' + label + '</th>';
             }
             htmlstr += '</tr></thead>';
             
