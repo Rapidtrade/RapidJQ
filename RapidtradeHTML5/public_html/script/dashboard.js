@@ -19,15 +19,15 @@ var isMapShown = false;
 //********************************************************************************** Load Page
 $(document).ready(function () {
 	
-	if (!g_currentUser()) 
-		return;
+    if (!g_currentUser()) 
+            return;
 	    
     fetchUsers();
     fetchActivityTypes();
     //fetchMonthySummary()
     
-	var dao = new Dao();
-	dao.openDB(function (user) { bind(); });
+    var dao = new Dao();
+    dao.openDB(function () { bind(); DaoOptions.fetchOptions();});
 });
 
 //********************************************************************************** Bind Events
