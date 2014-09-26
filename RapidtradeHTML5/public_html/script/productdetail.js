@@ -939,9 +939,18 @@ function productdetailOkClicked(checkStock) {
         $('#quantity').toggleClass('ui-disabled', -9999 === stock);
     }    
     
+    if (DaoOptions.getValue('ExcludeProdCatbyUserProdUF'))
+    
     if (DaoOptions.getValue('ExcludeProdCatbyUser') === 'true') {
         
-        if ($.inArray(g_pricelistSelectedProduct.CategoryName, g_currentCompany()[DaoOptions.getValue('ExcludeProdCatbyUserUF')].split(',')) !== -1) {
+        var categories;
+        
+        if (DaoOptions.get('ExcludeProdCatbyUserProdUF'))
+            categories = g_pricelistSelectedProduct[DaoOptions.getValue('ExcludeProdCatbyUserProdUF')];
+        else
+            categories = g_currentCompany()[DaoOptions.getValue('ExcludeProdCatbyUserUF')];               
+        
+        if ($.inArray(g_pricelistSelectedProduct.CategoryName, (categories || '').split(',')) !== -1) {
             
             showMessage(DaoOptions.getValue('ExcludeProdCatbyUserMess'));
             return;
