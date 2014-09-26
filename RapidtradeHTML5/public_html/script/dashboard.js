@@ -814,7 +814,7 @@ function fetchUserDailySalesDetail() {
         
         var isVan = g_currentUser().Role && (g_currentUser().Role.indexOf('canInv') != -1);
         
-        if (json.length && 1 /*(DaoOptions.getValue('CalcChange') === 'true')*/ && isVan) {
+        if (json.length && (DaoOptions.getValue('CalcChange') === 'true') && isVan) {
             
             $('#userDailySalesDetailTable tfoot').removeClass('invisible');
             
