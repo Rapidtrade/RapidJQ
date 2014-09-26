@@ -668,7 +668,7 @@
 }
 
 @media print {	
-    .printinvoiceHeader {
+    .printinvoiceHeader, #udsInputsDiv, #udsHeader {
         display: none;
     }
 

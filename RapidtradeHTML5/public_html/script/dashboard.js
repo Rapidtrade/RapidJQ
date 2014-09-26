@@ -777,6 +777,11 @@ function fetchOrderCountByUser() {
 function userDailySalesDetailOnPageShow() {
       
     $('#udsSubmit').off().on('click', fetchUserDailySalesDetail);
+    
+    $('#printButton').off().on('click', function() {
+        
+        g_print('#userDailySalesDetail');
+    });
 }
 
 function fetchUserDailySalesDetail() {   
@@ -829,8 +834,12 @@ function fetchUserDailySalesDetail() {
     
     function onSuccess2(json) {
         
-        $('#totalGiven').text(json[0].ChangeGiven);
-        $('#totalTaken').text(json[0].TotalAmount);
+        if (json.length) {
+            
+            $('#totalGiven').text(json[0].ChangeGiven);
+            $('#totalTaken').text(json[0].TotalAmount);
+        }
+        
         $.mobile.hidePageLoadingMsg(); 
     }
     

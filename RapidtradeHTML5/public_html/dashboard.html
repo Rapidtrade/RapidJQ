@@ -496,14 +496,17 @@
             <script>
 	            $('#userDailySalesDetail').bind("pageshow", userDailySalesDetailOnPageShow);
             </script>
-            <div data-role="header" >
+            <div data-role="header" id="udsHeader">
      	        <h1>User Daily Sales Detail</h1>    
                  <a data-role="button" data-rel="back" href="index.html" data-icon="arrow-l" data-direction="reverse" data-transition="slide" data-iconpos="left" class="ui-btn-left">
                      Dashboard
                  </a>
+                <a data-role="button" id="printButton" data-transition="none"  class="ui-btn-right">
+                    Print
+                </a>  
             </div>
             <div data-role="content">
-             	<div class="panel-white-rounded panel-Filter">
+             	<div class="panel-white-rounded panel-Filter" id="udsInputsDiv">
                     <div data-role="fieldcontain">
                         <label for="udsName">
                             User:
@@ -541,8 +544,8 @@
                         <tbody></tbody>
                         <tfoot class="invisible">
                             <tr><td colspan="4">&nbsp;</tr>
-                            <tr><td colspan="3" class="total">Total Cach Taken</td><td id="totalTaken"></td></tr>
-                            <tr><td colspan="3" class="total">Total Cach Given</td><td id="totalGiven"></td></tr>
+                            <tr><td colspan="3" class="total">Total Cash Taken</td><td id="totalTaken"></td></tr>
+                            <tr><td colspan="3" class="total">Total Cash Given</td><td id="totalGiven"></td></tr>
                         </tfoot>
                     </table>
      	        </div>
