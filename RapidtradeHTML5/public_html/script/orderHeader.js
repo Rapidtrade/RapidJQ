@@ -261,7 +261,7 @@ function orderHeaderSaveOrder() {
         var orderHeader = JSON.parse(sessionStorage.getItem(id));  
         for (var property in orderHeader)
             if (orderHeader.hasOwnProperty(property))
-            		g_orderHeaderOrder[property] = orderHeader[property];
+                g_orderHeaderOrder[property] = orderHeader[property];
         
         g_orderHeaderOrder.Email = $('#email').val();
         g_orderHeaderOrder.DeliveryName = $('#name').val();

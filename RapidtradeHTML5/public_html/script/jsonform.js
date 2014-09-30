@@ -203,7 +203,7 @@ function JsonForm() {
                                 if (isChangeCalculationSet(this)) {
 
                                     var change = (Number($(this).val()) - Number(sessionStorage.getItem('totalIncl'))).toFixed(2);
-                                     $('#' + $(this).attr('rel') + DaoOptions.getValue('CalcChangeInto')).val(change);
+                                     $('#' + $(this).attr('rel') + DaoOptions.getValue('CalcChangeInto')).val(change).trigger('change');
                                 }                               
                             });                            
         		    
