@@ -29,8 +29,12 @@
         	<div data-role="header"  style="position:relative" id="orderDetailsHeaderDiv">
                     <h1 class="multiLanguage">Order Details</h1>
                 <a id="orderDetailsBackButton" data-role="button" data-icon="arrow-l" data-iconpos="left" data-direction="reverse" data-transition="none" class="ui-btn-left">Back</a>
-			    <a id="reprintButton" data-role="button" data-icon="arrow-r" data-iconpos="right" data-transition="none" class="ui-btn-right">Reprint</a>
-			    <a id="shoppingcartButton" data-role="button" data-icon="arrow-r" data-iconpos="right" data-transition="none" class="ui-btn-right ui-disabled">Shopping Cart</a>
+                <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right"> 
+                    <a id="deleteButton" data-role="button" data-icon="delete" data-iconpos="right" data-transition="none" class="invisible">Delete</a>
+                    <a id="csvButton" data-role="button" data-icon="grid" data-iconpos="right" data-transition="none" class="invisible">CSV</a>
+                    <a id="reprintButton" data-role="button" data-icon="arrow-r" data-iconpos="right" data-transition="none" class="invisible">Reprint</a>
+                    <a id="shoppingcartButton" data-role="button" data-icon="arrow-r" data-iconpos="right" data-transition="none" class="ui-disabled">Shopping Cart</a>
+                </div>                 
             </div>
             <div data-role="content" style="position:relative">
                 <div id="buttondiv" style="margin-bottom:10px;">

@@ -129,6 +129,9 @@ function orderdetailsBind() {
     	g_showInvoice('orderDetailsInvoicePopup');
     });
     
+    $('#deleteButton').off().on('click', orderdetailsDeleteOrder);
+    $('#csvButton').off().on('click', orderdetailsMakeCSV);
+    
     $('#creditInfoOKButton').unbind();
     $('#creditInfoOKButton').click(function() {    	
     	sessionStorage.setItem('ShoppingCartReturnPage', undefined);
@@ -141,16 +144,7 @@ function orderdetailsBind() {
     });
     
     $('#orderDetailsBackButton').unbind();
-    $('#orderDetailsBackButton').click(function() {
-    	if (orderdetailsIsCreditSelected()) {    		
-    		sessionStorage.setItem('creatingCredit', false);
-    		$('#sendToBasketButton').removeClass('invisible');
-	    	sessionStorage.setItem('ShoppingCartReturnPage', 'company.html');
-	    	shoppingCartRemoveAllItems();
-    	} else {
-    		$.mobile.changePage('company.html', { transition: "none" });
-    	}
-    });
+    $('#orderDetailsBackButton').click(orderdetailsOnBackClicked);
     
     $('#quantityPopup').unbind();
     $('#quantityPopup').bind({
@@ -172,15 +166,74 @@ function orderdetailsInit() {
 
     }
 
-    $('#reprintButton').toggle(g_vanSales && (g_currentUser().RepID.toUpperCase() === g_orderdetailsCurrentOrder.BranchID.toUpperCase()));
+    if (g_orderdetailsCurrentOrder.Type === 'Quote') {
+
+        $('#reprintButton, #csvButton, #deleteButton').removeClass('invisible');
+    }
+    
+    if (g_vanSales && (g_currentUser().RepID.toUpperCase() === g_orderdetailsCurrentOrder.BranchID.toUpperCase())) {
+        
+        $('#reprintButton').removeClass('invisible');
+    }
+        
     orderdetailsInitOrderType();
     orderdetailsFetchOrderItems();
+}
+
+function orderdetailsOnBackClicked() {
+    
+    if (orderdetailsIsCreditSelected()) {  
+        
+        sessionStorage.setItem('creatingCredit', false);
+        $('#sendToBasketButton').removeClass('invisible');
+        sessionStorage.setItem('ShoppingCartReturnPage', 'company.html');
+        shoppingCartRemoveAllItems();
+            
+    } else {
+        
+        $.mobile.changePage('company.html', { transition: "none" });
+    }    
 }
 
 function orderdetailsIsComplexView() {
     
     var complexIndicator = DaoOptions.getValue('MasterChartComplexIndic','N');
     return complexIndicator && (g_orderdetailsCurrentOrder[complexIndicator] === 'Y');       
+}
+
+function orderdetailsDeleteOrder() {
+    
+    var orderHeaderInfo = {};  	
+    orderHeaderInfo.Table = "Orders";
+    orderHeaderInfo.Method = "Modify2";
+
+    g_orderdetailsCurrentOrder.Deleted = true;
+
+    orderHeaderInfo.json = JSON.stringify(g_orderdetailsCurrentOrder);   
+
+    var url = DaoOptions.getValue(g_orderdetailsCurrentOrder.Type + 'LiveURL');
+
+    if (!url) 
+        url = g_restUrl + 'post/post.aspx';
+
+    g_ajaxpost(jQuery.param(orderHeaderInfo), url, onSuccess, onFailure);
+    
+    console.log(JSON.stringify(orderHeaderInfo));
+    
+    function onSuccess(json) {
+        
+        sessionStorage.setItem('HistoryCacheAccountID', '');
+        orderdetailsOnBackClicked();
+    }
+    
+    function onFailure() {
+        
+        g_alert('ERROR: The order is not deleted.');
+    }
+}
+
+function orderdetailsMakeCSV() {
+    
 }
 
 function orderdetailsCheckBasket() {    
