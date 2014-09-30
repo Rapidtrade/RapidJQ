@@ -939,8 +939,6 @@ function productdetailOkClicked(checkStock) {
         $('#quantity').toggleClass('ui-disabled', -9999 === stock);
     }    
     
-    if (DaoOptions.getValue('ExcludeProdCatbyUserProdUF'))
-    
     if (DaoOptions.getValue('ExcludeProdCatbyUser') === 'true') {
         
         var categories;
