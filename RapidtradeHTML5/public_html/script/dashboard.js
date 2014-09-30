@@ -786,7 +786,7 @@ function userDailySalesDetailOnPageShow() {
 
 function fetchUserDailySalesDetail() {   
     
-    var url = g_restPHPUrl + 'GetView?view=vView1&params=where%20SupplierID=%27' + g_currentUser().SupplierID + 
+    var url = g_restPHPUrl + 'GetView?view=vSalesOrderDetailRpt&params=where%20SupplierID=%27' + g_currentUser().SupplierID + 
             '%27%20and%20UserID=%27' + $("#udsName").val() + '%27%20and%20OrderDate=%27' + moment($("#udsduedate").val()).format("YYYY-MM-DD") +'%27';
     
     console.log(url);
@@ -818,8 +818,10 @@ function fetchUserDailySalesDetail() {
             
             $('#userDailySalesDetailTable tfoot').removeClass('invisible');
             
-            url = g_restPHPUrl + 'GetView?view=vView2&params=where%20SupplierID=%27' + g_currentUser().SupplierID + 
+            url = g_restPHPUrl + 'GetView?view=vSalesOrderDetailRptTot&params=where%20SupplierID=%27' + g_currentUser().SupplierID + 
                     '%27%20and%20UserID=%27' + $("#udsName").val() + '%27%20and%20OrderDate=%27' + moment($("#udsduedate").val()).format("YYYY-MM-DD") +'%27';
+            
+            console.log(url);
             
             g_ajaxget(url, onSuccess2, onFailure);
             
