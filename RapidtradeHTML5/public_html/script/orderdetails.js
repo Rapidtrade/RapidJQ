@@ -46,9 +46,9 @@ function orderdetailsOrderType() {
 /*
  * All binding to buttons etc. should happen in this <yyy>Bind function() method
  */
-function orderdetailsBind() {
+function orderdetailsBind() { 
 
-    // Unnecessary code, we are using just 1 radio button (!?)
+// Unnecessary code, we are using just 1 radio button (!?)
     
 //    $('#radioOrder').click(function () {
 //    	sessionStorage.setItem('orderdetailsradio','radioOrder');
@@ -130,7 +130,7 @@ function orderdetailsBind() {
     });
     
     $('#deleteButton').off().on('click', orderdetailsDeleteOrder);
-    $('#csvButton').off().on('click', orderdetailsMakeCSV);
+    $('#csvButton').off().on('click', orderdetailsExportCSV);
     
     $('#creditInfoOKButton').unbind();
     $('#creditInfoOKButton').click(function() {    	
@@ -153,7 +153,6 @@ function orderdetailsBind() {
     	}
     });
 }
-
 
 /*
  * 
@@ -232,8 +231,19 @@ function orderdetailsDeleteOrder() {
     }
 }
 
-function orderdetailsMakeCSV() {
+function orderdetailsExportCSV() {
     
+    var csvData = '';
+    
+    $.each(g_orderdetailsOrderItems, function(index, item) {
+        
+        csvData += [item.AccountID, item.ProductID, item.Description, item.Gross, item.Discount, item.Nett].join(',') + '\n';
+    });    
+
+    var csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csvData);
+    var fileName = 'Quote_' + g_currentCompany().AccountID + '_' + g_orderdetailsCurrentOrder.OrderID;
+    
+    $('#csvButton').attr({'download':fileName, 'href': csvData, 'target': '_blank'});    
 }
 
 function orderdetailsCheckBasket() {    
