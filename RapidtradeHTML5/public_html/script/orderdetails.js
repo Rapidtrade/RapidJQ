@@ -125,8 +125,16 @@ function orderdetailsBind() {
     $('#reprintButton').click(function() {    	
     	g_orderdetailsCurrentOrder.orderItems = g_orderdetailsOrderItems;
     	sessionStorage.setItem('currentOrder', JSON.stringify(g_orderdetailsCurrentOrder));
-    	sessionStorage.setItem('invoiceContinue','orderdetails.html');
-    	g_showInvoice('orderDetailsInvoicePopup');
+        
+        if ((g_orderdetailsCurrentOrder.Type === 'Quote') && (DaoOptions.getValue('PrintQuote') === 'true')) {
+            
+            $.mobile.changePage('catalogue.html');
+            
+        } else {
+            
+            sessionStorage.setItem('invoiceContinue','orderdetails.html');
+            g_showInvoice('orderDetailsInvoicePopup');   
+        }        
     });
     
     $('#deleteButton').off().on('click', orderdetailsDeleteOrder);
@@ -167,7 +175,12 @@ function orderdetailsInit() {
 
     if (g_orderdetailsCurrentOrder.Type === 'Quote') {
 
-        $('#reprintButton, #csvButton, #deleteButton').removeClass('invisible');
+        $('#csvButton, #deleteButton').removeClass('invisible');
+        
+        if (DaoOptions.getValue('PrintQuote') === 'true') {
+            
+            $('#reprintButton').removeClass('invisible');
+        }
     }
     
     if (g_vanSales && (g_currentUser().RepID.toUpperCase() === g_orderdetailsCurrentOrder.BranchID.toUpperCase())) {
