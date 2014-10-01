@@ -246,15 +246,21 @@ function orderdetailsDeleteOrder() {
 
 function orderdetailsExportCSV() {
     
-    var csvData = '';
+    var csvData = [',MNB Variety Imports Pty Ltd,,,,,', 
+                   ',"Showroom Address: 7c/7-11 Allen Street, Waterloo NSW ",,,,,',
+                   ',Phone: 02 9690 1622,,,,,',
+                   ',Email: info@mnb.com.au,,,,,',
+                   ',,,,,,',
+                   'Product,Description,Pack Size,Price,Bar Code,Quantity,*SOH*',
+                   '-------,-----------,---------,-----,--------,--------,'].join('\n');
     
     $.each(g_orderdetailsOrderItems, function(index, item) {
         
-        csvData += [item.AccountID, item.ProductID, item.Description, item.Gross, item.Discount, item.Nett].join(',') + '\n';
+        csvData += '\n' + [item.ProductID, item.Description, (item.UserField02 || 'N/A'), item.Nett, item.Barcode || 'N/A', item.Quantity, '', ''].join(',');
     });    
 
     var csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csvData);
-    var fileName = 'Quote_' + g_currentCompany().AccountID + '_' + g_orderdetailsCurrentOrder.OrderID;
+    var fileName = 'Quote_' + g_currentCompany().AccountID + '_' + g_orderdetailsCurrentOrder.OrderID + '.csv';
     
     $('#csvButton').attr({'download':fileName, 'href': csvData, 'target': '_blank'});    
 }
@@ -833,7 +839,7 @@ function orderdetailsFetchOrderItems() {
 	 
 	if (DaoOptions.getValue('MobileLiveStockDiscount') == 'true') {
 		
-		var livePriceUrl = DaoOptions.get('LivePriceURL') ? DaoOptions.getValue('LivePriceURL') : g_restUrl + 'prices/getprice3';
+            var livePriceUrl = DaoOptions.get('LivePriceURL') ? DaoOptions.getValue('LivePriceURL') : g_restUrl + 'prices/getprice3';
 	    var url = livePriceUrl + '?supplierID=' + g_currentUser().SupplierID + '&productID=' + productId + '&accountid=' + g_currentCompany().AccountID + '&branchid=' + g_currentCompany().BranchID + 
 	    			'&quantity=1&gross=' + gross + '&nett=' + nett + '&checkStock=true&checkPrice=true&format=json';
 	 
