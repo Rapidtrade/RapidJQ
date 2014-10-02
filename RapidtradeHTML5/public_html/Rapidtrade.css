@@ -880,3 +880,7 @@
     font-weight: bolder;
     padding-right: 20px;
 }
+
+.catalogueItemDataTable {
+    font-size: 10px;
+}
