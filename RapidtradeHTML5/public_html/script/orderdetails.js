@@ -220,7 +220,7 @@ function orderdetailsDeleteOrder() {
     orderHeaderInfo.Table = "Orders";
     orderHeaderInfo.Method = "Modify2";
 
-    g_orderdetailsCurrentOrder.Type = Deleted;
+    g_orderdetailsCurrentOrder.Type = 'Deleted';
 
     orderHeaderInfo.json = JSON.stringify(g_orderdetailsCurrentOrder);   
 
@@ -247,29 +247,40 @@ function orderdetailsDeleteOrder() {
 
 function orderdetailsExportCSV() {
     
-//    var sohArray = [];
-//    
-//    $.each(g_orderdetailsOrderItems)
+    var sohInfo = {};
     
-    
-    
-    var csvData = [',MNB Variety Imports Pty Ltd,,,,,', 
-                   ',"Showroom Address: 7c/7-11 Allen Street, Waterloo NSW ",,,,,',
-                   ',Phone: 02 9690 1622,,,,,',
-                   ',Email: info@mnb.com.au,,,,,',
-                   ',,,,,,',
-                   'Product,Description,Pack Size,Price,Bar Code,Quantity,*SOH*',
-                   '-------,-----------,---------,-----,--------,--------,'].join('\n');
+    g_busy(true);
     
     $.each(g_orderdetailsOrderItems, function(index, item) {
-        
-        csvData += '\n' + [item.ProductID, item.Description, (item.UserField02 || 'N/A'), item.Nett, item.Barcode || 'N/A', item.Quantity, '', ''].join(',');
-    });    
+       
+        orderdetailsFetchStock(item, function(stock) {
+            
+            sohInfo[item.ItemID] = stock;
+            
+            if (Object.keys(sohInfo).length === g_orderdetailsOrderItems.length) {
+                
+                
+                
+                var csvData = [',MNB Variety Imports Pty Ltd,,,,,', 
+                               ',"Showroom Address: 7c/7-11 Allen Street, Waterloo NSW ",,,,,',
+                               ',Phone: 02 9690 1622,,,,,',
+                               ',Email: info@mnb.com.au,,,,,',
+                               ',,,,,,',
+                               'Product,Description,Pack Size,Price,Bar Code,Quantity,*SOH*',
+                               '-------,-----------,---------,-----,--------,--------,'].join('\n');
 
-    var csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csvData);
-    var fileName = 'Quote_' + g_currentCompany().AccountID + '_' + g_orderdetailsCurrentOrder.OrderID + '.csv';
-    
-    $('#csvButton').attr({'download':fileName, 'href': csvData, 'target': '_blank'});    
+                $.each(g_orderdetailsOrderItems, function(index, item) {
+
+                    csvData += '\n' + [item.ProductID, item.Description, (item.UserField02 || 'N/A'), item.Nett, item.Barcode || 'N/A', item.Quantity, sohInfo[item.ItemID]].join(',');
+                });    
+
+                var csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csvData);
+                var fileName = 'Quote_' + g_currentCompany().AccountID + '_' + g_orderdetailsCurrentOrder.OrderID + '.csv';
+
+                $('#csvButton').attr({'download':fileName, 'href': csvData, 'target': '_blank'});                   
+            }
+        });
+    });             
 }
 
 function orderdetailsCheckBasket() {    
