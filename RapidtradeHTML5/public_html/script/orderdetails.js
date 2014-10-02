@@ -220,7 +220,7 @@ function orderdetailsDeleteOrder() {
     orderHeaderInfo.Table = "Orders";
     orderHeaderInfo.Method = "Modify2";
 
-    g_orderdetailsCurrentOrder.Deleted = true;
+    g_orderdetailsCurrentOrder.Type = Deleted;
 
     orderHeaderInfo.json = JSON.stringify(g_orderdetailsCurrentOrder);   
 
@@ -246,6 +246,12 @@ function orderdetailsDeleteOrder() {
 }
 
 function orderdetailsExportCSV() {
+    
+//    var sohArray = [];
+//    
+//    $.each(g_orderdetailsOrderItems)
+    
+    
     
     var csvData = [',MNB Variety Imports Pty Ltd,,,,,', 
                    ',"Showroom Address: 7c/7-11 Allen Street, Waterloo NSW ",,,,,',
@@ -487,7 +493,9 @@ function orderdetailsSendOrderItem(itemKey) {
     $('#stockValue').text('');
     $('#quantityPopup').popup('open');
 
-    orderdetailsFetchStock(item.ProductID, item.Gross, item.Nett);
+    orderdetailsFetchStock(item, function(stock) {
+         $('#stockValue').text(stock);
+    });
 
     $('#quantityEdit').val(item.Quantity);
     $('#quantityEdit').attr('step', item.Unit || 1);	
@@ -807,18 +815,13 @@ function orderdetailsFetchOrderItems() {
     }
  };
  
- function orderdetailsFetchStock(productId, gross, nett) {
+ function orderdetailsFetchStock(item, onSuccess) {
 	 
-	 $('#stockValue').text('Busy...');
-	 
-	 var setStock = function(stock) {
-		 
-		 $('#stockValue').text((g_stockDescriptions[stock] || stock));
-	 };
+	 $('#stockValue').text('Busy...');	 
 	 
 	 var onFetchLocalSuccess = function(json) {
 		 
-		 setStock(json.Stock);
+            onSuccess(g_stockDescriptions[json.Stock] || json.Stock);
 	 };
 	 
 	 var onFetchLiveSuccess = function(json) {
@@ -831,7 +834,7 @@ function orderdetailsFetchOrderItems() {
 
                             if  (!g_currentCompany().BranchID  || ($.trim(stockDataArray[i].Warehouse.split(':')[0]) == g_currentCompany().BranchID)) {
 
-                                    setStock(json.StockInf[i].Stock);
+                                    onSuccess(g_stockDescriptions[json.StockInf[i].Stock] || json.StockInf[i].Stock);
                                     break;
                             }
                     }
@@ -841,14 +844,14 @@ function orderdetailsFetchOrderItems() {
 	if (DaoOptions.getValue('MobileLiveStockDiscount') == 'true') {
 		
             var livePriceUrl = DaoOptions.get('LivePriceURL') ? DaoOptions.getValue('LivePriceURL') : g_restUrl + 'prices/getprice3';
-	    var url = livePriceUrl + '?supplierID=' + g_currentUser().SupplierID + '&productID=' + productId + '&accountid=' + g_currentCompany().AccountID + '&branchid=' + g_currentCompany().BranchID + 
-	    			'&quantity=1&gross=' + gross + '&nett=' + nett + '&checkStock=true&checkPrice=true&format=json';
+	    var url = livePriceUrl + '?supplierID=' + g_currentUser().SupplierID + '&productID=' + item.ProductID + '&accountid=' + g_currentCompany().AccountID + '&branchid=' + g_currentCompany().BranchID + 
+	    			'&quantity=1&gross=' + item.Gross + '&nett=' + item.Nett + '&checkStock=true&checkPrice=true&format=json';
 	 
 	    g_ajaxget(url, onFetchLiveSuccess);
 	    
 	} else {
 		
-	    var key = g_currentUser().SupplierID + productId+ g_currentCompany().BranchID;
+	    var key = g_currentUser().SupplierID + item.ProductID + g_currentCompany().BranchID;
 	    
 	    var dao = new Dao();
 	    
