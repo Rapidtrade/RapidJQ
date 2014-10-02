@@ -6,17 +6,24 @@
 
 var catalogue = (function() {
 
-    var ITEMS_PER_PAGE = 6;
-    var ITEMS_PER_ROW = 2;
+    var itemsPerPage = 0;
+    var itemsPerRow = 0;
 
     var catalogueHTML = '';
     var order = {};
     
     // Public
     
-    return {
+    /*
+     * catalogue.init({itemsPerPage:number, itemsPerRow:number});
+     */    
+    
+    return {        
         
-        init: function() {
+        init: function(settings) {
+            
+            itemsPerPage = settings.itemsPerPage;
+            itemsPerRow = settings.itemsPerRow;
             
             catalogueHTML = '';
             order = JSON.parse(sessionStorage.getItem('currentOrder'));
@@ -37,14 +44,21 @@ var catalogue = (function() {
         
         $('.ui-btn-right').off().on('click', function() {
 
-            sessionStorage.setItem('lastPanelId', 'activityPanel');
-            $.mobile.changePage('company.html');
+            if (sessionStorage.getItem('invoiceContinue') === 'orderdetails.html') {
+                
+                $.mobile.changePage('orderdetails.html');
+                
+            } else {
+                
+                sessionStorage.setItem('lastPanelId', 'activityPanel');
+                $.mobile.changePage('company.html');
+            }
         });
     }
     
     function fetch() {              
         
-        var totalPages = Math.ceil(order.orderItems.length / ITEMS_PER_PAGE);        
+        var totalPages = Math.ceil(order.orderItems.length / itemsPerPage);        
         
         for (var i = 0; i < totalPages; addPage(i++, totalPages));
         
@@ -55,22 +69,22 @@ var catalogue = (function() {
         
         catalogueHTML += '<div class="page' + (pageIndex < totalPages - 1 ? ' page-break' : '') + '"><div class="header"><img src="' + DaoOptions.getValue('QuoteHeader') + '" style="width:100%"></div>';
              
-        var currentIndex = pageIndex *  ITEMS_PER_PAGE;
+        var currentIndex = pageIndex *  itemsPerPage;
         
         catalogueHTML += '<div class="items"><table style="width:100%">';
         
-        for (var i = 0; order.orderItems[currentIndex] && (i < ITEMS_PER_PAGE); ++i, ++currentIndex) {            
+        for (var i = 0; order.orderItems[currentIndex] && (i < itemsPerPage); ++i, ++currentIndex) {            
             
-            if (i % ITEMS_PER_ROW === 0) {
+            if (i % itemsPerRow === 0) {
             
                 catalogueHTML += '<tr>';
             }
             
             var item = order.orderItems[currentIndex];
             
-            catalogueHTML += '<td style="vertical-align: bottom;padding:10px 15px;">';          
+            catalogueHTML += '<td style="vertical-align: bottom;padding:10px 15px;">';                      
             
-            catalogueHTML += '<div style="width:300px;text-align:center;vertical-align:middle"><img src="' + productdetailGetImageUrl(item.ProductID, 160, false) + '"></div>' +
+            catalogueHTML += '<div style="width:' + Math.floor(700 / itemsPerRow) + 'px;text-align:center;vertical-align:middle"><img src="' + productdetailGetImageUrl(item.ProductID, 180, false) + '"></div>' +
                     '<table><tr><td>Item</td><td>' + item.ProductID + '</td></tr>' +
                     '<tr><td>Descr</td><td>' + item.Description  + '</td></tr>' +
                     '<tr><td>Inn/Ctn Qty</td><td>' + (item.UserField02 || 'N/A')  + '</td></tr>' +
@@ -79,7 +93,7 @@ var catalogue = (function() {
             
             catalogueHTML += '</td>';
             
-            if (i % ITEMS_PER_ROW === ITEMS_PER_ROW - 1) {
+            if (i % itemsPerRow === itemsPerRow - 1) {
             
                 catalogueHTML += '</tr>';
             }

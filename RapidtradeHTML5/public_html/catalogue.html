@@ -13,7 +13,7 @@ and open the template in the editor.
     <body>
         <div data-role="page" id="cataloguePage" style="width:793px;position:relative">
             <script>
-                $('#cataloguePage').bind("pageshow", catalogue.init());
+                $('#cataloguePage').bind("pageshow", catalogue.init({itemsPerPage:9, itemsPerRow:3}));
             </script>
             <div data-role="header" class="printinvoiceHeader">
                 <h3>Catalogue</h3>

@@ -123,8 +123,10 @@ function orderdetailsBind() {
     
     $('#reprintButton').unbind();
     $('#reprintButton').click(function() {    	
-    	g_orderdetailsCurrentOrder.orderItems = g_orderdetailsOrderItems;
+    	
+        g_orderdetailsCurrentOrder.orderItems = g_orderdetailsOrderItems;
     	sessionStorage.setItem('currentOrder', JSON.stringify(g_orderdetailsCurrentOrder));
+        sessionStorage.setItem('invoiceContinue','orderdetails.html');
         
         if ((g_orderdetailsCurrentOrder.Type === 'Quote') && (DaoOptions.getValue('PrintQuote') === 'true')) {
             
@@ -132,7 +134,6 @@ function orderdetailsBind() {
             
         } else {
             
-            sessionStorage.setItem('invoiceContinue','orderdetails.html');
             g_showInvoice('orderDetailsInvoicePopup');   
         }        
     });
