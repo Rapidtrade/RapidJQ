@@ -377,20 +377,29 @@ function syncFetchTable(supplierid, userid, table, method, skip, onSuccess) {
     var userParameter = '';
 
     if (userid) 
-        userParameter = '&userID=' + userid;
+        userParameter = '&UserID=' + userid;
 
     if ('Pricelists' == table)
         method = g_syncPricelistSyncMethod;
+    
+    var baseURLInfo = {
+      
+        Orders: (g_syncDownloadOrderURL || DaoOptions.getValue('DownloadOrderURL')) + '/rest/',
+        Tpm: 'http://www.super-trade.co.za:8083/rest/index.php/',
+        Default: g_restUrl
+    }; 
+    
+    var isSpecialTable = ($.inArray(table, Object.keys(baseURLInfo)) !== -1);
 
-    var url = ('Orders' == table ? (g_syncDownloadOrderURL || DaoOptions.getValue('DownloadOrderURL')) + '/rest/' : g_restUrl)  + table + '/' + method +
-                                                    '?supplierID=' + supplierid + 
+    var url = baseURLInfo[isSpecialTable ? table : 'Default']  + table + '/' + method +
+                                                    '?SupplierID=' + supplierid + 
                                                      userParameter + 
                                                     '&version=' + version + 
                                                     '&skip=' + skip + 
-                                                    ('Orders' == table ? '&orderType=' + (g_syncDownloadOrderType || DaoOptions.getValue('DownloadOrderType')) : '') +
-                                                    (('Orders' == table) && ($.mobile.activePage.attr('id') === 'companypage') ? '&accountID=' + g_currentCompany().AccountID : '') +
-                                                    ('Orders' == table ? '&CallWeekNumber=' + g_currentCallCycleWeek() : '') +
-                                                    ('Orders' == table ? '&CallDayOfWeek=' + todayGetCurrentDay() : '') +
+                                                    ('Orders' === table ? '&orderType=' + (g_syncDownloadOrderType || DaoOptions.getValue('DownloadOrderType')) : '') +
+                                                    (('Orders' === table) && ($.mobile.activePage.attr('id') === 'companypage') ? '&accountID=' + g_currentCompany().AccountID : '') +
+                                                    ('Orders' === table ? '&CallWeekNumber=' + g_currentCallCycleWeek() : '') +
+                                                    ('Orders' === table ? '&CallDayOfWeek=' + todayGetCurrentDay() : '') +
                                                     '&top=' + g_syncNumRows + '&format=json';
     console.log(url);
     var success = function (json) {
@@ -552,6 +561,11 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
                         syncAddSync(g_syncSupplierID, g_syncUserID, 'Orders', 'GetCollectionByType3', 0);
                         syncAddSync(g_syncSupplierID, g_syncUserID, 'Orders', 'GetOrderItemsByType3', 0);
                     }
+                    
+                    if ((item.Name == 'localTPM') && (item.Value == 'true')) {
+                    
+                        syncAddSync(g_syncSupplierID, g_syncUserID, 'Tpm', 'Sync2', 0);
+                    }                    
                     
                     if (item.Name == 'MobileOnlinePricelist')
                     	g_syncLivePricelist = (item.Value == 'true');

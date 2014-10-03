@@ -420,6 +420,11 @@ var dao = (function(){
                 } catch (error) {
                     console.log("Already exists");
                 }
+                try {
+                    objectStore = db.createObjectStore("TPM", { keyPath: "key" });
+                } catch (error) {
+                    console.log("Already exists");
+                }                
             };
             request.onsuccess = function (event) {
                 db = request.result;

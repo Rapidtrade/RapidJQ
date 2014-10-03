@@ -495,7 +495,12 @@ function Dao() {
                 objectStore = db.createObjectStore("OrderItems", { keyPath: "key" });
             } catch (error) {
                 console.log("Already exists");
-            }            
+            }         
+            try {
+                objectStore = db.createObjectStore("TPM", { keyPath: "key" });
+            } catch (error) {
+                console.log("Already exists");
+            }              
         };
         request.onsuccess = function (event) {
             db = request.result;
@@ -1004,8 +1009,10 @@ function Dao() {
     Dao.prototype.sqlopenDB = function (pdbopened) {
         db = openDatabase('rapidtrade', '1.0', 'Rapidtrade database', 2 * 1024 * 1024);
         db.transaction(function (tx) {
-        	tx.executeSql('DROP TABLE IF EXISTS Activities');
-        	tx.executeSql('DROP TABLE IF EXISTS Products');
+            
+            tx.executeSql('DROP TABLE IF EXISTS Activities');
+            tx.executeSql('DROP TABLE IF EXISTS Products');
+            
             tx.executeSql('CREATE TABLE IF NOT EXISTS Companies (keyf, json, index1, index2, index3, index4,  primary key (keyf))');
             tx.executeSql('CREATE TABLE IF NOT EXISTS Pricelists (keyf, json, index1, index2, index3, index4, primary key (keyf))');
             tx.executeSql('CREATE TABLE IF NOT EXISTS DisplayFields (keyf, json, index1, index2, index3, index4, primary key (keyf))');
@@ -1025,6 +1032,8 @@ function Dao() {
             tx.executeSql('CREATE TABLE IF NOT EXISTS Orders (keyf, json, index1, index2, index3, index4, primary key (keyf))');   
             tx.executeSql('CREATE TABLE IF NOT EXISTS OrderItems (keyf, json, index1, index2, index3, index4, primary key (keyf))');               
             tx.executeSql('CREATE TABLE IF NOT EXISTS Unsent (keyf, json, index1, index2, index3, index4, primary key (keyf))');
+            tx.executeSql('CREATE TABLE IF NOT EXISTS TPM (keyf, json, index1, index2, index3, index4, primary key (keyf))');
+            
             var tables = ['Pricelists', 'ProductCategories2', 'ProductCategory2Link'];
             for ( var i = 0; i < tables.length; i++)			
             	for ( var j = 1; j <= 4; j++)					
@@ -1058,6 +1067,7 @@ function Dao() {
             tx.executeSql('drop table if EXISTS Orders  ');   
             tx.executeSql('drop table if EXISTS OrderItems  ');               
             tx.executeSql('drop table if EXISTS Unsent  ');
+            tx.executeSql('drop table if EXISTS TPM  ');            
         });
         
         if (pondbdeleted != undefined) 
