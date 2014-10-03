@@ -13,14 +13,15 @@ var promo = (function(){
         
         this.onComplete = '';
         this.user = '';
-        this.account = '';  
+        this.account = ''; 
+        this.tpms = [];
         
         this.checkMandatoryPromos = function (user, account, onComplete) { 
             this.onComplete = onComplete; //store complete function for later use 
             this.user = user; 
             this.account = account;     
 
-            fetchTPM(0, this); 
+            this.fetchTPM(0, this); 
         } 
 
        this.fetchTPM = function(tpmcount, $this) { 
@@ -61,7 +62,7 @@ var promo = (function(){
             
             for (z=0; z < tpm.json.values; z++){ 
                   var val = tpm.json.values[z]; 
-                  checkbasket(user, account, cond, val, condcount, this);                    
+                  $this.checkbasket(user, account, cond, val, condcount, this);                    
             }  
         }    
         
@@ -81,7 +82,7 @@ var promo = (function(){
                                 undefined, 
                                 function (){ 
                                     if (qty > tpmval.buyqty){ 
-                                           savePromotion(user, account, tpm,  tpmcond, tpmval, qty, condcount, $this); 
+                                           $this.savePromotion(user, account, tpm,  tpmcond, tpmval, qty, condcount, $this); 
                                     }  else {    
                                           //delete the promo from shopping cart if it does exist and move onto next condition. 
                                            var key = tpm.promoproductid + supplierid + accountid + tpm.tpmid ; 
@@ -100,7 +101,7 @@ var promo = (function(){
              var freeqty = cint((qty / tpmval.buyqty)) * tpmval.freeqty; 
 
             //now read local database to see I promo exists in cart, if it does, amend, if not, then add 
-            var key = tpm.promoproductid + supplierid + accountid + tpm.tpmid ; 
+            var key = tpm.promoproductid + supplierid + accountid + tpm.tpmid ;
             Dao.get('basketinfo',key, 
                 function(json){ 
                      //this Tpm exists in cart, so update qty 

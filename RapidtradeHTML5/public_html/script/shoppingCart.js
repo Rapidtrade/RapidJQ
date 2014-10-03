@@ -321,7 +321,15 @@ function shoppingCartInit() {
     }
     
     g_basketHTML = '';
-    shoppingCartFetchBasket();
+    
+    if (DaoOptions.getValue('localTPM') === 'true') {
+
+        promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
+    } else {
+        shoppingCartFetchBasket();
+    }
+
+//    shoppingCartFetchBasket();
 }
 
 function shoppingCartIsGRV() {

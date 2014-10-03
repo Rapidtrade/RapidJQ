@@ -53,8 +53,8 @@ function orderHeaderBind() {
     	orderHeaderEmailChooseOnClick();
     });
 
-    $('#saveorder').click(function () {    
-        orderHeaderSaveOrder();
+    $('#saveorder, #saveorderoffline').click(function () {    
+        orderHeaderSaveOrder(this.id === 'saveorderoffline');
     });
 
     $('#signatureButton').click(function () {
@@ -216,7 +216,9 @@ function orderHeaderInit() {
     orderHeaderCreateLineItems();
 }
 
-function orderHeaderSaveOrder() {
+function orderHeaderSaveOrder(saveOffline) {
+    
+    sessionStorage.setItem('saveOffline', saveOffline);
 	
     if (!g_orderHeaderJsonForm.isValid())
         return;
@@ -589,6 +591,12 @@ function orderHeaderSaveFormedOrder(position) {
     
     function save() {   
         
+        if (sessionStorage.getItem('saveOffline') === 'true') {
+            
+            saveOffline();
+            return;
+        }
+        
     	try {		
             
             var orderHeaderInfo = {};  	
@@ -605,8 +613,13 @@ function orderHeaderSaveFormedOrder(position) {
             
     	} catch (error) {  
             
-            g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);   		
+            saveOffline();
     	}    	
+    }
+    
+    function saveOffline() {
+        
+        g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
     }
 } 
 
