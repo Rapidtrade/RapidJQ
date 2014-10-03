@@ -349,7 +349,7 @@ function historyOrderListView(orders) {
     
     for (var i = 0; i < orders.length; i++) {     
         var order = orders[i];
-        
+        if (DaoOptions.getValue('HideOrderTypeInHistReference') && DaoOptions.getValue('HideOrderTypeInHistReference') === order.Reference) continue;
         var displayedDate = '';
         var month = -1;
         
@@ -387,6 +387,11 @@ function historyOrderListView(orders) {
                                     '        <p><strong>' + (order.Type ? order.Type.toUpperCase() : '') +  '</strong></p>' +
                                     '   </a>' +
                                     '</li>';   		
+    }
+    
+    if (ordersList === ''){
+    	$('#noorders').show();
+    	return;
     }
     
     g_append('#orderlist', ordersList);
