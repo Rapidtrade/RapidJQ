@@ -358,9 +358,9 @@ var jsonform = (function(){
                 if ('UserField10' ==  displayObjects[i].Name)
                     label = 'Error';
                 
-                var hidden = ($.inArray(label, ['Stock', 'Descr', 'Type']) !== -1 ? 'class="hidden"' : '');
+                var invisible = ($.inArray(label, ['Stock', 'Descr', 'Type']) !== -1 ? 'class="invisible"' : '');
                 
-                htmlstr += '<th ' + hidden + ' >' + label + '</th>';
+                htmlstr += '<th ' + invisible + ' >' + label + '</th>';
             }
             htmlstr += '</tr></thead>';
             
@@ -374,7 +374,7 @@ var jsonform = (function(){
                     delete obj.hidden;
                     continue;
                 }
-                
+                                
                 htmlstr += '<tr>';
                 // save to session storage for later use
                 sessionStorage.setItem(me.vid + i, JSON.stringify(obj) );
@@ -384,19 +384,22 @@ var jsonform = (function(){
                     var name = displayObjects[x].Name;
                     var value = obj[name];
                     if (value === undefined) value = '';
+                    
+                    var startTD = '<td' + ($.inArray((displayObjects[x].Label || name), ['Stock', 'Descr', 'Type']) !== -1 ? ' class="invisible">' : '>');
+
 
                     if (displayObjects[x].Type === 'Text') {
-                        htmlstr += '<td>' + value + '</td>';
+                        htmlstr += startTD + '' + value + '</td>';
                     } else if (displayObjects[x].Type === 'URL') {
-                        htmlstr += '<td><a href="#" onclick="' + displayObjects[x].DefaultData + '(\'' + obj[displayObjects[x].RoleOnly] +  '\')">' + value + '</a></td>';
+                        htmlstr += startTD + '<a href="#" onclick="' + displayObjects[x].DefaultData + '(\'' + obj[displayObjects[x].RoleOnly] +  '\')">' + value + '</a></td>';
                     } else if (displayObjects[x].Type === 'CheckBox') {
-                        //htmlstr += '<td><a href="#" onclick="' + displayObjects[x].DefaultData + '(\'' + obj[displayObjects[x].RoleOnly] +  '\')">' + value + '</a></td>';
-                        htmlstr += '<td><fieldset data-role="controlgroup" data-type="horizontal">' +
+                        //htmlstr += startTD + '<a href="#" onclick="' + displayObjects[x].DefaultData + '(\'' + obj[displayObjects[x].RoleOnly] +  '\')">' + value + '</a></td>';
+                        htmlstr += startTD + '<fieldset data-role="controlgroup" data-type="horizontal">' +
                                     '        <input type="checkbox" id="' + name + '">' +
                                     '        <label for="' + name + '">' + value + '</label>' +
                                     '</fieldset></td>';
                     } else {
-                        htmlstr += '<td>' + value + '</td>';
+                        htmlstr += startTD + value + '</td>';
                     }
                     
                 }
