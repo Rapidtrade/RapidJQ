@@ -1087,6 +1087,7 @@ function productdetailSave(qty, type, product) {
         DaoOptions.getValue('MobileSelectWhOnDetail') == 'true' ? $('#whChoiceDiv select option:selected').val() && $.trim($('#whChoiceDiv select option:selected').val().split(':')[0]) : '',
         product.VAT,
         productdetailGetStock(),
+        product.CategoryName,
         product.UserField03,
         product.UserField04,
         product.UserField05,

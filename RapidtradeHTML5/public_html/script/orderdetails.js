@@ -803,6 +803,7 @@ function orderdetailsFetchOrderItems() {
                     item.Warehouse,
                     item.VAT,
                     item.Stock,
+                    item.CategoryName,
                     item.UserField03,
                     item.UserField04,
                     item.UserField05

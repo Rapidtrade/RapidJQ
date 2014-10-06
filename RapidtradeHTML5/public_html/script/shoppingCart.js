@@ -322,12 +322,10 @@ function shoppingCartInit() {
     
     g_basketHTML = '';
     
-    if (DaoOptions.getValue('localTPM') === 'true') {
-
+    if (DaoOptions.getValue('localTPM') === 'true')
         promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
-    } else {
+    else
         shoppingCartFetchBasket();
-    }
 
 //    shoppingCartFetchBasket();
 }
@@ -432,6 +430,8 @@ function shoppingCartAddItem(item, checkSummary) {
         }
         
         step = 'step=' + step;
+        
+        var quantityReadOnly = item.PromoType ? 'readonly' : '';
 	
 	g_basketHTML +=
         '<li id="LI' + itemIndex + '"' + alphaFilter.getInstance().addClass(item.Description) + '>' +
@@ -440,7 +440,7 @@ function shoppingCartAddItem(item, checkSummary) {
         '    <tr>' +
         '       <td class="descr">' + item.Description + '</td>' +
         '       <td rowspan="2" align="right" class="quantity">' +
-        '              <input id="' + itemIndex + '" style="width: 60px;" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset qtybox" type="number" ' + step +
+        '              <input ' + quantityReadOnly + ' id="' + itemIndex + '" style="width: 60px;" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset qtybox" type="number" ' + step +
         		     	' min="0" ' + maxValue + 
         '        		class="quantity" onchange ="shoppingCartOnQuantityChanged(\'' + itemIndex + '\', value' + (shoppingCartIsGRV() || (sessionStorage.getItem('currentordertype') == 'Credit') ? ', ' + qty  + ', \'' + item.Description + '\'': '') + ')"  value="' + qty + '" />' +
         '       </td>' +
@@ -574,47 +574,59 @@ function shoppingCartCheckItemsCount() {
 function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetItemsOnPageNumber) {
     //g_shoppingCartTotalExcl = g_shoppingCartVAT = g_shoppingCartTotalIncl = 0;
     
-    var dao = new Dao();
-    g_clearCacheDependantOnBasket(resetItemsOnPageNumber);
-    if (shoppingCartIsGRV()) {
-    	delete g_grvCachedBasketItems[key];
-    	shoppingCartFetchBasket();
-    } else {
-	    dao.deleteItem('BasketInfo', key, undefined, undefined, undefined, function (event) {
-	    	
-	    	if ($.mobile.activePage.attr('id') !== 'shoppingCartpage') {
-	    		
-	            g_clearCacheDependantOnBasket(resetItemsOnPageNumber);
-	    		pricelistCheckBasket();
-	    		
-	    		if (onSuccess)
-                            onSuccess();
-	    		
-	    	} else {
-	    		
-                    if (removeNode) { 
-                        
-                        var itemIndex = $.inArray(key, g_shoppingCartItemKeys);
-                        
-                        try {
-                            
-                            var val = parseFloat($('#' + itemIndex + 'total').text().replace(/[,]/g, '')); 
-                            g_shoppingCartTotalExcl -= val;
-                            shoppingCartRecalcTotals();
-                            
-                        } catch (err){
-                            
-                            console.log(err.message);
-                        }
-                        
-                        $('#LI' + itemIndex).remove();
-                        shoppingCartCheckItemsCount();		    		
-                    } 
-	    	}
+    var canDelete = true;
+    
+    var dao = new Dao();    
+    dao.get('BasketInfo', key, function(json) {
+        
+        if (!json.PromoType) {
+            
+            g_clearCacheDependantOnBasket(resetItemsOnPageNumber);
+            
+            if (shoppingCartIsGRV()) {
                 
-	    	if (saveLostSale) shoppingCartSaveLostSales(key);
-	    });
-    };
+                delete g_grvCachedBasketItems[key];
+                shoppingCartFetchBasket();
+                
+            } else {
+                
+                dao.deleteItem('BasketInfo', key, undefined, undefined, undefined, function (event) {
+
+                    if ($.mobile.activePage.attr('id') !== 'shoppingCartpage') {
+
+                        g_clearCacheDependantOnBasket(resetItemsOnPageNumber);
+                            pricelistCheckBasket();
+
+                            if (onSuccess)
+                                onSuccess();
+
+                    } else {
+
+                        if (removeNode) { 
+
+                            var itemIndex = $.inArray(key, g_shoppingCartItemKeys);
+
+                            try {
+
+                                var val = parseFloat($('#' + itemIndex + 'total').text().replace(/[,]/g, '')); 
+                                g_shoppingCartTotalExcl -= val;
+                                shoppingCartRecalcTotals();
+
+                            } catch (err){
+
+                                console.log(err.message);
+                            }
+
+                            $('#LI' + itemIndex).remove();
+                            shoppingCartCheckItemsCount();		    		
+                        } 
+                    }
+
+                    if (saveLostSale) shoppingCartSaveLostSales(key);
+                });
+            };            
+        }
+    })    
 }
 
 function shoppingCartSaveLostSales(key){
@@ -653,7 +665,7 @@ function shoppingCartIsTotalQuantityValid() {
     return true;
 }
 
-function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) {    
+function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) {        
 	
     if (sessionStorage.getItem('ShoppingCartNoChangeAllowed') == 'true') {
     	g_alert("You are not allowed to change the quantity");
@@ -741,6 +753,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
                 basketInfo.Warehouse,
                 basketInfo.VAT,
                 basketInfo.Stock,
+                basketInfo.CategoryName,
                 basketInfo.UserField03,
                 basketInfo.UserField04,
                 basketInfo.UserField05                 
@@ -754,6 +767,12 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
             g_shoppingCartTotalExcl += parseFloat(value);
         });
         shoppingCartRecalcTotals();
+        
+        if (DaoOptions.getValue('localTPM') === 'true') {
+
+             promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
+             return;
+        }        
     }, 
     undefined,
     undefined   

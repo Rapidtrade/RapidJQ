@@ -148,6 +148,7 @@ function grvSendOrderItemsToBasket(orderID, accountID) {
                     undefined,
                     undefined,
                     undefined,
+                    //VAT
                     (DaoOptions.getValue('CalcTaxPerProduct') == 'true') && (orderItem.RepNett != undefined) ? orderItem.RepNett : undefined
                     );
 	        

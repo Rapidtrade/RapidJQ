@@ -1,6 +1,6 @@
 ﻿
 function BasketInfo(productID, supplierID, accountID, quantity, userID, nett, description, discount, gross, type, userField01, 
-		repChangedPrice, repNett, repDiscount, unit, userField02, warehouse, vat, stock, userField03, userField04,
+		repChangedPrice, repNett, repDiscount, unit, userField02, warehouse, vat, stock, categoryName, userField03, userField04,
 		userField05, userField06, userField07, userField08, userField09, userField10, userField15) {
    
     this.ProductID = productID;
@@ -22,24 +22,24 @@ function BasketInfo(productID, supplierID, accountID, quantity, userID, nett, de
     
     this.Type = type;
         
-    	this.Unit = unit;
-    	this.Stock = stock;
+    this.Unit = unit;
+    this.Stock = stock;
+    this.CategoryName = categoryName;
 
-        
-    	this.UserField01 = userField01;
-    	this.UserField02 = userField02;
-    	this.UserField03 = userField03;
-    	this.UserField04 = userField04;    
-    	this.UserField05 = userField05;
-    	this.UserField06 = userField06;    
-    	this.UserField07 = userField07;    
-    	this.UserField08 = userField08;
-    	this.UserField09 = userField09;
-    	this.UserField10 = userField10;
-        this.UserField15 = userField15;
-    
-    	this.Warehouse = warehouse;
-    	this.VAT = vat;
+    this.UserField01 = userField01;
+    this.UserField02 = userField02;
+    this.UserField03 = userField03;
+    this.UserField04 = userField04;    
+    this.UserField05 = userField05;
+    this.UserField06 = userField06;    
+    this.UserField07 = userField07;    
+    this.UserField08 = userField08;
+    this.UserField09 = userField09;
+    this.UserField10 = userField10;
+    this.UserField15 = userField15;
+
+    this.Warehouse = warehouse;
+    this.VAT = vat;
     
     this.save = function () {
     	
@@ -70,6 +70,7 @@ function BasketInfo(productID, supplierID, accountID, quantity, userID, nett, de
         
         basketinfo.Unit = this.Unit;
         basketinfo.Stock = this.Stock;
+        basketinfo.CategoryName = this.CategoryName;
         
         if (this.UserField02)
             basketinfo.UserField02 = this.UserField02;

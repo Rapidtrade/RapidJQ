@@ -822,7 +822,7 @@ function Dao() {
                 return $.trim(item.AccountID);
             } else if (table == 'OrderItems') {
                 return $.trim(item.AccountID) + $.trim(item.ProductID);
-            }
+            }            
 
             return '';
             
