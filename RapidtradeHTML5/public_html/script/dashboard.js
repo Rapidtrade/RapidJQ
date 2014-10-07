@@ -11,19 +11,30 @@ var locationArray = [];
 var locationTitleArray = [];
 var isMapViewActive = false;
 var isMapShown = false;
+var g_dashboardPageTranslation = {};
+var g_userDailySalesDetailTranslation = {};
 
 //URL FOR TEST file:///C:/Workspace/DashboardMobile/trunk/index.html?g_currentUser().SupplierID=whd&g_currentUser().UserID=whd
 
 //http: //www.rapidbi.mobi/index.html?g_currentUser().SupplierID=national&g_currentUser().UserID=dslaughter
 
+
+function dashboardOnPageBeforeCreate() {
+    
+    g_dashboardPageTranslation = translation('dashboardpage');      
+}
+
 //********************************************************************************** Load Page
 $(document).ready(function () {
 	
     if (!g_currentUser()) 
-            return;
-	    
-    fetchUsers();
-    fetchActivityTypes();
+            return;  
+        
+    g_dashboardPageTranslation.safeExecute(function(){
+        
+        fetchUsers();
+        fetchActivityTypes();        
+    });
     //fetchMonthySummary()
     
     var dao = new Dao();
@@ -176,7 +187,7 @@ function fetchUsers(){
     $('#ccName').empty();
 
     $('#msName').append("<option>Select one...</option>");
-    $('.userChoice').append("<option>" + selectUserText + "</option>");
+    $('.userChoice').append("<option>" + g_dashboardPageTranslation.translateText(selectUserText) + "</option>");
     $('#alName').append("<option value='ALL'>All users...</option>");
     $('#mcsName').append("<option value='SELECT'>Select a user...</option>");
     $('#ccName').append("<option value='ALL'>Select one...</option>");
@@ -774,7 +785,20 @@ function fetchOrderCountByUser() {
 
 //******************************************************************************** User Daily Sales Detail
 
+function userDailySalesDetailOnPageBeforeCreate() {
+    
+    g_userDailySalesDetailTranslation = translation('userDailySalesDetail');
+}
+
 function userDailySalesDetailOnPageShow() {
+    
+    g_userDailySalesDetailTranslation.safeExecute(function() {
+        
+        g_userDailySalesDetailTranslation.translateButton('#udsBackButton', 'Dashboard');
+        g_userDailySalesDetailTranslation.translateButton('#printButton', 'Print');
+        g_userDailySalesDetailTranslation.translateButton('#udsSubmit', 'Submit'); 
+    });
+    
       
     $('#udsSubmit').off().on('click', fetchUserDailySalesDetail);
     

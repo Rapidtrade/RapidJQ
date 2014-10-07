@@ -32,18 +32,23 @@
 	    <script type="application/javascript"  src="jquery/jqm-datebox.mode.flipbox.min.js"></script>
 	    <script type="application/javascript"  src="jquery/moment.min.js"></script>
 	    <script type="application/javascript"  src='jquery/fullcalendar/fullcalendar.min.js'></script>
+            
         
-        <script type="application/javascript"  src="script/globals.js"></script>
-        <script type="application/javascript"  src="script/dao.js"></script>
-        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-         <script type="application/javascript"  src="script/daooptions.js"></script>
-	    <script type="application/javascript"  src="script/dashboard.js"></script>
-	    <script type="application/javascript"  src="script/activityform.js"></script>
+            <script type="application/javascript"  src="script/globals.js"></script>
+            <script type="application/javascript"  src="script/dao.js"></script>
+            <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+             <script type="application/javascript"  src="script/daooptions.js"></script>
+            <script type="application/javascript"  src="script/dashboard.js"></script>
+            <script type="application/javascript"  src="script/activityform.js"></script>
+            <script type="application/javascript"  src="translations/translations.js"></script>
 	</head>
     <body> 
 
         <!-- Home -->
         <div data-role="page" id="dashboardpage" class="ipadStatusBar">	
+            <script>
+                $('#dashboardpage').bind('pagebeforecreate', dashboardOnPageBeforeCreate);
+            </script>            
             <div  data-theme="a" data-role="header">
     	        <table style="margin-left:auto; margin-right:auto;">
        			<tr><td><img class="logoSml" src="img/logoSml.png" /> </td><td>&nbsp;</td></tr>
@@ -94,7 +99,7 @@
                     </li>
                     <li data-theme="c">
                         <a href="#userDailySalesDetail" data-transition="slide">
-                            User Daily Sales Detail
+                            <span class="multiLanguage">User Daily Sales Detail</span>
                         </a>
                     </li>                    
                 </ul>
@@ -494,11 +499,12 @@
         <!-- User Daily Sales Detail -->
         <div data-role="page" id="userDailySalesDetail" class="ipadStatusBar">	
             <script>
-	            $('#userDailySalesDetail').bind("pageshow", userDailySalesDetailOnPageShow);
+                $('#userDailySalesDetail').bind("pagebeforecreate", userDailySalesDetailOnPageBeforeCreate);
+                $('#userDailySalesDetail').bind("pageshow", userDailySalesDetailOnPageShow);
             </script>
             <div data-role="header" id="udsHeader">
-     	        <h1>User Daily Sales Detail</h1>    
-                 <a data-role="button" data-rel="back" href="index.html" data-icon="arrow-l" data-direction="reverse" data-transition="slide" data-iconpos="left" class="ui-btn-left">
+                <h1 class="multiLanguage">User Daily Sales Detail</h1>    
+                 <a id="udsBackButton" data-role="button" data-rel="back" href="index.html" data-icon="arrow-l" data-direction="reverse" data-transition="slide" data-iconpos="left" class="ui-btn-left">
                      Dashboard
                  </a>
                 <a data-role="button" id="printButton" data-transition="none"  class="ui-btn-right">
@@ -508,7 +514,7 @@
             <div data-role="content">
              	<div class="panel-white-rounded panel-Filter" id="udsInputsDiv">
                     <div data-role="fieldcontain">
-                        <label for="udsName">
+                        <label for="udsName" class="multiLanguage">
                             User:
                         </label>
                         <select id="udsName" name="udsName" class="userChoice">
@@ -518,7 +524,7 @@
                     <div id="divDuedate" data-role="fieldcontain">
                         <fieldset data-role="controlgroup" class="ui-grid-b" >
                	            <div class="ui-block-a">
-                                <label for="udsduedate">
+                                <label for="udsduedate" class="multiLanguage">
                                     Date:
                	                </label>
                             </div>
@@ -535,10 +541,10 @@
                     <table class="box-table-a" style="width: 100%;" id="userDailySalesDetailTable" >
                         <thead>
                             <tr>
-                                <th scope="col">Product ID</th>
-                                <th scope="col">Description</th>
-                                <th scope="col">Qty</th>
-                                <th scope="col">Value Sold</th>
+                                <th scope="col" class="multiLanguage">Product ID</th>
+                                <th scope="col" class="multiLanguage">Description</th>
+                                <th scope="col" class="multiLanguage">Qty</th>
+                                <th scope="col" class="multiLanguage">Value Sold</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
