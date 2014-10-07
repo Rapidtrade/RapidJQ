@@ -24,7 +24,8 @@ function orderHeaderOnPageShow() {
     g_orderHeaderPageTranslation.safeExecute(function(){
         
         g_orderHeaderPageTranslation.translateButton('#orderHeaderBackPage', 'Back');
-        g_orderHeaderPageTranslation.translateButton('#saveorder', 'Save'); 
+        g_orderHeaderPageTranslation.translateButton('#saveorder', 'Online'); 
+        g_orderHeaderPageTranslation.translateButton('#saveorderoffline', 'Offline'); 
         g_orderHeaderPageTranslation.translateButton('#signatureButton', 'Signature'); 
         g_orderHeaderPageTranslation.translateButton('#a4PrinterButton', 'A4 Printer'); 
         g_orderHeaderPageTranslation.translateButton('#smallPrinterButton', 'Small Printer'); 
