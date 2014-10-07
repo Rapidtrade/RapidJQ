@@ -4,13 +4,13 @@
 
 var g_logo = 'img/rapidtrade-logo-small.png';
 
-var g_url = "http://www.dedicatedsolutions.co.za:8082/";
-var g_restUrl = g_url + "rest2/";
-var g_vanSales = true;
+//var g_url = "http://www.dedicatedsolutions.co.za:8082/";
+//var g_restUrl = g_url + "rest2/";
+//var g_vanSales = true;
 
-//var g_url = "https://app.rapidtrade.biz/";
-//var g_restUrl = g_url + "rest/";
-//var g_vanSales = false;
+var g_url = "https://app.rapidtrade.biz/";
+var g_restUrl = g_url + "rest/";
+var g_vanSales = false;
 
 var g_restPHPUrl = "http://107.21.55.154/rest/index.php/";
 
@@ -392,7 +392,7 @@ function g_navigateBackFromCompanyView() {
 
 function g_addProductToBasket(productID, supplierID, accountID, quantity,
 		userID, nett, description, discount, gross, type, userField01, repNett,
-		repDiscount, unit, userField02, warehouse, vat, stock, categoryName, userField03, userField04,
+		repDiscount, unit, userField02, warehouse, vat, stock, categoryName, barcode, userField03, userField04,
 		userField05, userField06, userField07, userField08, userField09, userField10, userField15) {
 
 //        nett = nett.toFixed(2);
@@ -401,7 +401,7 @@ function g_addProductToBasket(productID, supplierID, accountID, quantity,
 	
 	var basketInfo = new BasketInfo(productID, supplierID, accountID, quantity,
 			userID, nett, description, parseFloat(discount), gross, type,
-			userField01, repChangedPrice,  repNett, parseFloat(repDiscount), unit, userField02, warehouse, vat, stock, categoryName,
+			userField01, repChangedPrice,  repNett, parseFloat(repDiscount), unit, userField02, warehouse, vat, stock, categoryName, barcode,
 			userField03, userField04, userField05, userField06, userField07, userField08, userField09, userField10, userField15);
 
 	basketInfo.save();

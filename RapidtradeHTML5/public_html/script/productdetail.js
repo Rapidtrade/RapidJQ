@@ -1088,6 +1088,7 @@ function productdetailSave(qty, type, product) {
         product.VAT,
         productdetailGetStock(),
         product.CategoryName,
+        product.BarCode,
         product.UserField03,
         product.UserField04,
         product.UserField05,

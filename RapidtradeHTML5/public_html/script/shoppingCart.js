@@ -754,6 +754,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
                 basketInfo.VAT,
                 basketInfo.Stock,
                 basketInfo.CategoryName,
+                basketInfo.BarCode,
                 basketInfo.UserField03,
                 basketInfo.UserField04,
                 basketInfo.UserField05                 
