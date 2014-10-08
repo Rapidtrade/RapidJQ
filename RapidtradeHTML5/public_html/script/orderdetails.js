@@ -297,11 +297,11 @@ function orderdetailsCheckBasket() {
     undefined,
     function (event) {
     
-        $('.ui-btn-right').toggleClass('ui-disabled', totalItems === 0);
+        $('#shoppingcartButton').toggleClass('ui-disabled', totalItems === 0);
         
         if (totalItems) {
             
-            $('.ui-btn-right .ui-btn-text').text('(' + totalItems + ')' + ' ' + g_orderdetailsPageTranslation.translateText('Shopping Cart'));  
+            $('#shoppingcartButton .ui-btn-text').text('(' + totalItems + ')' + ' ' + g_orderdetailsPageTranslation.translateText('Shopping Cart'));  
             
             if (orderdetailsIsComplexView()) {
                 
@@ -536,12 +536,14 @@ function orderdetailsSendOrderItem(itemKey) {
 
                 $itemRow.nextAll('.orderedQuantity').empty();
                 $itemRow.nextAll('.value').find('.captureQuantity').val('');
+                orderdetailsCheckBasket();
             };                
 
             shoppingCartDeleteItem($.trim(item.ProductID) + $.trim(item.SupplierID) + g_currentUser().UserID + $.trim(item.AccountID), 
                     DaoOptions.getValue('LostSaleActivityID') != undefined, 
                     false, 
                     deleteItemOnSuccess);
+            
 
             return;                
         }            
@@ -556,7 +558,7 @@ function orderdetailsSendOrderItem(itemKey) {
         
         if (g_pricelistSelectedProduct.Unit == undefined)
             g_pricelistSelectedProduct.Unit == '1';
-        if (item.Unit.trim() == 'EA')
+        if (item.Unit === null || item.Unit.trim() == 'EA')
             item.Unit='1';
         
         if (isValid && item.Unit) {
@@ -586,6 +588,9 @@ function orderdetailsSendOrderItem(itemKey) {
             item.Quantity = enteredQuantity();
 
             orderdetailsSendItemToBasket(item, true);
+            orderdetailsCheckBasket();
+            $itemRow = $('#orderitemlist td.productId:contains("' + item.ProductID + '")');
+            $itemRow.nextAll('.value').find('.captureQuantity').val(item.Quantity);
 
             if (orderdetailsIsCreditSelected())
                 $('.historyOrderItems tr:contains("' + item.ProductID + '") .descr').text(item.Quantity + ' [-' + enteredQuantity() + ']');
