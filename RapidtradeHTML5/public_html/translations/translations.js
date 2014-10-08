@@ -25,11 +25,11 @@ var translation = (function() {
 
 //            var testLanguageOn = (localStorage.getItem('Portuguese') === 'on');  
 
-//            if (/*!testLanguageOn &&*/ navigator.language.indexOf('en') !== -1)
-//                return text;
+            if (/*!testLanguageOn &&*/ navigator.language.indexOf('en') !== -1)
+                return text;
 
             var translationObject = translation && translation[text];
-            var translatedText = translationObject && translationObject[/*testLanguageOn ? 'pt' :*/ /*navigator.language*/ 'pt'];
+            var translatedText = translationObject && translationObject[/*testLanguageOn ? 'pt' :*/ navigator.language];
 
             return translatedText || text;        
         };
