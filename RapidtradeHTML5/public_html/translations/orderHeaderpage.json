@@ -1,6 +1,8 @@
 {
     "Back":  {"pt": "Voltar"},
     "Save":  {"pt": "Guardar"},
+    "Online":  {"pt": "Ligado"},
+    "Offline":  {"pt": "Desligado"},
     "Reference": {"pt": "Referência"},
     "Comments": {"pt": "Comentários"},
     "Signature": {"pt": "Assinatura"},
