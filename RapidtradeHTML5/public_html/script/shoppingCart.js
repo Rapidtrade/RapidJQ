@@ -285,7 +285,12 @@ function shoppingCartRemoveAllItems() {
          },
          undefined,
          function (event) {
-             shoppingCartFetchBasket();
+             
+            setTimeout(function() {
+                
+                sessionStorage.removeItem('shoppingCartViewType');
+                shoppingCartOnBack();                
+            }, 1000);
          });
     }
 }
