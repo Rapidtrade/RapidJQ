@@ -185,7 +185,7 @@ function orderdetailsInit() {
         }
     }
     
-    if (g_vanSales && (g_currentUser().RepID.toUpperCase() === g_orderdetailsCurrentOrder.BranchID.toUpperCase())) {
+    if ((g_vanSales && (g_currentUser().RepID.toUpperCase() === g_orderdetailsCurrentOrder.BranchID.toUpperCase())) || (g_orderdetailsCurrentOrder.Type === 'Invoi')) {
         
         $('#reprintButton').removeClass('invisible');
     }
