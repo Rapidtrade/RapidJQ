@@ -657,7 +657,15 @@ function g_isQuantityValid(quantity, unit) {
 function g_showInvoice(popupId) {
 	
     var printer = localStorage.getItem('printer');
-
+    
+    var isSmallBtnHidden = $('#smallPrinterButton').hasClass('hidden');
+    if (DaoOptions.getValue('HideSmallPrint', false)) {
+        if (!isSmallBtnHidden)
+            $('#smallPrinterButton').addClass('hidden');
+    } else {
+        if (isSmallBtnHidden)
+        $('#smallPrinterButton').removeClass('hidden');
+    }
     if (printer)
         $.mobile.changePage('printinvoice' + printer + '.html');
     else
