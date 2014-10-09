@@ -8,5 +8,7 @@
     "Qty": {"pt": "Quantidade"},
     "Value Sold": {"pt": "Ordens de valor"},
     "Date:": {"pt": "Data:"},
-    "User:": {"pt": "Utilizador:"}
+    "User:": {"pt": "Utilizador:"},
+    "Total Cash Taken": {"pt": "Total em dinheiro tomadas"},
+    "Total Cash Given": {"pt": "Total em dinheiro dada"}
 }
