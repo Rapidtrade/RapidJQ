@@ -102,7 +102,7 @@ function printinvoiceFetchOrder() {
         subTotal += parseFloat(this.Value);
 
         if (DaoOptions.getValue('CalcTaxPerProduct') == 'true')
-                vat += parseFloat(this.VAT) / 100 * parseFloat(this.Value);
+                vat += parseFloat(this.VAT || 0) / 100 * parseFloat(this.Value);
         else
                 vat += g_vat() * parseFloat(this.Value);
     });

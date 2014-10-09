@@ -469,7 +469,7 @@ function shoppingCartAddItem(item, checkSummary) {
     if (DaoOptions.getValue('DoubleTax') == 'true')
     	g_shoppingCartVAT += value * item.VAT / 100;
     else
-    	g_shoppingCartVAT += value * (DaoOptions.getValue('CalcTaxPerProduct') == 'true' ? item.VAT / 100 : g_vat());
+    	g_shoppingCartVAT += value * (DaoOptions.getValue('CalcTaxPerProduct') == 'true' ? (item.VAT || 0) / 100 : g_vat());
     g_shoppingCartTotalIncl = g_shoppingCartTotalExcl + g_shoppingCartVAT;
 }
 
