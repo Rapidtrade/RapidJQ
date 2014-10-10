@@ -285,7 +285,7 @@
 
 .historyOrderItems td {
 	
-    width: 125px;
+    width: 87px;
     overflow: hidden;
     display: inline-block;
     white-space: nowrap;
@@ -306,7 +306,7 @@
 .historyOrderItems td.orderedQuantity {
     	font-size:15px;
 	font-weight:bold;
-	text-align: right;
+	text-align: center;
         color:red;
 }
 
