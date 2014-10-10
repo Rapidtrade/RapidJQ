@@ -714,7 +714,7 @@ function orderdetailsFetchOrderItems() {
             var step = 'step=' + (g_isPackSizeUnitValid(pricelist.Unit) ? pricelist.Unit : 1) + ' min=0';
 
             quantityInputHtml = '<td class="value"><input type="number" style="width:85px;position:relative;top:0px;display:inline" ' + step + 
-                    ' class="captureQuantity ui-input-text ui-body-c ui-corner-all ui-shadow-inset" onkeydown="orderdetailsQuickCapture(event, this, \'' + itemKey + '\',' + g_orderdetailsOrderItems.length + ')"/></td>';
+                    ' class="captureQuantity ui-input-text ui-body-c ui-corner-all ui-shadow-inset" onblur="orderdetailsQuickCapture(this, \'' + itemKey + '\',' + g_orderdetailsOrderItems.length + ')"/></td>';
         }
 
         var barcode = (orderdetailsIsSpecialOrder() ? orderItem[DaoOptions.getValue('MasterChrtBCodeField')] : '');
@@ -751,29 +751,19 @@ function orderdetailsFetchOrderItems() {
     });    
  }
  
- function orderdetailsQuickCapture(event, inputElement, itemKey, rowIndex) {
-     
-     var keyCode = (event.keyCode ? event.keyCode : event.which);
-     
-     if (keyCode === 13) {
+ function orderdetailsQuickCapture(inputElement, itemKey, rowIndex) {
          
-        if (!inputElement.value) {
-            
-//            $('#' + itemKey).find('.orderedQuantity').empty(); 
-//            shoppingCartDeleteItem(itemKey, DaoOptions.getValue('LostSaleActivityID') != undefined, false, orderdetailsCheckBasket);
+    if (inputElement.value) {
 
-        } else {
-            
-            $('#' + itemKey).find('.orderedQuantity').text(inputElement.value);
-         
-            var item = g_orderdetailsOrderItems[rowIndex];         
-            item.Description = item.Description && item.Description.replace(/'/g, '&quot;') || '';
-            item.Quantity = inputElement.value;
+        $('#' + itemKey).find('.orderedQuantity').text(inputElement.value);
 
-            orderdetailsSendItemToBasket(item);
-            orderdetailsCheckBasket();
-        }
-     }
+        var item = g_orderdetailsOrderItems[rowIndex];         
+        item.Description = item.Description && item.Description.replace(/'/g, '&quot;') || '';
+        item.Quantity = inputElement.value;
+
+        orderdetailsSendItemToBasket(item);
+        orderdetailsCheckBasket();
+    }
  }
  
  function orderdetailsFetchMasterChartBarcode(key, onSuccess) {
