@@ -29,19 +29,25 @@ function overlayInit(pageId) {
                         });				
                     }
                 }
+                
+                var specialOrderType = DaoOptions.getValue('PutOrderTypeLastInList', '');
+                var isSpecialOrderTypeListed = false;
 
                 if (orderTypes.length) {
 
                     if (!((orderTypes.length == 1) && (orderTypes[0].toLowerCase() == 'none'))) {
-
-                        $.each(orderTypes, function(key, value) {   
+                        
+                        $.each(orderTypes, function(key, value) {                            
 
                             var orderTypeItemText = ('Create ' + value).replace('Create Invoice', g_companyPageTranslation.translateText('Create Invoice'))
                                     .replace('Create Order', g_companyPageTranslation.translateText('Create Order'));
                             
                             var classes = 'orderItem' + (value.indexOf('Invoice') !== -1 ? ' invoiceItem' : ''); 
                             
-                            menuPanel += '<li id="pricelist' + value + 'Item" class="' + classes + '">' + orderTypeItemText + '</li>';
+                            if (value !== specialOrderType)                            
+                                menuPanel += '<li id="pricelist' + value + 'Item" class="' + classes + '">' + orderTypeItemText + '</li>';
+                            else
+                                isSpecialOrderTypeListed = true;
                         });
                     }
 
@@ -55,8 +61,12 @@ function overlayInit(pageId) {
                 menuPanel += '<li id="pricelistOrderItem" class="orderItem">' + g_companyPageTranslation.translateText('Create Order') + '</li>';
             }	
 
-            menuPanel += '<li id="activityItem">' + g_companyPageTranslation.translateText('Add Activity') + '</li>' +
-                                     '</ul>';
+            menuPanel += '<li id="activityItem">' + g_companyPageTranslation.translateText('Add Activity') + '</li>';
+                             
+            if (isSpecialOrderTypeListed)
+                menuPanel += '<li id="pricelist' + specialOrderType + 'Item" class="orderItem">Create ' + specialOrderType + '</li>';
+            
+            menuPanel += '</ul>';
     }
 
     var showPricelistMenu = (DaoOptions.getValue('MobileCategories') == 'true') || (DaoOptions.getValue('AllowAdvancedSearch') == 'true');
