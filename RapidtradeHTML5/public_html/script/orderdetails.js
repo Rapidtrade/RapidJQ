@@ -41,6 +41,7 @@ function orderdetailsOnPageShow() {
 function orderdetailsOrderType() {
     
     var field = DaoOptions.getValue('HistUseOrderTyp');
+    sessionStorage.setItem('currentordertype', field ? (g_orderdetailsCurrentOrder[field] || 'Order') : 'Order');
     return field ? (g_orderdetailsCurrentOrder[field] || 'Order') : 'Order';
 }
 
