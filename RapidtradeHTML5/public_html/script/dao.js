@@ -737,10 +737,15 @@ function Dao() {
                                         	ponerror("No record found");
                                     }
                                 }
+                                
+                                if (poncomplete)
+                                    poncomplete();
                             },
                             function (tx, e) {
                                 if (ponerror != undefined) 
                                 	ponerror();
+                                if (poncomplete)
+                                    poncomplete();                                    
                             });
         });
     };
@@ -756,11 +761,17 @@ function Dao() {
                     [keyf, JSON.stringify(item), getsqlIndex1(table, item), getsqlIndex2(table, item), getsqlIndex3(table, item), getsqlIndex4(table, item)],
                     function (tx, results) {
                         if (ponsuccesswrite != undefined) 
-                        	ponsuccesswrite();
+                            ponsuccesswrite();
+                        
+                        if (poncomplete)
+                            poncomplete();                            
                     },
                     function (tx, e) {
                         if (ponerror != undefined) 
-                        	ponerror(tx, e);
+                            ponerror(tx, e);
+                        
+                        if (poncomplete)
+                            poncomplete();                            
                     });
         });
     };

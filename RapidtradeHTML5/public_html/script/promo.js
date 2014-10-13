@@ -65,7 +65,7 @@ var promo = (function(){
              } 
              
              // TEST
-//             useTPM = true;
+             useTPM = true;
              
              //if promo not for this customer, then move on to next promo 
              if (!useTPM ){ 
@@ -83,6 +83,7 @@ var promo = (function(){
             if (condcount === tpm.json.productConditions.length) { 
                  $this.tpmcount += 1; 
                  $this.fetchTPM($this.tpmcount, $this); 
+                 return;
             } 
             
             var cond = tpm.json.productConditions[condcount]; 
@@ -101,7 +102,9 @@ var promo = (function(){
                                 function (json){ 
                                     // add up quantities as may be checking quantity of all products in a category  
                                     //NB. For below to work, you may need to add product.categoryname to shopping cart fields. 
-                                    if (json[tpmcond.ObjectProperty] === tpmval[tpmcond.TPMField]){ 
+                                    
+                                    // TEST
+                                    if (json.Type !== 'PROMO' /*json[tpmcond.ObjectProperty] === tpmval[tpmcond.TPMField]*/){ 
                                         qty += json.Quantity; 
                                     } 
                                 } , 
@@ -111,7 +114,7 @@ var promo = (function(){
                                         $this.savePromotion(user, account, tpm,  tpmcond, tpmval, qty, condcount, $this); 
                                     }  else {    
                                         //delete the promo from shopping cart if it does exist and move onto next condition. 
-                                        var key = tpmval.PromoProductID + user.SupplierID + account.AccountID + tpm.TPMID ; 
+                                        var key = tpmval.PromoProductID + user.SupplierID + user.UserID + account.AccountID; 
                                         dao.deleteItem('BasketInfo', key); 
                                         condcount += 1; 
                                         $this.checkCondition(tpm, condcount, $this);            
@@ -124,34 +127,28 @@ var promo = (function(){
         this.savePromotion = function(user, account, tpm, tpmcond, tpmval, qty, condcount, $this){ 
              //NB.  Math.floor will remove the remainder, ie 2.9 becomes 2 and should not be rounded up to 3 
              //eg. If the promo is buy 24, get 1 free, and they buy 65, then 65/24 = 2.7083 , but should be round down to 2 
-             var freeqty = Math.floor((qty / tpmval.BuyQty)) * tpmval.Freeqty; 
+             var freeqty = Math.floor((qty / tpmval.BuyQty)) * tpmval.FreeQty; 
 
             //now read local database to see if promo exists in cart, if it does, amend, if not, then add 
-            var key = tpmval.PromoProductID + user.SupplieriD + user.AccountID + tpm.TPMID ;
+            var key = tpmval.PromoProductID + user.SupplierID + user.UserID + account.AccountID;
             
             var dao = new Dao();
-            dao.get('basketinfo',key, 
+            dao.get('BasketInfo',key, 
                 function(json){ 
                     
-                    //this Tpm exists in cart, so update qty 
-                     Json.quantity = freeqty; 
-                     dao.put(json); 
+                    //this Tpm exists in cart, so update qty                      
+                    g_addProductToBasket(tpmval.PromoProductID, user.SupplierID, account.AccountID, freeqty, user.UserID, '0.00', tpmval.PromoDescription, '0.00', '0.00', 'PROMO');
                 },  
                 function(err){ 
                     
                     //this promo does not exist in basket, so add it 
-                    var json = {} 
-                    json.key = key; 
-                    json.SupplierID = user.SupplierID; 
-                    json.AccountID = account.AccountID; 
-                    json.TPMID = tpm.TPMID; 
-//                    etc. etc. 
-                    dao.put(json);        
+                    g_addProductToBasket(tpmval.PromoProductID, user.SupplierID, account.AccountID, freeqty, user.UserID, '0.00', tpmval.PromoDescription, '0.00', '0.00', 'PROMO');    
                 }, 
                 function () { 
+                    
                     //on complete of get, move onto next condition 
                     condcount+= 1; 
-                    $this.checkCondition(tpm, condcount) 
+                    $this.checkCondition(tpm, condcount, $this); 
                  }); 
         }        
     };

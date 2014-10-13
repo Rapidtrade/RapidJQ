@@ -436,7 +436,8 @@ function shoppingCartAddItem(item, checkSummary) {
         
         step = 'step=' + step;
         
-        var quantityReadOnly = item.PromoType ? 'readonly' : '';
+        var isPromotionItem = (item.Type === 'PROMO');
+        var quantityReadOnly = (isPromotionItem ? 'readonly' : '');
 	
 	g_basketHTML +=
         '<li id="LI' + itemIndex + '"' + alphaFilter.getInstance().addClass(item.Description) + '>' +
@@ -465,12 +466,14 @@ function shoppingCartAddItem(item, checkSummary) {
              '</a>') +
         '</li>';
 	
-    g_shoppingCartTotalExcl = g_shoppingCartTotalExcl + value;
-    if (DaoOptions.getValue('DoubleTax') == 'true')
-    	g_shoppingCartVAT += value * item.VAT / 100;
-    else
-    	g_shoppingCartVAT += value * (DaoOptions.getValue('CalcTaxPerProduct') == 'true' ? (item.VAT || 0) / 100 : g_vat());
-    g_shoppingCartTotalIncl = g_shoppingCartTotalExcl + g_shoppingCartVAT;
+    if (!isPromotionItem) {    
+        g_shoppingCartTotalExcl = g_shoppingCartTotalExcl + value;
+        if (DaoOptions.getValue('DoubleTax') == 'true')
+            g_shoppingCartVAT += value * item.VAT / 100;
+        else
+            g_shoppingCartVAT += value * (DaoOptions.getValue('CalcTaxPerProduct') == 'true' ? (item.VAT || 0) / 100 : g_vat());
+        g_shoppingCartTotalIncl = g_shoppingCartTotalExcl + g_shoppingCartVAT;
+    }
 }
 
 function shoppingCartOnAllItemsAdded() {
@@ -577,14 +580,12 @@ function shoppingCartCheckItemsCount() {
 }
 
 function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetItemsOnPageNumber) {
-    //g_shoppingCartTotalExcl = g_shoppingCartVAT = g_shoppingCartTotalIncl = 0;
-    
-    var canDelete = true;
+    //g_shoppingCartTotalExcl = g_shoppingCartVAT = g_shoppingCartTotalIncl = 0;    
     
     var dao = new Dao();    
     dao.get('BasketInfo', key, function(json) {
         
-        if (!json.PromoType) {
+        if ((removeNode && json.Type !== 'PROMO') || !removeNode) {
             
             g_clearCacheDependantOnBasket(resetItemsOnPageNumber);
             
@@ -608,6 +609,12 @@ function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetI
                     } else {
 
                         if (removeNode) { 
+                            
+                            if (DaoOptions.getValue('localTPM') === 'true') {
+
+                                 promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
+                                 return;
+                            }                             
 
                             var itemIndex = $.inArray(key, g_shoppingCartItemKeys);
 
