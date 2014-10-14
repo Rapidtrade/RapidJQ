@@ -36,15 +36,6 @@ var promo = (function(){
                $this.fetchTPM(0, $this); 
             });             
         } 
-        
-        /*
-         * {'mandatory':true,
-            'type':'free',
-           'accountConditions':[{'ObjectProperty':'UserField02','TPMField':'AccountGroup'}],
-           'productConditions':[{'ObjectProperty':'CategoryName','TPMField':'CategoryName'}],
-           'values':[{'PromoProductID':'3221','AccountGroup':'SPAR LOWVELD MEMBERS','CategoryName':'BACKSBURG','BuyQty':24,'FreeQty':1}]
-           }
-         */
 
        this.fetchTPM = function(tpmcount, $this) { 
             if (tpmcount === $this.tpms.length) { 
@@ -110,7 +101,7 @@ var promo = (function(){
                                 } , 
                                 undefined, 
                                 function (){ 
-                                    if (qty > tpmval.BuyQty){ 
+                                    if (qty >= tpmval.BuyQty){ 
                                         $this.savePromotion(user, account, tpm,  tpmcond, tpmval, qty, condcount, $this); 
                                     }  else {    
                                         //delete the promo from shopping cart if it does exist and move onto next condition. 

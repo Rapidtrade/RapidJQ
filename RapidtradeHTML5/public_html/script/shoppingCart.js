@@ -610,13 +610,17 @@ function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetI
 
                         if (removeNode) { 
                             
+                            var itemIndex = $.inArray(key, g_shoppingCartItemKeys);                            
+                            
                             if (DaoOptions.getValue('localTPM') === 'true') {
 
-                                 promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
-                                 return;
+                                $('#LI' + itemIndex).remove();
+                                if ($('#shoppingCartitemlist li').length)
+                                    promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
+                                else
+                                    shoppingCartCheckItemsCount();
+                                return;
                             }                             
-
-                            var itemIndex = $.inArray(key, g_shoppingCartItemKeys);
 
                             try {
 
