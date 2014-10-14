@@ -39,11 +39,11 @@ function menuBind() {
         $.mobile.changePage('company.html', {transition:"none"});
     });
     
-//    $('#testDiv select').off().on('slidestop', function() {
-//       
-//        localStorage.setItem('Portuguese', $(this).val());
-//        alert('Please restart the application for the language change to take effect.');
-//    });
+    $('#testDiv select').off().on('slidestop', function() {
+       
+        localStorage.setItem('Portuguese', $(this).val());
+        alert('Please restart the application for the language change to take effect.');
+    });
 }
 
 function menuOnPageShowSmall() {
@@ -288,17 +288,17 @@ function menuFetchConfigData(){
         
     menuFetchDiscounts();
     menuFetchDiscountConditions();
-    DaoOptions.fetchOptions(/*menuShowTestButton*/);
+    DaoOptions.fetchOptions(menuShowTestButton);
 }
 
-//function menuShowTestButton() {
-//    
-//    if (DaoOptions.getValue('TestPortuguese') === 'true') {
-//        
-//        $('#testDiv').removeClass('invisible');
-//        $('#testDiv select').val(localStorage.getItem('Portuguese')).slider('refresh');
-//    }    
-//}
+function menuShowTestButton() {
+    
+    if (DaoOptions.getValue('TestPortuguese') === 'true') {
+        
+        $('#testDiv').removeClass('invisible');
+        $('#testDiv select').val(localStorage.getItem('Portuguese')).slider('refresh');
+    }    
+}
 
 function menuFetchUnsentObjects() {
 	

@@ -23,13 +23,13 @@ var translation = (function() {
 
         var translateText = function(text) {
 
-//            var testLanguageOn = (localStorage.getItem('Portuguese') === 'on');  
+            var testLanguageOn = (localStorage.getItem('Portuguese') === 'on');  
 
-            if (/*!testLanguageOn &&*/ navigator.language.indexOf('en') !== -1)
+            if (!testLanguageOn && navigator.language.indexOf('en') !== -1)
                 return text;
 
             var translationObject = translation && translation[text];
-            var translatedText = translationObject && translationObject[/*testLanguageOn ? 'pt' :*/ navigator.language];
+            var translatedText = translationObject && translationObject[testLanguageOn ? 'pt' : navigator.language];
 
             return translatedText || text;        
         };
