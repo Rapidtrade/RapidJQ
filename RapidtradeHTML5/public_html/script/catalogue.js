@@ -87,7 +87,7 @@ var catalogue = (function() {
             catalogueHTML += '<div style="width:' + Math.floor(700 / itemsPerRow) + 'px;text-align:center;vertical-align:middle"><img src="' + productdetailGetImageUrl(item.ProductID, 180, false) + '"></div>' +
                     '<table class="catalogueItemDataTable"><tr><td>Item</td><td>' + item.ProductID + '</td></tr>' +
                     '<tr><td>Descr</td><td>' + item.Description  + '</td></tr>' +
-                    '<tr><td>Inn/Ctn Qty</td><td>' + (item.UserField02 || 'N/A')  + '</td></tr>' +
+                    '<tr><td>Inn/Ctn Qty</td><td>' + (item.CategoryName || 'N/A')  + '</td></tr>' +
                     '<tr><td>Price (Excl)</td><td>$' + item.Nett  + '</td></tr>' +
                     '<tr><td>Bar Code</td><td>' + (item.BarCode || 'N/A')  + '</td></tr></table>';
             
