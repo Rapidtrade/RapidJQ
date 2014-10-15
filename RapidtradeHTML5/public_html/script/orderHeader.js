@@ -454,26 +454,30 @@ function orderHeaderVanSales() {
 function orderHeaderCreateInvoiceNumber() {		
 	
 	if (DaoOptions.getValue('shortinvoice') == 'true') {
-		var lastInvoiceNumberOption = DaoOptions.get(g_currentUser().RepID + 'lastInvNum');
-                if (!lastInvoiceNumberOption) {
-                    throw('Error, Create a number range via for this van user by creating an optioninfo with id= ' + g_currentUser().RepID + 'lastInvNum' );
-                }
-		var newInvoiceNumber = parseInt(lastInvoiceNumberOption.Value, 10) + 1;
-		lastInvoiceNumberOption.Value = newInvoiceNumber;
-		var dao = new Dao();		
-		dao.put(lastInvoiceNumberOption, 'Options', lastInvoiceNumberOption.key , function() {
-				if (g_isOnline(false))					
-					orderHeaderSaveInvoiceNumber(lastInvoiceNumberOption);
-				else					
-					g_saveObjectForSync(lastInvoiceNumberOption, lastInvoiceNumberOption.key, "Options", "QuickModify");
-			}, 
-			undefined,undefined);  		
-		return parseInt(DaoOptions.getValue(g_currentUser().RepID + 'lastInvNum')) + 1;
+            
+            var lastInvoiceNumberOption = DaoOptions.get(g_currentUser().RepID + 'lastInvNum');
+            if (!lastInvoiceNumberOption) {
+                throw('Error, Create a number range via for this van user by creating an optioninfo with id= ' + g_currentUser().RepID + 'lastInvNum' );
+            }
+            var newInvoiceNumber = parseInt(lastInvoiceNumberOption.Value, 10) + 1;
+            lastInvoiceNumberOption.Value = newInvoiceNumber;
+            var dao = new Dao();		
+            dao.put(lastInvoiceNumberOption, 'Options', lastInvoiceNumberOption.key , function() {
+                if (g_isOnline(false))					
+                        orderHeaderSaveInvoiceNumber(lastInvoiceNumberOption);
+                else					
+                        g_saveObjectForSync(lastInvoiceNumberOption, lastInvoiceNumberOption.key, "Options", "QuickModify");
+            }, 
+            undefined,undefined);  
+
+            return parseInt(DaoOptions.getValue(g_currentUser().RepID + 'lastInvNum'), 10) + 1;
+                
 	} else {
-		var vanNumber = g_currentUser().RepID.slice(-2);
-    	var date = new Date();
-    	var y = date.getFullYear().toString().slice(3);
-    	return vanNumber + y + g_dayOfYear() + orderHeaderInvoiceSequenceNumber();	
+            
+            var vanNumber = g_currentUser().RepID.slice(-2);
+            var date = new Date();
+            var y = date.getFullYear().toString().slice(3);
+            return vanNumber + y + g_dayOfYear() + orderHeaderInvoiceSequenceNumber();	
 	}
 }
 
@@ -958,14 +962,14 @@ function orderHeaderInvoiceSequenceNumber() {
 	
 	if (g_today() != localStorage.getItem("sequenceDay")) {
 		
-		   localStorage.setItem("sequenceNumber","000");
-		   localStorage.setItem("sequenceDay", g_today());
+            localStorage.setItem("sequenceNumber","000");
+            localStorage.setItem("sequenceDay", g_today());
 	}
 	
-	var nextSequenceNumber = (parseInt(localStorage.getItem("sequenceNumber")) + 1).toString();
+	var nextSequenceNumber = (parseInt(localStorage.getItem("sequenceNumber"), 10) + 1).toString();
 	
 	while (nextSequenceNumber.length < 3)
-		nextSequenceNumber = '0' + nextSequenceNumber;
+            nextSequenceNumber = '0' + nextSequenceNumber;
 	
 	localStorage.setItem("sequenceNumber", nextSequenceNumber);
 	
