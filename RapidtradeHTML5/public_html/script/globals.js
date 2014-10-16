@@ -585,7 +585,7 @@ function g_ajaxget(url, success, error) {
 
 }
 
-function g_ajaxpost(data, url, success, error) {
+function g_ajaxpost(data, url, success, error, completeF) {
 	if (window.MSApp) {
 		WinJS.xhr({
 			type : 'POST',
@@ -604,6 +604,17 @@ function g_ajaxpost(data, url, success, error) {
 		});
 	} else {
 		try {
+                    if (completeF) {
+                        $.ajax({
+				type : 'POST',
+				data : data,
+				url : url,
+				success : success,
+				error : error,
+                                complete: completeF});//,
+                                //timeout: DaoOptions.getValue('AjaxTimeout', 30000)
+			//});
+                    } else {
 			$.ajax({
 				type : 'POST',
 				data : data,
@@ -611,7 +622,8 @@ function g_ajaxpost(data, url, success, error) {
 				success : success,
 				error : error,
                                 timeout: DaoOptions.getValue('AjaxTimeout', 30000)
-			});			
+			});
+                    }
 		} catch (error){
 			alert("Oops");
 		}

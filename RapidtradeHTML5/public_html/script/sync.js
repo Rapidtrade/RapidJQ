@@ -190,10 +190,11 @@ function syncPostData(index) {
     
     var postData = $('#sendForm').serialize();
     
-    var success = function () {
+    var success = function (json) {
         syncPostedOK(index);
     };
     var error = function (e) {
+
         if (e.status == 200 || e.status == 0) {
             success();
         } else {
@@ -203,7 +204,7 @@ function syncPostData(index) {
     
     var orderExistsOnSuccess = function(json) {
     	
-    	(json._Status == true) ? syncPostedOK(index) : orderExistsOnError(json);    			
+    	(json._Status === true) ? syncPostedOK(index) : orderExistsOnError(json);    			
     };
     
     var orderExistsOnError = function(json) {
@@ -212,14 +213,16 @@ function syncPostData(index) {
         syncPostedOK(index, true);        
     };
     
-    var postOrderOnSuccess = function() {
+    var postOrderOnSuccess = function(json) {
     	
     	var url = DaoOptions.getValue(g_orderHeaderOrder.Type + 'ExistsURL');
     	
     	if (!url)
     		url = g_restUrl + 'Orders/Exists';
     	
-    	g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', orderExistsOnSuccess, orderExistsOnError);
+        //g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', orderExistsOnSuccess, orderExistsOnError);
+        g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_syncPosted[index].JsonObject.OrderID + '&format=json', orderExistsOnSuccess, orderExistsOnError);
+        
 
     };
     
@@ -258,8 +261,26 @@ function syncPostData(index) {
     	return;
     }
     	
-    	
-    g_ajaxpost(postData, url, success, error);
+    var completeF = function (jqXHR, textStatus) {
+//        if (g_syncPosted[index].Table === 'Orders') {
+//            var url = DaoOptions.getValue(g_orderHeaderOrder.Type + 'ExistsURL');
+//    	
+//            if (!url) {
+//                url = g_restUrl + 'Orders/Exists';
+//            }
+//            
+//            g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', orderExistsOnSuccess, orderExistsOnError);
+//                
+//        } else {
+//            success();
+//        }
+            if (jqXHR.status === 200 || jqXHR.status === 0)
+                success(jqXHR);
+            else
+                error(jqXHR)
+    };
+    console.log('POST: ' + url + ' data: ' + postData);	
+    g_ajaxpost(postData, url, undefined, undefined, completeF);
 }
 
 /*
@@ -279,7 +300,8 @@ function syncPostedOK(index, skip){
             });
         }
 
-        $('#results tbody tr:last td').text((index + 1) + ' of ' + g_syncPosted.length + ' rows sent OK' );
+        //$('#results tbody tr:last td').text((index + 1) + ' of ' + g_syncPosted.length + ' rows sent OK' );
+        g_append('#results tbody','<tr><td>' + (index + 1) + ' of ' + g_syncPosted.length + ' rows sent OK</td></tr>');
     }
 
     if (index == (g_syncPosted.length - 1)){
@@ -508,7 +530,11 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 		}
 	} else if (/*('Orders' === table) || */((json._Items.length ) < 100 && (table != 'Pricelists'))) {
 	    //less than 250 records, so move on to the next sync, except pricelist, dont always get back 250
-	    $('#results tbody tr:last td').text(syncGetLocalTableName(table, method) + ' (' + (skip + json._Items.length) + ') downloaded');
+            if (table === 'Options') {
+                g_append('#results tbody', '<tr><td> ' + syncGetLocalTableName(table, method) + ' (' + (skip + json._Items.length) + ') downloaded');
+            } else {
+                $('#results tbody tr:last td').text(syncGetLocalTableName(table, method) + ' (' + (skip + json._Items.length) + ') downloaded');
+            }
 	    syncSetLastVersion(syncGetLocalTableName(table, method), 'Orders' === table ? 0 : json._LastVersion);
             
 	    if ((g_syncTables.length == (g_syncCount + 1))) {
