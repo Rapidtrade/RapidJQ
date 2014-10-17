@@ -74,7 +74,7 @@ var categories = (function(){
 		
             this.init = function (){
                 this.acategories = [];    
-                this.categoryDescriptions = [];
+                this.categoryDescriptions = {};
             };
 
             this.addCategory = function (category){
@@ -84,7 +84,7 @@ var categories = (function(){
 
                         var dao = new Dao();
                         dao.index('ProductCategories2', category, 'index2', function(item) {
-                            that.categoryDescriptions.push(item.des)
+                            that.categoryDescriptions[item.c] = item.des;
                         });
                     }
                 } catch (err){
@@ -101,7 +101,7 @@ var categories = (function(){
 
                             var html = ' <li data-role="divider" data-theme="e">Choose category</li>';
                             for (var i=0;i < this.acategories.length;i++){
-                                html += '<li><a href="#" onclick="categories.getInstance().fetchCategory(\'' + this.acategories[i] + '\',\'' + popuptag + '\' )">'  + this.categoryDescriptions[i] + '</a></li>';
+                                html += '<li><a href="#" onclick="categories.getInstance().fetchCategory(\'' + this.acategories[i] + '\',\'' + popuptag + '\' )">'  + (this.categoryDescriptions[this.acategories[i]] || this.acategories[i]) + '</a></li>';
                             }
                             $(ultag).empty();
                             g_append(ultag, html);
