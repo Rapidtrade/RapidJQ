@@ -178,7 +178,7 @@ function fetchUsers(){
     var url = g_restUrl + 'Dashboard/GetUsers?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&format=json';
     
     //Clear user
-    $('#usersummarylist').empty();
+    $('#usersummarytable tbody').empty();
 
     $('#msName').empty();
     $('.userChoice').empty();
@@ -199,11 +199,13 @@ function fetchUsers(){
             temp = '';
             $.each(json, function (i, item) {
                 var logindate = moment(parseInt(item.LastLoginDate.substr(6)));
-                temp = temp + '<li><table class="usersummary"><tr>' +
+                temp += '<tr>' +
                     '<td class="name">' + item.Name + '</td>' +
                     '<td class="activ">' + getTrafficLights(logindate) + '</td>' +
                     '<td class="date">' + logindate.format("ddd, MMM DD YY, h:mm a") + '</td>' +
-                    '<td class="num">' + item.ActivitiesThisMonth + '</td></tr></table></li>';
+                    '<td class="num">' + item.ActivitiesThisMonth + '</td>' + 
+                    '<td class="num">' + item.OrdersThisMonth + '</td>' +
+                    '</tr>';
 
                 //$('#msName').append('<option>' + item.UserID + '</option>');
                 $('#msName').append("<option value='" + item.UserID + "'>" + item.Name + "</option>");
@@ -213,7 +215,7 @@ function fetchUsers(){
                 $('#ccName').append("<option value='" + item.UserID + "'>" + item.Name + "</option>");
             });
 
-            $('#usersummarylist').append(temp);
+            $('#usersummarytable tbody').html(temp);
             //$('#usersummarylist').listview('refresh');//Console error
             $.mobile.loading("hide");
         },

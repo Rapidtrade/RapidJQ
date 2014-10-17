@@ -753,6 +753,10 @@
 	text-align:right;
 }
 
+#usersummarytable td {
+    vertical-align: middle;
+}
+
 .orderPrintDataTable {
 	padding: 10px;
 	width:100%;

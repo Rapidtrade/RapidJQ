@@ -120,7 +120,21 @@
                  </a>
              </div>
              <div data-role="content">
-     	        <ul id="usersummarylist" data-role="listview" data-divider-theme="b" data-inset="true"></ul>
+     	        <!--<ul id="usersummarylist" data-role="listview" data-divider-theme="b" data-inset="true"></ul>-->
+     	        <div class="panel-grey-rounded">
+                    <table class="box-table-a" style="width: 100%;" id="usersummarytable" >
+                    <thead>
+                        <tr>
+                            <th scope="col">User</th>
+                            <th scope="col"></th>
+                            <th scope="col">Last sync for the day</th>
+                            <th scope="col">Activities</th>
+                            <th scope="col">Orders</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    </table>
+     	        </div>                
              </div>
         </div>
 
