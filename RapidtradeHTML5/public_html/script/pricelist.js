@@ -1533,60 +1533,63 @@ function pricelistOnItemClicked(itemIndex) {
 }
 
 function pricelistAddItemToBasket(itemIndex) {
+    
+    if ((Number(g_pricelistItems[itemIndex].n) === 0) && (DaoOptions.getValue('CanOrderZeroPrice') !== 'true'))
+        return;
 	
-	var getQuantity = function(itemIndex) {
-		
-            return DaoOptions.getValue('AllowPriceQuickCapt') == 'true' ? $('#quantity' + itemIndex).val() : pricelistGetNewQuantityForItem(itemIndex);
-	};
-	
-	var deleteItemOnSuccess = function() {
-		
-            $('#' + itemIndex).html('');
-	};
-	
-	if (!getQuantity(itemIndex)) {
+    var getQuantity = function(itemIndex) {
 
-            shoppingCartDeleteItem(g_pricelistItems[itemIndex].id + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID, 
-                            DaoOptions.getValue('LostSaleActivityID') != undefined, 
-                            undefined, 
-                            deleteItemOnSuccess, false);
+        return DaoOptions.getValue('AllowPriceQuickCapt') == 'true' ? $('#quantity' + itemIndex).val() : pricelistGetNewQuantityForItem(itemIndex);
+    };
 
-            return;
-	}	
-	
-	var unit = parseInt(g_pricelistItems[itemIndex].u, 10);
-	
-	//TODO below should default to '1' or use #quantity with the correct optioninfo for MIDAS
+    var deleteItemOnSuccess = function() {
 
-	if (g_isQuantityValid(getQuantity(itemIndex), unit)) {
-	
-		g_addProductToBasket(
-                    g_pricelistItems[itemIndex].id,
-	            g_currentCompany().SupplierID,
-	            g_currentCompany().AccountID,
-	            getQuantity(itemIndex),
-	            g_currentUser().UserID,
-	            g_pricelistItems[itemIndex].n,
-	            g_pricelistItems[itemIndex].des,
-	            g_pricelistItems[itemIndex].d,
-	            $('#grossvalue').html(),
-	            sessionStorage.getItem("currentordertype"),
-	            '',
-	            '',
-	            '',
-	            g_isPackSizeUnitValid(unit) ? unit : '',
-	           '',
-	           '',
-	           g_pricelistItems[itemIndex].v
-	    );
-            //clear search after adding to basket so its easy to re-search
-            $('#search').val(''); 
-		
-	    g_clearCacheDependantOnBasket(false);
-	    pricelistCheckBasket();
-	    //TODO also change here
-	    $('#' + itemIndex).html(getQuantity(itemIndex));
-	}
+        $('#' + itemIndex).html('');
+    };
+
+    if (!getQuantity(itemIndex)) {
+
+        shoppingCartDeleteItem(g_pricelistItems[itemIndex].id + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID, 
+                        DaoOptions.getValue('LostSaleActivityID') != undefined, 
+                        undefined, 
+                        deleteItemOnSuccess, false);
+
+        return;
+    }	
+
+    var unit = parseInt(g_pricelistItems[itemIndex].u, 10);
+
+    //TODO below should default to '1' or use #quantity with the correct optioninfo for MIDAS
+
+    if (g_isQuantityValid(getQuantity(itemIndex), unit)) {
+
+            g_addProductToBasket(
+                g_pricelistItems[itemIndex].id,
+                g_currentCompany().SupplierID,
+                g_currentCompany().AccountID,
+                getQuantity(itemIndex),
+                g_currentUser().UserID,
+                g_pricelistItems[itemIndex].n,
+                g_pricelistItems[itemIndex].des,
+                g_pricelistItems[itemIndex].d,
+                $('#grossvalue').html(),
+                sessionStorage.getItem("currentordertype"),
+                '',
+                '',
+                '',
+                g_isPackSizeUnitValid(unit) ? unit : '',
+               '',
+               '',
+               g_pricelistItems[itemIndex].v
+        );
+        //clear search after adding to basket so its easy to re-search
+        $('#search').val(''); 
+
+        g_clearCacheDependantOnBasket(false);
+        pricelistCheckBasket();
+        //TODO also change here
+        $('#' + itemIndex).html(getQuantity(itemIndex));
+    }
 }
 
 function pricelistGetNewQuantityForItem(itemIndex) {

@@ -975,7 +975,7 @@ function productdetailOkClicked(checkStock) {
         return;
     }
 
-    if (($('#grossvalue').text() == 'Undefined') || (Number($('#grossvalue').text()) == 0)) {
+    if (($('#grossvalue').text() == 'Undefined') || (Number($('#grossvalue').text()) == 0) && (DaoOptions.getValue('CanOrderZeroPrice') !== 'true')) {
 
         showMessage();
         return;
