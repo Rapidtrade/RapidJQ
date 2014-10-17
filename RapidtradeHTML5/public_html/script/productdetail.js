@@ -926,7 +926,7 @@ function productdetailDeleteItem() {
     shoppingCartDeleteItem(g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID, 
                             DaoOptions.getValue('LostSaleActivityID') != undefined, 
                             undefined, 
-                            deleteItemOnSuccess);		
+                            deleteItemOnSuccess, '', pricelistOnBackButtonClick);		
 }
 
 function productdetailOkClicked(checkStock) {

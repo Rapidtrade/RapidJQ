@@ -579,7 +579,7 @@ function shoppingCartCheckItemsCount() {
     }
 }
 
-function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetItemsOnPageNumber) {
+function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetItemsOnPageNumber, onError) {
     //g_shoppingCartTotalExcl = g_shoppingCartVAT = g_shoppingCartTotalIncl = 0;    
     
     var dao = new Dao();    
@@ -642,7 +642,7 @@ function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetI
                 });
             };            
         }
-    })    
+    }, onError)    
 }
 
 function shoppingCartSaveLostSales(key){
