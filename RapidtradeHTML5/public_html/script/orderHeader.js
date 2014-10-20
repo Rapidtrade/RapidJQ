@@ -58,31 +58,7 @@ function orderHeaderBind() {
         orderHeaderSaveOrder(this.id === 'saveorderoffline');
     });
 
-    $('#signatureButton').click(function () {
-        
-        if (!g_orderHeaderJsonForm.isValid())
-            return;
-        
-        var orderType = sessionStorage.getItem('currentordertype');
-        
-        if (orderType.indexOf('Invoice') !== -1)  
-            orderType = 'Invoice';
-        
-        if (!$('#' + orderType + 'HeaderReference').val() && !shoppingCartIsGroupingEnabled()){ 
-            
-            g_alert('You must enter a reference before you can continue');
-            $('#infoPopup').popup('close');
-            return;	
-        }        
-    	
-        g_orderHeaderSignature = true;
-        $('#signatureFrame').removeClass('hidden');
-        $('#signatureButton').hide();
-        $('#address').hide();
-        $('#addressForm').hide();
-        $('#orderdetailform').hide();
-        $('#orderDetails').hide();
-    });
+    $('#signatureButton').off().on('click', orderHeaderOnSignatureButtonClick);
     
     $('#confirmButton').unbind();
     $('#confirmButton').click(function() {
@@ -95,6 +71,32 @@ function orderHeaderBind() {
     	
     	orderHeaderCaptureGPSAndSave();
     });
+}
+
+function orderHeaderOnSignatureButtonClick() {
+    
+    if (!g_orderHeaderJsonForm.isValid())
+        return;
+
+    var orderType = sessionStorage.getItem('currentordertype');
+
+    if (orderType.indexOf('Invoice') !== -1)  
+        orderType = 'Invoice';
+
+    if (!$('#' + orderType + 'HeaderReference').val() && !shoppingCartIsGroupingEnabled()){ 
+
+        g_alert('You must enter a reference before you can continue');
+        $('#infoPopup').popup('close');
+        return;	
+    }        
+
+    g_orderHeaderSignature = true;
+    $('#signatureFrame').removeClass('hidden');
+    $('#signatureButton').hide();
+    $('#address').hide();
+    $('#addressForm').hide();
+    $('#orderdetailform').hide();
+    $('#orderDetails').hide();    
 }
 
 function orderHeaderChooseOnClick(){
@@ -219,6 +221,12 @@ function orderHeaderInit() {
 
 function orderHeaderSaveOrder(saveOffline) {
     
+    if (!g_orderHeaderSignature && DaoOptions.getValue('SignatureCompulsory') === 'true') {
+        
+        orderHeaderOnSignatureButtonClick();
+        return;
+    }
+        
     sessionStorage.setItem('saveOffline', saveOffline);
 	
     if (!g_orderHeaderJsonForm.isValid())
