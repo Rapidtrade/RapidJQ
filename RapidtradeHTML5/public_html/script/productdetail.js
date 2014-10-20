@@ -805,7 +805,7 @@ function productdetailPriceOnSuccess (json) {
         if (json.volumePrice && json.volumePrice[0]) {		    	
             productdetailCalculateDiscount(json.volumePrice);
             sessionStorage.setItem('volumePrice', JSON.stringify(json.volumePrice));
-            g_pricelistVolumePrices[g_pricelistSelectedProduct.ProductID] = json.volumePrice[0];
+            g_pricelistVolumePrices[g_pricelistSelectedProduct.ProductID] = json.volumePrice[json.volumePrice.length - 1];
         } else {	    	
             sessionStorage.setItem('volumePrice', JSON.stringify(""));
             productdetailValue('discount', '0.00%');
