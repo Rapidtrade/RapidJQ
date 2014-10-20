@@ -1,7 +1,7 @@
 ﻿CACHE MANIFEST
 # Explicitly cached 'master entries'.....................................
 
-# Version 8.3.41
+# Version 8.3.42
 
 CACHE:
 
@@ -122,6 +122,7 @@ img/sync512.png
 img/zoomin512.png
 img/myhistory128.png
 img/scroll-to-top.png
+img/gray-promo-tag.png
 
 # my scripts
 script/activityform.js

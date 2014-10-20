@@ -439,10 +439,12 @@ function shoppingCartAddItem(item, checkSummary) {
         var isPromotionItem = (item.Type === 'PROMO');
         var quantityReadOnly = (isPromotionItem ? 'readonly' : '');
 	
+        var tableClass = 'shopcartItems' + (isPromotionItem ? ' promoItemTable' : '');
+        
 	g_basketHTML +=
         '<li id="LI' + itemIndex + '"' + alphaFilter.getInstance().addClass(item.Description) + '>' +
         '<a href="#" onclick="pricelistOnItemClicked(\'' + g_pricelistItems.length + '\')">' +
-        '  <table class="shopcartItems" >' +
+        '  <table class="' + tableClass + '" >' +
         '    <tr>' +
         '       <td class="descr">' + item.Description + '</td>' +
         '       <td rowspan="2" align="right" class="quantity">' +
