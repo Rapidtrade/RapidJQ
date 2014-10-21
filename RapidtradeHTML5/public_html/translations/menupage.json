@@ -3,5 +3,7 @@
     "Today": {"pt": "Hoje"},
     "Synchronise": {"pt": "Sincronizar"},
     "Dashboard": {"pt": "Relatórios"},
-    "Call Cycle": {"pt": "Ciclo de clientes"}
+    "Call Cycle": {"pt": "Ciclo de clientes"},
+    "You have unsent items": {"pt": "Você tem dados não enviados"},
+    "please perform a Sync when possible": {"pt": "execute um sincronizar quando possível"}    
 }

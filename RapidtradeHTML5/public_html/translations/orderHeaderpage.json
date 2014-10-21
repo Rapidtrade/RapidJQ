@@ -5,6 +5,8 @@
     "Offline":  {"pt": "Desligado"},
     "Reference": {"pt": "Referência"},
     "Comments": {"pt": "Comentários"},
+    "Money Received": {"pt": "Total em dinheiro dada"},
+    "Change Given": {"pt": "Total em dinheiro tomadas"},    
     "Signature": {"pt": "Assinatura"},
     "Your order was saved OK": {"pt": "Sua encomenda foi guardada ok"},
     "Which size?": {"pt": "Tamanho da impressгo?"},

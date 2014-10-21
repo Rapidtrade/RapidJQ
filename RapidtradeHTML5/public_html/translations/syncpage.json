@@ -8,5 +8,6 @@
     "Support": {"pt": "Linha de ajuda"},
     "Log out": {"pt": "Sair"},
     "Submit": {"pt": "Submeter"},
-    "Enter your password and click OK": {"pt": "Digite a sua senha e clique OK"}
+    "Enter your password and click OK": {"pt": "Digite a sua senha e clique OK"},
+    "User deleted, please sign in with a new user.": {"pt": "Excluída do usuário, por favor entre com um novo usuário."}
 }

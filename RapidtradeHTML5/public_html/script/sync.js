@@ -810,19 +810,20 @@ function syncSaveUser(json) {
  */
 function syncDeleteDB() {
 	
-	g_syncDao.deleteDB(function() {
-					g_syncIsFirstSync = true;
-					g_syncLastUserID = '';
-					$('#userid').val('');
-					$('#password').val('');
-					$('#results tbody').empty();
-					
-					g_syncDao.openDB(function() {
-									g_alert('User deleted, please sign in with a new user.');
-									$('#userid').removeClass('ui-disabled');
-									$('#syncimg').attr('src', 'img/info-48.png');
-									$('#message').text('Enter your password and click OK');
-								});
-				});
+    g_syncDao.deleteDB(function() {
+
+        g_syncIsFirstSync = true;
+        g_syncLastUserID = '';
+        $('#userid').val('');
+        $('#password').val('');
+        $('#results tbody').empty();
+
+        g_syncDao.openDB(function() {
+            g_alert(g_syncPageTranslation.translateText('User deleted, please sign in with a new user.'));
+            $('#userid').removeClass('ui-disabled');
+            $('#syncimg').attr('src', 'img/info-48.png');
+            $('#message').text('Enter your password and click OK');
+        });
+    });
 }
 
