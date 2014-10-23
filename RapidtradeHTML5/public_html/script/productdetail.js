@@ -1032,10 +1032,13 @@ function productdetailOkClicked(checkStock) {
                 
                 var minDiscount = 0, maxDiscount = 100;
                 
-                if (DaoOptions.get('MinDisc') && DaoOptions.get('MaxDisc')) {
+                if (DaoOptions.get('MaxDiscountChangePerc')) {
                     
-                    minDiscount = g_currentCompany()[DaoOptions.getValue('MinDisc')] || 0;
-                    maxDiscount = g_currentCompany()[DaoOptions.getValue('MaxDisc')] || 100;
+                    minDiscount = g_pricelistSelectedProduct.Discount - Number(DaoOptions.getValue('MaxDiscountChangePerc'));
+                    maxDiscount = g_pricelistSelectedProduct.Discount + Number(DaoOptions.getValue('MaxDiscountChangePerc'));
+                    
+                    if (minDiscount < 0)
+                        minDiscount = 0;
                     
                 } else {
                 
