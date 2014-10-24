@@ -84,8 +84,8 @@ var catalogue = (function() {
             
             catalogueHTML += '<td style="vertical-align: bottom;padding:10px 15px;">';                      
             
-            catalogueHTML += '<div style="width:' + Math.floor(700 / itemsPerRow) + 'px;text-align:center;vertical-align:middle"><img src="' + productdetailGetImageUrl(item.ProductID, 180, false) + '"></div>' +
-                    '<table class="catalogueItemDataTable"><tr><td>Item</td><td>' + item.ProductID + '</td></tr>' +
+            catalogueHTML += '<div style="width:' + Math.floor(730 / itemsPerRow) + 'px;text-align:center;vertical-align:middle;height:180px;display:table-cell"><img src="' + productdetailGetImageUrl(item.ProductID, 180, false) + '"></div>' +
+                    '<table class="catalogueItemDataTable" style="width:' +  Math.floor(730 / itemsPerRow) + 'px"><tr><td>Item</td><td>' + item.ProductID + '</td></tr>' +
                     '<tr><td>Descr</td><td>' + item.Description  + '</td></tr>' +
                     '<tr><td>Inn/Ctn Qty</td><td>' + (item.CategoryName || 'N/A')  + '</td></tr>' +
                     '<tr><td>Price (Excl)</td><td>$' + item.Nett  + '</td></tr>' +
