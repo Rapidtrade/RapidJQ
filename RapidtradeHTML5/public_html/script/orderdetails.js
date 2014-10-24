@@ -783,7 +783,7 @@ function orderdetailsFetchOrderItems() {
     g_addProductToBasket(
                     item.ProductID, 
                     item.SupplierID, 
-                    item.AccountID,
+                    (DaoOptions.getValue('AllowHistoryDownbyAccGroup') === 'true' ? g_currentCompany().AccountID : item.AccountID),
                     item.Quantity, 
                     g_currentUser().UserID, 
                     item.Nett, 
