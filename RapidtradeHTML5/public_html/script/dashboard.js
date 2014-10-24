@@ -578,13 +578,15 @@ function fetchActivityList() {
                 var mduedate = new moment(parseInt(item.DueDate.substr(6)));
                 var img = "<img onClick=\"showPopup('al','" + item.Name + "','" + item.EventID + "','" + item.UserID + "','" + item.EventTypeID + "','" + (rowIndex++) + "')\" src='img/comment.png'/>";
                 $("#activityListTable tbody").append("<tr>" +
-											"<td class='nowrap bold'>" + mduedate.format("ddd DD/MM/YY") + "</td>" +
-											"<td class='nowrap'>" + item.UserID + "</td>" +
-											"<td class='nowrap'>" + item.Description + "</td>" +
-											"<td>" + item.Data + "</td>" +
-											"<td>" + item.Notes + "</td>" +
-                                            "<td>" + img + "</td>" +
-											"</tr>");
+                                                    "<td class='nowrap bold'>" + mduedate.format("ddd DD/MM/YY") + "</td>" +
+                                                    "<td class='nowrap'>" + item.UserID + "</td>" +
+                                                    "<td class='nowrap'>" + item.Description + "</td>" +
+                                                    "<td>" + item.Data + "</td>" +
+                                                    "<td>" + item.Notes + "</td>" +
+                                                    "<td>" + img + "</td>" +
+                                                    "<td>" + item.EventID + "</td>" +
+                                                    "<td>" + item.Data + "</td>" +
+                                                    "</tr>");
 
             });
             hideRepeatingValues('#activityListTable tbody tr');
