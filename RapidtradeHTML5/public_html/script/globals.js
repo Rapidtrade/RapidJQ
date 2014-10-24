@@ -527,62 +527,62 @@ function g_html(element, text) {
 
 }
 function g_ajaxget(url, success, error) {
-	
-	if (window.MSApp) {
-		WinJS.xhr({
-			type : 'GET',
-			url : url,
-			jsonpCallback : 'jsonCallback2',
-			headers : {
-				"Content-type" : "application/json",
-				"If-Modified-Since" : new Date()
 
-			},
-			dataType : 'jsonp',
-		}).then(function complete(request) {
-			var json = JSON.parse(request.responseText);
-			success(json);
-		}, function(err) {
+    if (window.MSApp) {
+            WinJS.xhr({
+                    type : 'GET',
+                    url : url,
+                    jsonpCallback : 'jsonCallback2',
+                    headers : {
+                            "Content-type" : "application/json",
+                            "If-Modified-Since" : new Date()
 
-			error(err);
-		});
-	} else {  
-            
+                    },
+                    dataType : 'jsonp',
+            }).then(function complete(request) {
+                    var json = JSON.parse(request.responseText);
+                    success(json);
+            }, function(err) {
+
+                    error(err);
+            });
+    } else {  
+
+        $.ajax({
+                type : 'GET',
+                url : url,
+                jsonpCallback : 'jsonCallback2',
+                dataType : 'json',
+                success:success,
+                error:error,
+                timeout: DaoOptions.getValue('AjaxTimeout', 30000)                  
+        });
+
+        /*
             $.ajax({
                     type : 'GET',
                     url : url,
                     jsonpCallback : 'jsonCallback2',
-                    dataType : 'json',
+                    dataType : 'jsonp',
                     success:success,
-                    error:error,
-                    timeout: DaoOptions.getValue('AjaxTimeout', 30000)                  
-            });
-            
-            /*
-                $.ajax({
-                        type : 'GET',
-                        url : url,
-                        jsonpCallback : 'jsonCallback2',
-                        dataType : 'jsonp',
-                        success:success,
-                        timeout:10000
+                    timeout:10000
 
-                }).error(function() {
-
-                    if (error)
-                        error();
-                });
-             */
-            
-            /*
-            $.get(url,undefined,success,"jsonp")
-            .fail(function(p) {
-                    alert( "Error, you seem to be offline" );
             }).error(function() {
-            alert( "Error, you seem to be offline" );
+
+                if (error)
+                    error();
             });
-            */
-	}
+         */
+
+        /*
+        $.get(url,undefined,success,"jsonp")
+        .fail(function(p) {
+                alert( "Error, you seem to be offline" );
+        }).error(function() {
+        alert( "Error, you seem to be offline" );
+        });
+        */
+    }
 
 }
 

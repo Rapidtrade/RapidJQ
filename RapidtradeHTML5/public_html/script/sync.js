@@ -419,7 +419,7 @@ function syncFetchTable(supplierid, userid, table, method, skip, onSuccess) {
                                                     '&version=' + version + 
                                                     '&skip=' + skip + 
                                                     ('Orders' === table ? '&orderType=' + (g_syncDownloadOrderType || DaoOptions.getValue('DownloadOrderType')) : '') +
-                                                    (('Orders' === table) && ($.mobile.activePage.attr('id') === 'companypage') ? '&accountID=' + g_currentCompany().AccountID : '') +
+                                                    (('Orders' === table) && ($.mobile.activePage.attr('id') === 'companypage') ? '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') : '') +
                                                     ('Orders' === table ? '&CallWeekNumber=' + g_currentCallCycleWeek() : '') +
                                                     ('Orders' === table ? '&CallDayOfWeek=' + todayGetCurrentDay() : '') +
                                                     '&top=' + g_syncNumRows + '&format=json';

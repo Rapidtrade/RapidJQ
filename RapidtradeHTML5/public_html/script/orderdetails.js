@@ -649,7 +649,7 @@ function orderdetailsFetchOrderItems() {
 
     var url = (DaoOptions.getValue('DownloadOrderURL') ? DaoOptions.getValue('DownloadOrderURL') + '/rest/Orders/GetOrderItems' +  (orderdetailsIsSpecialOrder() ? 'ByType3' : '') : (DaoOptions.getValue('LiveHistoryItems', g_restUrl + 'Orders/GetOrderItems')));
 
-    url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&orderID=' + g_orderdetailsCurrentOrder.OrderID + '&skip=0&top=100&format=json';
+    url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') + '&orderID=' + g_orderdetailsCurrentOrder.OrderID + '&skip=0&top=100&format=json';
 
     console.log(url);
 
@@ -847,7 +847,7 @@ function orderdetailsFetchOrderItems() {
 	if (DaoOptions.getValue('MobileLiveStockDiscount') == 'true') {
 		
             var livePriceUrl = DaoOptions.get('LivePriceURL') ? DaoOptions.getValue('LivePriceURL') : g_restUrl + 'prices/getprice3';
-	    var url = livePriceUrl + '?supplierID=' + g_currentUser().SupplierID + '&productID=' + item.ProductID + '&accountid=' + g_currentCompany().AccountID + '&branchid=' + g_currentCompany().BranchID + 
+	    var url = livePriceUrl + '?supplierID=' + g_currentUser().SupplierID + '&productID=' + item.ProductID + '&accountid=' + g_currentCompany().AccountID.replace('&', '%26') + '&branchid=' + g_currentCompany().BranchID + 
 	    			'&quantity=1&gross=' + item.Gross + '&nett=' + item.Nett + '&checkStock=true&checkPrice=true&format=json';
 	 
 	    g_ajaxget(url, onFetchLiveSuccess);

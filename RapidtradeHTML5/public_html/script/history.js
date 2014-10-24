@@ -152,7 +152,7 @@ function historyFetchActivities() {
 
     var toDate = date.getFullYear().toString() + month.toString() + day.toString();
     var fromDate = (date.getFullYear() - 1).toString() + month.toString() + day.toString();
-    var url = g_restUrl + 'Activities2/GetCollection?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&accountID=' + g_currentCompany().AccountID +  '&fromDate=' + fromDate + '&toDate=' + toDate + '&skip=0&top=0&format=json';
+    var url = g_restUrl + 'Activities2/GetCollection?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') +  '&fromDate=' + fromDate + '&toDate=' + toDate + '&skip=0&top=0&format=json';
    
     var success = function (json) {
     	
@@ -311,7 +311,7 @@ function historyFetchOrders() {
 
     var url = DaoOptions.getValue('LiveHistoryOrders') || g_restUrl + 'Orders/GetCollection';
 
-    url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&skip=0&top=100&format=json';
+    url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') + '&skip=0&top=100&format=json';
 
     console.log(url);
 

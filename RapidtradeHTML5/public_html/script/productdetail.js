@@ -396,7 +396,7 @@ function productdetailFetchComponents(componentsType) {
                 break;
         }
 	
-	var url = DaoOptions.getValue('LiveAltProductURL') + '?supplierID=' + g_currentUser().SupplierID + '&accountid=' + g_currentCompany().AccountID +	
+	var url = DaoOptions.getValue('LiveAltProductURL') + '?supplierID=' + g_currentUser().SupplierID + '&accountid=' + g_currentCompany().AccountID.replace('&', '%26') +	
                 '&branchid=' + g_currentCompany().BranchID + '&productID=' + g_pricelistSelectedProduct.ProductID + '&from=' + from + '&skip=0&top=100&format=json';
 	
         console.log(url);
@@ -758,8 +758,8 @@ function productdetailFetchLiveStockDiscount(livePriceUrl, checkUrl) {
 	if (checkUrl)
 		livePriceUrl = DaoOptions.getValue('LivePriceURL') ? DaoOptions.getValue('LivePriceURL') : g_restUrl + 'prices/getprice3';
 	 
-    var url = livePriceUrl + '?supplierID=' + g_currentUser().SupplierID + '&productID=' + g_pricelistSelectedProduct.ProductID + '&accountid=' + g_currentCompany().AccountID + '&branchid=' + g_currentCompany().BranchID + '&quantity=1&gross=' + g_pricelistSelectedProduct.Gross + '&nett=' + g_pricelistSelectedProduct.Nett + '&checkStock=true&checkPrice=true&format=json';
-    
+    var url = livePriceUrl + '?supplierID=' + g_currentUser().SupplierID + '&productID=' + g_pricelistSelectedProduct.ProductID + '&accountid=' + g_currentCompany().AccountID.replace('&', '%26') + '&branchid=' + g_currentCompany().BranchID + '&quantity=1&gross=' + g_pricelistSelectedProduct.Gross + '&nett=' + g_pricelistSelectedProduct.Nett + '&checkStock=true&checkPrice=true&format=json';
+
     console.log(url);
  
     g_ajaxget(url, 

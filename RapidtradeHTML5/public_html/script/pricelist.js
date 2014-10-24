@@ -824,7 +824,7 @@ function pricelistFetchTemplateItems() {
         
 //        g_busy(true);    
 
-        var url = DaoOptions.getValue('MyRangeURL', g_restUrl) + '/Orders/GetOrderItemsByType3?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + 
+        var url = DaoOptions.getValue('MyRangeURL', g_restUrl) + '/Orders/GetOrderItemsByType3?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') + 
                 '&userID=' + g_currentUser().UserID + '&orderType=' + sessionStorage.getItem('lastRangeType'); 
 
         console.log(url);
@@ -898,7 +898,7 @@ function pricelistFetchPricelistLive() {
             
         } else {
 	
-            url = DaoOptions.getValue('LivePriceListSearchURL', g_restUrl + 'PriceLists/GetCollection') + '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + 
+            url = DaoOptions.getValue('LivePriceListSearchURL', g_restUrl + 'PriceLists/GetCollection') + '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') + 
                 (g_pricelistSearchPricelistText ? '&searchString=' + g_pricelistSearchPricelistText : '') + '&offset=' + (g_pricelistCurrentPricelistPage - 1) *  g_numItemsPerPage + 
                 '&noRows=' + g_numItemsPerPage + '&myRange=false&includeCatalogues=false&branchID=' + g_currentCompany().BranchID;
 	
