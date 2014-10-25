@@ -532,6 +532,7 @@ function g_ajaxget(url, success, error) {
             WinJS.xhr({
                     type : 'GET',
                     url : url,
+                    cache : false,
                     jsonpCallback : 'jsonCallback2',
                     headers : {
                             "Content-type" : "application/json",
@@ -551,6 +552,7 @@ function g_ajaxget(url, success, error) {
         $.ajax({
                 type : 'GET',
                 url : url,
+                cache : false,
                 jsonpCallback : 'jsonCallback2',
                 dataType : 'json',
                 success:success,
@@ -591,6 +593,7 @@ function g_ajaxpost(data, url, success, error, completeF) {
 		WinJS.xhr({
 			type : 'POST',
 			url : url,
+                        cache: false,
 			headers : {
 				"Content-type" : "application/x-www-form-urlencoded",
 				"If-Modified-Since" : new Date()
@@ -609,6 +612,7 @@ function g_ajaxpost(data, url, success, error, completeF) {
                         $.ajax({
 				type : 'POST',
 				data : data,
+                                cache : false,
 				url : url,
 				success : success,
 				error : error,
@@ -619,6 +623,7 @@ function g_ajaxpost(data, url, success, error, completeF) {
 			$.ajax({
 				type : 'POST',
 				data : data,
+                                cache : false,
 				url : url,
 				success : success,
 				error : error,
