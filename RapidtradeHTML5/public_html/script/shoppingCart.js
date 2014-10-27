@@ -531,7 +531,7 @@ function shoppingCartAddSummaryItems() {
         for (var j = 0; j < groups.length; ++j) {
             
             var summaryItem = {};
-            summaryItem.Quantity = 0;
+            //summaryItem.Quantity = 0;
 
             var itemArray = g_shoppingCartSummaryItems[headings[i]][groups[j]];
 
@@ -539,7 +539,7 @@ function shoppingCartAddSummaryItems() {
 
                 if (k === 0) {
 
-                    summaryItem = itemArray[k];
+                    summaryItem = jQuery.extend(true, {}, itemArray[k]);  //itemArray[k];
                     summaryItem.ProductID = itemArray[k][DaoOptions.getValue('SummaryReportProdID')];
                     summaryItem.Description = itemArray[k][DaoOptions.getValue('SummaryReportProdDes')];                    
 

@@ -277,10 +277,10 @@ function syncPostData(index) {
             if (jqXHR.status === 200 || jqXHR.status === 0)
                 success(jqXHR);
             else
-                error(jqXHR)
+                error(jqXHR);
     };
     console.log('POST: ' + url + ' data: ' + postData);	
-    g_ajaxpost(postData, url, undefined, undefined, completeF);
+    g_ajaxpost(postData, url, success, error, undefined);
 }
 
 /*
@@ -434,7 +434,7 @@ function syncFetchTable(supplierid, userid, table, method, skip, onSuccess) {
     var error = function (e, a) {
         alert('You seem to have timed out, please check your connection and try again: ' + a);
         $.mobile.hidePageLoadingMsg();
-        console.log(e.message);
+        console.log(e.Message);
     };
 
     g_ajaxget(url, success, error);	
