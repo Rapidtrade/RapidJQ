@@ -533,6 +533,7 @@ function g_ajaxget(url, success, error) {
                     type : 'GET',
                     url : url,
                     cache : false,
+                    crossDomain: true,
                     jsonpCallback : 'jsonCallback2',
                     headers : {
                             "Content-type" : "application/json",
@@ -553,6 +554,7 @@ function g_ajaxget(url, success, error) {
                 type : 'GET',
                 url : url,
                 cache : false,
+                crossDomain: true,
                 jsonpCallback : 'jsonCallback2',
                 dataType : 'json',
                 success:success,
@@ -594,6 +596,7 @@ function g_ajaxpost(data, url, success, error, completeF) {
 			type : 'POST',
 			url : url,
                         cache: false,
+                        crossDomain: true,
 			headers : {
 				"Content-type" : "application/x-www-form-urlencoded",
 				"If-Modified-Since" : new Date()
@@ -613,6 +616,7 @@ function g_ajaxpost(data, url, success, error, completeF) {
 				type : 'POST',
 				data : data,
                                 cache : false,
+                                crossDomain: true,
 				url : url,
 				success : success,
 				error : error,
@@ -624,6 +628,7 @@ function g_ajaxpost(data, url, success, error, completeF) {
 				type : 'POST',
 				data : data,
                                 cache : false,
+                                crossDomain: true,
 				url : url,
 				success : success,
 				error : error,
