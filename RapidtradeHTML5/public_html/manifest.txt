@@ -1,7 +1,7 @@
 ﻿CACHE MANIFEST
 # Explicitly cached 'master entries'.....................................
 
-# Version 8.3.51
+# Version 8.4.01
 
 CACHE:
 
@@ -94,9 +94,7 @@ img/calendarmonth128.png
 img/dashboard128.png
 img/dashboard512.png
 img/lightning512.png
-img/notifications512.png
 img/people128.png
-img/people512.png
 img/people2128.png
 img/receipt-128.png
 img/receipt128.png
@@ -113,12 +111,8 @@ img/lightning128.png
 img/logo.png
 img/map128.png
 img/notifications128.png
-img/people2512.png
 img/search128.png
-img/search512.png
 img/settings128.png
-img/sync512.png
-img/zoomin512.png
 img/myhistory128.png
 img/scroll-to-top.png
 img/gray-promo-tag.png
