@@ -97,7 +97,6 @@ img/people128.png
 img/people2128.png
 img/receipt-128.png
 img/receipt128.png
-img/settings512.png
 img/sync32.png
 img/sync128.png
 img/truck128.png
