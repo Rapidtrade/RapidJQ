@@ -57,7 +57,6 @@ img/info-48.png
 img/logo.png
 img/bg.jpg
 img/bg1.jpg
-img/bg3.jpg
 img/my_activity.png
 img/my_calendar.png
 img/my_territory.png
