@@ -86,7 +86,7 @@ function pricelistOnPageShow() {
     if (g_currentUser().Role && (g_currentUser().Role.toUpperCase().indexOf('CUST') != -1)) {
         g_pricelistCanChangeDiscount = false;	
     } else {
-        g_pricelistCanChangeDiscount = (DaoOptions.getValue('CanChangeDiscount')) && (DaoOptions.getValue('CanChangeDiscount').toLowerCase() == 'true');
+        g_pricelistCanChangeDiscount = (DaoOptions.getValue('CanChangeDiscount', '').toLowerCase() === 'true');
     }
     
     $('#scanbarcodetd').toggleClass('invisible', !g_scandit);

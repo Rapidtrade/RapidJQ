@@ -55,21 +55,24 @@ function productdetailInit() {
 
     $('#discount').toggle(DaoOptions.getValue('ProductDetHideDisc') != 'true');
 
-    if (g_pricelistCanChangeDiscount) {		
-            sessionStorage.removeItem('maxdiscount');
-            var changeid = '.pricelistvalue';
-            if (DaoOptions.getValue('changediscountonly','false') == 'true') changeid = '.changediscountonly'; //check if can only change discount
+    var forbiddenOrderTypes = DaoOptions.getValue('CannotChangeDiscOrdType', '').split(',');
 
-            $(changeid).append('<a data-role="button"  data-transition="pop" data-rel="popup"  data-position-to="window" data-inline="true" href="#valuePopup"><img class="pricelistChangePriceImg" src="img/Money-Dollar-32.png"/></a>');
-            $(changeid).each(function() {			
-                    $(this).click(function() {
-                            var valueType = $(this).attr('id').replace('div', '').replace('value', '');
-                            productdetailEditValue(valueType);
-                    });
-            });
+    if (g_pricelistCanChangeDiscount && $.inArray(sessionStorage.getItem('currentordertype'), forbiddenOrderTypes) === -1) {		
+        
+        sessionStorage.removeItem('maxdiscount');
+        var changeid = '.pricelistvalue';
+        if (DaoOptions.getValue('changediscountonly','false') == 'true') changeid = '.changediscountonly'; //check if can only change discount
 
-            $('p').css('margin-right', '10px');
-            $('img').attr('title', 'Change');
+        $(changeid).append('<a data-role="button"  data-transition="pop" data-rel="popup"  data-position-to="window" data-inline="true" href="#valuePopup"><img class="pricelistChangePriceImg" src="img/Money-Dollar-32.png"/></a>');
+        $(changeid).each(function() {			
+                $(this).click(function() {
+                        var valueType = $(this).attr('id').replace('div', '').replace('value', '');
+                        productdetailEditValue(valueType);
+                });
+        });
+
+        $('p').css('margin-right', '10px');
+        $('img').attr('title', 'Change');
     }
 
     $('.hidden').removeClass('hidden');
