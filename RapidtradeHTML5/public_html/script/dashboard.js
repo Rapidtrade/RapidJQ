@@ -346,6 +346,9 @@ function fetchDailySummary() {
 	var input = '';
 //	gmapurl = '';
 	$.mobile.loading("show");
+    
+    console.log(url);
+    
     $.ajax({
         type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'jsonp',
         success: function (json) {

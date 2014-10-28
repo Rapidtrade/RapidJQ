@@ -1301,19 +1301,13 @@ function pricelistOnSuccessRead(pricelist) {
 function pricelistBindCaptureQuantity() {
 	
 	if (DaoOptions.getValue('AllowPriceQuickCapt') == 'true') {
-	
-		$('.captureQuantity').off('keypress');
-		$('.captureQuantity').on('keypress', function(event) {
-			
-	 	    var keycode = (event.keyCode ? event.keyCode : event.which);
-	 	    
-	 	    if (keycode == '13') {
-	 	    	
-	 	    	var itemIndex = Number(this.id.replace('quantity', ''));
-	 	    	pricelistAddItemToBasket(itemIndex);
-                        $(this).siblings('.quantity').text($(this).val());
-	 	    }
-		});
+
+            $('.captureQuantity').off().on('blur', function() {
+               
+                var itemIndex = Number(this.id.replace('quantity', ''));
+                pricelistAddItemToBasket(itemIndex);
+                $(this).siblings('.quantity').text($(this).val());                
+            });
 	}
 }
 
