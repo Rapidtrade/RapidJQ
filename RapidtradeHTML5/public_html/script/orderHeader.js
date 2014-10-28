@@ -556,6 +556,12 @@ function orderHeaderSaveFormedOrder(position) {
     if (!orderHeaderAreItemsValid())
         return;
     
+    if (sessionStorage.getItem('TPMError') === 'Q2') {
+        
+        sessionStorage.removeItem('TPMError');
+        g_orderHeaderOrder.orderItems = g_tpmjson;
+    }
+    
     var referenceCheckURL = DaoOptions.getValue('OrderCheckReference');
     
     if (referenceCheckURL && g_isOnline(false)) {

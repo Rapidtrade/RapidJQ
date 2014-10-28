@@ -158,6 +158,8 @@ function tpmQualifySuccess() {
                                 
                 if (json._getRslttype === 'Q2') {
 
+                    sessionStorage.setItem('TPMError', 'Q2');
+                    g_tpmjson = json._order.orderItems;
                     $.mobile.changePage('orderHeader.html');
 
                 } else if (!stopOrdering) {
