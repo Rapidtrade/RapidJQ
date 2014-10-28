@@ -153,6 +153,7 @@ function historyFetchActivities() {
     var toDate = date.getFullYear().toString() + month.toString() + day.toString();
     var fromDate = (date.getFullYear() - 1).toString() + month.toString() + day.toString();
     var url = g_restUrl + 'Activities2/GetCollection?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') +  '&fromDate=' + fromDate + '&toDate=' + toDate + '&skip=0&top=0&format=json';
+    console.log(url);
    
     var success = function (json) {
     	
