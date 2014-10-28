@@ -675,9 +675,18 @@
     .printinvoiceHeader, #udsInputsDiv, #udsHeader {
         display: none;
     }
+    
+    .printinvoiceContent {
+        font-weight: bolder;
+    }
 
     .printinvoiceProductListTable { 
+        font-weight: bolder;
         page-break-inside:auto;
+    }
+    
+    .printinvoiceProductListTable th {
+	font-weight:bolder;
     }
 
     .printinvoiceProductListTable thead {
