@@ -221,7 +221,7 @@ function syncPostData(index) {
     		url = g_restUrl + 'Orders/Exists';
     	
         //g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_orderHeaderOrder.OrderID + '&format=json', orderExistsOnSuccess, orderExistsOnError);
-        g_ajaxget(url + '?supplierID=' + g_orderHeaderOrder.SupplierID + '&orderID=' + g_syncPosted[index].JsonObject.OrderID + '&format=json', orderExistsOnSuccess, orderExistsOnError);
+        g_ajaxget(url + '?supplierID=' +  g_syncPosted[index].JsonObject.SupplierID + '&orderID=' + g_syncPosted[index].JsonObject.OrderID + '&format=json', orderExistsOnSuccess, orderExistsOnError);
         
 
     };
