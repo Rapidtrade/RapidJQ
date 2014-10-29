@@ -1,3 +1,4 @@
+var g_printInvoicePrintAgain = false;
 var g_printInvoicePageTranslation = {};
 
 function printinvoiceOnPageBeforeCreate() {
@@ -35,10 +36,19 @@ function printinvoiceInit() {
 }
 
 function printinvoiceBind() {
-	
-    $('#printButton').click(function() {
-        g_print('#printinvoicepage');
-    });
+
+    $('#printButton').click(printinvoiceOnPrint);
+}
+
+function printinvoiceOnPrint() {
+    
+    if (DaoOptions.getValue('PrintInvoiceTwice') === 'true') {
+
+        var printAgain = sessionStorage.getItem('printAgain');
+        sessionStorage.setItem('printAgain', printAgain === null ? 'true' : 'false');            
+    }
+
+    g_print('#printinvoicepage');      
 }
 
 function printinvoiceFetchOrder() {
@@ -175,13 +185,20 @@ function printinvoiceSetAddress(addressType, order) {
 
 function printinvoiceOnContinueClicked() {
 	
+    if ((DaoOptions.getValue('PrintInvoiceTwice') === 'true') && (sessionStorage.getItem('printAgain') !== 'false')) {
+        
+        printinvoiceOnPrint();
+        return;
+    }               
+        
+    sessionStorage.removeItem('printAgain');         
     var nextPage = sessionStorage.getItem('invoiceContinue');
 
     if ('activity' == nextPage) {
 
         sessionStorage.setItem('lastPanelId', 'activityPanel');
         nextPage = 'company.html';
-    }
+    }    
 
     $.mobile.changePage(nextPage);
 }
