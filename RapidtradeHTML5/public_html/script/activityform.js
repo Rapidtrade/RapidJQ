@@ -247,7 +247,16 @@ function activityFormRefresh() {
 
 //PhoneGap
 function activityFormTakePhoto() {
-    var options = { quality: 50, targetWidth: 200, targetHeight: 200, destinationType: Camera.DestinationType.DATA_URL };
+    var options = { quality : 95,
+        destinationType : Camera.DestinationType.DATA_URL,
+        sourceType : Camera.PictureSourceType.CAMERA,
+        //allowEdit : true,
+        encodingType: Camera.EncodingType.JPEG,
+        targetWidth: 500,
+        targetHeight: 500,
+        correctOrientation: true//,
+        //saveToPhotoAlbum: false
+    };
     try {
         if (DaoOptions.getValue('pictureoptions')){
                 options = JSON.parse(DaoOptions.getValue('pictureoptions'));
@@ -256,7 +265,16 @@ function activityFormTakePhoto() {
         }		
     } catch (err){
         alert('Issue with pictureoptions option ' + DaoOptions.getValue('pictureoptions') + '<br/>' + err.message);
-        options = { quality: 50, targetWidth: 200, targetHeight: 200, destinationType: Camera.DestinationType.DATA_URL };
+        options = { quality : 95,
+        destinationType : Camera.DestinationType.DATA_URL,
+        sourceType : Camera.PictureSourceType.CAMERA,
+        //allowEdit : true,
+        encodingType: Camera.EncodingType.JPEG,
+        targetWidth: 500,
+        targetHeight: 500,
+        correctOrientation: true//,
+        //saveToPhotoAlbum: false
+    };
     }
 
     try {
@@ -269,20 +287,25 @@ function activityFormTakePhoto() {
 }
 
 function activityFormTakePhotoOnSuccess(imageData) {
+    setTimeout(function() {
+        g_activityFormPhotoData = imageData;
+        $(g_activityFormParentDivSelector + ' #activityPhotoButton').button().text('Photo Taken - Click To Retake');  
+    }, 0);
     
-    g_activityFormPhotoData = imageData;
-    $(g_activityFormParentDivSelector + ' #activityPhotoButton').button().text('Photo Taken - Click To Retake');
 }
 
 
 function activityFormTakePhotoOnError(errorMessage) {
+    setTimeout(function() {
+        alert('Error:' + errorMessage);
+    }, 0);
     
-    alert('Error:' + errorMessage);
 }
 
 function activityFormSave() {
     
-    if (g_canTakePhoto && ($.trim(g_activityFormNewActivity.Label).match(/\*{2}$/)) && !g_activityFormPhotoData) {
+    if (g_canTakePhoto /*&& ($.trim(g_activityFormNewActivity.Label).match(/\*{2}$/))*/ && !g_activityFormPhotoData &&
+            g_activityFormPhotoData === '') {
         
         $('#activityErrorMessagePopup p').text('You must take a photo.');
         $('#activityErrorMessagePopup').popup('open');
@@ -353,7 +376,7 @@ function activityFormSave() {
         }
 
         if (g_activityFormSelectedActivityType.AllowGPS)		
-                navigator.geolocation ? navigator.geolocation.getCurrentPosition(activityFormSavePosition, activityFormOnPositionError, {timeout:10000}) : g_alert("ERROR: GPS is not supported on your device.");
+                navigator.geolocation ? navigator.geolocation.getCurrentPosition(activityFormSavePosition, activityFormOnPositionError, {maximumAge: 10000, timeout:20000, enableHighAccuracy: true}) : g_alert("ERROR: GPS is not supported on your device.");
         else
                 activityFormSaveStep2();
 
@@ -421,23 +444,29 @@ function activityFormSaveStep2() {
 }
 
 function activityFormSavePosition(position) {
-	
-	g_activityFormNewActivity.Latitude = position.coords.latitude;
+    setTimeout(function() {
+        g_activityFormNewActivity.Latitude = position.coords.latitude;
 	g_activityFormNewActivity.Longitude = position.coords.longitude;
 	activityFormSaveStep2();
+    }, 0);
+	
 }
 
 
 function activityFormOnPositionError(error) {
 	
-	$.mobile.hidePageLoadingMsg();
-	
-	if(error.code == 1)
+	//$.mobile.hidePageLoadingMsg();
+    setTimeout(function() {
+        if(error.code === 1)
 		g_alert("Error: Access to GPS position is denied.");
-	else if( error.code == 2)
+	else if( error.code === 2)
 	    g_alert("Error: Position is unavailable.");
+        else if( error.code === 3)
+            g_alert("Error: Position retrieval timed out.");
 	
-	activityFormSaveStep2();
+        activityFormSaveStep2();
+    }, 0);
+	
 }
 
 function activityFormSaveOffline() {
