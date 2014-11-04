@@ -73,6 +73,10 @@ function productdetailInit() {
 
         $('p').css('margin-right', '10px');
         $('img').attr('title', 'Change');
+        
+    } else {
+        
+        $('.pricelistChangePriceImg').hide();
     }
 
     $('.hidden').removeClass('hidden');
