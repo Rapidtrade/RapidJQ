@@ -218,12 +218,12 @@ function historyActivitiesListView(activities){
         prevdate = date;
         
         if (!activity.Notes) 
-        	activity.Notes = "";
+            activity.Notes = "";
         
         //
         var liStr = '<li id="' + activity.EventID + '"><a class="activityLink">' +
 					'        <p class="ui-li-aside ui-li-desc"><strong>' + duedate.toLocaleTimeString() + '</strong></p>' +
-					'        <h3 class="ui-li-heading">' + activity.Description + '</h3>' +
+					'        <h3 class="ui-li-heading">' + g_companyPageTranslation.translateText(activity.Description) + '</h3>' +
 					'        <p class="ui-li-desc data">' + activity.Data + '</p>' +
 					'        <p class="ui-li-desc notes"><strong>' + activity.Notes + '</strong></p>' +
 					'</a><a onclick="historyShowPhotoForActivity(' + activity.EventID + ')">Show photo</a></li>';

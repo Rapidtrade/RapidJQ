@@ -107,7 +107,7 @@ function tpmPost(type, onSuccess, isOrder) {
             } else {
                 
                 g_busy(false);
-                $('#infoPopup p').text('You must enter a reference before you can continue');
+                $('#infoPopup p').text(NO_REFERENCE_MESSAGE);
                 g_popup('#infoPopup').show(2000);
                 return;
             }

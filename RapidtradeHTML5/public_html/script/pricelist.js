@@ -47,6 +47,7 @@ function pricelistOnPageShow() {
         sessionStorage.removeItem('cachePricelist');
     
     $('#search').val(pricelistIsCheckWarehouseEnabled() ? '' : g_pricelistSearchPricelistText);
+    $('#search').attr('placeholder', g_companyPageTranslation.translateText('Search for products'));
 	        
     pricelistHideFooter();
     overlaySetMenuItems();
@@ -555,7 +556,7 @@ function pricelistShowPricelist() {
 function pricelistDoSearch(searchType) {
 	
 	$('#backbtn').hide();
-	$('#search').attr('placeholder', 'Search for products');
+	$('#search').attr('placeholder', g_companyPageTranslation.translateText('Search for products'));
 	
 	overlayHighlightMenuItem('#' + searchType);
 	

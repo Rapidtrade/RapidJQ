@@ -11,6 +11,9 @@ function productdetailInit() {
     overlayOnItemClick();
     
     $.mobile.showPageLoadingMsg();    
+    
+    $('#quantity').attr('placeholder', g_companyPageTranslation.translateText('Quantity'));
+    g_companyPageTranslation.translateButton('#okbtn', 'OK');
 
     //reset screen
     $('.pricelistBusyImg').show();

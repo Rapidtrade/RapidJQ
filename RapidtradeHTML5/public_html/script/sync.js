@@ -512,7 +512,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
     if (json._Items == null) {
 
         //this table sync is finished, so check if we need more downloads of this table
-        g_append('#results tbody', '<tr><td> ' + table + ' - up to date</td></tr>');
+        g_append('#results tbody', '<tr><td> ' + g_syncPageTranslation.translateText(table) + ' - ' + g_syncPageTranslation.translateText('up to date') + '</td></tr>');
 		//$('#results tbody').append('<tr><td> ' + table + ' - up to date</td></tr>');
     	syncSetLastVersion(table, json._LastVersion);
 		
@@ -531,9 +531,9 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 	} else if (/*('Orders' === table) || */((json._Items.length ) < 100 && (table != 'Pricelists'))) {
 	    //less than 250 records, so move on to the next sync, except pricelist, dont always get back 250
             if (table === 'Options') {
-                g_append('#results tbody', '<tr><td> ' + syncGetLocalTableName(table, method) + ' (' + (skip + json._Items.length) + ') downloaded');
+                g_append('#results tbody', '<tr><td> ' + g_syncPageTranslation.translateText(syncGetLocalTableName(table, method)) + ' (' + (skip + json._Items.length) + ') ' + g_syncPageTranslation.translateText('downloaded'));
             } else {
-                $('#results tbody tr:last td').text(syncGetLocalTableName(table, method) + ' (' + (skip + json._Items.length) + ') downloaded');
+                $('#results tbody tr:last td').text(g_syncPageTranslation.translateText(syncGetLocalTableName(table, method)) + ' (' + (skip + json._Items.length) + ') ' + g_syncPageTranslation.translateText('downloaded'));
             }
 	    syncSetLastVersion(syncGetLocalTableName(table, method), 'Orders' === table ? 0 : json._LastVersion);
             
@@ -548,16 +548,16 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 	        //do the next table
 	        var item = syncNextItem();
 	        try {
-		        g_append('#results tbody', '<tr><td> Fetching new ' + syncGetLocalTableName(item.table, item.method) + '...</td></tr>');
-		        //$('#results tbody').append('<tr><td> Fetching new ' + item.table + '...</td></tr>');
-		        syncFetchTable(item.supplierid, item.userid, item.table, item.method, syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)));	        	
+                    g_append('#results tbody', '<tr><td>' + g_syncPageTranslation.translateText('Fetching') + ' ' + g_syncPageTranslation.translateText(syncGetLocalTableName(item.table, item.method)) + '...</td></tr>');
+                    //$('#results tbody').append('<tr><td> Fetching new ' + item.table + '...</td></tr>');
+                    syncFetchTable(item.supplierid, item.userid, item.table, item.method, syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)));	        	
 	        } catch(err) {
-	        	console.log('Skipping');
+                    console.log('Skipping');
 	        }
 	    }
 	} else {
 	        //get the next 250 records for the table
-	        $('#results tbody tr:last td').text(syncGetLocalTableName(table, method) + ' (' + (skip + json._Items.length) + ') downloaded');
+	        $('#results tbody tr:last td').text(g_syncPageTranslation.translateText(syncGetLocalTableName(table, method)) + ' (' + (skip + json._Items.length) + ') ' + g_syncPageTranslation.translateText('downloaded'));
 	        syncFetchTable(supplierid, userid, table, method, skip + g_syncNumRows); //get next 250 records	    
 	}
 	
@@ -695,8 +695,8 @@ function syncTryToPostData() {
 	
 	if (!g_syncIsFirstSync) {
 		
-	    $('#message').text('Please wait, sending your data');
-	    g_append('#results tbody', '<tr><td>Reading...</td></tr>');
+	    $('#message').text(g_syncPageTranslation.translateText('Please wait, sending your data'));
+	    g_append('#results tbody', '<tr><td>' + g_syncPageTranslation.translateText('Reading...') + '</td></tr>');
 	    syncFetchPostData();
 	    
 	} else {

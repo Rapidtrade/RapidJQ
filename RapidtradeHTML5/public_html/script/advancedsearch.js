@@ -492,7 +492,7 @@ function advancedSearchShowOnlineProducts() {
     g_pricelistCurrentPricelistPage = 1;
     
     $('#search').val('');
-    $('#search').attr('placeholder', 'Search for products');
+    $('#search').attr('placeholder', g_companyPageTranslation.translateText('Search for products'));
     
 	pricelistOnPageShow();
 }

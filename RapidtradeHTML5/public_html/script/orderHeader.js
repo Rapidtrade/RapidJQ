@@ -9,6 +9,7 @@ var g_orderHeaderOrderItemsLoaded = false;
 var g_orderHeaderJsonForm = undefined;
 
 var g_orderHeaderPageTranslation = {};
+var NO_REFERENCE_MESSAGE = 'You must enter a reference before you can continue.'
 
 function orderHeaderOnPageBeforeCreate() {
     
@@ -29,6 +30,20 @@ function orderHeaderOnPageShow() {
         g_orderHeaderPageTranslation.translateButton('#signatureButton', 'Signature'); 
         g_orderHeaderPageTranslation.translateButton('#a4PrinterButton', 'A4 Printer'); 
         g_orderHeaderPageTranslation.translateButton('#smallPrinterButton', 'Small Printer'); 
+        
+        sessionStorage.setItem("currentordertype",sessionStorage.getItem("currentordertype").trim());
+
+        if (g_vanSales  && sessionStorage.getItem("currentordertype") == "repl") {
+             $('#orderLabel').html('Replenishment Details');
+        } else if (sessionStorage.getItem('currentordertype').indexOf('Invoice') != -1) {
+            $('#orderLabel').html(g_orderHeaderPageTranslation.translateText('Invoice Details'));
+        } else if (DaoOptions.getValue('DeliveryOrderType') || (g_vanSales && sessionStorage.getItem("currentordertype") == "grv")) {
+            $('#orderLabel').html((DaoOptions.getValue('DeliveryOrderType') ? 'Delivery' : 'GRV') +  ' Details');
+        } else if (sessionStorage.getItem("currentordertype") == "stock") {
+            $('#orderLabel').html('Stocktake Details');
+        } else {
+            $('#orderLabel').html(sessionStorage.getItem('currentordertype').toUpperCase() + ' Details');
+        }        
     });
     
     var dao = new Dao();
@@ -85,7 +100,7 @@ function orderHeaderOnSignatureButtonClick() {
 
     if (!$('#' + orderType + 'HeaderReference').val() && !shoppingCartIsGroupingEnabled()){ 
 
-        g_alert('You must enter a reference before you can continue');
+        g_alert(g_orderHeaderPageTranslation.translateText(NO_REFERENCE_MESSAGE));
         $('#infoPopup').popup('close');
         return;	
     }        
@@ -184,19 +199,6 @@ function orderHeaderInit() {
     var orderDetails = new Object();
     orderDetails.Reference = "";
     orderDetails.Comments = "";
-    sessionStorage.setItem("currentordertype",sessionStorage.getItem("currentordertype").trim());
-    
-    if (g_vanSales  && sessionStorage.getItem("currentordertype") == "repl") {
-         $('#orderLabel').html('Replenishment Details');
-    } else if (sessionStorage.getItem('currentordertype').indexOf('Invoice') != -1) {
-    	$('#orderLabel').html('Invoice Details');
-    } else if (DaoOptions.getValue('DeliveryOrderType') || (g_vanSales && sessionStorage.getItem("currentordertype") == "grv")) {
-        $('#orderLabel').html((DaoOptions.getValue('DeliveryOrderType') ? 'Delivery' : 'GRV') +  ' Details');
-    } else if (sessionStorage.getItem("currentordertype") == "stock") {
-        $('#orderLabel').html('Stocktake Details');
-    } else {
-    	$('#orderLabel').html(sessionStorage.getItem('currentordertype').toUpperCase() + ' Details');
-    }
     
     if (DaoOptions.getValue('HideAddressInfo') != 'true') {
     	
@@ -283,7 +285,7 @@ function orderHeaderSaveOrder(saveOffline) {
         g_orderHeaderOrder.orderItems = g_orderHeaderOrderItems;
         
         if (g_orderHeaderOrder.Reference.length==0 && !shoppingCartIsGroupingEnabled()){      	
-            g_alert('You must enter a reference before you can continue');
+            g_alert(g_orderHeaderPageTranslation.translateText(NO_REFERENCE_MESSAGE));
             $('#infoPopup').popup('close');
             return;	
         }
@@ -536,7 +538,7 @@ function orderHeaderAreItemsValid() {
             if (g_orderHeaderOrder.orderItems[i].Warehouse && (g_orderHeaderOrder.orderItems[i].Warehouse != g_currentBranch())) {
                 
                 isValid = false;
-                $('#infoPopup p').text('Error: The order items are not created with the current order type.');
+                $('#infoPopup p').text(g_orderHeaderPageTranslation.translateText('Error: The order items are not created with the current order type.'));
                 break;
             }
         }

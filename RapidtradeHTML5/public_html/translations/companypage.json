@@ -18,9 +18,12 @@
     "Activity": {"pt": "Actividade"},
     "Orders": {"pt": "Encomendas"},
     "Shopping Cart": {"pt": "Carrinho de compras"},
+    "Quantity": {"pt": "Quantidade"},
+    "Price": {"pt": "Preço"},
     "Gross": {"pt": "Grosso"},
     "Discount": {"pt": "Desconto"},
     "Nett": {"pt": "Netto"},
+    "OK": {"pt": "Está bem"},
     "Back": {"pt": "Voltar"},
     "Contacts": {"pt": "Contatos"},
     "Map": {"pt": "Mapa"},
@@ -33,5 +36,7 @@
     "Create your call report now by selecting" : {"pt": "Criar um relatуrio de chamada, basta seleccionar"},
     "the desired activities on the left." : {"pt": "as atividades desejadas"},
     "Finished": {"pt": "Acabado"},
-    "We are experiencing a problem with your account. Please contact accounts department": {"pt": "Estamos passando por um problema com a sua conta, entre em contato com departamento de contas"}
+    "We are experiencing a problem with your account. Please contact accounts department": {"pt": "Estamos passando por um problema com a sua conta, entre em contato com departamento de contas"},
+    "Stock": {"pt": "Estoque"},
+    "Search for products": {"pt": "Busca por produtos"}
 }

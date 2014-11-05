@@ -13,5 +13,8 @@
     "A4 Printer": {"pt": "impressão A4"},
     "Small Printer": {"pt": "impressão pequena"},
     "Please wait, processing order": {"pt": "Espere por favor, ordem de processamento"},
-    "Your order was saved locally. Please sync later to send this order.": {"pt": "Seu pedido foi salva localmente, por favor sincronizar mais tarde para salvar esta ordem."}
+    "Your order was saved locally. Please sync later to send this order.": {"pt": "Seu pedido foi salva localmente, por favor sincronizar mais tarde para salvar esta ordem."},
+    "You must enter a reference before you can continue.": {"pt":"Você deve inserir uma referência antes de continuar."},
+    "Invoice Details": {"pt":"Detalhes da factura"},
+    "Error: The order items are not created with the current order type.": {"pt":"Erro: os itens não são criados com o tipo de ordem atual."}
 }

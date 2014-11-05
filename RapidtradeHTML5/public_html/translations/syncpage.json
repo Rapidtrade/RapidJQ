@@ -9,5 +9,22 @@
     "Log out": {"pt": "Sair"},
     "Submit": {"pt": "Submeter"},
     "Enter your password and click OK": {"pt": "Digite a sua senha e clique OK"},
-    "User deleted, please sign in with a new user.": {"pt": "Excluída do usuário, por favor entre com um novo usuário."}
+    "User deleted, please sign in with a new user.": {"pt": "Excluída do usuário, por favor entre com um novo usuário."},
+    "Please wait, sending your data": {"pt": "Aguarde, enviando seus dados"},
+    "Reading...": {"pt": "Leitura..."},
+    "Fetching": {"pt": "Buscar"},
+    "DisplayFields": {"pt": "Campos de exibição"},
+    "Options": {"pt": "Opções"},
+    "ActivityTypes": {"pt": "Tipos de atividade"},
+    "Contacts": {"pt": "Contatos"},
+    "CallCycle": {"pt": "Ciclo de chamada"},
+    "Stock": {"pt": "Estoque"},
+    "Pricelists": {"pt": "Listas de preços"},
+    "Address": {"pt": "Endereço"},
+    "Discount": {"pt": "Desconto"},
+    "DiscountCondition": {"pt": "Condições de desconto"},
+    "DiscountValues": {"pt": "Valores com desconto"},
+    "ProductCategories2": {"pt": "Categorias de produtos"},
+    "up to date": {"pt": "atualizado"},
+    "downloaded": {"pt": "baixado"}
 }
