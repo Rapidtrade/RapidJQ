@@ -943,7 +943,7 @@ function productdetailOkClicked(checkStock) {
     
     var showMessage = function(message) {
         
-        $('#productMessagePopup p').text(message || 'Not available to purchase');
+        $('#productMessagePopup p').text(g_companyPageTranslation.translateText(message || 'Not available to purchase'));
         $('#productMessagePopup').popup('open');
         $('#productMessagePopup #cancelButton').removeClass('invisible').toggle(-9998 === stock);			
         $('#quantity').toggleClass('ui-disabled', -9999 === stock);

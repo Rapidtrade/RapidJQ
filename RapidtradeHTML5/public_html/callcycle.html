@@ -19,6 +19,7 @@
 	 		    $('#callcyclepage').bind("pageinit", function() {
 			    	callCycleOnPageShow();
 			    });
+                            $('#callcyclepage').bind("pagebeforecreate", callCycleOnPageBeforeCreate);
 			</script>
 			<div data-role="header">
 				<img class="logoSml" src="img/logoSml.png"/>
@@ -30,7 +31,7 @@
 				<table>
 					<tr>	
 		            	<td><img class="rtlabelimg" width="64px" height="64px" src="img/car-128.png"/></td>
-		            	<td><h2 style="margin:0 20px 0 20px">Call Cycle Report</h2></td>
+		            	<td><h2 style="margin:0 20px 0 20px" class="multiLanguage">Call Cycle Report</h2></td>
 		            	<td><div id="userSelectDiv" class="invisible"><select id="userSelect" data-mini="true" data-native-menu="false" data-inline="true">
 		            	</select></div></td>
 		        	</tr>
@@ -43,14 +44,14 @@
 					<div id="callcyclePanel" data-role="content" class="invisible">
 						<table class="callcycleTH">
 						<tr>
-						<td class="name">Customer</td>
-						<td class="week">Week</td>
-						<td class="day">Mon</td>
-						<td class="day">Tue</td>
-						<td class="day">Wed</td>
-						<td class="day">Thu</td>
-						<td class="day">Fri</td>
-						<td class="day">Sat</td>
+						<td class="name multiLanguage">Customer</td>
+						<td class="week multiLanguage">Week</td>
+						<td class="day multiLanguage">Mon</td>
+						<td class="day multiLanguage">Tue</td>
+						<td class="day multiLanguage">Wed</td>
+						<td class="day multiLanguage">Thu</td>
+						<td class="day multiLanguage">Fri</td>
+						<td class="day multiLanguage">Sat</td>
 						</tr>
 						</table>
 						<ul id="callcycleReport" data-role="listview" data-inset="true"></ul>

@@ -1,0 +1,11 @@
+{
+    "Call Cycle Report": {"pt": "Relatório ciclo de chamada"},
+    "Mon": {"pt": "Seg"},
+    "Tue": {"pt": "Ter"},
+    "Wed": {"pt": "Qua"},
+    "Thu": {"pt": "Qui"},
+    "Fri": {"pt": "Sex"},
+    "Sat": {"pt": "Sab"},
+    "Week": {"pt": "Semana"},
+    "Customer": {"pt": "Cliente"}
+}

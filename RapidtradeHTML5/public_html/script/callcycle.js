@@ -1,4 +1,11 @@
-﻿var g_callCycleBranchID = '';
+var g_callCycleBranchID = '';
+
+var g_callCyclePageTranslation = {};
+
+function callCycleOnPageBeforeCreate() {
+    
+    g_callCyclePageTranslation = translation('callcyclepage');
+}
 
 function callCycleOnPageShow() {
 	

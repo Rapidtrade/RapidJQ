@@ -1,14 +1,32 @@
-﻿g_callCycleEditSelectedWeek = 1;
+g_callCycleEditSelectedWeek = 1;
 g_callCycleEditVisibleCustomerKeys = [];
 g_callCycleEditDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
+var g_callCycleEditPageTranslation = {};
+
+function callCycleEditOnPageBeforeCreate() {
+    
+    g_callCycleEditPageTranslation = translation('callcycleeditpage');      
+}
+
 function callCycleEditOnPageShow() {
 	
-	if (g_isOnline()) {
-	
-		var dao = new Dao();
-		dao.openDB(function() {callCycleEditInit();});
-	}
+    if (g_isOnline()) {
+
+        var dao = new Dao();
+        dao.openDB(function() {callCycleEditInit();});
+    }
+    
+    g_callCycleEditPageTranslation.safeExecute(function() {
+        
+        g_callCycleEditPageTranslation.translateButton('#save', 'Save');
+        g_callCycleEditPageTranslation.translateButton('#addCustomer', 'Add Customer');
+        g_callCycleEditPageTranslation.translateButton('#removeAll', 'Remove All');
+        g_callCycleEditPageTranslation.translateButton('#closePopup', 'Close');
+        g_callCycleEditPageTranslation.translateButton('#backButton', 'Back');
+        
+        $('#search').attr('placeholder',  g_callCycleEditPageTranslation.translateText('Search for customers...'));
+    });    
 }
 
 function callCycleEditInit() {
@@ -79,17 +97,21 @@ function callCycleEditFetch() {
 
 function callCycleEditGetNextMondayForWeek(week) {
 	
-	  var weekDifference = week - g_currentCallCycleWeek();	  
-	  var now = moment().day(1);
-	  
-	  
-	  if (week < g_currentCallCycleWeek())		  
-		   now.add('weeks', callCycleEditNumberOfWeeks() + weekDifference); 
-	  
-	  else if (week > g_currentCallCycleWeek())			   
-		   now.add('weeks',  weekDifference);
-	  
-	  return now.format("ddd, MMMM Do");
+    var weekDifference = week - g_currentCallCycleWeek();	  
+    var now = moment().day(1);
+
+    if (week < g_currentCallCycleWeek())		  
+        now.add('weeks', callCycleEditNumberOfWeeks() + weekDifference); 
+
+    else if (week > g_currentCallCycleWeek())			   
+        now.add('weeks',  weekDifference);
+    
+    var monthNames = [ "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December" ];
+
+    var month = monthNames[new Date().getMonth()];
+
+    return now.format("ddd, MMMM Do").replace(month, g_callCycleEditPageTranslation.translateText(month)).replace('Mon', g_callCycleEditPageTranslation.translateText('Mon'));
 }
 
 function callCycleEditNumberOfWeeks() {	

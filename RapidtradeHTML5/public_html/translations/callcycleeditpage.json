@@ -1,0 +1,20 @@
+{
+    "Next week": {"pt": "Próxima semana"},
+    "November": {"pt": "Novembro"},
+    "Call Cycle Edit": {"pt": "Editar ciclo de chamada"},
+    "Save": {"pt": "Guardar"},
+    "Add Customer": {"pt": "Adicionar cliente"},
+    "Remove All": {"pt": "Remover todos"},
+    "Search for customers...": {"pt": "Busca de clientes..."},
+    "Only 30 customers displayed, please refine your search": {"pt": "Apenas 30 clientes exibido, por favor refinar sua busca"},
+    "Close": {"pt":"Fechar"},
+    "Mon": {"pt": "Seg"},
+    "Tue": {"pt": "Ter"},
+    "Wed": {"pt": "Qua"},
+    "Thu": {"pt": "Qui"},
+    "Fri": {"pt": "Sex"},
+    "Sat": {"pt": "Sab"},
+    "Week": {"pt": "Semana"},
+    "Customer": {"pt": "Cliente"},
+    "Back": {"pt": "Voltar"}    
+}
