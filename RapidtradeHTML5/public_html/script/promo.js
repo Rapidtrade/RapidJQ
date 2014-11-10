@@ -56,7 +56,7 @@ var promo = (function(){
              } 
              
              // TEST
-             useTPM = true;
+//             useTPM = true;
              
              //if promo not for this customer, then move on to next promo 
              if (!useTPM ){ 
@@ -95,7 +95,7 @@ var promo = (function(){
                                     //NB. For below to work, you may need to add product.categoryname to shopping cart fields. 
                                     
                                     // TEST
-                                    if (json.Type !== 'PROMO' /*json[tpmcond.ObjectProperty] === tpmval[tpmcond.TPMField]*/){ 
+                                    if (/*json.Type !== 'PROMO'*/ json[tpmcond.ObjectProperty] === tpmval[tpmcond.TPMField]){ 
                                         qty += json.Quantity; 
                                     } 
                                 } , 
