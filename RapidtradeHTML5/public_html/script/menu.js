@@ -180,14 +180,24 @@ function menuInit(){
 	dao.get('Users', 
                 'user',
                 function(user) {
+                    
+                    var syncDay = Number(localStorage.getItem('syncDay'));
+                    var lastSyncDate = localStorage.getItem('lastSyncDate'); 
+                    
+                    var isSyncDayValid = syncDay > -1 && syncDay < 7; 
+                    
+                    if ((isSyncDayValid && (new Date(lastSyncDate).getDay() !== syncDay)) || (!isSyncDayValid && (lastSyncDate !== g_today()))) {
 
-                    if (localStorage.getItem('lastSyncDate') != g_today()) {
-                        
-                        alert('You haven\'t synchronised today. You should do so now to keep up to date. After clicking OK, click on the Syncronise button');
-                        
+                        alert('You haven\'t synchronised today. You should do so now to keep up to date.');
+
                         dao.clear('Orders');
-                        dao.clear('OrderItems');
+                        dao.clear('OrderItems'); 
+                        
+                        $.mobile.changePage('sync.html', { transition: "none"});
+                        sessionStorage.setItem('disableMenuButton', 'true');
+                        return;
                     }
+                        
 
                     sessionStorage.setItem('currentUser', JSON.stringify(user));
                     g_callCycleCurrentUserID = user.UserID;

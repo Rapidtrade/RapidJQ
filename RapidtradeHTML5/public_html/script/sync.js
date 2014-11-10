@@ -32,10 +32,12 @@ function syncOnPageShow() {
 
     g_syncPageTranslation.safeExecute(function() {
         
-        g_syncPageTranslation.translateButton('#signinagain', 'Log out');
-         
+        g_syncPageTranslation.translateButton('#signinagain', 'Log out');         
         g_syncPageTranslation.translateButton('#syncButton', 'Submit');
     });
+    
+    if (sessionStorage.getItem('disableMenuButton') === 'true')
+         $('#syncMenu').addClass('ui-disabled');
 
     //first open database and it will call init
     g_syncDao = new Dao();
@@ -77,8 +79,8 @@ function syncBind() {
     $('#syncMenu').unbind();
     $('#syncMenu').click(function (event) {
 
-   g_loadMenu();
-});
+        g_loadMenu();
+    });
 }
 
 
@@ -574,6 +576,10 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
                         syncAddSync(g_syncSupplierID, g_syncUserID, 'Discount', 'Sync4', 0);
                         syncAddSync(g_syncSupplierID, g_syncUserID, 'DiscountCondition', 'Sync4', 0);
                         syncAddSync(g_syncSupplierID, g_syncUserID, 'DiscountValues', 'Sync4', 0);
+                    }
+                    
+                    if (item.Name === 'ForceWeeklyUpdate') {
+                        localStorage.setItem('syncDay', item.Value);
                     }
                     
                     if (item.Name == 'DownloadOrderURL')
