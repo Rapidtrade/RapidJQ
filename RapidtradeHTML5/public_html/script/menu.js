@@ -186,7 +186,7 @@ function menuInit(){
                     
                     var isSyncDayValid = syncDay > -1 && syncDay < 7; 
                     
-                    if ((isSyncDayValid && (new Date(lastSyncDate).getDay() !== syncDay)) || (!isSyncDayValid && (lastSyncDate !== g_today()))) {
+                    if ((isSyncDayValid && (new Date().getDay() === syncDay) && (new Date(lastSyncDate).getDay() !== syncDay)) || (!isSyncDayValid && (lastSyncDate !== g_today()))) {
 
                         alert('You haven\'t synchronised today. You should do so now to keep up to date.');
 
