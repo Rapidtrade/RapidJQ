@@ -1084,12 +1084,22 @@ function productdetailOkClicked(checkStock) {
 
 function productdetailIsPackPrice() {
 	
-	return g_isPackSizeUnitValid(g_pricelistSelectedProduct.Unit);
+    return g_isPackSizeUnitValid(g_pricelistSelectedProduct.Unit);
 }
 
 function productdetailSave(qty, type, product) {
     
     var userField01 = ('Credit' === type) ? $('#reason').attr('value') : product.UserField01;
+    
+    var warehouse = '';
+    
+    if (DaoOptions.getValue('MobileSelectWhOnDetail') === 'true') {
+        
+        if (DaoOptions.getValue('MobileSelWhOnDetailUseOrig') === 'true')  
+            warehouse = g_currentCompany().BranchID;
+        else            
+            warehouse = $('#whChoiceDiv select option:selected').val() && $.trim($('#whChoiceDiv select option:selected').val().split(':')[0]);        
+    }
 	
     g_addProductToBasket(
         product.ProductID,
@@ -1107,7 +1117,7 @@ function productdetailSave(qty, type, product) {
         product.RepChangedPrice ? productdetailValue('discount') : '',
         productdetailIsPackPrice() ? g_pricelistSelectedProduct.Unit : '',
         product.UserField02,
-        DaoOptions.getValue('MobileSelectWhOnDetail') == 'true' ? $('#whChoiceDiv select option:selected').val() && $.trim($('#whChoiceDiv select option:selected').val().split(':')[0]) : '',
+        warehouse,
         product.VAT,
         productdetailGetStock(),
         product.CategoryName,
