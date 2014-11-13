@@ -1,5 +1,12 @@
 {
     "Dashboard": {"pt": "Relatórios "},
+    "User Summary": {"pt": "Resumo do usuário"},
+    "Monthly Summary": {"pt": "Resumo mensal"},
+    "Daily Summary": {"pt": "Resumo diário"},
+    "Activity List": {"pt": "Lista de atividades"},
+    "Calendar": {"pt": "Calandra"},
+    "Call Cycle Report": {"pt": "Relatório ciclo de chamada"},
+    "Order Count by User": {"pt": "Contagem de ordem por usuário"},
     "User Daily Sales Detail": {"pt": "Detalhe diário de vendas"},
     "Select a user...": {"pt": "Escolher um usuário"}
 }

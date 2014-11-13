@@ -320,7 +320,11 @@ function shoppingCartInit() {
         $('#shoppingCartLabel').html('Stocktake Cart');
     } else if (sessionStorage.getItem("currentordertype") == "pod") {
         $('#shoppingCartLabel').html('Proof of Delivery');    
-    } else {
+    } else if (sessionStorage.getItem('currentordertype').indexOf('Invoice') != -1) {
+        
+        $('#shoppingCartLabel').html(sessionStorage.getItem('currentordertype').replace('Invoice', g_shoppingCartPageTranslation.translateText('Invoice')));   
+    }    
+    else {
     	var orderType = sessionStorage.getItem('currentordertype');  //ordertypecaption');
     	$('#shoppingCartLabel').html(g_shoppingCartPageTranslation.translateText((orderType ? orderType : 'Shopping') + ' Cart'));
     }

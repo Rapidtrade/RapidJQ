@@ -7,5 +7,6 @@
     "Total Excl:": {"pt": "Tot sem Taxa"},
     "VAT:": {"pt": "Taxa"},
     "Total Incl:": {"pt": "Tot como Taxa"},
-    "Are you sure you want to clear the shopping cart?": {"pt": "Vocк tem certeza que vocк deseja limpar o carrinho de compras?"}
+    "Are you sure you want to clear the shopping cart?": {"pt": "Vocк tem certeza que vocк deseja limpar o carrinho de compras?"},
+    "Invoice": {"pt": "Factura"}
 }
