@@ -43,6 +43,15 @@
             			<img id="syncimg" src="img/info-48.png"><div id="message" class="grvInfoText"><br>There are no replenishments.</div>
            			 </div>
                 </div>
+                <div data-role="popup" id="companyInfoPopup" class="ui-content" data-history="false" style="max-height:500px; min-width:500px; overflow:auto;" >
+                    <form id="companyform">
+                    </form>      
+                    <div class="ui-grid-solo">
+                        <div class="ui-block-a">
+                             <a href="#page1" data-role="button">OK</a>
+                        </div>
+                    </div                                        
+                </div>                  
             </div>
         </div>
         <div data-role="page" id="orderdetails">
@@ -58,8 +67,7 @@
 	             	<ul id="orderitemlist" data-inset="true"  data-role="listview" data-theme="b" data-divider-theme="b" class="ui-listview ui-corner-all ui-shadow"></ul>                   	 	
 	            </div>
 		    </div>
-        </div>   
-   
+            </div>            
     </body>
 </html>
 

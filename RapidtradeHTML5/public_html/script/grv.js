@@ -1,22 +1,24 @@
-﻿/**
+/**
  * Always call openDB, which in turn call's init
  * This is called from script tag inside page
  */
 function grvOnPageShow() {
-	
-	if (sessionStorage.getItem("currentordertype")=='pod') {
-		$('#grvTitle').html('Deliveries');
-		$('#grvInfo').hide();
-		$('#message').html('<br>There are no deliveries.');
-		if (grvDeliveriesFromCache()) {
-		    grvBind();
-		    return;
-		}
-	}
-	if (g_isOnline()) {	
-	    var dao = new Dao();
-	    dao.openDB(function (user) { grvInit(); });
-	}
+    	
+    if (sessionStorage.getItem("currentordertype")==='pod') {
+            $('#grvTitle').html('Deliveries');
+            $('#grvInfo').hide();
+            $('#message').html('<br>There are no deliveries.');
+            if (grvDeliveriesFromCache()) {
+                grvBind();
+                return;
+            }
+    }
+    
+    if (g_isOnline()) {	
+        var dao = new Dao();
+        dao.openDB(function (user) { grvInit(); });
+    }     
+        
     grvBind();
 }
 
@@ -25,7 +27,7 @@ function grvOnPageShow() {
  */
 function grvBind() {
 	
-	$('#grvToMenu').unbind();
+    $('#grvToMenu').unbind();
     $('#grvToMenu').click(function () {
        g_loadMenu();
    });
@@ -38,17 +40,17 @@ function grvBind() {
 
 function grvDeliveriesFromCache() {
 	
-	var cachedDeliveryArray = JSON.parse(localStorage.getItem('CacheDeliveryOrders')) || [];
-	
-	if (cachedDeliveryArray.length)
-		grvOrderListView(cachedDeliveryArray);
-	
-	return cachedDeliveryArray.length;
+    var cachedDeliveryArray = JSON.parse(localStorage.getItem('CacheDeliveryOrders')) || [];
+
+    if (cachedDeliveryArray.length)
+            grvOrderListView(cachedDeliveryArray);
+
+    return cachedDeliveryArray.length;
 }
 
 function grvInit() {
 	
-	g_iPadBar('#grvpage');
+    g_iPadBar('#grvpage');
     type = sessionStorage.getItem("currentordertype");
     $('#noorders').hide();
     
@@ -259,16 +261,45 @@ function grvOrderListView(orders) {
         if (!order.ERPStatus) 
         	order.ERPStatus = "";
         
-        orderList = orderList +   '<li data-theme="c">' +
-        							'	<a onclick="grvSendOrderItemsToBasket(\'' + order.OrderID + '\', \'' + order.AccountID +'\')">' + 
-        							'        <p class="ui-li-aside ui-li-desc"><strong>' + createDateString + '</strong>PM</p>' +
-        							'        <h3 class="ui-li-heading">' + order.DeliveryName + '</h3>' +
-        							'		 <p>' + order.Reference + '</p>' + 	
-        							'   </a>' +      							
-        							'</li>';   		
+        orderList = orderList + '<li data-theme="c">' +
+                                '	<a onclick="grvSendOrderItemsToBasket(\'' + order.OrderID + '\', \'' + order.AccountID +'\')">' + 
+                                '        <p class="ui-li-aside ui-li-desc"><strong>' + createDateString + '</strong>PM</p>' +
+                                '        <h3 class="ui-li-heading">' + order.DeliveryName + '</h3>' +
+                                '		 <p>' + order.Reference + '</p>' + 	
+                                '   </a>' +     
+                                '	<a onclick="grvShowCompanyInfo(\'' + order.AccountID + '\')" data-role="button" data-transition="pop" data-rel="popup" data-position-to="window" data-inline="true"' +
+                                '	class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
+                                '	<span class="ui-btn-inner ui-btn-corner-all">' +
+                                '	<span class="ui-icon ui-icon-plus ui-icon-shadow">Company Info</span>' +
+                                '	</span>' +
+                                '	</a>' +                                
+                                '</li>';   		
     }
     
     g_append('#orderlist', orderList);
    // $('#orderlist').append(orderList);
     $('#orderlist').listview('refresh');  
+}
+
+function grvShowCompanyInfo(accountId) { 
+    
+    g_busy(true);
+    
+    var dao = new Dao();
+    dao.index('Companies',
+        accountId,
+        'AccountID',
+         function (company) { 
+             
+            sessionStorage.setItem('currentCompany', JSON.stringify(company)); 
+            
+            var jsonForm = new JsonForm();
+            jsonForm.oncomplete = function () {                
+                
+                g_popup('#companyInfoPopup').show();
+                g_busy(false);
+            };            
+            jsonForm.show(g_currentUser().SupplierID, '#companyform', g_currentCompany(), 'Company');                        
+         },
+    undefined, undefined);       
 }

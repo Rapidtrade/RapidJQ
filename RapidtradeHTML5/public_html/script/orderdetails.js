@@ -731,7 +731,7 @@ function orderdetailsFetchOrderItems() {
             '	<span class="ui-btn-inner ui-btn-corner-all">' +
             '	<span class="ui-icon ui-icon-plus ui-icon-shadow">Send to Basket</span>' +
             '	</span>' +
-            '	</a></a>' +
+            '	</a>' +
             '	</li>');
 
         g_orderdetailsOrderItems.push(orderItem);

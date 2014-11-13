@@ -929,8 +929,8 @@ function Dao() {
                 if (ponsuccessread != undefined) {
                     try {
                     	var len = results.rows.length, i;
-                    	if (!len) {                    		
-                    		ponerror(key);
+                    	if (!len && ponerror) {                    		
+                            ponerror(key);
                     	}                    	
                     	for (i = 0; i < len; i++) {
                             ponsuccessread(JSON.parse(results.rows.item(i).json));
@@ -938,7 +938,7 @@ function Dao() {
                         if (poncomplete != undefined) 
                         	poncomplete();
                     } catch (error) {
-                        if (ponerror != undefined) 
+                        if (ponerror) 
                         	ponerror("No record found");
                     };
                 };
