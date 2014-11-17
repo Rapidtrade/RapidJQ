@@ -354,6 +354,7 @@ function syncAll() {
     syncAddSync(g_syncSupplierID, g_syncUserID, 'Stock', 'Sync4', 0);    
     syncAddSync(g_syncSupplierID, g_syncUserID, 'Pricelists', 'Sync5', 0);
     syncAddSync(g_syncSupplierID, g_syncUserID, 'Address', 'Sync4', 0);
+    syncAddSync(g_syncSupplierID, null, 'Route', 'Sync2', true);
     
     if (g_vanSales) {
     	
@@ -364,7 +365,7 @@ function syncAll() {
        
     var item = g_syncTables[g_syncCount];
     syncTableCount = 0;
-    syncFetchTable(item.supplierid,item.userid,item.table,item.method,syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)));
+    syncFetchTable(item.supplierid,item.userid,item.table,item.method,syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)), undefined, item.newRest);
 
     sessionStorage.setItem('cacheMyTerritory', null);
     sessionStorage.setItem('cachePricelist', null);
@@ -374,13 +375,17 @@ function syncAll() {
 /*
  * add the sync required
  */
-function syncAddSync(supplierid, userid, table, method){
+function syncAddSync(supplierid, userid, table, method, useNewRest){
     
     var syncTable= {};
     syncTable.supplierid = supplierid;
     syncTable.userid = userid;
     syncTable.table = table;
     syncTable.method = method;
+    
+    if (useNewRest)
+        syncTable.newRest = useNewRest;
+    
     g_syncTables.push(syncTable);
 }
 
@@ -392,7 +397,7 @@ function syncGetLocalTableName(table, method) {
 /*
  * Fetch method to get each individual table from the server
  */
-function syncFetchTable(supplierid, userid, table, method, skip, onSuccess) {
+function syncFetchTable(supplierid, userid, table, method, skip, onSuccess, newRest) {
 		
     // due the optional table sync, we always need to sync all data from Options table
 
@@ -414,20 +419,30 @@ function syncFetchTable(supplierid, userid, table, method, skip, onSuccess) {
     }; 
     
     var isSpecialTable = ($.inArray(table, Object.keys(baseURLInfo)) !== -1);
+    
+    var url = '';
+    
+    if (newRest) {
+        
+        url = g_restPHPUrl + 'GetStoredProc/Sync?StoredProc=usp_' +  table.toLowerCase() + '_' +  method.toLowerCase() + '&table=' + table.toLowerCase() + '&params=(' + supplierid + '%7C' + version + ')';
+        
+    } else {
 
-    var url = baseURLInfo[isSpecialTable ? table : 'Default']  + table + '/' + method +
-                                                    '?SupplierID=' + supplierid + 
-                                                     userParameter + 
-                                                    '&version=' + version + 
-                                                    '&skip=' + skip + 
-                                                    ('Orders' === table ? '&orderType=' + (g_syncDownloadOrderType || DaoOptions.getValue('DownloadOrderType')) : '') +
-                                                    (('Orders' === table) && ($.mobile.activePage.attr('id') === 'companypage') ? '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') : '') +
-                                                    ('Orders' === table ? '&CallWeekNumber=' + g_currentCallCycleWeek() : '') +
-                                                    ('Orders' === table ? '&CallDayOfWeek=' + todayGetCurrentDay() : '') +
-                                                    '&top=' + g_syncNumRows + '&format=json';
+        url = baseURLInfo[isSpecialTable ? table : 'Default']  + table + '/' + method +
+                                                        '?SupplierID=' + supplierid + 
+                                                         userParameter + 
+                                                        '&version=' + version + 
+                                                        '&skip=' + skip + 
+                                                        ('Orders' === table ? '&orderType=' + (g_syncDownloadOrderType || DaoOptions.getValue('DownloadOrderType')) : '') +
+                                                        (('Orders' === table) && ($.mobile.activePage.attr('id') === 'companypage') ? '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') : '') +
+                                                        ('Orders' === table ? '&CallWeekNumber=' + g_currentCallCycleWeek() : '') +
+                                                        ('Orders' === table ? '&CallDayOfWeek=' + todayGetCurrentDay() : '') +
+                                                        '&top=' + g_syncNumRows + '&format=json';
+    }
+    
     console.log(url);
     var success = function (json) {
-        syncSaveToDB(json, supplierid, userid, version, table, method, skip);
+        syncSaveToDB(json, supplierid, userid, version, table, method, skip, newRest);
         
         if (onSuccess)
             onSuccess();
@@ -489,7 +504,7 @@ function syncNextItem() {
  * Any time we save data, it needs to be in a save<...> method
  * This method saves the sync data to local database
  */
-function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
+function syncSaveToDB(json, supplierid, userid, version, table, method, skip, newRest) {
     
     if (('Companies' === table) && (0 === skip) && (0 === version) && (json._Items === null)) {
         
@@ -527,10 +542,10 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 		  
 		} else {	// go on to the next table
 			var item = syncNextItem();
-			if (item) syncFetchTable(item.supplierid,item.userid,item.table,item.method,syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)));
+			if (item) syncFetchTable(item.supplierid,item.userid,item.table,item.method,syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)), undefined, item.newRest);
 			return;
 		}
-	} else if (/*('Orders' === table) || */((json._Items.length ) < 100 && (table != 'Pricelists'))) {
+	} else if (newRest || /*('Orders' === table) || */((json._Items.length ) < 100 && (table != 'Pricelists'))) {
 	    //less than 250 records, so move on to the next sync, except pricelist, dont always get back 250
             if (table === 'Options') {
                 g_append('#results tbody', '<tr><td> ' + g_syncPageTranslation.translateText(syncGetLocalTableName(table, method)) + ' (' + (skip + json._Items.length) + ') ' + g_syncPageTranslation.translateText('downloaded'));
@@ -552,7 +567,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 	        try {
                     g_append('#results tbody', '<tr><td>' + g_syncPageTranslation.translateText('Fetching') + ' ' + g_syncPageTranslation.translateText(syncGetLocalTableName(item.table, item.method)) + '...</td></tr>');
                     //$('#results tbody').append('<tr><td> Fetching new ' + item.table + '...</td></tr>');
-                    syncFetchTable(item.supplierid, item.userid, item.table, item.method, syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)));	        	
+                    syncFetchTable(item.supplierid, item.userid, item.table, item.method, syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)), undefined, item.newRest);	        	
 	        } catch(err) {
                     console.log('Skipping');
 	        }
@@ -560,7 +575,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip) {
 	} else {
 	        //get the next 250 records for the table
 	        $('#results tbody tr:last td').text(g_syncPageTranslation.translateText(syncGetLocalTableName(table, method)) + ' (' + (skip + json._Items.length) + ') ' + g_syncPageTranslation.translateText('downloaded'));
-	        syncFetchTable(supplierid, userid, table, method, skip + g_syncNumRows); //get next 250 records	    
+	        syncFetchTable(supplierid, userid, table, method, skip + g_syncNumRows, undefined, newRest); //get next 250 records	    
 	}
 	
     try {

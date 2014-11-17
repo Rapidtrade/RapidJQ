@@ -500,7 +500,12 @@ function Dao() {
                 objectStore = db.createObjectStore("TPM", { keyPath: "key" });
             } catch (error) {
                 console.log("Already exists");
-            }              
+            } 
+            try {
+                objectStore = db.createObjectStore("Route", { keyPath: "key" });
+            } catch (error) {
+                console.log("Already exists");
+            }             
         };
         request.onsuccess = function (event) {
             db = request.result;
@@ -1044,6 +1049,7 @@ function Dao() {
             tx.executeSql('CREATE TABLE IF NOT EXISTS OrderItems (keyf, json, index1, index2, index3, index4, primary key (keyf))');               
             tx.executeSql('CREATE TABLE IF NOT EXISTS Unsent (keyf, json, index1, index2, index3, index4, primary key (keyf))');
             tx.executeSql('CREATE TABLE IF NOT EXISTS TPM (keyf, json, index1, index2, index3, index4, primary key (keyf))');
+            tx.executeSql('CREATE TABLE IF NOT EXISTS Route (keyf, json, index1, index2, index3, index4, primary key (keyf))');
             
             var tables = ['Pricelists', 'ProductCategories2', 'ProductCategory2Link'];
             for ( var i = 0; i < tables.length; i++)			
@@ -1078,7 +1084,8 @@ function Dao() {
             tx.executeSql('drop table if EXISTS Orders  ');   
             tx.executeSql('drop table if EXISTS OrderItems  ');               
             tx.executeSql('drop table if EXISTS Unsent  ');
-            tx.executeSql('drop table if EXISTS TPM  ');            
+            tx.executeSql('drop table if EXISTS TPM  ');
+            tx.executeSql('drop table if EXISTS Route  ');
         });
         
         if (pondbdeleted != undefined) 
