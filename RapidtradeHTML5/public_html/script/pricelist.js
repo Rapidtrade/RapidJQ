@@ -803,7 +803,7 @@ function pricelistFetchTemplateItems() {
         
         var newPricelist = {};
 
-        newPricelist.b = pricelist.BarCode;
+        newPricelist.b = pricelist.Barcode;
         newPricelist.cn = pricelist.CategoryName;
         newPricelist.des = pricelist.Description;
         newPricelist.d = pricelist.Discount;
@@ -973,7 +973,7 @@ function pricelistFetchPricelistLiveOnSuccess(json) {
                         
 			var newPricelist = {};
                         
-                        newPricelist.b = pricelist.BarCode;
+                        newPricelist.b = pricelist.Barcode;
                         newPricelist.cn = pricelist.CategoryName;
 			newPricelist.des = pricelist.Description;
 			newPricelist.d = pricelist.Discount;
@@ -1091,7 +1091,7 @@ function pricelistNewInstance(product) {
 	
 	var newProduct = [];
 	
-        newProduct.BarCode = product.b;
+        newProduct.Barcode = product.b;
 	newProduct.CategoryName = product.cn;
 	newProduct.Deleted = product.del;
 	newProduct.Description = product.des;
@@ -1599,7 +1599,7 @@ function pricelistGetNewQuantityForItem(itemIndex) {
 
 function pricelistStoreItemData(itemIndex) {
 
-    g_pricelistSelectedProduct.BarCode = g_pricelistItems[itemIndex].b;
+    g_pricelistSelectedProduct.Barcode = g_pricelistItems[itemIndex].b;
     g_pricelistSelectedProduct.Cost = g_pricelistItems[itemIndex].c;
     g_pricelistSelectedProduct.CategoryName = g_pricelistItems[itemIndex].cn;
     g_pricelistSelectedProduct.Deleted = g_pricelistItems[itemIndex].del;

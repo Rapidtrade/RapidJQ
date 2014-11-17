@@ -89,7 +89,7 @@ var catalogue = (function() {
                     '<tr><td>Descr</td><td>' + item.Description  + '</td></tr>' +
                     '<tr><td>Inn/Ctn Qty</td><td>' + (item.CategoryName || 'N/A')  + '</td></tr>' +
                     '<tr><td>Price (Excl)</td><td>$' + item.Nett  + '</td></tr>' +
-                    '<tr><td>Bar Code</td><td>' + (item.BarCode || 'N/A')  + '</td></tr></table>';
+                    '<tr><td>Bar Code</td><td>' + (item.Barcode || 'N/A')  + '</td></tr></table>';
             
             catalogueHTML += '</td>';
             

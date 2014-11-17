@@ -800,7 +800,7 @@ function orderdetailsFetchOrderItems() {
                     item.VAT,
                     item.Stock,
                     item.CategoryName,
-                    item.BarCode,
+                    item.Barcode,
                     item.UserField03,
                     item.UserField04,
                     item.UserField05
