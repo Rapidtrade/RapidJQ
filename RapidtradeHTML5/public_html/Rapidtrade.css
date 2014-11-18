@@ -652,6 +652,11 @@
     display: none;
 }
 
+.printinvoiceContent .pageNumber {
+    
+    display: none;
+}
+
 #complexProductTable {
     
     border-collapse: collapse;
@@ -704,7 +709,7 @@
    .printinvoiceProductListTable tr { 
         page-break-inside:avoid; 
         page-break-after:auto 
-    }    
+    }        
     
     .printinvoiceContent .page:not(:first-child) .header {
 
@@ -714,7 +719,18 @@
     .printinvoiceContent .page:not(:last-child) .footer {
 
         display: block;
-    }    
+        text-align: right;
+    } 
+    
+    .printinvoiceContent .pageNumber {
+
+        display: block;
+        margin-top: 110px;
+        margin-right: auto;
+        margin-left: auto;
+        width:95%;
+        text-align: right;
+    }     
 }
 
 @page {margin: 0;}

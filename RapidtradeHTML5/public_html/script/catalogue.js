@@ -101,6 +101,8 @@ var catalogue = (function() {
         
         catalogueHTML += '</table></div>';        
         
+        catalogueHTML += '<div class="pageNumber">' + 'Page ' + (+pageIndex + 1) + '</div>';
+        
         var footerImageURL = DaoOptions.getValue('QuoteFooter');
         catalogueHTML += '<div class="footer">' + (footerImageURL ? '<img src="' + footerImageURL + '" style="width:100%">' : '') + '</div></div>';
     }   
