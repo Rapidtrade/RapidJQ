@@ -12,7 +12,7 @@ var g_logo = 'img/rapidtrade-logo-small.png';
 //var g_restPHPUrl = "www.super-trade.co.za:8083/rest/index.php";
 
 
-var g_url = "https://app1.rapidtrade.biz/";
+var g_url = "https://app.rapidtrade.biz/";
 var g_restUrl = g_url + "rest/";
 var g_vanSales = false;
 var g_restPHPUrl = "http://107.21.55.154/rest/index.php/";

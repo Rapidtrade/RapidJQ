@@ -723,7 +723,7 @@ function orderHeaderOnOrderExistsSuccess(json) {
                 
                 if (json._ErrorType !== 'E') {
                 
-                    if (DaoOptions.getValue('OrderRejectType').split(',').indexOf(g_orderHeaderOrder.Type) === -1)  
+                    if (DaoOptions.getValue('OrderRejectType','').indexOf(g_orderHeaderOrder.Type) === -1)  
                         g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
                     else
                         $.mobile.changePage("shoppingCart.html");

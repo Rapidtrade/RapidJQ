@@ -376,7 +376,7 @@ function activityFormSave() {
         }
 
         if (g_activityFormSelectedActivityType.AllowGPS)		
-                navigator.geolocation ? navigator.geolocation.getCurrentPosition(activityFormSavePosition, activityFormOnPositionError, {maximumAge: 10000, timeout:20000, enableHighAccuracy: true}) : g_alert("ERROR: GPS is not supported on your device.");
+                navigator.geolocation ? navigator.geolocation.getCurrentPosition(activityFormSavePosition, activityFormOnPositionError, { timeout:20000, enableHighAccuracy: true}) : g_alert("ERROR: GPS is not supported on your device.");
         else
                 activityFormSaveStep2();
 
@@ -459,19 +459,19 @@ function activityFormOnPositionError(error) {
     setTimeout(function() {
         if(error.code === 1)
 		g_alert("Error: Access to GPS position is denied.");
-	else if( error.code === 2)
-	    g_alert("Error: Position is unavailable.");
-        else if( error.code === 3)
-            g_alert("Error: Position retrieval timed out.");
-	
-        activityFormSaveStep2();
+	//else if( error.code === 2)
+	  //  g_alert("Error: Position is unavailable.");
+        //else if( error.code === 3)
+          //  g_alert("Error: Position retrieval timed out.");
+	if (error.code !== 3)
+            activityFormSaveStep2();
     }, 0);
 	
 }
 
 function activityFormSaveOffline() {
 	
-	g_saveObjectForSync(g_activityFormNewActivity, g_activityFormNewActivity.key, "Activities", "Modify", undefined);
+	g_saveObjectForSync(g_activityFormNewActivity, g_activityFormNewActivity.key, "Activities", "Modify", function() {g_alert('You are Offline, Activity Saved, Please Sync');});
 	
 	if (g_canTakePhoto) {
 		
