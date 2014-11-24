@@ -684,7 +684,7 @@ function g_showInvoice(popupId) {
     var printer = localStorage.getItem('printer');
     
     var isSmallBtnHidden = $('#smallPrinterButton').hasClass('hidden');
-    if (DaoOptions.getValue('HideSmallPrint', false)) {
+    if (DaoOptions.getValue('HideSmallPrint') === 'true') {
         if (!isSmallBtnHidden)
             $('#smallPrinterButton').addClass('hidden');
     } else {
