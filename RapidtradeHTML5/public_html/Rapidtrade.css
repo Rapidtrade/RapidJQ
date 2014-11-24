@@ -681,7 +681,7 @@
         display: none;
     }
     
-    .printinvoiceContent {
+    .printinvoiceContent, .printinvoicesmlContent {
         font-weight: bolder;
     }
 
