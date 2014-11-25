@@ -141,29 +141,28 @@
         <!-- Monthly Summary -->
         <div data-role="page" id="monthlysummary" class="ipadStatusBar">	
 	        <script>
-	            $('#monthlysummary').bind("pageshow", function() {
-	    	        fetchMonthySummary();
-	            });
+                $('#monthlysummary').bind("pagebeforecreate", monthlySummaryOnPageBeforeCreate);
+                $('#monthlysummary').bind("pageshow", monthlySummaryOnPageShow);                   
             </script>
 	        <div data-role="header" >
-     	        <h1>Monthly Summary</h1>    
-                 <a data-role="button" data-rel="back" href="index.html" data-icon="arrow-l" data-direction="reverse" data-transition="slide" data-iconpos="left" class="ui-btn-left">
+     	        <h1 class="multiLanguage">Monthly Summary</h1>    
+                 <a id="msBack" data-role="button" data-rel="back" href="index.html" data-icon="arrow-l" data-direction="reverse" data-transition="slide" data-iconpos="left" class="ui-btn-left">
                      Dashboard
                  </a>
              </div>
              <div data-role="content">
              	<div class="panel-white-rounded panel-Filter">
 	     	        <div data-role="fieldcontain">
-	                    <label for="msName">
+	                    <label for="msName" class="multiLanguage">
 	                        User:
 	                    </label>
-	                    <select id="msName" name="msName">
-					        <option value="">Select one...</option>
-				        </select>
+                            <select id="msName" name="msName" class="userChoice">
+                                <option value="">Select one...</option>
+                            </select>
 	                </div>
 
 			        <div data-role="fieldcontain">
-	                    <label for="msActivity">
+	                    <label for="msActivity" class="multiLanguage">
 	                        Activity:
 	                    </label>
 	                    <select id="msActivity" name="msActivity">
@@ -175,21 +174,21 @@
 			        <table class="box-table-a" style="width: 100%;" id="monthlysummarytable" >
 				        <thead>
 					        <tr>
-                                <th scope="col" style = "display:none">UserID</th>
-						        <th scope="col">Name</th>
-						        <th scope="col">Activity</th>
-						        <th scope="col">Jan</th>
-                                <th scope="col">Feb</th>
-                                <th scope="col">Mar</th>
-                                <th scope="col">Apr</th>
-                                <th scope="col">May</th>
-                                <th scope="col">Jun</th>
-                                <th scope="col">Jul</th>
-                                <th scope="col">Aug</th>
-                                <th scope="col">Sep</th>
-                                <th scope="col">Oct</th>
-                                <th scope="col">Nov</th>
-                                <th scope="col">Dec</th>
+                                <th scope="col" style = "display:none" class="multiLanguage">UserID</th>
+                                <th scope="col" class="multiLanguage">Name</th>
+                                <th scope="col" class="multiLanguage">Activity</th>
+                                <th scope="col" class="multiLanguage">Jan</th>
+                                <th scope="col" class="multiLanguage">Feb</th>
+                                <th scope="col" class="multiLanguage">Mar</th>
+                                <th scope="col" class="multiLanguage">Apr</th>
+                                <th scope="col" class="multiLanguage">May</th>
+                                <th scope="col" class="multiLanguage">Jun</th>
+                                <th scope="col" class="multiLanguage">Jul</th>
+                                <th scope="col" class="multiLanguage">Aug</th>
+                                <th scope="col" class="multiLanguage">Sep</th>
+                                <th scope="col" class="multiLanguage">Oct</th>
+                                <th scope="col" class="multiLanguage">Nov</th>
+                                <th scope="col" class="multiLanguage">Dec</th>
 					        </tr>
 				        </thead>
 				        <tbody></tbody>
@@ -568,6 +567,8 @@
                             <tr><td colspan="4">&nbsp;</tr>
                             <tr><td colspan="3" class="total multiLanguage">Total Cash Taken</td><td id="totalTaken"></td></tr>
                             <tr><td colspan="3" class="total multiLanguage">Total Cash Given</td><td id="totalGiven"></td></tr>
+                            <tr><td colspan="3" class="total multiLanguage">Total Sales Amount (Excl)</td><td id="totalSalesAmountExcl"></td></tr>
+                            <tr><td colspan="3" class="total multiLanguage">Total Sales Amount (Incl)</td><td id="totalSalesAmountIncl"></td></tr>
                         </tfoot>
                     </table>
      	        </div>

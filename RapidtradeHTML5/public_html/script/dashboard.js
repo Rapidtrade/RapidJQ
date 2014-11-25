@@ -13,11 +13,7 @@ var isMapViewActive = false;
 var isMapShown = false;
 var g_dashboardPageTranslation = {};
 var g_userDailySalesDetailTranslation = {};
-
-//URL FOR TEST file:///C:/Workspace/DashboardMobile/trunk/index.html?g_currentUser().SupplierID=whd&g_currentUser().UserID=whd
-
-//http: //www.rapidbi.mobi/index.html?g_currentUser().SupplierID=national&g_currentUser().UserID=dslaughter
-
+var g_monthlySummaryTranslation = {};
 
 function dashboardOnPageBeforeCreate() {
     
@@ -186,7 +182,6 @@ function fetchUsers(){
     $('#mcsName').empty();
     $('#ccName').empty();
 
-    $('#msName').append("<option>Select one...</option>");
     $('.userChoice').append("<option>" + g_dashboardPageTranslation.translateText(selectUserText) + "</option>");
     $('#alName').append("<option value='ALL'>All users...</option>");
     $('#mcsName').append("<option value='SELECT'>Select a user...</option>");
@@ -208,7 +203,7 @@ function fetchUsers(){
                     '</tr>';
 
                 //$('#msName').append('<option>' + item.UserID + '</option>');
-                $('#msName').append("<option value='" + item.UserID + "'>" + item.Name + "</option>");
+//                $('#msName').append("<option value='" + item.UserID + "'>" + item.Name + "</option>");
                 $('.userChoice').append("<option value='" + item.UserID + "'>" + item.Name + "</option>");
                 $('#alName').append("<option value='" + item.UserID + "'>" + item.Name + "</option>");
                 $('#mcsName').append("<option value='" + item.UserID + "'>" + item.Name + "</option>");
@@ -255,7 +250,7 @@ function fetchActivityTypes() {
         type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback3', contentType: "application/json", dataType: 'jsonp',
         success: function (json) {
             $.each(json, function (i, item) {
-                $('#msActivity').append("<option>" + item.Label + "</option>");
+                $('#msActivity').append("<option>" + g_dashboardPageTranslation.translateText(item.Label) + "</option>");
                 $('#alActivity').append("<option value='" + item.EventID + "'>" + item.Label + "</option>");
                 $('#mcsActivity').append("<option value='" + item.EventID + "'>" + item.Label + "</option>");
                 activityTypes[item.EventID] = item.FieldType;
@@ -268,6 +263,21 @@ function fetchActivityTypes() {
         }
     });
 
+}
+
+function monthlySummaryOnPageBeforeCreate() {
+    
+    g_monthlySummaryTranslation = translation('monthlysummary');
+}
+
+function monthlySummaryOnPageShow() {
+    
+    g_monthlySummaryTranslation.safeExecute(function() {
+        
+        g_monthlySummaryTranslation.translateButton('#msBack', 'Dashboard');
+    });    
+    
+    fetchMonthySummary();
 }
 
 //*************************************************************************** Monthy Summary
@@ -288,7 +298,7 @@ function fetchMonthySummary() {
   						'</td><td>' +
                         item.Name +
   						'</td><td>' +
-  						item.Label +
+  						g_dashboardPageTranslation.translateText(item.Label) +
   						'</td><td class="month">' +
   						replaceNull(item.Jan) +
   						'</td><td class="month">' +
@@ -871,6 +881,8 @@ function fetchUserDailySalesDetail() {
             
             $('#totalGiven').text(json[0].ChangeGiven);
             $('#totalTaken').text(json[0].TotalAmount);
+            $('#totalSalesAmountExcl').text(json[0].TotalSalesAmountExcl);
+            $('#totalSalesAmountIncl').text(json[0].TotalSalesAmountIncl);
         }
         
         $.mobile.hidePageLoadingMsg(); 

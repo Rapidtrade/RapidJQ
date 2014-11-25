@@ -8,5 +8,8 @@
     "Call Cycle Report": {"pt": "Relatório ciclo de chamada"},
     "Order Count by User": {"pt": "Contagem de ordem por usuário"},
     "User Daily Sales Detail": {"pt": "Detalhe diário de vendas"},
-    "Select a user...": {"pt": "Escolher um usuário"}
+    "Select a user...": {"pt": "Escolher um usuário"},
+    "Customer Visit": {"pt": "Visita ao cliente"},
+    "Customer Issue": {"pt": "Problema do cliente"},
+    "Orders": {"pt": "Ordens"}    
 }
