@@ -34,6 +34,9 @@ function orderdetailsOnPageShow() {
         g_orderdetailsPageTranslation.translateRadioButton('radioOrder', orderdetailsOrderType());
     });
 	
+    if (!$('#sendToBasketButton').hasClass('ui-disabled'))
+        $('#sendToBasketButton').addClass('ui-disabled');
+        
     orderdetailsInit();
     orderdetailsBind();
 }
@@ -649,7 +652,7 @@ function orderdetailsFetchOrderItems() {
 
     var url = (DaoOptions.getValue('DownloadOrderURL') ? DaoOptions.getValue('DownloadOrderURL') + '/rest/Orders/GetOrderItems' +  (orderdetailsIsSpecialOrder() ? 'ByType3' : '') : (DaoOptions.getValue('LiveHistoryItems', g_restUrl + 'Orders/GetOrderItems')));
 
-    url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') + '&orderID=' + g_orderdetailsCurrentOrder.OrderID + '&skip=0&top=100&format=json';
+    url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') + '&orderID=' + g_orderdetailsCurrentOrder.OrderID + '&skip=0&top=300&format=json';
 
     console.log(url);
 
@@ -658,6 +661,9 @@ function orderdetailsFetchOrderItems() {
         orderdetailsShowOrderItems(json);
 
         orderdetailsCheckBasket();
+        
+        if ($('#sendToBasketButton').hasClass('ui-disabled'))
+            $('#sendToBasketButton').removeClass('ui-disabled');
 
         $.mobile.hidePageLoadingMsg();
     };
