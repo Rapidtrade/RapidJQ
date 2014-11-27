@@ -304,7 +304,8 @@ function activityFormTakePhotoOnError(errorMessage) {
 
 function activityFormSave() {
     
-    if (g_canTakePhoto /*&& ($.trim(g_activityFormNewActivity.Label).match(/\*{2}$/))*/ && !g_activityFormPhotoData &&
+    if (g_canTakePhoto && g_activityFormSelectedActivityType.AllowPicture 
+    /*&& ($.trim(g_activityFormNewActivity.Label).match(/\*{2}$/))*/ && !g_activityFormPhotoData &&
             g_activityFormPhotoData === '') {
         
         $('#activityErrorMessagePopup p').text('You must take a photo.');
@@ -403,7 +404,7 @@ function activityFormSaveStep2() {
     }
 
     //shaun - always save image offline
-    if (g_canTakePhoto) {
+    if (g_canTakePhoto && g_activityFormSelectedActivityType.AllowPicture) {
             //alert('saving');
         var image = new Object();
 
@@ -473,7 +474,7 @@ function activityFormSaveOffline() {
 	
 	g_saveObjectForSync(g_activityFormNewActivity, g_activityFormNewActivity.key, "Activities", "Modify", function() {g_alert('You are Offline, Activity Saved, Please Sync');});
 	
-	if (g_canTakePhoto) {
+	if (g_canTakePhoto && g_activityFormSelectedActivityType.AllowPicture) {
 		
 	    var image = new Object();
 	    
@@ -493,6 +494,8 @@ function activityFormSaveOffline() {
 function activityFormOnSaveSuccess() {
 	
     $.mobile.hidePageLoadingMsg();
+    
+    g_activityFormPhotoData = '';
 
     g_markCustomerAsVisited(g_activityFormNewActivity.AccountID);
 
