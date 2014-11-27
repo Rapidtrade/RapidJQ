@@ -214,7 +214,7 @@ function orderHeaderInit() {
     if (orderType.indexOf('Invoice') != -1)
     	id = 'InvoiceHeader';
     else
-    	id =  (DaoOptions.getValue('DeliveryOrderType') ? 'POD' : sessionStorage.getItem("currentordertype")) + 'Header'; //OrderHeader
+    	id =  sessionStorage.getItem("currentordertype") + 'Header'; //OrderHeader
     
     g_orderHeaderJsonForm.show(g_currentUser().SupplierID, '#orderdetailform', orderDetails, id);    
     orderHeaderCreateOrderObject();

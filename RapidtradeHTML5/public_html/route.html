@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Route</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div data-role="page" id="routepage">
+            <script>
+                $('#routepage').bind("pageshow", route.init);
+            </script>
+            <div data-role="header">
+                <img class="logoSml" src="img/logoSml.png"/>
+                <a data-role="button" id="routeToMenu" data-icon="arrow-l" data-iconpos="left" data-transition="none" class="ui-btn-left">Menu</a>
+                <a data-role="button" href="#selectRoutePopup" data-icon="grid" data-iconpos="left" data-transition="pop" data-rel="popup" data-position-to="window" class="ui-btn-right">Route</a>
+            </div>        
+            <div data-role="content">
+                <div class="rtlabel">
+                    <img class="rtlabelimg" src="img/History-Round-64.png"/>
+                    <h2 class="rtlabeltext">Deliveries</h2> 
+                </div>
+                <div data-role="content" id="orders">
+                    <ul id="podList" data-inset="true"  data-role="listview" data-theme="b" data-divider-theme="b" class="ui-listview ui-corner-all ui-shadow"></ul>
+                    <div id="noPods" class="grvInfoPanel yellowpanel invisible">
+                        <img src="img/info-48.png"><div id="message" class="grvInfoText"><br>There are no deliveries.</div>
+                    </div>
+                </div>                
+                <div data-role="popup" id="selectRoutePopup" class="ui-content" data-history="false" style="max-height:500px;min-height:350px;min-width:500px; overflow:auto;" >  
+                    <h3>Routes</h3>
+                    <div id="divDuedate" data-role="fieldcontain">
+                        <label for="duedate">Date:</label><input id="duedate" type="date" data-role="datebox" data-options='{"mode": "calbox", "useImmediate":true, "useButton": false, "useFocus": true, "useInlineBlind": true}' />	
+                    </div>              
+                    <a data-role="button" id="submit">Submit</a>  
+                    <div data-role="content" id="routes">                        
+                        <ul id="routeList" data-inset="true"  data-role="listview" data-theme="b" data-divider-theme="b" class="ui-listview ui-corner-all ui-shadow"></ul>                        
+                    </div>                    
+                </div>                  
+            </div>
+        </div>
+    </body>
+</html>

@@ -811,6 +811,9 @@ function syncGetKeyField(item, table) {
         case 'Tpm':
             keyf = item.TPMID;
             break;
+        
+        case 'Route':
+            keyf = item.routeID;
 	}
 	
 	return keyf.trim();

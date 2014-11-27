@@ -134,9 +134,10 @@ function menuOnGRVClick() {
 
 function menuOnPODClick() {
 	
-	 sessionStorage.removeItem('currentCompany');
-     sessionStorage.setItem("currentordertype", "pod");
-     $.mobile.changePage("grv.html", { transition: "slide" });
+    sessionStorage.removeItem('currentCompany');
+    sessionStorage.setItem("currentordertype", "POD");
+//    $.mobile.changePage("grv.html", { transition: "slide" });
+    $.mobile.changePage("route.html", { transition: "slide" });
 }
 
 function menuOnMyTerritoryClick() {	

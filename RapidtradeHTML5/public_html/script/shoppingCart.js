@@ -34,6 +34,8 @@ function shoppingCartOnPageShow() {
         g_showCurrentCompanyName();
         if (sessionStorage.getItem('ShoppingCartReturnPage') == 'orderdetails.html')
             g_shoppingCartPageTranslation.translateButton('#shoppingCartBackButton', 'Order Details');
+        if (sessionStorage.getItem('ShoppingCartReturnPage') == 'route.html')
+            g_shoppingCartPageTranslation.translateButton('#shoppingCartBackButton', 'Deliveries');        
 
         if (shoppingCartIsGRV())
             $('#deleteShoppingCart').hide();
@@ -297,17 +299,17 @@ function shoppingCartRemoveAllItems() {
 
 function shoppingCartOnBack() {
 	
-	$.mobile.showPageLoadingMsg();
-	var page = sessionStorage.getItem('ShoppingCartReturnPage');
-	
-	if ('pricelist' == page) {
-		
-		sessionStorage.setItem('lastPanelId', 'pricelistPanel')
-		page = 'company.html';
-	}
-	
-	if ('undefined' != page)	
-		$.mobile.changePage(page, { transition: "none" });
+    $.mobile.showPageLoadingMsg();
+    var page = sessionStorage.getItem('ShoppingCartReturnPage');
+
+    if ('pricelist' == page) {
+
+        sessionStorage.setItem('lastPanelId', 'pricelistPanel');
+        page = 'company.html';
+    }
+
+    if (page)	
+        $.mobile.changePage(page, { transition: "none" });
 }
 
 function shoppingCartInit() {
@@ -318,7 +320,7 @@ function shoppingCartInit() {
         $('#shoppingCartLabel').html('Replenishment Cart');
     } else if (sessionStorage.getItem("currentordertype") == "stock") {
         $('#shoppingCartLabel').html('Stocktake Cart');
-    } else if (sessionStorage.getItem("currentordertype") == "pod") {
+    } else if (sessionStorage.getItem("currentordertype") == "POD") {
         $('#shoppingCartLabel').html('Proof of Delivery');    
     } else if (sessionStorage.getItem('currentordertype').indexOf('Invoice') != -1) {
         
@@ -340,7 +342,7 @@ function shoppingCartInit() {
 }
 
 function shoppingCartIsGRV() {
-	return sessionStorage.getItem("currentordertype") == "grv" || sessionStorage.getItem("currentordertype") == "pod";
+	return sessionStorage.getItem("currentordertype") == "grv" /*|| sessionStorage.getItem("currentordertype") == "pod"*/;
 }
 
 function shoppingCartFetchBasket() {

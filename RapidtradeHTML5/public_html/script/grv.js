@@ -4,7 +4,7 @@
  */
 function grvOnPageShow() {
     	
-    if (sessionStorage.getItem("currentordertype")==='pod') {
+    if (sessionStorage.getItem("currentordertype")==='POD') {
             $('#grvTitle').html('Deliveries');
             $('#grvInfo').hide();
             $('#message').html('<br>There are no deliveries.');
@@ -82,13 +82,13 @@ function grvFetchOrders() {
 	
 	var url = '';
 	
-	if (sessionStorage.getItem("currentordertype")=='pod')
+	if (sessionStorage.getItem("currentordertype")=='POD')
 		url = g_restUrl + 'Deliveries/GetCollection?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&skip=0&top=100&format=json';
 	else	
 		url = g_restUrl + 'orders/GetCollectionByType?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&orderType=repl&skip=0&top=100&format=json';
 
 	var success = function (json) {		
-		if (sessionStorage.getItem('currentordertype')=='pod')
+		if (sessionStorage.getItem('currentordertype')=='POD')
 			localStorage.setItem('CacheDeliveryOrders', JSON.stringify(json)); //cache results
 		
 	    grvOrderListView(json);
@@ -124,7 +124,7 @@ function grvSendOrderItemsToBasket(orderID, accountID) {
 	        //for DS, quantity is in userfield01
 	        var quantity = g_currentUser().SupplierID != 'DS' ? orderItem.Quantity : orderItem.UserField01;	        
 	        if (isNaN(quantity)) continue;
-	        if (sessionStorage.getItem('currentordertype')=='pod'){
+	        if (sessionStorage.getItem('currentordertype')=='POD'){
 	        	supplierid = orderItem.SupplierID;
 	        	accountid = orderItem.AccountID;
 	        } else {
@@ -183,7 +183,7 @@ function grvSendOrderItemsToBasket(orderID, accountID) {
 	};
 	
 	
-	if (sessionStorage.getItem("currentordertype")=='pod') {
+	if (sessionStorage.getItem("currentordertype")=='POD') {
 	    var dao = new Dao();
 	    dao.index ( 'Companies',
 	        accountID,
