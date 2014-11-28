@@ -579,8 +579,10 @@
 .printinvoiceContent {
 	width:90%;
 	margin:auto;
-	font-size:12px;
+	font-size:12.5px;
 	font-family: Arial, Helvetica, sans-serif;
+        color:black;
+        font-weight: bolder;
 	background-color: white;
 }
 
@@ -630,8 +632,8 @@
     height:1px;
     width:150px;
     border-width:0;
-    color:gray;
-    background-color:gray;
+    color:black;
+    background-color:black;
 }
 
 .productImageZoomButton {
@@ -912,6 +914,7 @@
     text-align: right;
     font-weight: bolder;
     padding-right: 20px;
+    color: black;
 }
 
 .catalogueItemDataTable {

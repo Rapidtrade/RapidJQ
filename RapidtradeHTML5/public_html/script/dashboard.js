@@ -840,13 +840,13 @@ function fetchUserDailySalesDetail() {
         
         $('#userDailySalesDetailTable tbody').empty();
         $.each(json, function (i, item) {
-            $('#userDailySalesDetailTable tbody').append('<tr><td>' +
+            $('#userDailySalesDetailTable tbody').append('<tr><td style="color:black; font-weight: bolder;">' +
                     item.ProductID +
-                    '</td><td>'  +
+                    '</td><td style="color:black; font-weight: bolder;">'  +
                     item.Description+
-                    '</td><td>' +
+                    '</td><td style="color:black; font-weight: bolder;">' +
                     item.Quantity +
-                    '</td><td>' +
+                    '</td><td style="color:black; font-weight: bolder;">' +
                     item.DailyAmount +
             '</td></tr>');
         });
