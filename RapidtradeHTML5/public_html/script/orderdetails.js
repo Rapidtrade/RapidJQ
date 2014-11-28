@@ -86,7 +86,8 @@ function orderdetailsBind() {
 	
     $('#sendToBasketButton').unbind();
     var needToHideSendToBasket = DaoOptions.getValue('HideSendAllOrderType');
-    if ((needToHideSendToBasket !== undefined) && g_orderdetailsCurrentOrder.Type === needToHideSendToBasket) {
+    var needToHideSendToBasketForAllTypes = DaoOptions.getValue('HideSendAllToCartAllTypes', 'false');
+    if ((needToHideSendToBasketForAllTypes === 'true') || ((needToHideSendToBasket !== undefined) && g_orderdetailsCurrentOrder.Type === needToHideSendToBasket)) {
         $('#sendToBasketButton').addClass('hidden');
     } else {
         $('#sendToBasketButton').removeClass('hidden');
@@ -725,7 +726,7 @@ function orderdetailsFetchOrderItems() {
         }
 
         var barcode = (orderdetailsIsSpecialOrder() ? orderItem[DaoOptions.getValue('MasterChrtBCodeField')] : '');
-        orderItem.Description = orderItem.Description.replace(/'/g, '&quot;') + (barcode ? ' (' + barcode + ')' : '');
+        orderItem.Description = ((!orderItem.Description || orderItem.Description == null) ? '' : orderItem.Description.replace(/'/g, '&quot;')) + (barcode ? ' (' + barcode + ')' : '');
 
         g_append('#orderitemlist', '<li data-theme="c" id="' + itemKey + '">' +
             '   <a><p class="ui-li-heading"><strong>' + (isComplexView ? orderItem[DaoOptions.getValue('MasterChartComplexDesc')] : orderItem.Description) + '</strong></p>' +
