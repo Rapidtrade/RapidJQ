@@ -15,17 +15,31 @@ var route = (function() {
         }
     }
     
-    // Private     
+    // Private    
+    
+    var selectedRouteId = 0;
     
     function bind() {
         
         $('#routeToMenu').off().on('click', g_loadMenu);
-        $('#submit').off().on('click', fetchRoutes);       
+        $('#submit').off().on('click', fetchRoutes);
+        $('#refresh').off().on('click', fetchPods);
     }
     
+    function selectedDate() {
+        return moment($("#duedate").val()).format('YYYYMMDD');
+    } 
+    
     function fetchRoutes() {
-        
+                
         g_busy(true);
+        
+        if (!g_isOnline()) {
+            
+            var cachedRoutes = JSON.parse(localStorage.getItem('Route' + selectedDate()));            
+            showRoutes(cachedRoutes || []);
+            return;
+        }
         
         var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_UnsentCount&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
         
@@ -36,14 +50,17 @@ var route = (function() {
         g_ajaxget(url, showRoutes);
     }
     
-    function showRoutes(routes) {
+    function showRoutes(routes) {                    
+        
+        $('#routeList').empty();
         
         if (!routes.length) {
             
-            g_busy(false);
-            $('#routeList').empty();
+            g_busy(false);            
             return;
         }
+        
+        localStorage.setItem('Route' + selectedDate(), JSON.stringify(routes));
         
         var routeListHtml = '';
         
@@ -68,7 +85,8 @@ var route = (function() {
                     $('#routeList li').off().on('click', function() {
                         
                         $('#selectRoutePopup').popup('close');
-                        fetchPods(this.id);
+                        selectedRouteId = this.id;
+                        fetchPods();
                     });             
 
                     g_busy(false);                    
@@ -78,18 +96,23 @@ var route = (function() {
         });        
     }
     
-    function fetchPods(routeId) {
+    function fetchPods() {        
+
+        g_busy(true);  
         
-        var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_GetUndeliveredCollection&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedDate() + '%27|%27' + routeId + '%27)';        
-        console.log(url);
-        
-        g_busy(true);        
-        g_ajaxget(url, showPods);
-    }
-    
-    function selectedDate() {
-        return moment($("#duedate").val()).format('YYYYMMDD');
-    } 
+        if (g_isOnline()) {
+            
+            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_GetUndeliveredCollection&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedDate() + '%27|%27' + selectedRouteId + '%27)';        
+            console.log(url);
+      
+            g_ajaxget(url, showPods);
+            
+        } else {
+            
+            var cachedPods = JSON.parse(localStorage.getItem('POD' + selectedRouteId));            
+            showPods(cachedPods || []);         
+        }
+    }    
     
     function showPods(pods) {
         
@@ -101,6 +124,8 @@ var route = (function() {
             g_busy(false);            
             return;
         }
+        
+        localStorage.setItem('POD' + selectedRouteId, JSON.stringify(pods));
         
         $('#noPods').addClass('invisible');
         

@@ -18,7 +18,10 @@ and open the template in the editor.
             <div data-role="header">
                 <img class="logoSml" src="img/logoSml.png"/>
                 <a data-role="button" id="routeToMenu" data-icon="arrow-l" data-iconpos="left" data-transition="none" class="ui-btn-left">Menu</a>
-                <a data-role="button" href="#selectRoutePopup" data-icon="grid" data-iconpos="left" data-transition="pop" data-rel="popup" data-position-to="window" class="ui-btn-right">Route</a>
+                <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right">
+                    <a data-role="button" href="#selectRoutePopup" data-icon="grid" data-iconpos="left" data-transition="pop" data-rel="popup" data-position-to="window">Route</a>
+                    <a data-role="button" id="refresh" data-icon="refresh" data-iconpos="left">Refresh</a>
+                </div>
             </div>        
             <div data-role="content">
                 <div class="rtlabel">
