@@ -355,7 +355,7 @@ function syncAll() {
     syncAddSync(g_syncSupplierID, g_syncUserID, 'Pricelists', 'Sync5', 0);
     syncAddSync(g_syncSupplierID, g_syncUserID, 'Address', 'Sync4', 0);
     
-    if (g_url.indexOf('https://app') != -1)    
+    if ((g_url.indexOf('https://app') !== -1) || (g_url.indexOf('http://app') !== -1))    
         syncAddSync(g_syncSupplierID, null, 'Route', 'Sync2', true);
     
     if (g_vanSales) {
