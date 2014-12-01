@@ -851,13 +851,9 @@ function fetchUserDailySalesDetail() {
             '</td></tr>');
         });
         
-        hideRepeatingValues('#userDailySalesDetailTable tbody tr');  
+        hideRepeatingValues('#userDailySalesDetailTable tbody tr');          
         
-        var isVan = g_currentUser().Role && (g_currentUser().Role.indexOf('canInv') != -1);
-        
-        if (json.length && (DaoOptions.getValue('CalcChange') === 'true') && isVan) {
-            
-            $('#userDailySalesDetailTable tfoot').removeClass('invisible');
+        if (json.length) {            
             
             url = g_restPHPUrl + 'GetView?view=vSalesOrderDetailRptTot&params=where%20SupplierID=%27' + g_currentUser().SupplierID + 
                     '%27%20and%20UserID=%27' + $("#udsName").val() + '%27%20and%20OrderDate=%27' + moment($("#udsduedate").val()).format("YYYY-MM-DD") +'%27';
@@ -868,23 +864,14 @@ function fetchUserDailySalesDetail() {
             
         } else {
             
-            $('#userDailySalesDetailTable tfoot').addClass('invisible');
+            $('#userDailySalesDetailTable tfoot tr:not(:first-child)').addClass('invisible');
             $.mobile.hidePageLoadingMsg(); 
-        }
-
-               
+        }               
     }
     
     function onSuccess2(json) {
-        
-        if (json.length) {
-            
-            $('#totalGiven').text(json[0].ChangeGiven);
-            $('#totalTaken').text(json[0].TotalAmount);
-            $('#totalSalesAmountExcl').text(json[0].TotalSalesAmountExcl);
-            $('#totalSalesAmountIncl').text(json[0].TotalSalesAmountIncl);
-        }
-        
+
+        showTotals(json[0]);
         $.mobile.hidePageLoadingMsg(); 
     }
     
@@ -892,6 +879,23 @@ function fetchUserDailySalesDetail() {
         
         $.mobile.hidePageLoadingMsg();
         g_alert('ERROR: Data are not available.');
+    }
+    
+    function showTotals(json) {        
+        
+        $('#totalSalesAmountExcl').text(json.TotalSalesAmountExcl);
+        $('#totalSalesAmountIncl').text(json.TotalSalesAmountIncl);
+        
+        $('#totalSalesAmountExcl, #totalSalesAmountIncl').closest('tr').removeClass('invisible');
+
+        var isVan = g_currentUser().Role && (g_currentUser().Role.indexOf('canInv') !== -1);
+        
+        if ((DaoOptions.getValue('CalcChange') === 'true') && isVan) {
+
+            $('#totalGiven').text(json.ChangeGiven);
+            $('#totalTaken').text(json.TotalAmount);
+            $('#totalTaken, #totalGiven').closest('tr').removeClass('invisible');
+        }                         
     }
 }
 
