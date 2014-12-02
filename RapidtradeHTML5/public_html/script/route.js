@@ -54,7 +54,7 @@ var route = (function() {
         var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_UnsentCount&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
         
         // TEST
-        url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_route_UnsentCount&params=(%27justsqueezed%27|%27FTP-100%27|%2720141106%27)';
+//        url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_route_UnsentCount&params=(%27justsqueezed%27|%27FTP-100%27|%2720141106%27)';
         
         console.log(url);
         g_ajaxget(url, showRoutes);
@@ -156,7 +156,7 @@ var route = (function() {
 	    var dao = new Dao();
 	    dao.index ('Companies',
                 // TEST
-	        '3ALBL01' /*$(this).data('account')*/,
+	        /*'3ALBL01'*/ $(this).data('account'),
 	        'AccountID',
 	         function (company) {
 	             sessionStorage.setItem('currentCompany', JSON.stringify(company));
@@ -174,7 +174,7 @@ var route = (function() {
         
         var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27' + g_currentUser().SupplierID + '%27|%27' + accountId + '%27|%27' + podId + '%27)';        
         //TEST
-        url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27justsqueezed%27|%273ALBL01%27|%27000000000036702%27)';
+//        url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27justsqueezed%27|%273ALBL01%27|%27000000000036702%27)';
         console.log(url);        
         g_ajaxget(url, sendItemsToBasket);
     }
