@@ -10,8 +10,8 @@ var route = (function() {
         
         init: function() {
             
+            $('#refreshButton').hide();
             bind();
-            $('#selectRoutePopup').popup('open');
         }
     }
     
@@ -19,11 +19,21 @@ var route = (function() {
     
     var selectedRouteId = 0;
     
+    var panelSelectors = {
+        routesPanel: '#routesPanel',
+        podsPanel: '#podsPanel'
+    }
+    
     function bind() {
         
-        $('#routeToMenu').off().on('click', g_loadMenu);
+        $('#backButton').off().on('click', goBack);
         $('#submit').off().on('click', fetchRoutes);
-        $('#refresh').off().on('click', fetchPods);
+        $('#refreshButton').off().on('click', fetchPods);
+    }
+    
+    function goBack() {
+        
+        $('#podsPanel').is(':visible') ? showPanel('#routesPanel') : g_loadMenu();
     }
     
     function selectedDate() {
@@ -44,7 +54,7 @@ var route = (function() {
         var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_UnsentCount&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
         
         // TEST
-//        url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_route_UnsentCount&params=(%27justsqueezed%27|%27FTP-100%27|%2720141106%27)';
+        url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_route_UnsentCount&params=(%27justsqueezed%27|%27FTP-100%27|%2720141106%27)';
         
         console.log(url);
         g_ajaxget(url, showRoutes);
@@ -84,7 +94,7 @@ var route = (function() {
 
                     $('#routeList li').off().on('click', function() {
                         
-                        $('#selectRoutePopup').popup('close');
+                        showPanel('#podsPanel');
                         selectedRouteId = this.id;
                         fetchPods();
                     });             
@@ -146,7 +156,7 @@ var route = (function() {
 	    var dao = new Dao();
 	    dao.index ('Companies',
                 // TEST
-	        /*'3ALBL01'*/$(this).data('account'),
+	        '3ALBL01' /*$(this).data('account')*/,
 	        'AccountID',
 	         function (company) {
 	             sessionStorage.setItem('currentCompany', JSON.stringify(company));
@@ -164,7 +174,7 @@ var route = (function() {
         
         var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27' + g_currentUser().SupplierID + '%27|%27' + accountId + '%27|%27' + podId + '%27)';        
         //TEST
-//        url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27justsqueezed%27|%273ALBL01%27|%27000000000036702%27)';
+        url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27justsqueezed%27|%273ALBL01%27|%27000000000036702%27)';
         console.log(url);        
         g_ajaxget(url, sendItemsToBasket);
     }
@@ -200,6 +210,16 @@ var route = (function() {
             $.mobile.changePage('shoppingCart.html', {transition:'none'});
             
         }, 2000);
+    }
+    
+    function showPanel(panelSelector) {
+        
+        $('.panel').addClass('invisible');
+        $(panelSelector).removeClass('invisible');
+        
+        var isPodsPanel = (panelSelector === '#podsPanel');
+        $('#backButton .ui-btn-text').text(isPodsPanel ? 'Routes' : 'Menu');
+        $('#refreshButton').toggle(isPodsPanel);
     }
     
 })();
