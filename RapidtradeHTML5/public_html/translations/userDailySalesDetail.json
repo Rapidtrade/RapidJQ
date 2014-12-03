@@ -10,5 +10,7 @@
     "Date:": {"pt": "Data:"},
     "User:": {"pt": "Utilizador:"},
     "Total Cash Taken": {"pt": "Total em dinheiro tomadas"},
-    "Total Cash Given": {"pt": "Total em dinheiro dada"}
+    "Total Cash Given": {"pt": "Total em dinheiro dada"},
+    "Total Sales Amount (Excl)": {"pt": "A quantidade total de vendas com impostos"},
+    "Total Sales Amount (Incl)": {"pt": "A quantidade total de vendas sem impostos"}
 }

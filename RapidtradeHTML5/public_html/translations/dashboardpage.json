@@ -11,5 +11,6 @@
     "Select a user...": {"pt": "Escolher um usuário"},
     "Customer Visit": {"pt": "Visita ao cliente"},
     "Customer Issue": {"pt": "Problema do cliente"},
-    "Orders": {"pt": "Ordens"}    
+    "Orders": {"pt": "Ordens"},
+    "Show All...": {"pt": "Mostrar tudo..."}
 }

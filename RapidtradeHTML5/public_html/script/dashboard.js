@@ -244,6 +244,9 @@ function getTrafficLights(logindate) {
 
 //**************************************************************************** Activity Types
 function fetchActivityTypes() {
+    
+    $('#msActivity').append("<option>" + g_dashboardPageTranslation.translateText('Show All...') + "</option>");
+    
     var url = g_restUrl + 'ActivityTypes/GetCollection?supplierID=' + g_currentUser().SupplierID + '&skip=0&top=100&format=json';
     $.mobile.loading("show");
     $.ajax({
