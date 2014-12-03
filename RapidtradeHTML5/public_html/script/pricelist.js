@@ -826,7 +826,7 @@ function pricelistFetchTemplateItems() {
 //        g_busy(true);    
 
         var url = DaoOptions.getValue('MyRangeURL', g_restUrl) + '/Orders/GetOrderItemsByType3?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') + 
-                '&userID=' + g_currentUser().UserID + '&orderType=' + sessionStorage.getItem('lastRangeType'); 
+                '&userID=' + g_currentUser().UserID + '&orderType=' + sessionStorage.getItem('lastRangeType') + '&skip=0&top=300'; 
 
         console.log(url);
         g_ajaxget(url, onRemoteFetchSuccess, onRemoteFetchFailure);
