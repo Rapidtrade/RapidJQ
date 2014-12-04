@@ -247,7 +247,7 @@ function orderHeaderSaveOrder(saveOffline) {
         return;
     }
     
-    $('#infoPopup p').text(g_orderHeaderPageTranslation.translateText('Please wait, processing order'));
+    $('#infoPopup p').text(g_orderHeaderPageTranslation.translateText('Please wait, processing ' + g_orderHeaderOrder.Type.toLowerCase()));
     $('#infoPopup').popup('open');    
 
     g_markCustomerAsVisited(g_currentCompany().AccountID);	
@@ -670,7 +670,8 @@ function orderHeaderOnLineSaveError(error, msg) {
 function orderHeaderOfflineSaveSuccess() {
 	
     $('#infoPopup').popup('close');
-    g_alert(g_orderHeaderPageTranslation.translateText('Your order was saved locally. Please sync later to send this order.'));
+    var type =  g_orderHeaderOrder.Type.toLowerCase();
+    g_alert(g_orderHeaderPageTranslation.translateText('Your ' + type + ' was saved locally. Please sync later to send this  ' + type + '.'));
     sessionStorage.setItem('HistoryCacheAccountID', '');
     orderHeaderRemoveFromCart();
 }
@@ -799,7 +800,7 @@ function orderHeaderOrderAcceptOnSuccess (json) {
 
 function orderHeaderOrderAcceptOnError () {
 	
-	g_alert('Error in order acceptance');
+    g_alert('Error in order acceptance');
 }
 
 function orderHeaderOnOrderSaved() {
@@ -807,7 +808,7 @@ function orderHeaderOnOrderSaved() {
     sessionStorage.setItem('HistoryCacheAccountID', '');
     
     $('#infoPopup').popup('close');
-    var text = 'Your order was saved OK';
+    var text = 'Your ' + g_orderHeaderOrder.Type.toLowerCase() + ' was saved OK';
  
     g_alert($.isEmptyObject(g_orderHeaderPageTranslation) ? text : g_orderHeaderPageTranslation.translateText(text));
     sessionStorage.setItem('HistoryCacheAccountID', '');
