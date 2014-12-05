@@ -25,8 +25,8 @@ function orderHeaderOnPageShow() {
     g_orderHeaderPageTranslation.safeExecute(function(){
         
         g_orderHeaderPageTranslation.translateButton('#orderHeaderBackPage', 'Back');
-        g_orderHeaderPageTranslation.translateButton('#saveorder', 'Online'); 
-        g_orderHeaderPageTranslation.translateButton('#saveorderoffline', 'Offline'); 
+        g_orderHeaderPageTranslation.translateButton('#saveorder', 'Save'); 
+//        g_orderHeaderPageTranslation.translateButton('#saveorderoffline', 'Offline'); 
         g_orderHeaderPageTranslation.translateButton('#signatureButton', 'Signature'); 
         g_orderHeaderPageTranslation.translateButton('#a4PrinterButton', 'A4 Printer'); 
         g_orderHeaderPageTranslation.translateButton('#smallPrinterButton', 'Small Printer'); 
@@ -43,7 +43,22 @@ function orderHeaderOnPageShow() {
             $('#orderLabel').html('Stocktake Details');
         } else {
             $('#orderLabel').html(sessionStorage.getItem('currentordertype').toUpperCase() + ' Details');
-        }        
+        }
+        
+//        $('#mode').empty();
+//        
+//        var modes = ['Online', 'Offline'];
+//        
+//        for (var i = 0; i < modes.length; ++i) {
+//            
+//            $('#mode').append('<option value="' + modes[i] + '>' + g_orderHeaderPageTranslation.translateText(modes[i]) + '</option>');
+//        }
+        
+        $("#mode option").filter(function() {        	
+            return $(this).attr('value') === localStorage.getItem('savingOrderMode');
+        }).attr('selected', true);
+                
+        $('#mode').selectmenu('refresh');
     });
     
     var dao = new Dao();
@@ -57,8 +72,8 @@ function orderHeaderOnPageShow() {
 function orderHeaderBind() {
 
     $('#orderHeaderBackPage').click(function() {		
-            var page = sessionStorage.getItem('OrderHeaderReturnPage');
-            $.mobile.changePage(page ? page : 'shoppingCart.html');
+        var page = sessionStorage.getItem('OrderHeaderReturnPage');
+        $.mobile.changePage(page ? page : 'shoppingCart.html');
     });
 	
     $('#choosebtn').click(function () {
@@ -69,9 +84,7 @@ function orderHeaderBind() {
     	orderHeaderEmailChooseOnClick();
     });
 
-    $('#saveorder, #saveorderoffline').click(function () {    
-        orderHeaderSaveOrder(this.id === 'saveorderoffline');
-    });
+    $('#saveorder').click(orderHeaderSaveOrder);
 
     $('#signatureButton').off().on('click', orderHeaderOnSignatureButtonClick);
     
@@ -79,12 +92,18 @@ function orderHeaderBind() {
     $('#confirmButton').click(function() {
     	
     	for (var i = 0; i < g_orderHeaderInvalidItemKeys.length; ++i)
-            shoppingCartDeleteItem(g_orderHeaderInvalidItemKeys[i], DaoOptions.getValue('LostSaleActivityID') != undefined);
+            shoppingCartDeleteItem(g_orderHeaderInvalidItemKeys[i], DaoOptions.getValue('LostSaleActivityID') !== undefined);
     	
     	g_orderHeaderOrder.orderItems = g_orderHeaderValidItems;
     	g_orderHeaderOrder.Status = 'Validated';
     	
     	orderHeaderCaptureGPSAndSave();
+    });
+    
+    $('#mode').off().on('change', function() {
+       
+        localStorage.setItem('savingOrderMode', $(this).val());
+        $('#mode').selectmenu('refresh');
     });
 }
 
@@ -221,15 +240,13 @@ function orderHeaderInit() {
     orderHeaderCreateLineItems();
 }
 
-function orderHeaderSaveOrder(saveOffline) {
+function orderHeaderSaveOrder() {
     
     if (!g_orderHeaderSignature && DaoOptions.getValue('SignatureCompulsory') === 'true') {
         
         orderHeaderOnSignatureButtonClick();
         return;
-    }
-        
-    sessionStorage.setItem('saveOffline', saveOffline);
+    }        
 	
     if (!g_orderHeaderJsonForm.isValid())
         return;
@@ -612,7 +629,7 @@ function orderHeaderSaveFormedOrder(position) {
     
     function save() {   
         
-        if (sessionStorage.getItem('saveOffline') === 'true') {
+        if ($('#mode').val() === 'Offline') {
             
             saveOffline();
             return;
