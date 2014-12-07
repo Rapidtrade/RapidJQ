@@ -18,9 +18,9 @@ function productdetailFetchLocalDiscount() {
                 condition.DiscountField = g_discountConditions[y].DiscountField;
                 //either compare against account table or product table 
                 if (g_discountConditions[y].RTObject === '#Account') {
-                    condition.Value = g_currentCompany()[g_discountConditions[y].DiscountField];
+                    condition.Value = g_currentCompany()[g_discountConditions[y].RTAttribute];
                 } else if (g_discountConditions[y].RTObject === '#Product') {
-                    condition.Value = g_pricelistSelectedProduct[g_discountConditions[y].DiscountField];
+                    condition.Value = g_pricelistSelectedProduct[g_discountConditions[y].RTAttribute];
                 }
                 conditions.push(condition);
             }

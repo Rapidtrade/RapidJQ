@@ -1,3 +1,4 @@
+
 /*
  * all global variables must start with a g_
  */
@@ -27,6 +28,9 @@ var g_scandit = false;
 var g_canTakePhoto = false;
 var g_phonegap = false;
 var g_deviceVersion;
+var g_smp = false;  //only set to true if running on SMP platform
+var g_smpUser = '';
+var g_smpResult;
 
 /*
  * Call cycle variables
@@ -103,7 +107,7 @@ var g_stockDescriptions = {'-9999': 'N/A', '-9998': 'Back Order'};
  * global functions
  */
 
-function g_phonegapon(){
+function g_phonegapon(onComplete){
     try {
         $('#status').text('Ready');
         g_phonegap = true;
@@ -111,9 +115,29 @@ function g_phonegapon(){
         g_scandit = true;
         g_deviceVersion = parseFloat(window.device.version);
         $('#status').text('Device ready ' + g_deviceVersion);
+        if (!sap) {
+            onComplete();
+        } else {
+            g_smpon(onComplete);
+        }
+        
     } catch (err){
             $('#status').text(err.message);
     }
+}
+
+function g_smpon(onComplete){
+    alert('in g_smpon');
+    g_smp = true;
+    $('#smpstatus').text('Checking SMP');
+    smp.getInstance().logon(
+                    function(msg) { $('#smpstatus').text(msg);},
+                    function(smpUser) {
+                        g_smpUser = smpUser;
+                        $('#smpstatus').text('Logged in to SMP'); 
+                        onComplete();
+                    }
+                );
 }
 
 function g_isiPad() {

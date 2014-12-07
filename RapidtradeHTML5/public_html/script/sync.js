@@ -57,14 +57,13 @@ function syncBind() {
 
     $('#signinagain').unbind();
     $('#signinagain').click(function(event){
-
-                                            g_syncIsOrderPosted = false;
-                                            g_syncLastUserID = '';
-                                            g_syncPricelistSyncMethod = 'Sync5';
-                                            g_syncLivePricelist = false;
-
-                                            syncDeleteDB();
-                                    });
+            g_syncIsOrderPosted = false;
+            g_syncLastUserID = '';
+            g_syncPricelistSyncMethod = 'Sync5';
+            g_syncLivePricelist = false;
+            syncDeleteDB();
+            if (g_smp) smp.getInstance().logoff(syncSMPLogon, function(errorInfo){alert("error: " + JSON.stringify(errorInfo));} );
+        });
 
     $('#password').unbind();
     $("#password").keypress(function (event) {
@@ -83,6 +82,9 @@ function syncBind() {
     });
 }
 
+function synSMPLogon(){
+    smp.getInstance().logon(function(){},syncInit);
+}
 
 /*
  * The init method is either the 2nd method to be called after openDB 
@@ -95,10 +97,21 @@ function syncInit() {
 			function(user) {
 				$('#userid').val(user.UserID);
 				$('#userid').addClass('ui-disabled');
+                                if (g_smp) {
+                                    $('#password').val(smp.getInstance().getUser().password);
+                                    $('#password').addClass('ui-disabled');
+                                }
 			},
 			function(user) {
 				g_syncIsFirstSync = true;
 				$('#userid').removeClass('ui-disabled');
+                                //if SMP force in user/password
+                                if (g_smp) {
+                                    $('#userid').val(smp.getInstance().getUser().user);
+                                    $('#userid').addClass('ui-disabled');
+                                    $('#password').val(smp.getInstance().getUser().password);
+                                    $('#password').addClass('ui-disabled');
+                                }
 			},
 			undefined);
 	
