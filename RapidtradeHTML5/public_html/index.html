@@ -1,7 +1,7 @@
 ﻿	
 <!DOCTYPE html>
-<!--<html manifest="manifest.txt">-->
-<html>
+<html manifest="manifest.txt">
+<!--<html>-->
     <head>
 	<title>Rapidtrade</title>
         <meta charset="utf-8" />
@@ -37,7 +37,7 @@
         <script type="application/javascript" src="jquery/barcode-2.0.3/jquery-barcode.min.js"></script>  
         
         <!-- PhoneGap -->
-       <!-- <script type="text/javascript" src="cordova.js"></script> -->
+        <script type="text/javascript" src="cordova.js"></script> 
    
 	<!-- We must include all JS files here else jquerymobile wont see them -->
         <script src="translations/translations.js"></script>
@@ -78,6 +78,7 @@
         <script type="application/javascript" src="script/core/jsonform.js"></script>
         <script type="application/javascript" src="script/core/dao.js"></script>
         <script type="application/javascript" src="script/core/defaults.js"></script>
+        <script type="application/javascript" src="script/smp.js"></script>
         <script src="jquery/jSignature/jSignature.min.noconflict.js"></script>
     </head>
 <body> 
@@ -85,14 +86,21 @@
 <div data-role="page" id="menupage" class="picpanel ipadStatusBar" data-cache="false">
 	
     <script>
+        //<!-- uncomment below for PhoneGap -->
+        /*
+        document.addEventListener("deviceready", function() { 
+                                    $('#status').text('Starting Cordova');
+                                    window.setTimeout(g_phonegapon(function(){
+                                                            menuOnPageBeforeCreate();
+                                                            menuOnPageShow();
+                                                        }), 1000); 
+                                    }, false);  
+        */                            
+        // <!-- uncomment below for Non phonegap-->
+        
         $('#menupage').bind('pagebeforecreate', menuOnPageBeforeCreate);                
-	$('#menupage').live("pageshow", menuOnPageShow);
-	    
-        //<!-- PhoneGap -->
-       // document.addEventListener("deviceready", function() { 
-         //                                                     $('#status').text('Starting');
-         //                                                     window.setTimeout(g_phonegapon, 1000); 
-         //                                                     }, false);
+        $('#menupage').live("pageshow", menuOnPageShow);
+        
     </script>
 	
     <div data-role="content">
@@ -221,11 +229,12 @@
 	   	</div>
 	      
         <div style="text-align:center;color:#555555;">
-        Version 8.6.13
+        Version 8.7
         </div>
         <div id="status" style="text-align:center;color:#555555;">
-        
         </div>
+        <div id="status" style="text-align:center;color:#555555;"></div>
+        <div id="smpstatus" style="text-align:center;color:#555555;"> </div>
     </div>
 </div>
 </body>
