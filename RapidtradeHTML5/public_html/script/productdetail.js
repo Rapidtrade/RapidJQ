@@ -171,7 +171,7 @@ function productdetailInit() {
 
     } else {
 
-        if ((DaoOptions.getValue('LocalDiscounts') === 'true') || (DaoOptions.getValue('LiveDiscount') === 'false') || ($('#mode').val() === 'Offline')) {
+        if ((DaoOptions.getValue('LocalDiscounts') === 'true') || ($('#mode').val() === 'Offline')) {
 
             $('.pricelistBusyImg').hide();
             $.mobile.hidePageLoadingMsg();
@@ -811,7 +811,7 @@ function productdetailPriceOnSuccess (json) {
             }
     }
 
-    if (DaoOptions.getValue('LiveDiscount') === 'true') {
+    if (DaoOptions.getValue('LocalDiscounts') !== 'true') {
         
         //show previous changed price
         if (!g_productdetailIsPriceChanged) {		
