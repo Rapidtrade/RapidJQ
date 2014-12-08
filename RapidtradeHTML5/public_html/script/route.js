@@ -29,11 +29,20 @@ var route = (function() {
         $('#backButton').off().on('click', goBack);
         $('#submit').off().on('click', fetchRoutes);
         $('#refreshButton').off().on('click', fetchPods);
+        if (localStorage.getItem('routesLastSelectedDate')) {
+            $("#duedate").val(localStorage.getItem('routesLastSelectedDate'));
+            fetchRoutes();
+        }
     }
     
     function goBack() {
         
-        $('#podsPanel').is(':visible') ? showPanel('#routesPanel') : g_loadMenu();
+        if ($('#podsPanel').is(':visible')) {
+            showPanel('#routesPanel')
+        } else {
+            localStorage.setItem('routesLastSelectedDate', $("#duedate").val());
+            g_loadMenu();
+        }
     }
     
     function selectedDate() {
@@ -153,6 +162,9 @@ var route = (function() {
 
             g_busy(true);
             
+            var podID = this.id;
+            var accID = $(this).data('account');
+            
 	    var dao = new Dao();
 	    dao.index ('Companies',
                 // TEST
@@ -160,10 +172,11 @@ var route = (function() {
 	        'AccountID',
 	         function (company) {
 	             sessionStorage.setItem('currentCompany', JSON.stringify(company));
-	             fetchPodItems(this.id, $(this).data('account'));
+	             //fetchPodItems(this.id, $(this).data('account'));
+                     fetchPodItems(podID, accID);
 	         },
 	         function (error){
-                    console.log('ERROR: AccountID ' + $(this).data('account') + ' not found in database.');
+                    console.log('ERROR: AccountID ' + accID + ' not found in database.');
 	         } , 
 	         undefined	 
             );                    
@@ -206,6 +219,7 @@ var route = (function() {
         setTimeout(function(){
             
             g_busy(false);
+            localStorage.setItem('routesLastSelectedDate', $("#duedate").val());
             sessionStorage.setItem('ShoppingCartReturnPage', 'route.html');
             $.mobile.changePage('shoppingCart.html', {transition:'none'});
             

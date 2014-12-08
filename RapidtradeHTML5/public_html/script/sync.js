@@ -309,10 +309,11 @@ function syncPostedOK(index, skip){
             g_syncIsOrderPosted = true;
 
         if ('POD' == g_syncPosted[index].JsonObject.Type) {
-
+            /*******  g_acceptDelivery is undefined
             g_acceptDelivery(g_syncPosted[index].JsonObject, function() {
                     localStorage.removeItem('CacheDeliveryOrders');
             });
+            */
         }
 
         //$('#results tbody tr:last td').text((index + 1) + ' of ' + g_syncPosted.length + ' rows sent OK' );
