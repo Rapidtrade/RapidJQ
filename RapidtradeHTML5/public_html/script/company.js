@@ -31,6 +31,7 @@ function companyOnPageShow() {
     
     companyHideFooter();
     overlaySetMenuItems();
+    g_checkUsageMode();
 
     if (sessionStorage.getItem('companyBack') == 'today.html')
         $('#companyBackButton .ui-btn-text').text('Today');

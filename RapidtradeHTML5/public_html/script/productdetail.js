@@ -154,34 +154,35 @@ function productdetailInit() {
     type = sessionStorage.getItem("currentordertype");
     $('#reasonDiv').toggleClass('invisible', type != 'Credit');
     productdetailFetchLocalStock();    
-    g_pricelistMobileLiveStockDiscount = (DaoOptions.getValue('MobileLiveStockDiscount') == 'true');
+    g_pricelistMobileLiveStockDiscount = (DaoOptions.getValue('MobileLiveStockDiscount') === 'true');
     
-	if (productdetailCanChangeNett(g_pricelistSelectedProduct.ProductID)) {
-			
-    	$('.pricelistBusyImg').hide();
-    	$.mobile.hidePageLoadingMsg();
-    	
-    	var price = g_roundToTwoDecimals($('#li' + g_pricelistSelectedProduct.ItemIndex + ' .price').text().replace(/,/g, ''));
-    	
-    	g_pricelistSelectedProduct.Nett = g_pricelistSelectedProduct.Gross = parseFloat(price); 
-    	$('.hdescription').val($('#li' + g_pricelistSelectedProduct.ItemIndex + ' .ui-li-desc').text());
-    	
-		$('#grossvalue').text(g_addCommas(price));
-		$('#divnettvalue input').val(price);
-		
-	} else {
-		
-	    if (!g_pricelistMobileLiveStockDiscount) {   
-    		
-	    	$('.pricelistBusyImg').hide();
-	    	$.mobile.hidePageLoadingMsg();
-	    	productdetailFetchLocalDiscount();	
-	    	
-	    } else {  	
-	    	
-	    	productdetailFetchLiveStockDiscount();
-	    }	
-	}
+    if (productdetailCanChangeNett(g_pricelistSelectedProduct.ProductID)) {
+
+        $('.pricelistBusyImg').hide();
+        $.mobile.hidePageLoadingMsg();
+
+        var price = g_roundToTwoDecimals($('#li' + g_pricelistSelectedProduct.ItemIndex + ' .price').text().replace(/,/g, ''));
+
+        g_pricelistSelectedProduct.Nett = g_pricelistSelectedProduct.Gross = parseFloat(price); 
+        $('.hdescription').val($('#li' + g_pricelistSelectedProduct.ItemIndex + ' .ui-li-desc').text());
+
+        $('#grossvalue').text(g_addCommas(price));
+        $('#divnettvalue input').val(price);
+
+    } else {
+
+        if ((DaoOptions.getValue('LocalDiscounts') === 'true') || (DaoOptions.getValue('LiveDiscount') === 'false') || ($('#mode').val() === 'Offline')) {
+
+            $('.pricelistBusyImg').hide();
+            $.mobile.hidePageLoadingMsg();
+            productdetailFetchLocalDiscount();
+        }
+
+        if (g_pricelistMobileLiveStockDiscount && ($('#mode').val() === 'Online')) {
+
+            productdetailFetchLiveStockDiscount();
+        }	
+    }
 
     productdetailFetchImage();   
     if ($('#pricePanel').is(":visible")) { 	
@@ -760,13 +761,13 @@ function productdetailFetchLocalStock() {
 
 function productdetailFetchLiveStockDiscount(livePriceUrl, checkUrl) {
 	
-	$('#quantity').addClass('ui-disabled');
-	
-	if (checkUrl === undefined) 
-		checkUrl = true;
-	
-	if (checkUrl)
-		livePriceUrl = DaoOptions.getValue('LivePriceURL') ? DaoOptions.getValue('LivePriceURL') : g_restUrl + 'prices/getprice3';
+    $('#quantity').addClass('ui-disabled');
+
+    if (checkUrl === undefined) 
+            checkUrl = true;
+
+    if (checkUrl)
+            livePriceUrl = DaoOptions.getValue('LivePriceURL') ? DaoOptions.getValue('LivePriceURL') : g_restUrl + 'prices/getprice3';
 	 
     var url = livePriceUrl + '?supplierID=' + g_currentUser().SupplierID + '&productID=' + g_pricelistSelectedProduct.ProductID + '&accountid=' + g_currentCompany().AccountID.replace('&', '%26') + '&branchid=' + g_currentCompany().BranchID + '&quantity=1&gross=' + g_pricelistSelectedProduct.Gross + '&nett=' + g_pricelistSelectedProduct.Nett + '&checkStock=true&checkPrice=true&format=json';
 
@@ -810,61 +811,68 @@ function productdetailPriceOnSuccess (json) {
             }
     }
 
-    //show previous changed price
-    if (!g_productdetailIsPriceChanged) {		
-        if (json.volumePrice && json.volumePrice[0]) {		    	
-            productdetailCalculateDiscount(json.volumePrice);
-            sessionStorage.setItem('volumePrice', JSON.stringify(json.volumePrice));
-            g_pricelistVolumePrices[g_pricelistSelectedProduct.ProductID] = json.volumePrice[json.volumePrice.length - 1];
-        } else {	    	
-            sessionStorage.setItem('volumePrice', JSON.stringify(""));
-            productdetailValue('discount', '0.00%');
-            $('#grossvalue').html(g_addCommas(parseFloat(g_pricelistSelectedProduct.Gross).toFixed(2)));
-            productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
+    if (DaoOptions.getValue('LiveDiscount') === 'true') {
+        
+        //show previous changed price
+        if (!g_productdetailIsPriceChanged) {		
+            if (json.volumePrice && json.volumePrice[0]) {		    	
+                productdetailCalculateDiscount(json.volumePrice);
+                sessionStorage.setItem('volumePrice', JSON.stringify(json.volumePrice));
+                g_pricelistVolumePrices[g_pricelistSelectedProduct.ProductID] = json.volumePrice[json.volumePrice.length - 1];
+            } else {	    	
+                sessionStorage.setItem('volumePrice', JSON.stringify(""));
+                productdetailValue('discount', '0.00%');
+                $('#grossvalue').html(g_addCommas(parseFloat(g_pricelistSelectedProduct.Gross).toFixed(2)));
+                productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
+            }
         }
     }
 
     var setStockUnit = function (stockIndex) {
 
-            productdetailSetStock(json.StockInf[stockIndex].Stock);
+        productdetailSetStock(json.StockInf[stockIndex].Stock);
 
-            if ((DaoOptions.getValue('LivePackSizeCheck') == 'true') && json.StockInf[stockIndex].Unit)
-                    g_pricelistSelectedProduct.Unit = parseInt(json.StockInf[stockIndex].Unit, 10);
+        if ((DaoOptions.getValue('LivePackSizeCheck') == 'true') && json.StockInf[stockIndex].Unit)
+                g_pricelistSelectedProduct.Unit = parseInt(json.StockInf[stockIndex].Unit, 10);
     };
 
     //show live stock
-    var stockDataArray = json.StockInf;	
-	
-    if (stockDataArray) {
-    	
-    	if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true')
-            productdetailFillWarehouses(stockDataArray);
-    	
-    	for (var i = 0; i < stockDataArray.length; ++i) {
-    		
-    		if ($.trim(stockDataArray[i].Warehouse.split(':')[0]) == g_currentCompany().BranchID) {
-    			
-    			if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true') {
-    				
-    				$('#whChoiceDiv select').val(stockDataArray[i].Warehouse);
-    				$('#whChoiceDiv select').trigger('change');
-    				
-    			} else {
-    			
-    				setStockUnit(i);
-    			}
-    			
-    			break;
-    		}
-    		
-    		if (g_currentCompany().BranchID == '') {
-    			
-    			setStockUnit(i);
-    			
-    			break;
-    		}
-    	}
-    } 
+    
+    if (DaoOptions.getValue('LiveStock') === 'true') {
+    
+        var stockDataArray = json.StockInf;	
+
+        if (stockDataArray) {
+
+            if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true')
+                productdetailFillWarehouses(stockDataArray);
+
+            for (var i = 0; i < stockDataArray.length; ++i) {
+
+                    if ($.trim(stockDataArray[i].Warehouse.split(':')[0]) == g_currentCompany().BranchID) {
+
+                            if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true') {
+
+                                $('#whChoiceDiv select').val(stockDataArray[i].Warehouse);
+                                $('#whChoiceDiv select').trigger('change');
+
+                            } else {
+
+                                setStockUnit(i);
+                            }
+
+                            break;
+                    }
+
+                    if (g_currentCompany().BranchID == '') {
+
+                            setStockUnit(i);
+
+                            break;
+                    }
+            }
+        } 
+    }
     
     $.mobile.hidePageLoadingMsg();
     $('.pricelistBusyImg').hide();

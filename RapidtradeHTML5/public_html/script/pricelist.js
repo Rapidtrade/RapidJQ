@@ -32,11 +32,15 @@ function pricelistOnPageShow() {
         var templatesHTML = '<li data-role="divider" data-theme="e">Choose Template</li>';
         
         var templateArray = g_currentCompany()[DaoOptions.getValue('MyRangeUF')].split(',');
+        
+        if (!templateArray.length)
+            templateArray = ['MyRange'];
+        
         templateArray.unshift('None');
         
         $.each(templateArray, function(index, value) {
             
-            templatesHTML += '<li><a onclick="pricelistSelectTemplate(\'' + value + '\')">' + value + '</a></li>';
+            templatesHTML += '<li><a onclick="pricelistSelectTemplate(\'' + value + '\')">' + (value === 'MyRange' ? 'My Range' : value) + '</a></li>';
         });                
         
         $('#popupCategory ul').html(templatesHTML).listview('refresh');        

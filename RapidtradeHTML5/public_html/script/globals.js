@@ -168,6 +168,21 @@ function g_iPadBar(panel){
     }
 }
 
+function g_checkUsageMode() {
+
+    $("#mode option").filter(function() {        	
+        return $(this).attr('value') === localStorage.getItem('usageMode');
+    }).attr('selected', true);
+
+    $('#mode').selectmenu('refresh');
+    
+    $('#mode').off().on('change', function() {
+       
+        localStorage.setItem('usageMode', $(this).val());
+        $('#mode').selectmenu('refresh');
+    });    
+}
+
 function g_loadMenu() {
 
     $.mobile.changePage('index.html');

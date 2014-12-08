@@ -45,20 +45,7 @@ function orderHeaderOnPageShow() {
             $('#orderLabel').html(sessionStorage.getItem('currentordertype').toUpperCase() + ' Details');
         }
         
-//        $('#mode').empty();
-//        
-//        var modes = ['Online', 'Offline'];
-//        
-//        for (var i = 0; i < modes.length; ++i) {
-//            
-//            $('#mode').append('<option value="' + modes[i] + '>' + g_orderHeaderPageTranslation.translateText(modes[i]) + '</option>');
-//        }
-        
-        $("#mode option").filter(function() {        	
-            return $(this).attr('value') === localStorage.getItem('savingOrderMode');
-        }).attr('selected', true);
-                
-        $('#mode').selectmenu('refresh');
+        g_checkUsageMode();
     });
     
     var dao = new Dao();
@@ -98,13 +85,7 @@ function orderHeaderBind() {
     	g_orderHeaderOrder.Status = 'Validated';
     	
     	orderHeaderCaptureGPSAndSave();
-    });
-    
-    $('#mode').off().on('change', function() {
-       
-        localStorage.setItem('savingOrderMode', $(this).val());
-        $('#mode').selectmenu('refresh');
-    });
+    });    
 }
 
 function orderHeaderOnSignatureButtonClick() {
