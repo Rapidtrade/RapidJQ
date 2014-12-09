@@ -22,7 +22,8 @@ function historyOnPageShow() {
     historyOnPageShowSmall();
     historyBind();
     
-    $('#companyHistoryRefresh').removeClass('invisible');
+//    $('#companyHistoryRefresh').removeClass('invisible');
+    $('#companyHistoryRefresh').removeClass('ui-disabled');
     $('#companyHistoryRefresh').off();
     $('#companyHistoryRefresh').on('click', function() {
         historyRefreshClicked();
