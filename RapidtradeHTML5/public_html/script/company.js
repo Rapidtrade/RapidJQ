@@ -26,8 +26,8 @@ function companyOnPageShow() {
         g_companyPageTranslation.translateButton('#quantity', 'Quantity');
     });
     
-//    $('#companyHistoryRefresh').addClass('invisible');
-    $('#companyHistoryRefresh').addClass('ui-disabled');
+    $('#companyHistoryRefresh').addClass('invisible');
+//    $('#companyHistoryRefresh').addClass('ui-disabled');
     $('#companyHistoryRefresh').off();
     
     companyHideFooter();
@@ -154,8 +154,8 @@ function companySetNextButton(title) {
     if ('Shopping Cart' != title)
         $('#companyNextButton').removeClass('ui-disabled');
     if (title !== 'Pricelist') {
-//        $('#companyHistoryRefresh').addClass('invisible');
-        $('#companyHistoryRefresh').addClass('ui-disabled');
+        $('#companyHistoryRefresh').addClass('invisible');
+//        $('#companyHistoryRefresh').addClass('ui-disabled');
         //$('#companyHistoryRefresh').off();
     }
 
