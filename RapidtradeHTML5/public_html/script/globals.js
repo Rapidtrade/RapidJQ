@@ -386,8 +386,8 @@ function g_saveObjectForSync(object, key, table, method, poncomplete) {
 function g_today() {
 
 	var date = new Date;
-	return g_setLeadingZero(date.getMonth() + 1) + "/"
-			+ g_setLeadingZero(date.getDate()) + "/" + date.getFullYear();
+	return g_setLeadingZero(date.getDate() + 1) + "/"
+			+ g_setLeadingZero(date.getMonth()) + "/" + date.getFullYear();
 }
 
 function g_markCustomerAsVisited(customerID) {
