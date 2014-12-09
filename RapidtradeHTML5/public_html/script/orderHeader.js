@@ -471,10 +471,10 @@ function orderHeaderCreateInvoiceNumber() {
             lastInvoiceNumberOption.Value = newInvoiceNumber;
             var dao = new Dao();		
             dao.put(lastInvoiceNumberOption, 'Options', lastInvoiceNumberOption.key , function() {
-                if (g_isOnline(false))					
-                        orderHeaderSaveInvoiceNumber(lastInvoiceNumberOption);
+                if (g_isOnline(false) && ($('#mode').val() === 'Online'))					
+                    orderHeaderSaveInvoiceNumber(lastInvoiceNumberOption);
                 else					
-                        g_saveObjectForSync(lastInvoiceNumberOption, lastInvoiceNumberOption.key, "Options", "QuickModify");
+                    g_saveObjectForSync(lastInvoiceNumberOption, lastInvoiceNumberOption.key, "Options", "QuickModify");
             }, 
             undefined,undefined);  
 
@@ -564,7 +564,7 @@ function orderHeaderSaveFormedOrder(position) {
     
     var referenceCheckURL = DaoOptions.getValue('OrderCheckReference');
     
-    if (referenceCheckURL && g_isOnline(false)) {
+    if (referenceCheckURL && g_isOnline(false) && ($('#mode').val() === 'Online')) {
                 
         var success = function(json) {
           
@@ -610,7 +610,7 @@ function orderHeaderSaveFormedOrder(position) {
     
     function save() {   
         
-        if ($('#mode').val() === 'Offline') {
+        if (($('#mode').val() === 'Offline') || !g_isOnline(false)) {
             
             saveOffline();
             return;

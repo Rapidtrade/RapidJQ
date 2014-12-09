@@ -171,16 +171,21 @@ function productdetailInit() {
 
     } else {
 
-        if ((DaoOptions.getValue('LocalDiscounts') === 'true') || ($('#mode').val() === 'Offline')) {
+        if ((DaoOptions.getValue('LocalDiscounts') === 'true') || ($('#mode').val() === 'Offline') || !g_isOnline(false)) {
 
             $('.pricelistBusyImg').hide();
             $.mobile.hidePageLoadingMsg();
             productdetailFetchLocalDiscount();
         }
 
-        if (g_pricelistMobileLiveStockDiscount && ($('#mode').val() === 'Online')) {
+        if (g_pricelistMobileLiveStockDiscount && ($('#mode').val() === 'Online') && g_isOnline(false)) {
 
             productdetailFetchLiveStockDiscount();
+            
+        } else {
+            
+            $('.pricelistBusyImg').hide();
+            $.mobile.hidePageLoadingMsg();            
         }	
     }
 
