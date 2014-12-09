@@ -539,7 +539,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip, ne
 
     localStorage.setItem('lastSkip' + syncGetLocalTableName(table, method), skip);
     
-    if ('Orders' == table)
+    if ('Orders' == table && !g_syncDownloadOrderType)
         json._Items = json;
 
     if (json._Items == null) {
@@ -620,9 +620,13 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip, ne
                         g_syncDownloadOrderType = item.Value;
                     
                     if (item.Name == 'AllowHistoryDownload') {
-                    
-                        syncAddSync(g_syncSupplierID, g_syncUserID, 'Orders', 'GetCollectionByType3', 0);
-                        syncAddSync(g_syncSupplierID, g_syncUserID, 'Orders', 'GetOrderItemsByType3', 0);
+                        if (g_syncDownloadOrderType && g_syncDownloadOrderType === 'Deliv') {
+                            syncAddSync(g_syncSupplierID, g_syncUserID, 'Orders', 'ReadDeliveries2', true);
+                            syncAddSync(g_syncSupplierID, g_syncUserID, 'OrderItems', 'DeliveriesCollection', true);
+                        } else {
+                            syncAddSync(g_syncSupplierID, g_syncUserID, 'Orders', 'GetCollectionByType3', 0);
+                            syncAddSync(g_syncSupplierID, g_syncUserID, 'Orders', 'GetOrderItemsByType3', 0);
+                        }
                     }
                     
                     if ((item.Name == 'localTPM') && (item.Value == 'true')) {

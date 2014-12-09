@@ -206,7 +206,15 @@ function Dao() {
     this.fetchTemplateItems = function (template, ponsuccessread, ponerror, poncomplete) {
     	
         this[(g_indexedDB ? 'idb' : 'sql') + 'FetchTemplateItems'](template, ponsuccessread, ponerror, poncomplete);        
-    };      
+    }; //this.sqlFetchRoutesByDate =  function(selectedDate, ponsuccessread, ponerror, poncomplete)  
+    
+    this.fetchRoutesByDate = function (selectedDate, ponsuccessread, ponerror, poncomplete) { 
+        if (g_indexedDB) {
+            // TO-DO: implement 
+        } else {
+            this.sqlFetchRoutesByDate(selectedDate, ponsuccessread, ponerror, poncomplete);
+        };
+    };
 
     /***************** Indexed DB ********************************************************************************
 	 * this method is used to read the database.
@@ -838,7 +846,9 @@ function Dao() {
                 return $.trim(item.AccountID);
             } else if (table == 'OrderItems') {
                 return $.trim(item.AccountID) + $.trim(item.ProductID);
-            }            
+            } else if (table == 'Route') {
+                return $.trim(item.routeID);
+            }             
 
             return '';
             
@@ -861,6 +871,8 @@ function Dao() {
                 return item.Warehouse;	
             } else if ((table == 'ProductCategories2') || (table == 'ProductCategory2Link')) {
                 return item.c;
+            } else if (table == 'Orders') {
+                return item.OrderID;
             } else if (table == 'OrderItems') {
                 return item.OrderID;
             };
@@ -883,6 +895,8 @@ function Dao() {
                 return item.Stock;	
             } else if (table == 'ProductCategories2') {
             	return item.des;
+            } else if (table == 'Orders') {
+                return item.UserField01;
             } else if (table == 'OrderItems') {
                 return $.trim(item.ProductID);
             };
@@ -1311,6 +1325,125 @@ function Dao() {
                     };
                 });    
             });
-    };    
+    };
+    
+    this.sqlFetchRoutesByDate =  function(selectedDate, ponsuccessread, ponerror, poncomplete) {
+        var query = 'SELECT distinct r.json, ' + 
+                    ' (SELECT count(*) FROM Orders where index3 = r.index1 and json like \'%"CreateDate":"' + selectedDate + '%\' ) as numOfRouts FROM Route r' +
+                    ' inner join Orders ord on ord.index3 = r.index1 ' +
+                    ' where ord.json like \'%"CreateDate":"' + selectedDate + '%\''; 
+            
+        console.log(query);
+        
+        db.transaction(function (tx) {
+        
+            tx.executeSql(query,[], 
+                function (tx, results) {
+                    try {
+                        var res = [];
+                        //if (ponsuccessread) {
+                        if (results.rows.length > 0) {
+                            for (var i = 0; i < results.rows.length; ++i) {
+
+                                var item = results.rows.item(i);                                                                                                            
+                                var route = JSON.parse(item.json);                                                    
+                                route.numOfRouts = item.numOfRouts;
+                                res.push(route);
+                                //ponsuccessread(route);
+                            }
+                        }
+
+                        if (!results.rows.length && ponerror) 
+                            ponerror("No record found");
+
+                        if (poncomplete) 
+                            poncomplete(res);
+
+                    } catch (error) {
+
+                        if (ponerror) 
+                            ponerror("No record found");
+                    };
+                });    
+            });
+    };
+    
+    this.sqlFetchRouteDeliveries =  function(routeID, selectedDate, ponsuccessread, ponerror, poncomplete) {
+        var query = 'SELECT distinct ord.json FROM Orders ord' +
+                    ' where ord.json like \'%"CreateDate":"' + selectedDate + '%\' and index3 = \'' + routeID + '\''; 
+            
+        console.log(query);
+        
+        db.transaction(function (tx) {
+        
+            tx.executeSql(query,[], 
+                function (tx, results) {
+                    try {
+                        var res = [];
+                        //if (ponsuccessread) {
+                        if (results.rows.length > 0) {
+                            for (var i = 0; i < results.rows.length; ++i) {
+
+                                var item = results.rows.item(i);                                                                                                            
+                                var deliv = JSON.parse(item.json);                                                    
+                                
+                                res.push(deliv);
+                                //ponsuccessread(route);
+                            }
+                        }
+
+                        if (!results.rows.length && ponerror) 
+                            ponerror("No record found");
+
+                        if (poncomplete) 
+                            poncomplete(res);
+
+                    } catch (error) {
+
+                        if (ponerror) 
+                            ponerror("No record found");
+                    };
+                });    
+            });
+    };
+    
+    this.sqlDeliveryDetails =  function(podID, accountID, ponsuccessread, ponerror, poncomplete) {
+        var query = 'SELECT distinct oi.json FROM OrderItems oi' +
+                    ' where oi.index2=\'' + podID + '\' '; 
+            
+        console.log(query);
+        
+        db.transaction(function (tx) {
+        
+            tx.executeSql(query,[], 
+                function (tx, results) {
+                    try {
+                        var res = [];
+                        //if (ponsuccessread) {
+                        if (results.rows.length > 0) {
+                            for (var i = 0; i < results.rows.length; ++i) {
+
+                                var item = results.rows.item(i);                                                                                                            
+                                var delivItem = JSON.parse(item.json);                                                    
+                                
+                                res.push(delivItem);
+                                //ponsuccessread(route);
+                            }
+                        }
+
+                        if (!results.rows.length && ponerror) 
+                            ponerror("No record found");
+
+                        if (poncomplete) 
+                            poncomplete(res);
+
+                    } catch (error) {
+
+                        if (ponerror) 
+                            ponerror("No record found");
+                    };
+                });    
+            });
+    };
 }
         

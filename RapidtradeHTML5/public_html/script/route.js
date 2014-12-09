@@ -53,12 +53,22 @@ var route = (function() {
                 
         g_busy(true);
         
-        if (!g_isOnline()) {
+        if (true /*!g_isOnline()*/) {
             
-            var cachedRoutes = JSON.parse(localStorage.getItem('Route' + selectedDate()));            
-            showRoutes(cachedRoutes || []);
+            var cachedRoutes = JSON.parse(localStorage.getItem('Route' + selectedDate()));
+            if (routes.length) {
+                showRoutes(cachedRoutes || []);
+            } else {
+                var dao = new Dao();
+                dao.fetchRoutesByDate($("#duedate").val(), undefined
+                , function(message) {
+                    console.log(message);}, 
+                function(fetchedRoutes) {
+                    showRoutes(fetchedRoutes || []);              
+                });
+            }
             return;
-        }
+        } 
         
         var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_UnsentCount&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
         
@@ -95,7 +105,7 @@ var route = (function() {
                 
                 item.routeID = $.trim(item.routeID);
                 
-                routeListHtml += '<li data-theme="c" id="' + item.routeID + '"><a href>' + item.Name + '(' + routeNumbers[item.routeID] + ')</a></li>';
+                routeListHtml += '<li data-theme="c" id="' + item.routeID + '"><a href>' + item.Name + (routeNumbers[item.routeID] ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
                 
                 if (++addedRows === routes.length) {
                     
@@ -119,7 +129,7 @@ var route = (function() {
 
         g_busy(true);  
         
-        if (g_isOnline()) {
+        if (false /*g_isOnline()*/) {
             
             var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_GetUndeliveredCollection&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedDate() + '%27|%27' + selectedRouteId + '%27)';        
             console.log(url);
@@ -128,8 +138,18 @@ var route = (function() {
             
         } else {
             
-            var cachedPods = JSON.parse(localStorage.getItem('POD' + selectedRouteId));            
-            showPods(cachedPods || []);         
+            var cachedPods = JSON.parse(localStorage.getItem('POD' + selectedRouteId)); 
+            if (cachedPods && (cachedPods != null) && cachedPods.length) {
+                showPods(cachedPods || []); 
+            } else {
+                var dao = new Dao();
+                dao.sqlFetchRouteDeliveries(selectedRouteId,$("#duedate").val(), undefined
+                , function(message) {
+                    console.log(message);}, 
+                function(routeDeliveries) {
+                    showPods(routeDeliveries || []);              
+                });
+            }
         }
     }    
     
@@ -184,12 +204,21 @@ var route = (function() {
     }
     
     function fetchPodItems(podId, accountId) {
-        
-        var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27' + g_currentUser().SupplierID + '%27|%27' + accountId + '%27|%27' + podId + '%27)';        
-        //TEST
-//        url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27justsqueezed%27|%273ALBL01%27|%27000000000036702%27)';
-        console.log(url);        
-        g_ajaxget(url, sendItemsToBasket);
+        if ( false /*g_isOnline()*/) {
+            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27' + g_currentUser().SupplierID + '%27|%27' + accountId + '%27|%27' + podId + '%27)';        
+            //TEST
+    //        url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27justsqueezed%27|%273ALBL01%27|%27000000000036702%27)';
+            console.log(url);        
+            g_ajaxget(url, sendItemsToBasket);
+        } else {
+            var dao = new Dao();
+            dao.sqlDeliveryDetails(podId, accountId, undefined
+                , function(message) {
+                    console.log(message);}, 
+                function(deliveryItems) {
+                    sendItemsToBasket(deliveryItems || []);              
+                });
+        }
     }
     
     function sendItemsToBasket(items) {
@@ -197,6 +226,7 @@ var route = (function() {
         if (!items.length) {
             
             g_alert('ERROR: No items retrieved from the REST service.');
+            g_busy(false);
             return;
         }
         
