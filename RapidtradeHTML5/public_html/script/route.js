@@ -53,7 +53,7 @@ var route = (function() {
                 
         g_busy(true);
         
-        if (true /*!g_isOnline()*/) {
+        if (!g_isOnline()) {
             
             var cachedRoutes = JSON.parse(localStorage.getItem('Route' + selectedDate()));
             if (routes.length) {
@@ -129,7 +129,7 @@ var route = (function() {
 
         g_busy(true);  
         
-        if (false /*g_isOnline()*/) {
+        if (g_isOnline()) {
             
             var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_GetUndeliveredCollection&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedDate() + '%27|%27' + selectedRouteId + '%27)';        
             console.log(url);
@@ -204,7 +204,7 @@ var route = (function() {
     }
     
     function fetchPodItems(podId, accountId) {
-        if ( false /*g_isOnline()*/) {
+        if (g_isOnline()) {
             var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27' + g_currentUser().SupplierID + '%27|%27' + accountId + '%27|%27' + podId + '%27)';        
             //TEST
     //        url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27justsqueezed%27|%273ALBL01%27|%27000000000036702%27)';
