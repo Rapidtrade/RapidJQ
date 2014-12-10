@@ -37,7 +37,7 @@ function Dao() {
         if (g_indexedDB)
             this.idbputMany(items, table, key, ponsuccesswrite, ponerror, poncomplete);
         else
-            this.sqlputMany(items, table, key, ponsuccesswrite, ponerror, poncomplete);
+            this.sqlputMany(items, table, ponsuccesswrite, ponerror, poncomplete);
     };
     
     
@@ -811,7 +811,7 @@ function Dao() {
 	            	var sql = 'INSERT or REPLACE INTO ' + table + '(keyf, json, index1, index2,index3, index4) VALUES (?,?,?,?,?,?)';
 	            	tx.executeSql(sql, [item.key, JSON.stringify(item), getsqlIndex1(table, item), getsqlIndex2(table, item), getsqlIndex3(table, item), getsqlIndex4(table, item)]);
             	}
-		    });
+            });
         },
 
         function (tx) {
@@ -819,6 +819,8 @@ function Dao() {
             //alert('1.Something went wrong: ');
             if (ponerror != undefined) 
             	ponerror(tx);
+            else
+                console.log(tx);
         });
        
     };
@@ -1329,7 +1331,8 @@ function Dao() {
     
     this.sqlFetchRoutesByDate =  function(selectedDate, ponsuccessread, ponerror, poncomplete) {
         var query = 'SELECT distinct r.json, ' + 
-                    ' (SELECT count(*) FROM Orders where index3 = r.index1 and json like \'%"CreateDate":"' + selectedDate + '%\' ) as numOfRouts FROM Route r' +
+                    ' (SELECT count(*) FROM Orders where index3 = r.index1 and json like \'%"CreateDate":"' + selectedDate + '%\' and (json like \'%"UserID":""%\' or ' +
+                    ' json like \'%"UserID":"' + g_currentUser().UesrID + '"%\' )) as numOfRouts FROM Route r' +
                     ' inner join Orders ord on ord.index3 = r.index1 ' +
                     ' where ord.json like \'%"CreateDate":"' + selectedDate + '%\''; 
             

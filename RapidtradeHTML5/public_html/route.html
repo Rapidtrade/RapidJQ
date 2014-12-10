@@ -15,7 +15,10 @@ and open the template in the editor.
             <div data-role="header">
                 <img class="logoSml" src="img/logoSml.png"/>
                 <a data-role="button" id="backButton" data-icon="arrow-l" data-iconpos="left" data-transition="none" class="ui-btn-left">Menu</a>
-                <a data-role="button" id="refreshButton" data-icon="refresh" data-iconpos="left" class="ui-btn-right">Refresh</a>
+                <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right">
+                    <a data-role="button" id="takeRouteButton" data-icon="plus" data-iconpos="left">Take Route</a>
+                    <a data-role="button" id="refreshButton" data-icon="refresh" data-iconpos="right">Refresh</a>
+                </div>
             </div>             
             <script>
                 $('#routePage').bind("pagebeforeshow", route.init);

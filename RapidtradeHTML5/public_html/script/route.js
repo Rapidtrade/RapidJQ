@@ -11,6 +11,7 @@ var route = (function() {
         init: function() {
             
             $('#refreshButton').hide();
+            $('#takeRouteButton').hide();
             bind();
         }
     }
@@ -29,6 +30,7 @@ var route = (function() {
         $('#backButton').off().on('click', goBack);
         $('#submit').off().on('click', fetchRoutes);
         $('#refreshButton').off().on('click', fetchPods);
+        $('#takeRouteButton').off().on('click', takeARoute);
         if (localStorage.getItem('routesLastSelectedDate')) {
             $("#duedate").val(localStorage.getItem('routesLastSelectedDate'));
             fetchRoutes();
@@ -70,7 +72,7 @@ var route = (function() {
             return;
         } 
         
-        var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_UnsentCount&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
+        var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_UnsentCount2&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
         
         // TEST
 //        url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_route_UnsentCount&params=(%27justsqueezed%27|%27FTP-100%27|%2720141106%27)';
@@ -105,7 +107,7 @@ var route = (function() {
                 
                 item.routeID = $.trim(item.routeID);
                 
-                routeListHtml += '<li data-theme="c" id="' + item.routeID + '"><a href>' + item.Name + (routeNumbers[item.routeID] ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
+                routeListHtml += '<li data-theme="c" id="' + item.routeID + '"' + ((routeNumbers[item.routeID] === 0) ? ' class="ui-disabled" ' : '') + ' ><a href>' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
                 
                 if (++addedRows === routes.length) {
                     
@@ -169,10 +171,17 @@ var route = (function() {
         $('#noPods').addClass('invisible');
         
         var podListHtml = '';
-        
+        var isItTaken = false;
         for (var i = 0; i < pods.length; ++i) {
             
             podListHtml += '<li id="' + pods[i].OrderID + '" data-account="' + pods[i].AccountID + '" data-theme="c"><a href><h3 class="ui-li-heading">' + pods[i].DeliveryName + '</h3><p>' + pods[i].Reference + '</p></a></li>';
+            if (pods[i].UserID !== '') isItTaken = true;
+        }
+        
+        if (isItTaken) {
+            g_alert('This route has been already taken');
+            if (!$('#takeRouteButton').hasClass('ui-disabled')) 
+                $('#takeRouteButton').addClass('ui-disabled');
         }
         
         $('#podList').html(podListHtml).listview('refresh');
@@ -201,6 +210,25 @@ var route = (function() {
 	         undefined	 
             );                    
         });                     
+    }
+    
+    function takeARoute() {
+        
+        var onTakeRouteSuccess = function(json) {
+          var dao = new Dao();
+          dao.putMany(json || [], 'Orders');
+        };
+        
+        
+        if (g_isOnline()) {
+            g_alert('You are about to take the Route: ' + selectedRouteId + ' for date ' + $("#duedate").val() + '.');
+            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_TakeARoute&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedRouteId + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
+            console.log(url);
+            
+            g_ajaxget(url, onTakeRouteSuccess);
+        } else {
+            g_alert('Sorry, You must be online to perform this action.');
+        }
     }
     
     function fetchPodItems(podId, accountId) {
@@ -263,6 +291,9 @@ var route = (function() {
         
         var isPodsPanel = (panelSelector === '#podsPanel');
         $('#backButton .ui-btn-text').text(isPodsPanel ? 'Routes' : 'Menu');
+        $('#takeRouteButton').toggle(isPodsPanel);
+        if ($('#takeRouteButton').hasClass('ui-disabled')) 
+                $('#takeRouteButton').removeClass('ui-disabled');
         $('#refreshButton').toggle(isPodsPanel);
     }
     
