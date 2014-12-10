@@ -562,12 +562,18 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip, ne
 			return;
 		}
 	} else if (newRest || /*('Orders' === table) || */((json._Items.length ) < 100 && (table != 'Pricelists'))) {
-	    //less than 250 records, so move on to the next sync, except pricelist, dont always get back 250
-            if (table === 'Options') {
-                g_append('#results tbody', '<tr><td> ' + g_syncPageTranslation.translateText(syncGetLocalTableName(table, method)) + ' (' + (skip + json._Items.length) + ') ' + g_syncPageTranslation.translateText('downloaded'));
-            } else {
-                $('#results tbody tr:last td').text(g_syncPageTranslation.translateText(syncGetLocalTableName(table, method)) + ' (' + (skip + json._Items.length) + ') ' + g_syncPageTranslation.translateText('downloaded'));
+            
+            try {
+                //less than 250 records, so move on to the next sync, except pricelist, dont always get back 250
+                if (table === 'Options') {
+                    g_append('#results tbody', '<tr><td> ' + g_syncPageTranslation.translateText(syncGetLocalTableName(table, method)) + ' (' + (skip + json._Items.length) + ') ' + g_syncPageTranslation.translateText('downloaded'));
+                } else {
+                    $('#results tbody tr:last td').text(g_syncPageTranslation.translateText(syncGetLocalTableName(table, method)) + ' (' + (skip + json._Items.length) + ') ' + g_syncPageTranslation.translateText('downloaded'));
+                }
+            } catch(e) {
+                console.log(e.message);
             }
+            
 	    syncSetLastVersion(syncGetLocalTableName(table, method), 'Orders' === table ? 0 : json._LastVersion);
             
 	    if ((g_syncTables.length == (g_syncCount + 1))) {
