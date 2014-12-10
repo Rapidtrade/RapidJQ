@@ -454,7 +454,8 @@ function myterritoryOnCompanyClicked(key, page){
                             if (DaoOptions.getValue('LiveCreditCheckURL'))
                                      g_fetchAvailableCredit();
 
-                             $.mobile.changePage("company.html");
+                            sessionStorage.setItem('clearSearch', true);
+                            $.mobile.changePage("company.html");
 
                     },
                     undefined,undefined);	

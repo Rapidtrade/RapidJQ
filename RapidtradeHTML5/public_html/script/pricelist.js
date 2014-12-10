@@ -23,6 +23,12 @@ var g_pricelistIsPrevNextPressed = false;
 
 function pricelistOnPageShow() {    
     
+    if (sessionStorage.getItem('clearSearch')) {
+        
+        $('#search').val('');
+        sessionStorage.removeItem('clearSearch');
+    }
+    
     var templateArray = DaoOptions.getValue('MyRangeUF') && g_currentCompany()[DaoOptions.getValue('MyRangeUF')].split(',') || [];
     
     if (templateArray.length) {
