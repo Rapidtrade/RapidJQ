@@ -672,7 +672,7 @@ function pricelistBasicSearch() {
 }
 
 function pricelistCategorySearch(category) {
-	g_pricelistSearchPricelistText = '"' + category + '"';
+	g_pricelistSearchPricelistText = /*'"' +*/ category /*+ '"'*/;
 	pricelistFetchPricelist(); 
     if (sessionStorage.getItem('fromCategory') == 'true') {
         g_companyPageTranslation.translateButton('#backbtn', 'Categories');
@@ -1148,6 +1148,7 @@ function pricelistOnComplete(event) {
 
         if (!g_pricelistItemsHtml && !pricelistIsRangeSelected()) {			
 
+            $('#NextPrevButtons').hide();
             var infoText = sessionStorage.getItem('fromCategory') == 'true' || sessionStorage.getItem('fromAdvanced') == 'true' || $.trim($('#search').val()) != '' ?  'No products found.' : 'Enter in search criteria to list products.';			
             $('.infoPanelText').text(infoText);
             $.mobile.hidePageLoadingMsg();
