@@ -33,7 +33,7 @@ var route = (function() {
         $('#takeRouteButton').off().on('click', takeARoute);
         if (localStorage.getItem('routesLastSelectedDate')) {
             $("#duedate").val(localStorage.getItem('routesLastSelectedDate'));
-            fetchRoutes();
+            //fetchRoutes();
         }
     }
     
@@ -107,7 +107,10 @@ var route = (function() {
                 
                 item.routeID = $.trim(item.routeID);
                 
-                routeListHtml += '<li data-theme="c" id="' + item.routeID + '"' + ((routeNumbers[item.routeID] === 0) ? ' class="ui-disabled" ' : '') + ' ><a href>' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
+                routeListHtml += '<li data-theme="c" id="' + item.routeID + '"' + ((routeNumbers[item.routeID] === 0) ? ' class="ui-disabled" ' : '') + ' ><a href>' + 
+                                '<img class="ui-li-icon" src="' + ((route.UserID === '') ? 'img/yellow.png" alt="Available" ' : 
+                                                ((route.UserID === g_currentUser().UserID) ? 'img/green.png" alt="Taken by you" ' : 
+                                                'img/cancel.png" alt="Taken by other" '))  + '>' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
                 
                 if (++addedRows === routes.length) {
                     
@@ -178,8 +181,7 @@ var route = (function() {
             if (pods[i].UserID !== '') isItTaken = true;
         }
         
-        if (isItTaken) {
-            g_alert('This route has been already taken');
+        if (isItTaken) {            
             if (!$('#takeRouteButton').hasClass('ui-disabled')) 
                 $('#takeRouteButton').addClass('ui-disabled');
         }
@@ -214,9 +216,30 @@ var route = (function() {
     
     function takeARoute() {
         
-        var onTakeRouteSuccess = function(json) {
-          var dao = new Dao();
-          dao.putMany(json || [], 'Orders');
+        var onTakeRouteSuccess = function(deliveries) {
+            for (var i = 0; i < deliveries.length; ++i) {
+               var index = i; 
+                var onDeliveryPutSuccess = function() {
+                  var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27' + deliveries[index].SupplierID + '%27|%27' + deliveries[index].AccountID + '%27|%27' + deliveries[index].OrderID + '%27)';
+                  
+                  var onGetDeliveryItemsSuccess = function(deliveryItems) {
+                      var dao = new Dao();
+                      dao.putMany((deliveryItems), 'OrderItems', undefined, undefined, function() {
+                          if (index === deliveries.length - 1) {
+                              g_alert('You successfully took this route.');
+                              $('#refreshButton').click();
+                          }
+                      });
+                  };
+                  g_ajaxget(url, onGetDeliveryItemsSuccess);
+                };
+                
+                
+                
+                var dao = new Dao();
+                dao.put(deliveries[i], 'Orders', (deliveries[i].SupplierID + deliveries[i].OrderID),undefined, undefined, onDeliveryPutSuccess);
+            }
+          
         };
         
         

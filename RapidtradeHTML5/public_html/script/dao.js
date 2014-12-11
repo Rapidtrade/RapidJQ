@@ -812,6 +812,10 @@ function Dao() {
 	            	tx.executeSql(sql, [item.key, JSON.stringify(item), getsqlIndex1(table, item), getsqlIndex2(table, item), getsqlIndex3(table, item), getsqlIndex4(table, item)]);
             	}
             });
+            
+            if (poncomplete != undefined) {
+                poncomplete();
+            }
         },
 
         function (tx) {
@@ -914,19 +918,9 @@ function Dao() {
                 return item.cn;
             } else if (table == 'BasketInfo') {
             	return item.Description;
-            }	
-            return '';
-        } catch (error) {
-            return '';
-        };
-    };
-
-    function getsqlIndex4(table, item) {	
-        try {
-            if (table == 'Pricelists') {
-                return item.cn;
-            } else if (table == 'BasketInfo') {
-            	return item.Description;
+            } else if (table == 'Orders') {
+                /* we need UserID in Orders table for Routes logic*/
+            	return item.UserID;
             }	
             return '';
         } catch (error) {
@@ -1331,11 +1325,11 @@ function Dao() {
     
     this.sqlFetchRoutesByDate =  function(selectedDate, ponsuccessread, ponerror, poncomplete) {
         var query = 'SELECT distinct r.json, ' + 
-                    ' (SELECT count(*) FROM Orders where index3 = r.index1 and json like \'%"CreateDate":"' + selectedDate + '%\' and (json like \'%"UserID":""%\' or ' +
-                    ' json like \'%"UserID":"' + g_currentUser().UesrID + '"%\' )) as numOfRouts FROM Route r' +
+                    ' (SELECT count(*) FROM Orders where index3 = r.index1 and json like \'%"CreateDate":"' + selectedDate + '%\' and (index4=\'\' or ' +
+                    ' index4=\'' + g_currentUser().UserID + '\' )) as numOfRouts, ord.index4 as UserID FROM Route r' +
                     ' inner join Orders ord on ord.index3 = r.index1 ' +
                     ' where ord.json like \'%"CreateDate":"' + selectedDate + '%\''; 
-            
+            /* select only rautes for current user and selected date */
         console.log(query);
         
         db.transaction(function (tx) {
@@ -1347,10 +1341,11 @@ function Dao() {
                         //if (ponsuccessread) {
                         if (results.rows.length > 0) {
                             for (var i = 0; i < results.rows.length; ++i) {
-
+                                
                                 var item = results.rows.item(i);                                                                                                            
                                 var route = JSON.parse(item.json);                                                    
                                 route.numOfRouts = item.numOfRouts;
+                                route.UserID = item.UserID;
                                 res.push(route);
                                 //ponsuccessread(route);
                             }

@@ -440,7 +440,8 @@ function syncFetchTable(supplierid, userid, table, method, skip, onSuccess, newR
     
     if (newRest) {
         
-        url = g_restPHPUrl + 'GetStoredProc/Sync?StoredProc=usp_' +  table.toLowerCase() + '_' +  method.toLowerCase() + '&table=' + table.toLowerCase() + '&params=(' + supplierid + '%7C' + version + ')';
+        url = g_restPHPUrl + 'GetStoredProc/Sync?StoredProc=usp_' +  table.toLowerCase() + '_' +  
+            method.toLowerCase() + '&table=' + table.toLowerCase() + '&params=(' + supplierid + '%7C' + ((table === 'Orders' || table === 'OrderItems') ? userid + '%7C' : '') + version + ')';
         
     } else {
 
