@@ -109,22 +109,33 @@ function orderdetailsBind() {
             
         }
         
-        var orderItemsNumber = g_orderdetailsOrderItems.length;
-        g_grvCachedBasketItems = [];
-        for (var index = 0; index < orderItemsNumber; ++index) {
-            orderdetailsSendItemToBasket(g_orderdetailsOrderItems[index]);
-            var key = (g_orderdetailsOrderItems[index].ProductID + g_orderdetailsOrderItems[index].SupplierID + g_currentUser().UserID + g_orderdetailsOrderItems[index].AccountID).trim();
-            g_orderdetailsOrderItems[index].key = key;
-            g_grvCachedBasketItems[key] = g_orderdetailsOrderItems[index];
-        }
-    	
-    	g_clearCacheDependantOnBasket();
-    	orderdetailsCheckBasket();
+//        var orderItemsNumber = g_orderdetailsOrderItems.length;
+//        g_grvCachedBasketItems = [];
+//        for (var index = 0; index < orderItemsNumber; ++index) {
+//            orderdetailsSendItemToBasket(g_orderdetailsOrderItems[index]);
+//            var key = (g_orderdetailsOrderItems[index].ProductID + g_orderdetailsOrderItems[index].SupplierID + g_currentUser().UserID + g_orderdetailsOrderItems[index].AccountID).trim();
+//            g_orderdetailsOrderItems[index].key = key;
+//            g_grvCachedBasketItems[key] = g_orderdetailsOrderItems[index];
+//        }
+        
+        basket.saveItems(g_orderdetailsOrderItems, function() {
+           
+            g_clearCacheDependantOnBasket();
+            orderdetailsCheckBasket();
 
-    	if (confirm(g_orderdetailsPageTranslation.translateText('Items have been sent to your shopping cart. Would you like to go to the shopping cart now?'))) {    		
-            sessionStorage.setItem('ShoppingCartReturnPage', 'orderdetails.html');
-            $.mobile.changePage("shoppingCart.html");
-    	}
+            if (confirm(g_orderdetailsPageTranslation.translateText('Items have been sent to your shopping cart. Would you like to go to the shopping cart now?'))) {    		
+                sessionStorage.setItem('ShoppingCartReturnPage', 'orderdetails.html');
+                $.mobile.changePage("shoppingCart.html");
+            }            
+        });
+    	
+//    	g_clearCacheDependantOnBasket();
+//    	orderdetailsCheckBasket();
+//
+//    	if (confirm(g_orderdetailsPageTranslation.translateText('Items have been sent to your shopping cart. Would you like to go to the shopping cart now?'))) {    		
+//            sessionStorage.setItem('ShoppingCartReturnPage', 'orderdetails.html');
+//            $.mobile.changePage("shoppingCart.html");
+//    	}
     });
     
     $('#reprintButton').unbind();

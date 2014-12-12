@@ -1,4 +1,70 @@
-﻿
+var basket = (function() {
+
+    // Private
+    
+    var savedItems = 0;
+    var totalItems = 1;
+    var callback = undefined;
+    
+    // Public
+    
+    /*
+     * saveItem(item)
+     * saveItems(itemArray)
+     */
+    
+    return {
+        
+        saveItem: function(item, onComplete) {
+            
+            callback = onComplete;            
+            
+            item.key = item.ProductID.trim() + item.AccountID.trim();
+            
+            var dao = new Dao();
+            dao.put(item, 'BasketInfo', item.key, onItemSaved);
+        },
+        
+        saveItems: function(itemArray, onComplete) {
+            
+            savedItems = 0;            
+            totalItems = itemArray.length;
+            
+            for (var i = 0; i < totalItems; ++i)
+                this.saveItem(itemArray[i], onComplete);
+        }
+    }; 
+    
+    // Private    
+    
+    function onItemSaved() {
+        
+        if (!savedItems++)
+            log('Saving ' + totalItems + ' item(s)...');
+        
+        log('Item ' + savedItems + ' saved.');
+        
+        if (savedItems === totalItems) {
+            
+            if (callback) {
+                
+                log('Executing callback function...');
+                callback();
+            }            
+        }
+    }
+    
+    function log(text) {
+        
+        console.log('BASKET: ' + text);
+    }
+    
+})();
+
+
+// The part below won't be used anymore (after implementing the solution above)
+
+
 function BasketInfo(productID, supplierID, accountID, quantity, userID, nett, description, discount, gross, type, userField01, 
 		repChangedPrice, repNett, repDiscount, unit, userField02, warehouse, vat, stock, categoryName, barcode, userField03, userField04,
 		userField05, userField06, userField07, userField08, userField09, userField10, userField15) {
