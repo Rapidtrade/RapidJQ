@@ -27,14 +27,17 @@ function myterritoryOnPageShow() {
     });
     
     myterritoryOnPageShowSmall();
-	
-    if (!myterritoryFromCache()) {
+
+    sessionStorage.removeItem('lastRangeType');
+    g_myterritorySearchMyTerritoryText = '';
+    $("#searchTerritory").val('');
+    
+//    if (!myterritoryFromCache()) {
         
         var dao = new Dao();
         dao.openDB(function () { myterritoryInit(); });
-    }
+//    }
     
-    sessionStorage.removeItem('lastRangeType');
     
     myterritoryBind();
 }

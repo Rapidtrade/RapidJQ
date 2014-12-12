@@ -26,6 +26,7 @@ function pricelistOnPageShow() {
     if (sessionStorage.getItem('clearSearch')) {
         
         $('#search').val('');
+        g_pricelistSearchPricelistText = '';
         sessionStorage.removeItem('clearSearch');
     }
     
