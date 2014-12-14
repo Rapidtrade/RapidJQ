@@ -187,6 +187,9 @@ function menuInit(){
                     
                     var isSyncDayValid = syncDay > -1 && syncDay < 7; 
                     
+
+                    //commeting out as lastsyncdate was 14/12/2014, but still forcing me to sync all the time - shaun
+                    /*
                     if ((isSyncDayValid && (new Date().getDay() === syncDay) && (new Date(lastSyncDate).getDay() !== syncDay)) || (!isSyncDayValid && (lastSyncDate !== g_today()))) {
 
                         alert('You haven\'t synchronised today. You should do so now to keep up to date.');
@@ -198,6 +201,7 @@ function menuInit(){
                         sessionStorage.setItem('disableMenuButton', 'true');
                         return;
                     }
+                    */
                         
 
                     sessionStorage.setItem('currentUser', JSON.stringify(user));
