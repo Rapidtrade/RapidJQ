@@ -35,6 +35,7 @@ var route = (function() {
             $("#duedate").val(localStorage.getItem('routesLastSelectedDate'));
             selectedRouteId = localStorage.getItem('routesLastSelectedRouteID');
             if (localStorage.getItem('routesLastPanelViewed') === '#routesPanel') {
+                showPanel('#routesPanel')
                 fetchRoutes();
             } else {
                 showPanel('#podsPanel');
@@ -47,6 +48,7 @@ var route = (function() {
         
         if ($('#podsPanel').is(':visible')) {
             showPanel('#routesPanel')
+            fetchRoutes();
         } else {
             localStorage.setItem('routesLastSelectedDate', $("#duedate").val());
             localStorage.setItem('routesLastSelectedRouteID', selectedRouteId);
@@ -225,32 +227,35 @@ var route = (function() {
     function takeARoute(isRefreshPressed) {
         
         var onTakeRouteSuccess = function(deliveries) {
-            for (var i = 0; i < deliveries.length; ++i) {
-               var index = i; 
+            $.each(deliveries, function(index, delivery) {
+            //for (var i = 0; i < deliveries.length; ++i) {
+                //var index = i; 
                 var onDeliveryPutSuccess = function() {
-                  var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27' + deliveries[index].SupplierID + '%27|%27' + deliveries[index].AccountID + '%27|%27' + deliveries[index].OrderID + '%27)';
+                    var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27' + delivery.SupplierID + '%27|%27' + delivery.AccountID + '%27|%27' + delivery.OrderID + '%27)';
                   
-                  var onGetDeliveryItemsSuccess = function(deliveryItems) {
-                      var dao = new Dao();
-                      dao.putMany((deliveryItems), 'OrderItems', undefined, undefined, function() {
-                          if (index === deliveries.length - 1) {
-                              if (isRefreshPressed) {
-                                  g_alert('You successfully refreshed local data.');
-                              } else {
-                                g_alert('You successfully took this route.');
-                                $('#refreshButton').click();
+                    var onGetDeliveryItemsSuccess = function(deliveryItems) {
+                        var dao = new Dao();
+                        dao.putMany((deliveryItems), 'OrderItems', undefined, undefined, function() {
+                            if (index === deliveries.length - 1) {
+                                if (isRefreshPressed) {
+                                    g_alert('You successfully refreshed local data.');
+                                } else {
+                                  g_alert('You successfully took this route.');
+                                  $('#refreshButton').click();
+                                }
                             }
-                          }
-                      });
-                  };
-                  g_ajaxget(url, onGetDeliveryItemsSuccess);
+                        });
+                    };
+                    
+                    console.log(url);
+                    g_ajaxget(url, onGetDeliveryItemsSuccess);
                 };
                 
                 
                 
                 var dao = new Dao();
-                dao.put(deliveries[i], 'Orders', (deliveries[i].SupplierID + deliveries[i].OrderID),undefined, undefined, onDeliveryPutSuccess);
-            }
+                dao.put(delivery, 'Orders', (delivery.SupplierID + delivery.OrderID),undefined, undefined, onDeliveryPutSuccess);
+            });
           
         };
         
