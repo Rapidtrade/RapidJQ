@@ -28,7 +28,7 @@ var route = (function() {
     function bind() {
         
         $('#backButton').off().on('click', goBack);
-        $('#submit').off().on('click', fetchRoutes);
+        $('#submit').off().on('click', function() { fetchRoutes(true); });
         $('#refreshButton').off().on('click', function() { takeARoute(true); });
         $('#takeRouteButton').off().on('click', takeARoute);
         if (localStorage.getItem('routesLastSelectedDate')) {
@@ -61,14 +61,22 @@ var route = (function() {
         return moment($("#duedate").val()).format('YYYYMMDD');
     } 
     
-    function fetchRoutes() {
+    function fetchRoutes(isSubmitClicked) {
                 
         g_busy(true);
         
-        if (!g_isOnline()) {
+        if (isSubmitClicked && g_isOnline()) {
+            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_UnsentCount2&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
+        
+            // TEST
+//          url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_route_UnsentCount&params=(%27justsqueezed%27|%27FTP-100%27|%2720141106%27)';
+        
+            console.log(url);
+            g_ajaxget(url, showRoutes);
+        } else {
             
             var cachedRoutes = JSON.parse(localStorage.getItem('Route' + selectedDate()));
-            if (routes.length) {
+            if (cachedRoutes && cachedRoutes.length) {
                 showRoutes(cachedRoutes || []);
             } else {
                 var dao = new Dao();
@@ -82,13 +90,7 @@ var route = (function() {
             return;
         } 
         
-        var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_UnsentCount2&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
         
-        // TEST
-//        url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_route_UnsentCount&params=(%27justsqueezed%27|%27FTP-100%27|%2720141106%27)';
-        
-        console.log(url);
-        g_ajaxget(url, showRoutes);
     }
     
     function showRoutes(routes) {                    
@@ -144,14 +146,14 @@ var route = (function() {
 
         g_busy(true);  
         
-        if (g_isOnline()) {
+        //if (g_isOnline()) {
             
-            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_GetUndeliveredCollection&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedDate() + '%27|%27' + selectedRouteId + '%27)';        
-            console.log(url);
+        ///    var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_GetUndeliveredCollection&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedDate() + '%27|%27' + selectedRouteId + '%27)';        
+        //    console.log(url);
             
-            g_ajaxget(url, showPods);
+        //    g_ajaxget(url, showPods);
             
-        } else {
+       // } else {
             
             var cachedPods = JSON.parse(localStorage.getItem('POD' + selectedRouteId)); 
             if (cachedPods && (cachedPods != null) && cachedPods.length) {
@@ -165,7 +167,7 @@ var route = (function() {
                     showPods(routeDeliveries || []);              
                 });
             }
-        }
+       // }
     }    
     
     function showPods(pods) {
@@ -230,6 +232,7 @@ var route = (function() {
             $.each(deliveries, function(index, delivery) {
             //for (var i = 0; i < deliveries.length; ++i) {
                 //var index = i; 
+                
                 var onDeliveryPutSuccess = function() {
                     var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27' + delivery.SupplierID + '%27|%27' + delivery.AccountID + '%27|%27' + delivery.OrderID + '%27)';
                   
@@ -268,17 +271,13 @@ var route = (function() {
             }
             var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_TakeARoute&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedRouteId + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
             console.log(url);
-            
+            localStorage.removeItem('POD' + selectedRouteId);
             g_ajaxget(url, onTakeRouteSuccess);
         } else {
             g_alert('Sorry, You must be online to perform this action.');
         }
     }
-    
-    function fetchPodItemsOnline() {
         
-    }
-    
     function fetchPodItems(podId, accountId) {
        // if (g_isOnline()) {
        //     var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27' + g_currentUser().SupplierID + '%27|%27' + accountId + '%27|%27' + podId + '%27)';        
