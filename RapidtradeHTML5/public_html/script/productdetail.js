@@ -292,6 +292,19 @@ function productdetailGetStock() {
     return stockValue;
 }
 
+function productdetailGetWarehouse() {
+    
+    if (DaoOptions.getValue('MobileSelectWhOnDetail') === 'true') {
+        
+        if (DaoOptions.getValue('MobileSelWhOnDetailUseOrig') === 'true')  
+            return g_currentCompany().BranchID;
+        else            
+            return $('#whChoiceDiv select option:selected').val() && $.trim($('#whChoiceDiv select option:selected').val().split(':')[0]);        
+    }      
+    
+    return '';
+}
+
 function productdetailOnNettChange() {
 	
 	var nett = Number($('#divnettvalue input').val());
@@ -484,10 +497,7 @@ function productdetailFetchComponentsOnSuccess(json) {
                             if (g_isQuantityValid(parseInt(quantity, 10), parseInt(component.UOM, 10))) {
 
                                     $('tr#' + component.ProductID + ' td.quantity').text(quantity);
-
-                                    g_addProductToBasket(component.ProductID, g_currentUser().SupplierID, g_currentCompany().AccountID, quantity, 
-                                                    g_currentUser().UserID, component.Nett, component.Description, undefined, undefined, sessionStorage.getItem("currentordertype"), 
-                                                    undefined, undefined, undefined, component.UOM);
+                                    basket.saveItem(component, quantity);
 
                                     pricelistCheckBasket(false);
                             }
@@ -1102,49 +1112,24 @@ function productdetailIsPackPrice() {
 
 function productdetailSave(qty, type, product) {
     
-    var userField01 = ('Credit' === type) ? $('#reason').attr('value') : product.UserField01;
+    if (productdetailCanChangeNett(product.ProductID))
+        product.Description = $('.hdescription').val();
     
-    var warehouse = '';
+    product.Gross = $('#grossvalue').html();
     
-    if (DaoOptions.getValue('MobileSelectWhOnDetail') === 'true') {
+    if (product.RepChangedPrice) {
         
-        if (DaoOptions.getValue('MobileSelWhOnDetailUseOrig') === 'true')  
-            warehouse = g_currentCompany().BranchID;
-        else            
-            warehouse = $('#whChoiceDiv select option:selected').val() && $.trim($('#whChoiceDiv select option:selected').val().split(':')[0]);        
+        product.RepNett = productdetailValue('nett');
+        product.RepDiscount = productdetailValue('discount');
     }
-	
-    g_addProductToBasket(
-        product.ProductID,
-        g_currentCompany().SupplierID,
-        g_currentCompany().AccountID,
-        qty,
-        g_currentUser().UserID,
-        product.Nett,
-        (productdetailCanChangeNett(product.ProductID) ? $('.hdescription').val() : product.Description),
-        product.Discount,
-        $('#grossvalue').html(),
-        type,
-        userField01,
-        product.RepChangedPrice ? productdetailValue('nett') : '',
-        product.RepChangedPrice ? productdetailValue('discount') : '',
-        productdetailIsPackPrice() ? g_pricelistSelectedProduct.Unit : '',
-        product.UserField02,
-        warehouse,
-        product.VAT,
-        productdetailGetStock(),
-        product.CategoryName,
-        product.Barcode,
-        product.UserField03,
-        product.UserField04,
-        product.UserField05,
-        product.UserField06,
-        product.UserField07,
-        product.UserField08,
-        product.UserField09,
-        product.UserField10,
-        product.UserField15
-    );
+    
+    product.Stock = productdetailGetStock();    
+    product.Warehouse = productdetailGetWarehouse();    
+    
+    if (type === 'Credit') 
+        product.UserField01 = $('#reason').attr('value');
+    
+    basket.saveItem(product, qty);	
 }
 
 function productdetailToggleViews() {

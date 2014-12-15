@@ -432,23 +432,6 @@ function g_navigateBackFromCompanyView() {
 	}
 }
 
-function g_addProductToBasket(productID, supplierID, accountID, quantity,
-		userID, nett, description, discount, gross, type, userField01, repNett,
-		repDiscount, unit, userField02, warehouse, vat, stock, categoryName, barcode, userField03, userField04,
-		userField05, userField06, userField07, userField08, userField09, userField10, userField15) {
-
-//        nett = nett.toFixed(2);
-
-	var repChangedPrice = repNett && (nett != repNett);
-	
-	var basketInfo = new BasketInfo(productID, supplierID, accountID, quantity,
-			userID, nett, description, parseFloat(discount), gross, type,
-			userField01, repChangedPrice,  repNett, parseFloat(repDiscount), unit, userField02, warehouse, vat, stock, categoryName, barcode,
-			userField03, userField04, userField05, userField06, userField07, userField08, userField09, userField10, userField15);
-
-	basketInfo.save();
-}
-
 function g_roundToTwoDecimals(number) {
     return parseFloat(Math.round(number * 100) / 100).toFixed(2);
 }

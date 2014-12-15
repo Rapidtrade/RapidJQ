@@ -123,17 +123,22 @@ var promo = (function(){
             //now read local database to see if promo exists in cart, if it does, amend, if not, then add 
             var key = tpmval.PromoProductID + user.SupplierID + user.UserID + account.AccountID;
             
+            tpmval.Nett = '0.00';
+            tpmval.Discount = '0.00';
+            tpmval.Gross = '0.00';
+            tpmval.Type = 'PROMO';
+            
             var dao = new Dao();
             dao.get('BasketInfo',key, 
                 function(json){ 
                     
-                    //this Tpm exists in cart, so update qty                      
-                    g_addProductToBasket(tpmval.PromoProductID, user.SupplierID, account.AccountID, freeqty, user.UserID, '0.00', tpmval.PromoDescription, '0.00', '0.00', 'PROMO');
+                    //this Tpm exists in cart, so update qty        
+                    basket.saveItem(tpmval, freeqty);
                 },  
                 function(err){ 
                     
                     //this promo does not exist in basket, so add it 
-                    g_addProductToBasket(tpmval.PromoProductID, user.SupplierID, account.AccountID, freeqty, user.UserID, '0.00', tpmval.PromoDescription, '0.00', '0.00', 'PROMO');    
+                   basket.saveItem(tpmval, freeqty);    
                 }, 
                 function () { 
                     

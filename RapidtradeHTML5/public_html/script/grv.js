@@ -105,77 +105,50 @@ function grvFetchOrders() {
 }
 
 function grvSendOrderItemsToBasket(orderID, accountID) {
+    
 	$.mobile.showPageLoadingMsg();
 	//g_grv_replorderid = orderID;
 	sessionStorage.setItem('referenceDocID', orderID);
 	var url = g_restUrl + 'Orders/GetOrderItems?supplierID=' + g_currentUser().SupplierID + '&accountID=' + accountID+ '&orderID=' + orderID + '&skip=0&top=100&format=json';
 	
-	var success = function (json) {
+	var success = function (items) {
+            
+            $.mobile.hidePageLoadingMsg();
+            
+            var validItems = [];
+            
+            for (var i = 0; i < items.length; ++i) {
+                
+                if (g_currentUser().SupplierID === 'DS')
+                    items[i].Quantity = items[i].UserField01;
+                
+                if (isNaN(items[i].Quantity))
+                    continue;
+                
+                if (sessionStorage.getItem('currentordertype') !== 'POD'){
 
-	    var itemsNumber = json.length;
-	    type = sessionStorage.getItem("currentordertype");
-	    g_grvCachedBasketItems = [];
-	    
-	    var itemsAddedToBasket = 0;
-	    
-	    for (var i = 0; i < itemsNumber; i++) {
-	        var orderItem = json[i];
-	        var supplierid, accountid;
-	        //for DS, quantity is in userfield01
-	        var quantity = g_currentUser().SupplierID != 'DS' ? orderItem.Quantity : orderItem.UserField01;	        
-	        if (isNaN(quantity)) continue;
-	        if (sessionStorage.getItem('currentordertype')=='POD'){
-	        	supplierid = orderItem.SupplierID;
-	        	accountid = orderItem.AccountID;
-	        } else {
-	        	supplierid = g_currentCompany().SupplierID;
-	        	accountid = g_currentCompany().AccountID;	        	
+                    items[i].SupplierID = g_currentCompany().SupplierID;
+                    items[i].AccountID = g_currentCompany().AccountID;	        	
 	        }
-	        	
-	        
-	        g_addProductToBasket(
-                    orderItem.ProductID,
-                    supplierid,
-                    accountid,
-                    quantity,
-                    g_currentUser().UserID,
-                    orderItem.Nett,
-                    orderItem.Description,
-                    orderItem.Discount,
-                    orderItem.Gross,
-                    type,
-                    undefined,
-                    undefined,
-                    undefined,
-                    undefined,
-                    undefined,
-                    undefined,
-                    //VAT
-                    (DaoOptions.getValue('CalcTaxPerProduct') == 'true') && (orderItem.RepNett != undefined) ? orderItem.RepNett : undefined
-                    );
-	        
-	        orderItem.key = (orderItem.ProductID + orderItem.SupplierID + g_currentUser().UserID + orderItem.AccountID).trim();
-	        
-	        if ((DaoOptions.getValue('CalcTaxPerProduct') == 'true') && (orderItem.RepNett != undefined))
-	        	orderItem.VAT = orderItem.RepNett;
-	        
-	        g_grvCachedBasketItems[orderItem.key] = orderItem;
-	        
-	        ++itemsAddedToBasket;
-	    }
-
-	    if (itemsAddedToBasket) {
-	    	
+                
+                if (DaoOptions.getValue('CalcTaxPerProduct') === 'true')
+                    items[i].VAT = items[i].RepNett;
+                
+                validItems.push(items[i]);
+            }
+            
+            basket.saveItems(validItems, function() {
+                
 	    	sessionStorage.setItem('ShoppingCartNoFooter', true);
 	    	sessionStorage.setItem('ShoppingCartNoChangeAllowed', true); 
 	    	sessionStorage.setItem('ShoppingCartReturnPage', 'grv.html'); 
 	    	
-	    	$.mobile.changePage("shoppingCart.html", { transition: "none" });
-	    	
-	    } else {
-	    	
+	    	$.mobile.changePage("shoppingCart.html", { transition: "none" });                
+            });            
+
+	    if (!validItems.length) 	    		    	
 	    	g_alert('No order items!');
-	    }
+
 	};
 
 	var error = function (e) {

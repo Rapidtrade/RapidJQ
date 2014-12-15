@@ -758,31 +758,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
         	basketInfo.Gross = gross;
     	}
     	
-        g_addProductToBasket(
-                basketInfo.ProductID,
-                basketInfo.SupplierID,
-                basketInfo.AccountID,
-                quantity,
-                basketInfo.UserID,
-                basketInfo.Nett,
-                basketInfo.Description,
-                basketInfo.Discount,
-                basketInfo.Gross,
-                basketInfo.Type,
-                basketInfo.UserField01,
-                basketInfo.RepNett,
-                basketInfo.RepDiscount,
-                basketInfo.Unit,
-                basketInfo.UserField02,
-                basketInfo.Warehouse,
-                basketInfo.VAT,
-                basketInfo.Stock,
-                basketInfo.CategoryName,
-                basketInfo.Barcode,
-                basketInfo.UserField03,
-                basketInfo.UserField04,
-                basketInfo.UserField05                 
-                );
+        basket.saveItem(basketInfo, quantity);
         
         $('#' + itemIndex + 'nett').text('' + basketInfo.Nett);
         $('#' + itemIndex + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  == 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * quantity));

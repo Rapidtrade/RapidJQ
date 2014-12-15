@@ -301,32 +301,17 @@ var route = (function() {
             return;
         }
         
-        for (var i = 0; i < items.length; ++i) {
-            
-            g_addProductToBasket(
-                items[i].ProductID,
-                items[i].SupplierID,
-                items[i].AccountID,
-                items[i].Quantity,
-                g_currentUser().UserID,
-                items[i].Nett,
-                items[i].Description,
-                items[i].Discount,
-                items[i].Gross,
-                'pod'
-                );            
-        }
+        for (var i = 0; i < items.length; ++i)            
+            items[i].Type = 'pod';
         
-        setTimeout(function(){
-            
-            g_busy(false);
+        basket.saveItems(items, function() {
+           
             localStorage.setItem('routesLastSelectedDate', $("#duedate").val());            
             localStorage.setItem('routesLastSelectedRouteID', selectedRouteId);
             localStorage.setItem('routesLastPanelViewed', '#podsPanel');
             sessionStorage.setItem('ShoppingCartReturnPage', 'route.html');
-            $.mobile.changePage('shoppingCart.html', {transition:'none'});
-            
-        }, 2000);
+            $.mobile.changePage('shoppingCart.html', {transition:'none'});            
+        });
     }
     
     function showPanel(panelSelector) {

@@ -92,50 +92,20 @@ function orderdetailsBind() {
     } else {
         $('#sendToBasketButton').removeClass('hidden');
     }
-    $('#sendToBasketButton').click(function () {
+    $('#sendToBasketButton').click(function () {        
         
-        if (orderdetailsIsComplexView()) {
-            
-            g_orderdetailsOrderItems = [];
-            
-            $.each(g_orderdetailsComplexItems, function(id, items) {
-                
-                $.each(items, function(i, item) {
-                    
-                    g_orderdetailsOrderItems.push(item);
-                    orderdetailsSendItemToBasket(item); 
-                });                
-            });
-            
-        }
+        basket.saveItems(orderdetailsIsComplexView() ? g_orderdetailsComplexItems : g_orderdetailsOrderItems, onItemsSaved);
         
-//        var orderItemsNumber = g_orderdetailsOrderItems.length;
-//        g_grvCachedBasketItems = [];
-//        for (var index = 0; index < orderItemsNumber; ++index) {
-//            orderdetailsSendItemToBasket(g_orderdetailsOrderItems[index]);
-//            var key = (g_orderdetailsOrderItems[index].ProductID + g_orderdetailsOrderItems[index].SupplierID + g_currentUser().UserID + g_orderdetailsOrderItems[index].AccountID).trim();
-//            g_orderdetailsOrderItems[index].key = key;
-//            g_grvCachedBasketItems[key] = g_orderdetailsOrderItems[index];
-//        }
-        
-        basket.saveItems(g_orderdetailsOrderItems, function() {
-           
+        function onItemsSaved() {
+            
             g_clearCacheDependantOnBasket();
             orderdetailsCheckBasket();
 
             if (confirm(g_orderdetailsPageTranslation.translateText('Items have been sent to your shopping cart. Would you like to go to the shopping cart now?'))) {    		
                 sessionStorage.setItem('ShoppingCartReturnPage', 'orderdetails.html');
                 $.mobile.changePage("shoppingCart.html");
-            }            
-        });
-    	
-//    	g_clearCacheDependantOnBasket();
-//    	orderdetailsCheckBasket();
-//
-//    	if (confirm(g_orderdetailsPageTranslation.translateText('Items have been sent to your shopping cart. Would you like to go to the shopping cart now?'))) {    		
-//            sessionStorage.setItem('ShoppingCartReturnPage', 'orderdetails.html');
-//            $.mobile.changePage("shoppingCart.html");
-//    	}
+            }               
+        }        
     });
     
     $('#reprintButton').unbind();
@@ -797,43 +767,25 @@ function orderdetailsFetchOrderItems() {
 }
  
  function orderdetailsSendItemToBasket(item, showInfoMessage) {
+     
+     if (DaoOptions.getValue('AllowHistoryDownbyAccGroup') === 'true')
+        item.AccountID =  g_currentCompany().AccountID;
+    
+    item.Type = orderdetailsOrderType();
 
-    g_addProductToBasket(
-                    item.ProductID, 
-                    item.SupplierID, 
-                    (DaoOptions.getValue('AllowHistoryDownbyAccGroup') === 'true' ? g_currentCompany().AccountID : item.AccountID),
-                    item.Quantity, 
-                    g_currentUser().UserID, 
-                    item.Nett, 
-                    item.Description, 
-                    item.Discount,
-                    item.Gross,
-                    orderdetailsOrderType(),
-                    item.UserField01,
-                    item.RepNett,
-                    item.RepDiscount,
-                    item.Unit,
-                    item.UserField02,
-                    item.Warehouse,
-                    item.VAT,
-                    item.Stock,
-                    item.CategoryName,
-                    item.Barcode,
-                    item.UserField03,
-                    item.UserField04,
-                    item.UserField05
-                    );
-
+    basket.saveItem(item, undefined, function() {
+       
     g_clearCacheDependantOnBasket();	
 
-    if (showInfoMessage) {
+        if (showInfoMessage) {
 
-            $('#quantityPopup').popup('close');
-            orderdetailsCheckBasket();
-            $('#itemInfoPopup p').text('Item sent successfully.');
-            window.setTimeout( function(){ $('#itemSentPopup').popup('open'); }, 500 );
-            window.setTimeout( function(){ $('#itemSentPopup').popup('close'); }, 2500 );
-    }
+                $('#quantityPopup').popup('close');
+                orderdetailsCheckBasket();
+                $('#itemInfoPopup p').text('Item sent successfully.');
+                window.setTimeout( function(){ $('#itemSentPopup').popup('open'); }, 500 );
+                window.setTimeout( function(){ $('#itemSentPopup').popup('close'); }, 2500 );
+        }        
+    });
  };
  
  function orderdetailsFetchStock(item, onSuccess) {

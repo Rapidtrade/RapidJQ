@@ -568,43 +568,6 @@ function tpmVerifyTableLoaded(){
     });
 }
 
-function tpmExists(json){
-    
-}
-
-function tpmSave(){
-    var dao = new Dao();
-    dao.clearBasket('BasketInfo', g_currentCompany().AccountID,'',
-     function(){
-         alert('Error clearing basket');
-     },
-     function(){
-         for (var x=0; x < jsonform.getInstance().jsonArray; x++){
-             var item = jsonform.getInstance().jsonArray[x];
-             g_addProductToBasket(
-                item.productId, 
-                g_currentUser().SupplierID, 
-                g_currentCompany().AccountID, 
-                g_tpmLastValidQuantities[key], 
-                g_currentUser().UserID, 
-                0, 
-                $('#' + promotionId + productId + 'TR td.description').text(), 
-                0, 
-                0, 
-                sessionStorage.getItem("currentordertype"), 
-                'TPM', //TODO: see what to put in UserField01 
-                undefined, 
-                undefined, 
-                $('#' + promotionId + productId + 'TR td.uom').text(), //TODO: do we need this information repeated? // UOM
-                promotionId, 
-                undefined, // TODO: set Warehouse 
-                0, // TODO: set VAT 
-                $('#' + promotionId + 'Form #UserField03').val(), 
-                $('#' + promotionId + productId + 'TR td.uom').text()); //TODO: do we need this information repeated? // UserField04
-         }
-     });
-}
-
 function tpmMapId(id) {
     
 //    var map = {
@@ -699,44 +662,6 @@ function tpmSaveComplexPromotion() {
         $('#complexPopup').popup('close');            
         //$('#jsontable td:visible:nth-child(1):contains("' + promotionId + '")').parent().find('#Selected').prop('checked', isAnyItemSelected)/*.checkboxradio('refresh')*/; 
     }
-}
-
-function tpmSaveold() {
-	
-	if (tpmIsUOMValid()) {
-		
-		for ( var key in g_tpmLastValidQuantities) {
-			
-			if (g_tpmLastValidQuantities[key] > 0) {
-			
-				var promotionId = key.split('|')[0];
-				var productId = key.split('|')[1];
-			
-				g_addProductToBasket(
-						productId, 
-						g_currentUser().SupplierID, 
-						g_currentCompany().AccountID, 
-						g_tpmLastValidQuantities[key], 
-						g_currentUser().UserID, 
-						0, 
-						$('#' + promotionId + productId + 'TR td.description').text(), 
-						0, 
-						0, 
-						sessionStorage.getItem("currentordertype"), 
-						'TPM', //TODO: see what to put in UserField01 
-						undefined, 
-						undefined, 
-						$('#' + promotionId + productId + 'TR td.uom').text(), //TODO: do we need this information repeated? // UOM
-						promotionId, 
-						undefined, // TODO: set Warehouse 
-						0, // TODO: set VAT 
-						$('#' + promotionId + 'Form #UserField03').val(), 
-						$('#' + promotionId + productId + 'TR td.uom').text()); //TODO: do we need this information repeated? // UserField04
-			}	
-		}
-		
-		$.mobile.changePage('shoppingCart.html');
-	}
 }
 
 function tpmIsUOMValid() {
