@@ -684,7 +684,7 @@
     }
     
     .printinvoiceContent, .printinvoicesmlContent {
-        font-weight: bolder;
+        font-weight: 800;
     }
 
     .printinvoiceProductListTable { 

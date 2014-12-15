@@ -29,11 +29,17 @@ var route = (function() {
         
         $('#backButton').off().on('click', goBack);
         $('#submit').off().on('click', fetchRoutes);
-        $('#refreshButton').off().on('click', fetchPods);
+        $('#refreshButton').off().on('click', function() { takeARoute(true); });
         $('#takeRouteButton').off().on('click', takeARoute);
         if (localStorage.getItem('routesLastSelectedDate')) {
             $("#duedate").val(localStorage.getItem('routesLastSelectedDate'));
-            //fetchRoutes();
+            selectedRouteId = localStorage.getItem('routesLastSelectedRouteID');
+            if (localStorage.getItem('routesLastPanelViewed') === '#routesPanel') {
+                fetchRoutes();
+            } else {
+                showPanel('#podsPanel');
+                fetchPods();
+            }
         }
     }
     
@@ -43,6 +49,8 @@ var route = (function() {
             showPanel('#routesPanel')
         } else {
             localStorage.setItem('routesLastSelectedDate', $("#duedate").val());
+            localStorage.setItem('routesLastSelectedRouteID', selectedRouteId);
+            localStorage.setItem('routesLastPanelViewed', '#routesPanel');
             g_loadMenu();
         }
     }
@@ -138,7 +146,7 @@ var route = (function() {
             
             var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_GetUndeliveredCollection&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedDate() + '%27|%27' + selectedRouteId + '%27)';        
             console.log(url);
-      
+            
             g_ajaxget(url, showPods);
             
         } else {
@@ -214,7 +222,7 @@ var route = (function() {
         });                     
     }
     
-    function takeARoute() {
+    function takeARoute(isRefreshPressed) {
         
         var onTakeRouteSuccess = function(deliveries) {
             for (var i = 0; i < deliveries.length; ++i) {
@@ -226,8 +234,12 @@ var route = (function() {
                       var dao = new Dao();
                       dao.putMany((deliveryItems), 'OrderItems', undefined, undefined, function() {
                           if (index === deliveries.length - 1) {
-                              g_alert('You successfully took this route.');
-                              $('#refreshButton').click();
+                              if (isRefreshPressed) {
+                                  g_alert('You successfully refreshed local data.');
+                              } else {
+                                g_alert('You successfully took this route.');
+                                $('#refreshButton').click();
+                            }
                           }
                       });
                   };
@@ -244,7 +256,11 @@ var route = (function() {
         
         
         if (g_isOnline()) {
-            g_alert('You are about to take the Route: ' + selectedRouteId + ' for date ' + $("#duedate").val() + '.');
+            if (isRefreshPressed) {
+                g_alert('You are about to refresh deliveries for the Route: ' + selectedRouteId + ' for date ' + $("#duedate").val() + '.');
+            } else {
+                g_alert('You are about to take the Route: ' + selectedRouteId + ' for date ' + $("#duedate").val() + '.');
+            }
             var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_TakeARoute&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedRouteId + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
             console.log(url);
             
@@ -254,14 +270,18 @@ var route = (function() {
         }
     }
     
+    function fetchPodItemsOnline() {
+        
+    }
+    
     function fetchPodItems(podId, accountId) {
-        if (g_isOnline()) {
-            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27' + g_currentUser().SupplierID + '%27|%27' + accountId + '%27|%27' + podId + '%27)';        
+       // if (g_isOnline()) {
+       //     var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27' + g_currentUser().SupplierID + '%27|%27' + accountId + '%27|%27' + podId + '%27)';        
             //TEST
     //        url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27justsqueezed%27|%273ALBL01%27|%27000000000036702%27)';
-            console.log(url);        
-            g_ajaxget(url, sendItemsToBasket);
-        } else {
+       //     console.log(url);        
+        //    g_ajaxget(url, sendItemsToBasket);
+        //} else {
             var dao = new Dao();
             dao.sqlDeliveryDetails(podId, accountId, undefined
                 , function(message) {
@@ -269,7 +289,7 @@ var route = (function() {
                 function(deliveryItems) {
                     sendItemsToBasket(deliveryItems || []);              
                 });
-        }
+        //}
     }
     
     function sendItemsToBasket(items) {
@@ -300,7 +320,9 @@ var route = (function() {
         setTimeout(function(){
             
             g_busy(false);
-            localStorage.setItem('routesLastSelectedDate', $("#duedate").val());
+            localStorage.setItem('routesLastSelectedDate', $("#duedate").val());            
+            localStorage.setItem('routesLastSelectedRouteID', selectedRouteId);
+            localStorage.setItem('routesLastPanelViewed', '#podsPanel');
             sessionStorage.setItem('ShoppingCartReturnPage', 'route.html');
             $.mobile.changePage('shoppingCart.html', {transition:'none'});
             
