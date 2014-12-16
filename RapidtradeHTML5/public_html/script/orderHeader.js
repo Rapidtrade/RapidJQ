@@ -672,12 +672,19 @@ function orderHeaderOfflineSaveSuccess() {
     g_alert(g_orderHeaderPageTranslation.translateText('Your ' + type + ' was saved locally. Please sync later to send this  ' + type + '.'));
     sessionStorage.setItem('HistoryCacheAccountID', '');
     orderHeaderRemoveFromCart();
+    if (DaoOptions.getValue('DeliveryOrderType') && type==='pod') {
+        g_removeDeliveryFromLocalSQL();
+    }
 }
 
 
 function orderHeaderOnOrderExistsSuccess(json) {
 
     var onSuccess = function() {
+        
+        if (DaoOptions.getValue('DeliveryOrderType') && g_orderHeaderOrder.Type.toUpperCase() === 'POD') {
+            g_removeDeliveryFromLocalSQL();
+        }
         
         if (g_orderHeaderOrder.Type == 'GRV' || g_orderHeaderOrder.Type.toUpperCase() == 'POD') {
             orderHeaderSaveReferenceStatus(g_orderHeaderOrder, orderHeaderOrderAcceptOnSuccess, orderHeaderOrderAcceptOnError);	
@@ -911,6 +918,11 @@ function orderHeaderCreateLineItems() {
                             } else {
 
                                 lineItem.UserField05 = sessionStorage.getItem("currentordertype"); //for info purposes used for stock take etc
+                            }
+                            
+                            if (type === 'POD') {
+                                g_orderHeaderOrder.UserField01 = basketInfo.OrderID;
+                                g_grv_replorderid = basketInfo.OrderID;
                             }
 
                             g_orderHeaderOrderItems.push(lineItem);

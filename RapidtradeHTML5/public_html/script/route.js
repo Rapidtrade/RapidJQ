@@ -30,7 +30,7 @@ var route = (function() {
         $('#backButton').off().on('click', goBack);
         $('#submit').off().on('click', function() { fetchRoutes(true); });
         $('#refreshButton').off().on('click', function() { takeARoute(true); });
-        $('#takeRouteButton').off().on('click', takeARoute);
+        $('#takeRouteButton').off().on('click', function() { takeARoute(false); });
         if (localStorage.getItem('routesLastSelectedDate')) {
             $("#duedate").val(localStorage.getItem('routesLastSelectedDate'));
             selectedRouteId = localStorage.getItem('routesLastSelectedRouteID');
@@ -66,7 +66,7 @@ var route = (function() {
         g_busy(true);
         
         if (isSubmitClicked && g_isOnline()) {
-            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_UnsentCount2&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
+            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_UnsentCount3&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
         
             // TEST
 //          url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_route_UnsentCount&params=(%27justsqueezed%27|%27FTP-100%27|%2720141106%27)';
@@ -155,18 +155,23 @@ var route = (function() {
             
        // } else {
             
-            var cachedPods = JSON.parse(localStorage.getItem('POD' + selectedRouteId)); 
-            if (cachedPods && (cachedPods != null) && cachedPods.length) {
-                showPods(cachedPods || []); 
-            } else {
+            //var cachedPods = JSON.parse(localStorage.getItem('POD' + selectedRouteId + selectedDate())); 
+            //if (cachedPods && (cachedPods != null) && cachedPods.length) {
+             //   showPods(cachedPods || []); 
+            //} else {
                 var dao = new Dao();
                 dao.sqlFetchRouteDeliveries(selectedRouteId,$("#duedate").val(), undefined
                 , function(message) {
                     console.log(message);}, 
                 function(routeDeliveries) {
-                    showPods(routeDeliveries || []);              
+                    //showPods(routeDeliveries || []); 
+                    if (!(routeDeliveries && (routeDeliveries != null) && routeDeliveries.length)) {
+                        takeARoute(true);
+                    } else {
+                        showPods(routeDeliveries || []);
+                    }
                 });
-            }
+           // }
        // }
     }    
     
@@ -181,7 +186,7 @@ var route = (function() {
             return;
         }
         
-        localStorage.setItem('POD' + selectedRouteId, JSON.stringify(pods));
+        localStorage.setItem('POD' + selectedRouteId + selectedDate(), JSON.stringify(pods));
         
         $('#noPods').addClass('invisible');
         
@@ -244,8 +249,10 @@ var route = (function() {
                                     g_alert('You successfully refreshed local data.');
                                 } else {
                                   g_alert('You successfully took this route.');
-                                  $('#refreshButton').click();
+                                  modifyCachedRoutes();
+                                  //$('#refreshButton').click();
                                 }
+                                showPods(deliveries);
                             }
                         });
                     };
@@ -269,9 +276,9 @@ var route = (function() {
             } else {
                 g_alert('You are about to take the Route: ' + selectedRouteId + ' for date ' + $("#duedate").val() + '.');
             }
-            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_TakeARoute&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedRouteId + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
+            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=' + (isRefreshPressed ? 'usp_orders_readdeliveries3' : 'usp_route_TakeARoute') + '&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedRouteId + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
             console.log(url);
-            localStorage.removeItem('POD' + selectedRouteId);
+            localStorage.removeItem('POD' + selectedRouteId + selectedDate());
             g_ajaxget(url, onTakeRouteSuccess);
         } else {
             g_alert('Sorry, You must be online to perform this action.');
@@ -305,8 +312,10 @@ var route = (function() {
             return;
         }
         
-        for (var i = 0; i < items.length; ++i)            
+        for (var i = 0; i < items.length; ++i) {            
             items[i].Type = 'pod';
+            localStorage.setItem('routesLastDeliverySentToBasket', items[i].OrderID);
+        }
         
         basket.saveItems(items, function() {
            
@@ -329,6 +338,21 @@ var route = (function() {
         if ($('#takeRouteButton').hasClass('ui-disabled')) 
                 $('#takeRouteButton').removeClass('ui-disabled');
         $('#refreshButton').toggle(isPodsPanel);
+    }
+    
+    function modifyCachedRoutes(deliveries) {
+        
+        var cachedRoutes = JSON.parse(localStorage.getItem('Route' + selectedDate()));
+        if (cachedRoutes && (cachedRoutes != null) && cachedRoutes.length) {
+            for (var i = 0; i < cachedRoutes.length; ++i) {
+                if (cachedRoutes[i].routeID === selectedRouteId) {
+                    cachedRoutes[i].UserID = g_currentUser().UserID;
+                }
+            }
+            
+            
+            localStorage.setItem('Route' + selectedDate(), JSON.stringify(cachedRoutes));
+        }        
     }
     
 })();

@@ -825,4 +825,44 @@ var g_popup = (function() {
     };
 })();
  
+function g_removeDeliveryFromLocalSQL() {
+    var deliveryID = localStorage.getItem('routesLastDeliverySentToBasket');
+    if (!deliveryID || deliveryID==='') {
+        console.log('Issue with deliveryID to be deleted');
+    } else {
+        deliveryID = g_currentUser().SupplierID + deliveryID;
+         
+        var onDeleteSuccess = function() {
+            console.log('Delivery with ID ' + deliveryID  + ' has been deleted.');
+             
+            var routesDate = localStorage.getItem('routesLastSelectedDate');
+            if (!routesDate || routesDate==='') {
+                return;
+            } else {
+                routesDate = routesDate.replace('-', '');
+                routesDate = routesDate.replace('-', '');
+            }
+            var cachedRoutes = JSON.parse(localStorage.getItem('Route' + routesDate));
+            var lastRouteID = localStorage.getItem('routesLastSelectedRouteID');
+            if (cachedRoutes && (cachedRoutes != null) && cachedRoutes.length) {
+                for (var i = 0; i < cachedRoutes.length; ++i) {
+                    if (cachedRoutes[i].routeID === lastRouteID) {
+                        cachedRoutes[i].numOfRouts -= 1;
+                    }
+                }
+
+
+                localStorage.setItem('Route' + routesDate, JSON.stringify(cachedRoutes));
+            }
+        };
+         
+         
+         var dao = new Dao();
+         dao.deleteItem('Orders', deliveryID, undefined, undefined, undefined, onDeleteSuccess);
+     }
+     
+     
+     
+     localStorage.removeItem('routesLastDeliverySentToBasket');
+ }
 
