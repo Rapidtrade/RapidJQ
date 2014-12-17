@@ -17,7 +17,7 @@ var basket = (function() {
         
         saveItem: function(item, quantity, onComplete) {                                     
             
-            item.Quantity = item.Quantity || quantity;
+            item.Quantity =  quantity || item.Quantity;
             
             if (!item.Quantity) {
                 
