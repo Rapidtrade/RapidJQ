@@ -853,6 +853,9 @@ function g_removeDeliveryFromLocalSQL() {
 
 
                 localStorage.setItem('Route' + routesDate, JSON.stringify(cachedRoutes));
+                
+                /* go back to route page */
+                $.mobile.changePage('route.html', {transition:'none'});
             }
         };
          

@@ -23,7 +23,7 @@ var route = (function() {
     var panelSelectors = {
         routesPanel: '#routesPanel',
         podsPanel: '#podsPanel'
-    }
+    };
     
     function bind() {
         
@@ -182,6 +182,8 @@ var route = (function() {
         if (!pods.length) {
             
             $('#noPods').removeClass('invisible');
+            if (!$('#takeRouteButton').hasClass('ui-disabled')) 
+                $('#takeRouteButton').addClass('ui-disabled');
             g_busy(false);            
             return;
         }
@@ -194,7 +196,9 @@ var route = (function() {
         var isItTaken = false;
         for (var i = 0; i < pods.length; ++i) {
             
-            podListHtml += '<li id="' + pods[i].OrderID + '" data-account="' + pods[i].AccountID + '" data-theme="c"><a href><h3 class="ui-li-heading">' + pods[i].DeliveryName + '</h3><p>' + pods[i].Reference + '</p></a></li>';
+            podListHtml += '<li id="' + pods[i].OrderID + '" data-account="' + pods[i].AccountID + '" data-theme="c">' + 
+                    '<a href id="' + pods[i].OrderID + '" data-account="' + pods[i].AccountID + '"><h3 class="ui-li-heading">' + pods[i].DeliveryName + '</h3><p>' + pods[i].Reference + '</p></a>' + 
+                    '<a href id="' + pods[i].OrderID + '" data-account="' + pods[i].AccountID + '">Customer Details</a></li>';
             if (pods[i].UserID !== '') isItTaken = true;
         }
         
@@ -206,8 +210,8 @@ var route = (function() {
         $('#podList').html(podListHtml).listview('refresh');
         g_busy(false);  
 
-        $('#podList li').off().on('click', function() {
-
+        $('#podList li a:even').off().on('click', function() {
+            
             g_busy(true);
             
             var podID = this.id;
@@ -216,7 +220,7 @@ var route = (function() {
 	    var dao = new Dao();
 	    dao.index ('Companies',
                 // TEST
-	        /*'3ALBL01'*/ $(this).data('account'),
+	        /*'3ALBL01'*/ accID,
 	        'AccountID',
 	         function (company) {
 	             sessionStorage.setItem('currentCompany', JSON.stringify(company));
@@ -225,15 +229,58 @@ var route = (function() {
 	         },
 	         function (error){
                     console.log('ERROR: AccountID ' + accID + ' not found in database.');
+                    g_alert('ERROR: AccountID ' + accID + ' not found in database.');   
+                    g_busy(false);
 	         } , 
 	         undefined	 
             );                    
-        });                     
+        }); 
+        
+        $('#podList li a:odd').off().on('click', function() {
+
+            g_busy(true);
+            
+            var podID = this.id;
+            var accID = $(this).data('account');
+            
+            var dao = new Dao();
+	    dao.index ('Companies',
+                // TEST
+	        /*'3ALBL01'*/ accID,
+	        'AccountID',
+	        function (company) {
+	            sessionStorage.setItem('currentCompany', JSON.stringify(company));
+	             
+                    var jsonForm = new JsonForm();
+                    jsonForm.oncomplete = function (event) {
+                        $('#routeCompanyPopup').popup("open");
+                        $('#routeCompanyPopup a').off().on('click', function() {
+                            $('#routeCompanyPopup').popup("close");
+                        });
+                        g_busy(false);
+                    };
+                    jsonForm.show(g_currentUser().SupplierID, '#routeCmpanyForm', g_currentCompany(), 'Company');           
+                },
+	        function (error){
+                    console.log('ERROR: AccountID ' + accID + ' not found in database.');
+                    g_alert('ERROR: AccountID ' + accID + ' not found in database.');   
+                    g_busy(false);
+	        } , 
+	        undefined	 
+            );
+	    //g_alert('Company details for: ' + accID);   
+            
+            //g_busy(false);
+        });
     }
-    
+        
     function takeARoute(isRefreshPressed) {
         
         var onTakeRouteSuccess = function(deliveries) {
+            if (deliveries.length === 0) {
+                showPods(deliveries);
+                return;
+            }
             $.each(deliveries, function(index, delivery) {
             //for (var i = 0; i < deliveries.length; ++i) {
                 //var index = i; 

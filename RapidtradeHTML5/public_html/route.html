@@ -33,7 +33,7 @@ and open the template in the editor.
                 </div>              
                 <a data-role="button" id="submit">Submit</a>  
                 <div data-role="content" id="routes">                        
-                    <ul id="routeList" data-inset="true"  data-role="listview" data-theme="b" data-divider-theme="b" class="ui-listview ui-corner-all ui-shadow"></ul>                        
+                    <ul id="routeList" data-inset="true"  data-role="listview" data-split-icon="bars" data-divider-theme="d" class="ui-listview ui-corner-all ui-shadow"></ul>                        
                 </div>                 
             </div>     
             <div id="podsPanel" class="panel invisible" data-role="content">
@@ -42,11 +42,17 @@ and open the template in the editor.
                     <h2 class="rtlabeltext">Deliveries</h2> 
                 </div>
                 <div data-role="content" id="orders">
-                    <ul id="podList" data-inset="true"  data-role="listview" data-theme="b" data-divider-theme="b" class="ui-listview ui-corner-all ui-shadow"></ul>
+                    <ul id="podList" data-inset="true"  data-role="listview" data-theme="b" data-divider-theme="b" data-split-icon="bars" class="ui-listview ui-corner-all ui-shadow"></ul>
                     <div id="noPods" class="grvInfoPanel yellowpanel invisible">
                         <img src="img/info-48.png"><div id="message" class="grvInfoText"><br>There are no deliveries.</div>
                     </div>
-                </div>                 
+                </div> 
+                <div data-role="popup" id="routeCompanyPopup" data-theme="c" data-overlay-theme="a" class="ui-content" style="width:600px">
+	                <h2> Customer details</h2>
+                        <form id="routeCmpanyForm">
+		        </form>
+                        <a data-role="button" data-inline="false">Close</a>
+                </div>
             </div>                
         </div>               
     </body>
