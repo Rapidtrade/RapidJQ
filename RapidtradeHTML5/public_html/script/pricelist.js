@@ -1600,6 +1600,8 @@ function pricelistGetNewQuantityForItem(itemIndex) {
 
 function pricelistStoreItemData(itemIndex) {
 
+    g_pricelistSelectedProduct = {};
+    
     g_pricelistSelectedProduct.Barcode = g_pricelistItems[itemIndex].b;
     g_pricelistSelectedProduct.Cost = g_pricelistItems[itemIndex].c;
     g_pricelistSelectedProduct.CategoryName = g_pricelistItems[itemIndex].cn;
