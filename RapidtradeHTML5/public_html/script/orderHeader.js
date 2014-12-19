@@ -315,7 +315,33 @@ function orderHeaderSaveOrder() {
         //	g_orderHeaderNextSavingStep();
         //else
         orderHeaderVanSales();
-        orderHeaderCaptureGPSAndSave();
+        try {
+            if (DaoOptions.getValue('DeliveryOrderType') && type==='POD') {
+                var addrDao = new Dao();
+                addrDao.index ('Orders',
+                    g_orderHeaderOrder.UserField01,
+                    'index2',
+                    function (delivery) {
+
+                        g_orderHeaderOrder.DeliveryName = delivery.DeliveryName;
+                        g_orderHeaderOrder.DeliveryAddress1 = delivery.DeliveryAddress1;
+                        g_orderHeaderOrder.DeliveryAddress2 = delivery.DeliveryAddress2;
+                        g_orderHeaderOrder.DeliveryAddress3 = delivery.DeliveryAddress3;
+
+                        orderHeaderCaptureGPSAndSave();         
+                    },
+                    function (errMsg){
+                        console.log(errMsg);
+                        orderHeaderCaptureGPSAndSave();
+                    } , 
+                    undefined	 
+                );
+            } else {
+                orderHeaderCaptureGPSAndSave();
+            }
+        } catch (error1) {
+            orderHeaderCaptureGPSAndSave();
+        }
         
     } catch (error) {	
 
