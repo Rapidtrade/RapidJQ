@@ -408,6 +408,8 @@ function orderHeaderRemovedFromCartSuccess() {
     	
     	g_loadMenu();
     	
+    } else if (DaoOptions.getValue('DeliveryOrderType') && g_orderHeaderOrder.Type.toUpperCase() === 'POD' && sessionStorage.getItem('orderheaderNext') === 'podsPanel') {
+            g_removeDeliveryFromLocalSQL();
     } else {
     	
         g_fetchAvailableCredit();
@@ -681,10 +683,6 @@ function orderHeaderOfflineSaveSuccess() {
 function orderHeaderOnOrderExistsSuccess(json) {
 
     var onSuccess = function() {
-        
-        if (DaoOptions.getValue('DeliveryOrderType') && g_orderHeaderOrder.Type.toUpperCase() === 'POD') {
-            g_removeDeliveryFromLocalSQL();
-        }
         
         if (g_orderHeaderOrder.Type == 'GRV' || g_orderHeaderOrder.Type.toUpperCase() == 'POD') {
             orderHeaderSaveReferenceStatus(g_orderHeaderOrder, orderHeaderOrderAcceptOnSuccess, orderHeaderOrderAcceptOnError);	

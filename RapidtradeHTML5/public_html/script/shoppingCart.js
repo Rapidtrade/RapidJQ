@@ -517,6 +517,13 @@ function shoppingCartOnAllItemsAdded() {
     shoppingCartCheckItemsCount();
     g_basketHTML = '';
     alphaFilter.getInstance().HTML('#alphabet', '#shoppingCartitemlist');
+    
+    var hidePrice = (DaoOptions.getValue(sessionStorage.getItem("currentordertype") + 'CartHidePrice', 'false') === 'true');
+    if (hidePrice) {
+        $('#shoppingCartitemlist .nett').addClass('invisible');
+        $('#shoppingCartitemlist .total').addClass('invisible');
+        $('#totallist').addClass('invisible');
+    }
 }
 
 function shoppingCartAddSummaryItems() {

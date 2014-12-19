@@ -370,6 +370,7 @@ var route = (function() {
             localStorage.setItem('routesLastSelectedRouteID', selectedRouteId);
             localStorage.setItem('routesLastPanelViewed', '#podsPanel');
             sessionStorage.setItem('ShoppingCartReturnPage', 'route.html');
+            sessionStorage.setItem('orderheaderNext', 'podsPanel');
             $.mobile.changePage('shoppingCart.html', {transition:'none'});            
         });
     }
