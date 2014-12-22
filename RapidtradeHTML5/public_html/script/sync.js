@@ -345,6 +345,7 @@ function syncPostedOK(index, skip){
 function syncAll() {
 	 
     localStorage.setItem('lastSyncDate', g_today());
+    localStorage.setItem('lastSyncDay', new Date().getDay());
 
     $('#userid').addClass('ui-disabled');
     $('#message').text(g_syncPageTranslation.translateText('Please wait, downloading latest data'));
@@ -614,10 +615,6 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip, ne
                         syncAddSync(g_syncSupplierID, g_syncUserID, 'Discount', 'Sync4', 0);
                         syncAddSync(g_syncSupplierID, g_syncUserID, 'DiscountCondition', 'Sync4', 0);
                         syncAddSync(g_syncSupplierID, g_syncUserID, 'DiscountValues', 'Sync4', 0);
-                    }
-                    
-                    if (item.Name === 'ForceWeeklyUpdate') {
-                        localStorage.setItem('syncDay', item.Value);
                     }
                     
                     if (item.Name == 'DownloadOrderURL')

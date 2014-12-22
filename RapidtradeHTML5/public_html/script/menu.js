@@ -180,17 +180,15 @@ function menuInit(){
 	var dao = new Dao();	
 	dao.get('Users', 
                 'user',
-                function(user) {
+                function(user) {                                        
                     
-                    var syncDay = Number(localStorage.getItem('syncDay'));
-                    var lastSyncDate = localStorage.getItem('lastSyncDate'); 
+                    var mandatorySyncDay = Number(DaoOptions.getValue('ForceWeeklyUpdate'));
+                    var isMandatorySyncDayDefined = (mandatorySyncDay > -1 && mandatorySyncDay < 7);                    
                     
-                    var isSyncDayValid = syncDay > -1 && syncDay < 7; 
+                    var todaysDay = (new Date()).getDay();                
+                    var lastSyncDay = Number(localStorage.getItem('lastSyncDay'));
                     
-
-                    //commeting out as lastsyncdate was 14/12/2014, but still forcing me to sync all the time - shaun
-                    /*
-                    if ((isSyncDayValid && (new Date().getDay() === syncDay) && (new Date(lastSyncDate).getDay() !== syncDay)) || (!isSyncDayValid && (lastSyncDate !== g_today()))) {
+                    if ((todaysDay !== lastSyncDay) && (!isMandatorySyncDayDefined || (todaysDay === mandatorySyncDay))) {
 
                         alert('You haven\'t synchronised today. You should do so now to keep up to date.');
 
@@ -200,9 +198,7 @@ function menuInit(){
                         $.mobile.changePage('sync.html', { transition: "none"});
                         sessionStorage.setItem('disableMenuButton', 'true');
                         return;
-                    }
-                    */
-                        
+                    }                          
 
                     sessionStorage.setItem('currentUser', JSON.stringify(user));
                     g_callCycleCurrentUserID = user.UserID;
