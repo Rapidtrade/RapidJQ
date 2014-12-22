@@ -653,6 +653,8 @@ function tpmSaveComplexPromotion() {
 
                     item.Quantity = g_tpmLastValidQuantities[key];
                     item.selected = (item.Quantity > 0);
+                    // added by Phil's request
+                    item.Userfield08 = 'Y';
                     
                     isAnyItemSelected = isAnyItemSelected || item.selected;
                 }
