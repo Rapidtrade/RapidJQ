@@ -269,12 +269,14 @@ function orderHeaderSaveOrder() {
         else
             id +=  (DaoOptions.getValue('DeliveryOrderType') ? 'POD' : sessionStorage.getItem("currentordertype")) + 'Header'; //OrderHeader
         
+        g_orderHeaderOrder.Email = $('#email').val();
+        
         var orderHeader = JSON.parse(sessionStorage.getItem(id));  
         for (var property in orderHeader)
             if (orderHeader.hasOwnProperty(property))
                 g_orderHeaderOrder[property] = orderHeader[property];
         
-        g_orderHeaderOrder.Email = $('#email').val();
+        
         g_orderHeaderOrder.DeliveryName = $('#name').val();
         for (var index = 1; index < 4; ++index)
             g_orderHeaderOrder['DeliveryAddress' + index] = $('#address' + index).val();
@@ -327,6 +329,7 @@ function orderHeaderSaveOrder() {
                         g_orderHeaderOrder.DeliveryAddress1 = delivery.DeliveryAddress1;
                         g_orderHeaderOrder.DeliveryAddress2 = delivery.DeliveryAddress2;
                         g_orderHeaderOrder.DeliveryAddress3 = delivery.DeliveryAddress3;
+                        g_orderHeaderOrder.DeliveryPostCode = delivery.DeliveryPostCode;
 
                         orderHeaderCaptureGPSAndSave();         
                     },

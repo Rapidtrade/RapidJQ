@@ -166,17 +166,20 @@ var route = (function() {
                 function(routeDeliveries) {
                     //showPods(routeDeliveries || []); 
                     if (!(routeDeliveries && (routeDeliveries != null) && routeDeliveries.length)) {
-                        takeARoute(true);
+                        if (localStorage.getItem('POD' + selectedRouteId + selectedDate())) {
+                            preparePodsForView(routeDeliveries || []);
+                        } else {
+                            takeARoute(true);
+                        }
                     } else {
-                        showPods(routeDeliveries || []);
+                        preparePodsForView(routeDeliveries || []);
                     }
                 });
            // }
        // }
-    }    
+    }
     
-    function showPods(pods) {
-        
+    function preparePodsForView(pods) {
         $('#podList').empty();
                     
         if (!pods.length) {
@@ -194,13 +197,60 @@ var route = (function() {
         
         var podListHtml = '';
         var isItTaken = false;
-        for (var i = 0; i < pods.length; ++i) {
+        $.each(pods, function(index, pod) {
+            //var index = i;
+            var dao = new Dao();
+	    dao.index ('Companies',
+                // TEST
+	        /*'3ALBL01'*/ pod.AccountID,
+	        'AccountID',
+	        function (company) {
+	            podListHtml += '<li id="' + pod.OrderID + '" data-account="' + pod.AccountID + '" data-theme="c">' + 
+                    '<a href id="' + pod.OrderID + '" data-account="' + pod.AccountID + '"><h3 class="ui-li-heading">' + pod.DeliveryName + '</h3><p>' + pod.Reference + '</p><p>Customer: ' + company.Name + '</p></a>' + 
+                    '<a href id="' + pod.OrderID + '" data-account="' + pod.AccountID + '">Customer Details</a></li>';
+                    
+                },
+	        function (error){
+                    console.log('ERROR: AccountID ' + pod.AccountID + ' not found in database.');
+                    g_alert('ERROR: AccountID ' + pod.AccountID + ' not found in database.');   
+                    g_busy(false);
+	        } , 
+	        function () {
+                    if (index === pods.length - 1)
+                        showPods(podListHtml, isItTaken);
+                }	 
+            );
+            if (pod.UserID !== '') isItTaken = true;  
             
-            podListHtml += '<li id="' + pods[i].OrderID + '" data-account="' + pods[i].AccountID + '" data-theme="c">' + 
-                    '<a href id="' + pods[i].OrderID + '" data-account="' + pods[i].AccountID + '"><h3 class="ui-li-heading">' + pods[i].DeliveryName + '</h3><p>' + pods[i].Reference + '</p></a>' + 
-                    '<a href id="' + pods[i].OrderID + '" data-account="' + pods[i].AccountID + '">Customer Details</a></li>';
-            if (pods[i].UserID !== '') isItTaken = true;
-        }
+        });
+    }
+    
+    function showPods(podListHtml, isItTaken) {
+        
+//        $('#podList').empty();
+//                    
+//        if (!pods.length) {
+//            
+//            $('#noPods').removeClass('invisible');
+//            if (!$('#takeRouteButton').hasClass('ui-disabled')) 
+//                $('#takeRouteButton').addClass('ui-disabled');
+//            g_busy(false);            
+//            return;
+//        }
+//        
+//        localStorage.setItem('POD' + selectedRouteId + selectedDate(), JSON.stringify(pods));
+//        
+//        $('#noPods').addClass('invisible');
+//        
+//        var podListHtml = '';
+//        var isItTaken = false;
+//        for (var i = 0; i < pods.length; ++i) {
+//            
+//            podListHtml += '<li id="' + pods[i].OrderID + '" data-account="' + pods[i].AccountID + '" data-theme="c">' + 
+//                    '<a href id="' + pods[i].OrderID + '" data-account="' + pods[i].AccountID + '"><h3 class="ui-li-heading">' + pods[i].DeliveryName + '</h3><p>' + pods[i].Reference + '</p><p>' + pods[i].Reference + '</p></a>' + 
+//                    '<a href id="' + pods[i].OrderID + '" data-account="' + pods[i].AccountID + '">Customer Details</a></li>';
+//            if (pods[i].UserID !== '') isItTaken = true;
+//        }
         
         if (isItTaken) {            
             if (!$('#takeRouteButton').hasClass('ui-disabled')) 
@@ -253,11 +303,14 @@ var route = (function() {
 	             
                     var jsonForm = new JsonForm();
                     jsonForm.oncomplete = function (event) {
-                        $('#routeCompanyPopup').popup("open");
-                        $('#routeCompanyPopup a').off().on('click', function() {
-                            $('#routeCompanyPopup').popup("close");
-                        });
-                        g_busy(false);
+                        setTimeout(function() {
+                            $('#routeCompanyPopup').popup("open");
+                            $('#routeCompanyPopup a').off().on('click', function() {
+                                $('#routeCompanyPopup').popup("close");
+                            });
+                            g_busy(false);
+                            $('#routeCompanyPopup').popup( 'reposition', 'positionTo: window' );                            
+                        }, 500);
                     };
                     jsonForm.show(g_currentUser().SupplierID, '#routeCmpanyForm', g_currentCompany(), 'Company');           
                 },
@@ -278,7 +331,7 @@ var route = (function() {
         
         var onTakeRouteSuccess = function(deliveries) {
             if (deliveries.length === 0) {
-                showPods(deliveries);
+                preparePodsForView(deliveries);
                 return;
             }
             $.each(deliveries, function(index, delivery) {
@@ -293,13 +346,13 @@ var route = (function() {
                         dao.putMany((deliveryItems), 'OrderItems', undefined, undefined, function() {
                             if (index === deliveries.length - 1) {
                                 if (isRefreshPressed) {
-                                    g_alert('You successfully refreshed local data.');
+                                    //g_alert('You successfully refreshed local data.');
                                 } else {
-                                  g_alert('You successfully took this route.');
+                                  //g_alert('You successfully took this route.');
                                   modifyCachedRoutes();
                                   //$('#refreshButton').click();
                                 }
-                                showPods(deliveries);
+                                preparePodsForView(deliveries);
                             }
                         });
                     };
@@ -319,9 +372,9 @@ var route = (function() {
         
         if (g_isOnline()) {
             if (isRefreshPressed) {
-                g_alert('You are about to refresh deliveries for the Route: ' + selectedRouteId + ' for date ' + $("#duedate").val() + '.');
+               // g_alert('You are about to refresh deliveries for the Route: ' + selectedRouteId + ' for date ' + $("#duedate").val() + '.');
             } else {
-                g_alert('You are about to take the Route: ' + selectedRouteId + ' for date ' + $("#duedate").val() + '.');
+               // g_alert('You are about to take the Route: ' + selectedRouteId + ' for date ' + $("#duedate").val() + '.');
             }
             var url = g_restPHPUrl + 'GetStoredProc?StoredProc=' + (isRefreshPressed ? 'usp_orders_readdeliveries3' : 'usp_route_TakeARoute') + '&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedRouteId + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
             console.log(url);
