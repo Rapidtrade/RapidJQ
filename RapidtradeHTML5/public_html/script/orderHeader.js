@@ -509,14 +509,14 @@ function orderHeaderCreateInvoiceNumber() {
             }, 
             undefined,undefined);  
 
-            return parseInt(DaoOptions.getValue(g_currentUser().RepID + 'lastInvNum'), 10) + 1;
+            return '' + (parseInt(DaoOptions.getValue(g_currentUser().RepID + 'lastInvNum'), 10) + 1);
                 
 	} else {
             
             var vanNumber = g_currentUser().RepID.slice(-2);
             var date = new Date();
             var y = date.getFullYear().toString().slice(3);
-            return vanNumber + y + g_dayOfYear() + orderHeaderInvoiceSequenceNumber();	
+            return '' + (vanNumber + y + g_dayOfYear() + orderHeaderInvoiceSequenceNumber());	
 	}
 }
 

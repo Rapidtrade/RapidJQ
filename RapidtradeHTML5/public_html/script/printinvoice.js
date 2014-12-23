@@ -16,7 +16,7 @@ function printinvoiceOnPageShow() {
     });
 	
     var dao = new Dao();
-    dao.openDB(function (user) { printinvoiceInit(); });
+    dao.openDB(printinvoiceInit);
     printinvoiceBind();
 }
 
@@ -57,7 +57,9 @@ function printinvoiceFetchOrder() {
 
     printinvoiceShowOptionalText('.printinvoiceContent h3', 'InvoiceHeader');
 
-    $('#invoiceBarcode').barcode(order.UserField01, "code128");
+    if (DaoOptions.getValue('InvoiceDoNotShowBarCode') !== 'true')
+        $('#invoiceBarcode').barcode(order.UserField01, "code128");
+        
     $('#invoiceNumber').text(order.UserField01);
 
     $('#customerVATLabel').text(g_printInvoicePageTranslation.translateText(DaoOptions.getValue('VATLineText', 'Cust VAT')));
