@@ -541,7 +541,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip, ne
 
     localStorage.setItem('lastSkip' + syncGetLocalTableName(table, method), skip);
     
-    if ('Orders' == table && !g_syncDownloadOrderType)
+    if ('Orders' === table && !json._Items)
         json._Items = json;
 
     if (json._Items == null) {
