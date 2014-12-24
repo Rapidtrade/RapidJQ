@@ -15,7 +15,14 @@ var basket = (function() {
     
     return {
         
-        saveItem: function(item, quantity, onComplete) {                                     
+        saveItem: function(item, quantity, onComplete) {              
+            
+            if (onComplete) {
+                
+                callback = onComplete;
+                savedItems = 0;
+                totalItems = 1;
+            }
             
             item.Quantity =  quantity || item.Quantity;
             
@@ -25,22 +32,23 @@ var basket = (function() {
                 return;
             }
             
-            checkItemFields(item);                        
-            callback = onComplete;  
+            checkItemFields(item);                          
             
             var dao = new Dao();
             dao.put(item, 'BasketInfo', item.key, onItemSaved);
         },
         
-        saveItems: function(itemArray, onComplete) {
+        saveItems: function(itemArray, onComplete) {            
             
             $.mobile.showPageLoadingMsg();
+            
+            callback = onComplete;
             
             savedItems = 0;            
             totalItems = itemArray.length;
             
             for (var i = 0; i < totalItems; ++i)
-                this.saveItem(itemArray[i], undefined, onComplete);
+                this.saveItem(itemArray[i]);
         }
     }; 
     
