@@ -274,7 +274,7 @@ function g_setLeadingZero(number) {
 }
 
 function g_isPackSizeUnitValid(unit) {
-	return (DaoOptions.getValue('ForcePackSize')  == 'true') && !isNaN(unit);
+	return (orderdetailsIsComplexView() || (DaoOptions.getValue('ForcePackSize')  == 'true')) && !isNaN(unit);
 }
 
 /*

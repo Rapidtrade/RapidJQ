@@ -397,6 +397,7 @@ function orderdetailsSendOrderItem(itemKey) {
 		$('#complexProductUOM').text('UOM: ' + unit);		
             }
             item.Unit = unit;
+            
             var quantity = 0;
             
             if (g_orderdetailsComplexQuantities[itemKey]) {
