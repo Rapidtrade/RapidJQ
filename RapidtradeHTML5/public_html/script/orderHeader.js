@@ -532,7 +532,7 @@ function orderHeaderSaveInvoiceNumber(lastInvoiceNumberOption) {
 	
 	g_ajaxget(g_restUrl + 'Options/QuickModify?supplierID=' + lastInvoiceNumberOption.SupplierID + 
 			'&name=' + lastInvoiceNumberOption.Name + '&group=' + lastInvoiceNumberOption.Group + 
-			'&otype=' + lastInvoiceNumberOption.Type + '&value=' + lastInvoiceNumberOption.Value, 
+			'&otype=' + lastInvoiceNumberOption.Type + '&value=' + g_orderHeaderOrder.UserField01, 
 			
 			onSuccess, onError);
 }
