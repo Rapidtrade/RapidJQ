@@ -191,13 +191,17 @@ function menuInit(){
                     if ((todaysDay !== lastSyncDay) && (!isMandatorySyncDayDefined || (todaysDay === mandatorySyncDay))) {
 
                         alert('You haven\'t synchronised today. You should do so now to keep up to date.');
-
-                        dao.clear('Orders');
-                        dao.clear('OrderItems'); 
                         
-                        $.mobile.changePage('sync.html', { transition: "none"});
-                        sessionStorage.setItem('disableMenuButton', 'true');
-                        return;
+                        if (isMandatorySyncDayDefined) {
+
+                            dao.clear('Orders');
+                            dao.clear('OrderItems'); 
+
+                            $.mobile.changePage('sync.html', { transition: "none"});
+                            sessionStorage.setItem('disableMenuButton', 'true');
+                            
+                            return;
+                        }                        
                     }                          
 
                     sessionStorage.setItem('currentUser', JSON.stringify(user));
