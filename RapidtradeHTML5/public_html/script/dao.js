@@ -1200,7 +1200,7 @@ function Dao() {
         	var includeCategoryToggle = 'off'; // (sessionStorage.getItem('expandcategory')) ? 'on' : 'off';
         	var query = ''; 
         	if (includeCategoryToggle != 'on') {
-                    query = 'select p.json, b.index3 as Basket, s.index3 as Stock from Pricelists p ' + 
+                    query = 'select p.json, b.json as BasketInfo, s.index3 as Stock from Pricelists p ' + 
                             'left outer join basketinfo b on p.index3 = b.index2 and b.index1 = ? ' +  
                             (DaoOptions.getValue('VanandWareOrder', 'false') === 'true' ? 'inner' : 'left outer') + ' join stock s on s.index1 = p.index3 and s.index2 = ? ' +  
                             'WHERE p.index1 = ? AND ';
@@ -1211,7 +1211,7 @@ function Dao() {
                     }
         	} else {
         		// this search will include all other products in the products category
-        		query = 'select p.json, b.index3 as Basket, s.index3 as Stock  ' +
+        		query = 'select p.json, b.json as BasketInfo, s.index3 as Stock  ' +
 						' from Pricelists p  ' +
 						' left outer join basketinfo b on p.index3 = b.index2 and b.index1 = ?  ' +
 						(DaoOptions.getValue('VanandWareOrder', 'false') === 'true' ? 'inner' : 'left outer') + ' join stock s on s.index1 = p.index3 and s.index2 = ?  ' +
@@ -1237,24 +1237,15 @@ function Dao() {
 		                try {		              
 		                	if (ponsuccessread)
 		                        for (var i = 0; i < results.rows.length; ++i) {                                    
-				                	if (g_pricelistItemsOnPage < g_pricelistCurrentPricelistPage * g_numItemsPerPage - offset) {
-				                		if (g_pricelistItemsOnPage >= (g_pricelistCurrentPricelistPage - 1) * g_numItemsPerPage - offset) {
+                                            if (g_pricelistItemsOnPage < g_pricelistCurrentPricelistPage * g_numItemsPerPage - offset) {
+                                                if (g_pricelistItemsOnPage >= (g_pricelistCurrentPricelistPage - 1) * g_numItemsPerPage - offset) {
 		                                    var product = JSON.parse(results.rows.item(i).json);
 		                                    var barcode = searchWords[0].slice(4, searchWords[0].length);
-		                                    try {
-												var qty = results.rows.item(i).Basket;
-												if (qty) 
-													product.BasketQty = qty;
-												else
-													product.BasketQty = '';
-												qty = results.rows.item(i).Stock;
-												if (qty) 
-													product.Stock = qty;
-												else
-													product.Stock = '';
-											} catch (err){
-												product.BasketQty = '';
-											}
+                                                        
+                                                    product.BasketInfo = JSON.parse(results.rows.item(i).BasketInfo || '{}');
+                                                    product.Stock = results.rows.item(i).Stock || '';
+                                                        
+
 		                                    if ((!isBarCodeSearch) || (isBarCodeSearch && (product.b == barcode)))
 		                                        ponsuccessread(product);
 				                		} else {

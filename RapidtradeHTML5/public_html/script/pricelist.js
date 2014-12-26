@@ -1343,7 +1343,16 @@ function pricelistAddLine(pricelist) {
             }
         }
     } else {
-    	quantityText = pricelist.BasketQty || '';    	
+        
+        var basketInfo = pricelist.BasketInfo;
+        
+        if (!$.isEmptyObject(basketInfo)) {
+        
+            quantityText = basketInfo.Quantity;
+            pricelist.d = basketInfo.Discount;
+            pricelist.n = basketInfo.Nett;        
+            nett = '' + pricelist.n;
+        }        
     	
     	if (productdetailCanChangeNett(pricelist.id))
     		
