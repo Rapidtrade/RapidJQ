@@ -509,7 +509,7 @@ function orderHeaderCreateInvoiceNumber() {
             }, 
             undefined,undefined);  
 
-            return '' + (parseInt(DaoOptions.getValue(g_currentUser().RepID + 'lastInvNum'), 10) + 1);
+            return '' + lastInvoiceNumberOption.Value;
                 
 	} else {
             

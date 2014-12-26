@@ -265,13 +265,22 @@ function syncPostData(index) {
     
     if ((g_syncPosted[index].Table == 'Options') && (g_syncPosted[index].Method == 'QuickModify')) {
     	
-    	var lastInvoiceNumberOption = g_syncPosted[index].JsonObject;
+    	var invoiceNumberOption = g_syncPosted[index].JsonObject;
+        
+        var lastInvoiceNumber = DaoOptions.getValue(g_currentUser().RepID + 'lastInvNum');
+        
+        if (invoiceNumberOption.Value >= lastInvoiceNumber) {
     	
-    	g_ajaxget(g_restUrl + 'Options/QuickModify?supplierID=' + lastInvoiceNumberOption.SupplierID + 
-    			'&name=' + lastInvoiceNumberOption.Name + '&group=' + lastInvoiceNumberOption.Group + 
-    			'&otype=' + lastInvoiceNumberOption.Type + '&value=' + lastInvoiceNumberOption.Value, 
-    			
-    			saveInvoiceNumberOnSuccess, saveInvoiceNumberOnError);
+            g_ajaxget(g_restUrl + 'Options/QuickModify?supplierID=' + invoiceNumberOption.SupplierID + 
+                            '&name=' + invoiceNumberOption.Name + '&group=' + invoiceNumberOption.Group + 
+                            '&otype=' + invoiceNumberOption.Type + '&value=' + invoiceNumberOption.Value, 
+
+                            saveInvoiceNumberOnSuccess, saveInvoiceNumberOnError);
+                            
+        } else {
+            
+            saveInvoiceNumberOnSuccess({_Status:true});
+        }
     	
     	return;
     }
