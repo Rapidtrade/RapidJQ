@@ -262,7 +262,10 @@ function orderHeaderSaveOrder() {
     g_orderheaderCallReduceStock = false;
 
     try {	
-        if (g_orderHeaderSignature) orderHeaderSaveSignature();
+        
+        if (g_orderHeaderSignature && !orderHeaderSaveSignature())
+            return;
+        
         var id = 'json';        
         if (g_orderHeaderOrder.Type.indexOf('Invoice') != -1)
             id += 'InvoiceHeader';
@@ -859,6 +862,19 @@ function orderHeaderOnOrderSaved() {
 
 
 function orderHeaderSaveSignature(){
+    
+    if ($("#signature").jSignature('getData', 'native').length === 0) {
+    
+        $('#infoPopup p').text('Please enter the signature.');
+        
+        setTimeout(function() {
+            
+            $('#infoPopup').popup('close');
+        }, 2000);
+        
+
+       return false;
+    }    
 	
     var datapair = $("#signature").jSignature("getData", "svgbase64");
 
@@ -873,6 +889,8 @@ function orderHeaderSaveSignature(){
     
     g_saveObjectForSync(image, image.Id, 'File', 'UploadImage');
     g_orderHeaderSignature = false;
+    
+    return true;
 }
 
 function orderheaderResetSignature() {
