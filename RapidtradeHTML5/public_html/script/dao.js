@@ -65,6 +65,15 @@ function Dao() {
         else
             this.sqlcursor(table, key, index, ponsuccessread, ponerror, poncomplete);
     };
+    
+    this.cursor1 = function (table, ponsuccessread, ponerror, poncomplete) {
+        if (g_indexedDB) {
+            //this.idbcursor(table, ponsuccessread, ponerror, poncomplete);
+        }
+        else {
+            this.sqlcursor1(table, ponsuccessread, ponerror, poncomplete);
+        }
+    };
 
     this.count = function (table, key, index,  poncomplete, ponerror) {
         if (g_indexedDB)
@@ -1416,6 +1425,44 @@ function Dao() {
                                 var delivItem = JSON.parse(item.json);                                                    
                                 
                                 res.push(delivItem);
+                                //ponsuccessread(route);
+                            }
+                        }
+
+                        if (!results.rows.length && ponerror) 
+                            ponerror("No record found");
+
+                        if (poncomplete) 
+                            poncomplete(res);
+
+                    } catch (error) {
+
+                        if (ponerror) 
+                            ponerror("No record found");
+                    };
+                });    
+            });
+    };
+    
+    this.sqlcursor1 =  function(table, ponsuccessread, ponerror, poncomplete) {
+        var query = 'SELECT [json] FROM ' + table; 
+            
+        console.log(query);
+        
+        db.transaction(function (tx) {
+        
+            tx.executeSql(query,[], 
+                function (tx, results) {
+                    try {
+                        var res = [];
+                        //if (ponsuccessread) {
+                        if (results.rows.length > 0) {
+                            for (var i = 0; i < results.rows.length; ++i) {
+
+                                var item = results.rows.item(i);                                                                                                            
+                                var jsonObj = JSON.parse(item.json);                                                    
+                                
+                                res.push(jsonObj);
                                 //ponsuccessread(route);
                             }
                         }

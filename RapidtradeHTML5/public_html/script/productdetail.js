@@ -750,7 +750,7 @@ function productdetailFetchPrice() {
     volumePrice = JSON.parse(sessionStorage.getItem('volumePrice'));
     sessionStorage.setItem('CachePricelistQty',JSON.stringify(qty));
 
-    if (!g_productdetailIsPriceChanged && qty && volumePrice && volumePrice !="") {
+    if (!g_productdetailIsPriceChanged && qty && volumePrice && volumePrice !="" && productdetailIsVolumePriceCorrect(volumePrice)) {
         productdetailCalculateDiscount(volumePrice);
     }
 
@@ -1140,4 +1140,12 @@ function productdetailToggleViews() {
 	$('#zoomOutButton').toggle();
 	
 	productdetailFetchImage();
+}
+
+function productdetailIsVolumePriceCorrect(volumePrice) {
+	var result = true;
+	for (var i = 0; i < volumePrice.length; ++i) {
+		result = result && (g_pricelistSelectedProduct.ProductID == volumePrice[i].ProductID)
+	}
+	return result;
 }
