@@ -10,6 +10,7 @@ var g_logo = 'img/rapidtrade-logo-small.png';
 //var g_restUrl = g_url + "rest2/";
 //var g_restUrl = g_url + "testrest/";
 //var g_vanSales = true;
+//var g_vanSales = false;
 //var g_restPHPUrl = "www.super-trade.co.za:8083/rest/index.php";
 
 
