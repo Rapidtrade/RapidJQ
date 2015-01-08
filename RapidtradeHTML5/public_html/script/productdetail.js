@@ -19,8 +19,8 @@ function productdetailInit() {
     $('.pricelistBusyImg').show();
     g_productdetailIsPriceChanged = false;
 
-    if ($('#quantity').hasClass('ui-disabled'))
-        $('#quantity').removeClass('ui-disabled');
+    //if ($('#quantity').hasClass('ui-disabled'))
+       // $('#quantity').removeClass('ui-disabled');
 
     g_pricelistView = 'detail';
     $('#pricelistPanel, #searchBarPanel').hide();
@@ -747,7 +747,7 @@ function productdetailFetchPrice() {
 		return;
    
     var qty = parseInt($('#quantity').attr('value'));
-    volumePrice = JSON.parse(sessionStorage.getItem('volumePrice'));
+    volumePrice = JSON.parse(sessionStorage.getItem('volumePrice' + g_currentCompany().AccountID));
     sessionStorage.setItem('CachePricelistQty',JSON.stringify(qty));
 
     if (!g_productdetailIsPriceChanged && qty && volumePrice && volumePrice !="" && productdetailIsVolumePriceCorrect(volumePrice)) {
@@ -832,10 +832,10 @@ function productdetailPriceOnSuccess (json) {
         if (!g_productdetailIsPriceChanged) {		
             if (json.volumePrice && json.volumePrice[0]) {		    	
                 productdetailCalculateDiscount(json.volumePrice);
-                sessionStorage.setItem('volumePrice', JSON.stringify(json.volumePrice));
+                sessionStorage.setItem('volumePrice' + g_currentCompany().AccountID, JSON.stringify(json.volumePrice));
                 g_pricelistVolumePrices[g_pricelistSelectedProduct.ProductID] = json.volumePrice[json.volumePrice.length - 1];
             } else {	    	
-                sessionStorage.setItem('volumePrice', JSON.stringify(""));
+                sessionStorage.setItem('volumePrice'+ g_currentCompany().AccountID, JSON.stringify(""));
                 productdetailValue('discount', '0.00%');
                 $('#grossvalue').html(g_addCommas(parseFloat(g_pricelistSelectedProduct.Gross).toFixed(2)));
                 productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
@@ -963,6 +963,10 @@ function productdetailDeleteItem() {
 }
 
 function productdetailOkClicked(checkStock) {
+    
+    if ($('#quantity').hasClass('ui-disabled')) {
+        return;
+    }
     
     var showMessage = function(message) {
         
