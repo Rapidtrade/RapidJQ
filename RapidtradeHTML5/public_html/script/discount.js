@@ -74,8 +74,12 @@ function productdetailFetchLocalDiscount() {
 function onsuccessDiscountValuesRead(allRows) {
     
     if (!allRows || allRows.length == 0){
+        if ($('#quantity').hasClass('ui-disabled')) {
+            $('#quantity').removeClass('ui-disabled');
+        }
         return;
     }
+    var possibleValues = [];
     for (var dv = 0; dv < allRows.length; ++dv) {
         var row = allRows[dv]
         var dvConditions = [];
@@ -113,6 +117,15 @@ function onsuccessDiscountValuesRead(allRows) {
         if (!thisIsOurValue)
             continue; //It is our discount, but values dont match, so continue the loop so we move onto the next discountvalues record
         
+        row.SortOrder = dvConditions[0].Discount.SortOrder;
+        row.SkipRest = dvConditions[0].Discount.SkipRest;
+        row.DiscObj = dvConditions[0].Discount;
+        possibleValues.push(row);
+        
+        // we will apply discouts later
+        // after we find all matching values
+        continue;
+        
         //If we here then this row's discount or price must be applied
         if (dvConditions[0].Discount && dvConditions[0].Discount.Type === 'PRICE') {
             g_pricelistSelectedProduct.Nett = row.Price;
@@ -120,6 +133,10 @@ function onsuccessDiscountValuesRead(allRows) {
             if (dvConditions[0].Discount.ApplyToGross) {
                 g_pricelistSelectedProduct.Gross = row.Price;
             }
+            if (g_pricelistSelectedProduct.Nett > g_pricelistSelectedProduct.Gross){
+                g_pricelistSelectedProduct.Gross = g_pricelistSelectedProduct.Nett;
+            }
+                
         } else if (dvConditions[0].Discount && dvConditions[0].Discount.Type === 'DISCOUNT') {
             g_pricelistSelectedProduct.Discount = row.Discount;
             g_pricelistSelectedProduct.Nett = g_pricelistSelectedProduct.Gross - (g_pricelistSelectedProduct.Gross * (g_pricelistSelectedProduct.Discount / 100));
@@ -133,6 +150,56 @@ function onsuccessDiscountValuesRead(allRows) {
             break;
     }
     
+    console.log(possibleValues);
+    discountApplyDiscountValues(possibleValues);
+    
+}
+
+function discountApplyDiscountValues(discountValues) {
+    
+    if (discountValues == undefined) {
+       if ($('#quantity').hasClass('ui-disabled')) {
+            $('#quantity').removeClass('ui-disabled');
+        }    
+        return;
+    }
+    var dvComparator = function (a, b) {
+        if (a.SortOrder < b.SortOrder)
+            return -1;
+        if (a.SortOrder > b.SortOrder)
+            return 1;
+        
+        return 0;
+    };
+    
+    discountValues.sort(dvComparator);
+    
+    for (var i = 0; i < discountValues.length; ++i) {
+        //If we here then this row's discount or price must be applied
+        if (discountValues[i].DiscObj && discountValues[i].DiscObj.Type === 'PRICE') {
+            g_pricelistSelectedProduct.Nett = discountValues[i].Price;
+            g_pricelistSelectedProduct.Discount = 0;
+            if (discountValues[i].DiscObj.ApplyToGross) {
+                g_pricelistSelectedProduct.Gross = discountValues[i].Price;
+            }
+            if (g_pricelistSelectedProduct.Nett > g_pricelistSelectedProduct.Gross){
+                g_pricelistSelectedProduct.Gross = g_pricelistSelectedProduct.Nett;
+            }
+        } else if (discountValues[i].DiscObj && discountValues[i].DiscObj.Type === 'DISCOUNT') {
+            g_pricelistSelectedProduct.Discount = discountValues[i].Discount;
+            g_pricelistSelectedProduct.Nett = g_pricelistSelectedProduct.Gross - (g_pricelistSelectedProduct.Gross * (g_pricelistSelectedProduct.Discount / 100));
+        }
+
+        productdetailValue('discount', g_addCommas(g_pricelistSelectedProduct.Discount.toFixed(2)) + '%');
+        productdetailValue('nett', g_addCommas(g_pricelistSelectedProduct.Nett.toFixed(2)));
+        $('#grossvalue')['html'](g_addCommas(g_pricelistSelectedProduct.Gross.toFixed(2)));
+        
+        if (discountValues[i].SkipRest)
+            break;
+    }
+    if ($('#quantity').hasClass('ui-disabled')) {
+            $('#quantity').removeClass('ui-disabled');
+        }
 }
 
 //function onsuccessDiscountValuesRead(row) {
