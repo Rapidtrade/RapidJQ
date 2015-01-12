@@ -585,6 +585,8 @@ function orderHeaderSaveFormedOrder(position) {
         
     	g_orderHeaderOrder.Userfield04 = position.coords.latitude;
 	g_orderHeaderOrder.Userfield05 = position.coords.longitude;
+    } else if (position && position.code && position.code == 3) {
+        return;
     }
 
     if (!orderHeaderAreItemsValid())
