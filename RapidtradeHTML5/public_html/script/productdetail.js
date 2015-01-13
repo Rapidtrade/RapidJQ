@@ -43,13 +43,20 @@ function productdetailInit() {
 
             $('#divnettvalue').append('<p class="ui-li-aside" id="nett-r"></p>');
 
-            if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true')
+            if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true' && ($('#mode').val() === 'Online') && g_isOnline(false))
                     $('#whChoiceDiv').append('<p class="ui-li-aside" id="stockvalue" style="position:relative; top:-32px;"></p>');
             else
                     $('#divstockvalue').append('<p class="ui-li-aside" id="stockvalue"></p>');
 
             g_productDetailInitialized = true;
     }
+    
+    $('#stockvalue').replaceWith('');    
+    
+    if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true' && ($('#mode').val() === 'Online') && g_isOnline(false))
+        $('#whChoiceDiv').append('<p class="ui-li-aside" id="stockvalue" style="position:relative; top:-32px;"></p>');
+    else
+        $('#divstockvalue').append('<p class="ui-li-aside" id="stockvalue"></p>');
 
     if (productdetailCanChangeNett(g_pricelistSelectedProduct.ProductID))
             $('#nett-r').replaceWith('<input class="ui-li-aside ui-input-text ui-body-c ui-corner-all ui-shadow-inset" style="position:relative;top:-17px;width:90px" type="text" value="" onchange="productdetailOnNettChange()"/>');
@@ -93,10 +100,20 @@ function productdetailInit() {
 //	productdetailSetStock(-9998);
     // TEST CODE END
 
-    if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true') {
-
-        $('#divstockvalue').addClass('invisible');
-        $('#whChoiceDiv').removeClass('invisible');	
+    if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true' && ($('#mode').val() === 'Online') && g_isOnline(false)) {
+        if (!$('#divstockvalue').hasClass('invisible')) {
+            $('#divstockvalue').addClass('invisible');
+        }
+        if ($('#whChoiceDiv').hasClass('invisible')) {
+            $('#whChoiceDiv').removeClass('invisible');	
+        }
+    } else {
+        if ($('#divstockvalue').hasClass('invisible')) {
+            $('#divstockvalue').removeClass('invisible');
+        }
+        if (!$('#whChoiceDiv').hasClass('invisible')) {
+            $('#whChoiceDiv').addClass('invisible');
+        }
     }
 
     var dao = new Dao();
@@ -273,7 +290,7 @@ function productdetailCanChangeNett(productId) {
 
 function productdetailSetStock(stock) {
 
-    $('#stockvalue').text((g_stockDescriptions[stock] || stock));
+    $('#stockvalue').text((g_stockDescriptions[stock] || ('' + stock)));
 }
 
 function productdetailGetStock() {
@@ -787,7 +804,8 @@ function productdetailFetchLiveStockDiscount(livePriceUrl, checkUrl) {
     if (checkUrl)
             livePriceUrl = DaoOptions.getValue('LivePriceURL') ? DaoOptions.getValue('LivePriceURL') : g_restUrl + 'prices/getprice3';
 	 
-    var url = livePriceUrl + '?supplierID=' + g_currentUser().SupplierID + '&productID=' + g_pricelistSelectedProduct.ProductID + '&accountid=' + g_currentCompany().AccountID.replace('&', '%26') + '&branchid=' + g_currentCompany().BranchID + '&quantity=1&gross=' + g_pricelistSelectedProduct.Gross + '&nett=' + g_pricelistSelectedProduct.Nett + '&checkStock=true&checkPrice=true&format=json';
+    var url = livePriceUrl + '?supplierID=' + g_currentUser().SupplierID + '&productID=' + g_pricelistSelectedProduct.ProductID + '&accountid=' + g_currentCompany().AccountID.replace('&', '%26') + '&branchid=' + g_currentCompany().BranchID + '&quantity=1&gross=' + g_pricelistSelectedProduct.Gross + '&nett=' + g_pricelistSelectedProduct.Nett +
+            '&checkStock=true&checkPrice=' + ((DaoOptions.getValue('LocalDiscounts') != 'true') ? 'true' : 'false') + '&format=json';
 
     console.log(url);
  
