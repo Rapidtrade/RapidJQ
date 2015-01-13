@@ -168,6 +168,9 @@ function productdetailInit() {
 
         $('#grossvalue').text(g_addCommas(price));
         $('#divnettvalue input').val(price);
+        if ($('#quantity').hasClass('ui-disabled')) {
+        	$('#quantity').removeClass('ui-disabled');
+        }
 
     } else {
 
@@ -1123,7 +1126,7 @@ function productdetailSave(qty, type, product) {
     
     if (product.RepChangedPrice) {
         
-        product.RepNett = productdetailValue('nett');
+        product.RepNett = $('#divnettvalue input').val(); //productdetailValue('nett');
         product.RepDiscount = productdetailValue('discount');
     }
     
