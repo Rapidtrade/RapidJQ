@@ -127,7 +127,9 @@ function pricelistOnPageShow() {
     if (!sessionStorage.getItem('currentordertype'))
         sessionStorage.setItem('currentordertype', 'Order');
     
-    if (!pricelistFromCache(g_currentCompany().Pricelist, g_currentCompany().SupplierID, g_currentCompany().AccountID)) {
+    if (g_vanSales){
+        pricelistFromCache(g_currentCompany().Pricelist, g_currentCompany().SupplierID, g_currentCompany().AccountID);
+    } else {
     	
         var dao = new Dao();
         dao.openDB(function () { pricelistInit(); });        

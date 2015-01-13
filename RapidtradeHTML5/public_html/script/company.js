@@ -134,7 +134,8 @@ function companyLoadPanel(panelId) {
 
         case 'pricelistPanel':
                 sessionStorage.removeItem('fromAdvanced');
-                sessionStorage.removeItem('fromCategory');	
+                sessionStorage.removeItem('fromCategory');
+                sessionStorage.setItem('clearSearch', true);
                 pricelistOnPageShow();
                 companySetNextButton('Shopping Cart');
                 pricelistCheckBasket();
