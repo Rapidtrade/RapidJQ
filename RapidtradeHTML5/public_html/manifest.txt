@@ -1,7 +1,7 @@
 ﻿CACHE MANIFEST
 # Explicitly cached 'master entries'...........................................
 
-# Version 8.8.6
+# Version 8.8.7
 
 CACHE:
 

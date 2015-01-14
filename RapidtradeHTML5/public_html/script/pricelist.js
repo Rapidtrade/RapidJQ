@@ -27,6 +27,7 @@ function pricelistOnPageShow() {
         
         $('#search').val('');
         g_pricelistSearchPricelistText = '';
+        sessionStorage.removeItem('cachePricelist');
         sessionStorage.removeItem('clearSearch');
     }
     
@@ -127,10 +128,7 @@ function pricelistOnPageShow() {
     if (!sessionStorage.getItem('currentordertype'))
         sessionStorage.setItem('currentordertype', 'Order');
     
-    if (g_vanSales){
-        pricelistFromCache(g_currentCompany().Pricelist, g_currentCompany().SupplierID, g_currentCompany().AccountID);
-    } else {
-    	
+    if (!pricelistFromCache(g_currentCompany().Pricelist, g_currentCompany().SupplierID, g_currentCompany().AccountID)) {
         var dao = new Dao();
         dao.openDB(function () { pricelistInit(); });        
     }

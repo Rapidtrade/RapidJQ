@@ -592,6 +592,10 @@ function orderHeaderSaveFormedOrder(position) {
     if (!orderHeaderAreItemsValid())
         return;
     
+    // this option we are going to use to clear search text
+    // on pricelist page
+    sessionStorage.setItem('clearSearch', true);
+    
     if (sessionStorage.getItem('TPMError') === 'Q2') {
         
         sessionStorage.removeItem('TPMError');
