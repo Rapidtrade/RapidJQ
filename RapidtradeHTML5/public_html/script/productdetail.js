@@ -205,6 +205,8 @@ function productdetailInit() {
         } else {
             
             $('.pricelistBusyImg').hide();
+            if ($('#quantity').hasClass('ui-disabled'))
+                $('#quantity').removeClass('ui-disabled');
             $.mobile.hidePageLoadingMsg();            
         }	
     }
@@ -907,6 +909,12 @@ function productdetailPriceOnSuccess (json) {
                             break;
                     }
             }
+            
+            if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true' && stockDataArray.length > 0 && $("#whChoiceDiv select option:selected").length == 1) {
+                try {
+                    setStockUnit($('#whChoiceDiv select')[0].selectedIndex);
+                } catch (selectErr) {}
+            }
         } 
     }
     
@@ -1111,6 +1119,9 @@ function productdetailOkClicked(checkStock) {
                      g_alert('The discount must be ' + minDiscount + ' - ' + maxDiscount + ' %');
                      return;
                 }
+                g_pricelistSelectedProduct.RepDiscount = discount;
+                g_pricelistSelectedProduct.RepNett = $('#divnettvalue input').val() || productdetailValue('nett'); 
+                $('#li' + g_pricelistSelectedProduct.ItemIndex + ' .price').text(g_addCommas(parseFloat(g_pricelistSelectedProduct.RepNett).toFixed(2)));
                     
             }
                         
@@ -1144,7 +1155,7 @@ function productdetailSave(qty, type, product) {
     
     if (product.RepChangedPrice) {
         
-        product.RepNett = $('#divnettvalue input').val(); //productdetailValue('nett');
+        product.RepNett = $('#divnettvalue input').val() || productdetailValue('nett');
         product.RepDiscount = productdetailValue('discount');
     }
     
