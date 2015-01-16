@@ -767,7 +767,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
     	
         basket.saveItem(basketInfo, quantity);
         
-        $('#' + itemIndex + 'nett').text('' + basketInfo.Nett);
+        $('#' + itemIndex + 'nett').text('' + g_roundToTwoDecimals(shoppingCartItemNett(basketInfo))); //$('#' + itemIndex + 'nett').text('' + basketInfo.Nett);
         $('#' + itemIndex + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  == 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * quantity));
         g_shoppingCartTotalExcl = 0;
         $.each($(".total") ,function() {

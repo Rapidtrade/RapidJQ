@@ -141,7 +141,7 @@ function onsuccessDiscountValuesRead(allRows) {
             g_pricelistSelectedProduct.Discount = row.Discount;
             g_pricelistSelectedProduct.Nett = g_pricelistSelectedProduct.Gross - (g_pricelistSelectedProduct.Gross * (g_pricelistSelectedProduct.Discount / 100));
         }
-
+        
         productdetailValue('discount', g_addCommas(g_pricelistSelectedProduct.Discount.toFixed(2)) + '%');
         productdetailValue('nett', g_addCommas(g_pricelistSelectedProduct.Nett.toFixed(2)));
         $('#grossvalue')['html'](g_addCommas(g_pricelistSelectedProduct.Gross.toFixed(2)));
@@ -189,10 +189,12 @@ function discountApplyDiscountValues(discountValues) {
             g_pricelistSelectedProduct.Discount = discountValues[i].Discount;
             g_pricelistSelectedProduct.Nett = g_pricelistSelectedProduct.Gross - (g_pricelistSelectedProduct.Gross * (g_pricelistSelectedProduct.Discount / 100));
         }
-
-        productdetailValue('discount', g_addCommas(g_pricelistSelectedProduct.Discount.toFixed(2)) + '%');
-        productdetailValue('nett', g_addCommas(g_pricelistSelectedProduct.Nett.toFixed(2)));
-        $('#grossvalue')['html'](g_addCommas(g_pricelistSelectedProduct.Gross.toFixed(2)));
+        
+        if (!g_pricelistSelectedProduct.RepChangedPrice) {
+            productdetailValue('discount', g_addCommas(g_pricelistSelectedProduct.Discount.toFixed(2)) + '%');
+            productdetailValue('nett', g_addCommas(g_pricelistSelectedProduct.Nett.toFixed(2)));
+            $('#grossvalue')['html'](g_addCommas(g_pricelistSelectedProduct.Gross.toFixed(2)));
+        }
         
         if (discountValues[i].SkipRest)
             break;

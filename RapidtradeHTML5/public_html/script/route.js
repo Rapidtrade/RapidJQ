@@ -206,7 +206,11 @@ var route = (function() {
 	        'AccountID',
 	        function (company) {
 	            podListHtml += '<li id="' + pod.OrderID + '" data-account="' + pod.AccountID + '" data-theme="c">' + 
-                    '<a href id="' + pod.OrderID + '" data-account="' + pod.AccountID + '"><h3 class="ui-li-heading">' + pod.DeliveryName + '</h3><p>' + pod.Reference + '</p><p>Customer: ' + company.Name + '</p></a>' + 
+                    '<a href id="' + pod.OrderID + '" data-account="' + pod.AccountID + '">' + 
+                    '<img class="ui-li-icon" style=" width: 45px; height: 45px;" src="' + ((pod.UserID === '') ? 'img/yellow.png" alt="Available" ' : 
+                                                ((pod.UserID === g_currentUser().UserID) ? 'img/green.png" alt="Taken by you" ' : 
+                                                'img/cancel.png" alt="Taken by other" '))  + '>' + 
+                                                '<h3 class="ui-li-heading">' + pod.DeliveryName + '</h3><p>' + pod.Reference + '</p><p>Customer: ' + company.Name + '</p></a>' + 
                     '<a href id="' + pod.OrderID + '" data-account="' + pod.AccountID + '">Customer Details</a></li>';
                     
                 },

@@ -125,7 +125,13 @@ function productdetailInit() {
 
                     g_pricelistSelectedProduct.Discount = basketInfo.Discount;
                     g_pricelistSelectedProduct.Nett = basketInfo.Nett;
-                    g_pricelistSelectedProduct.Gross = basketInfo.Gross;
+                    g_pricelistSelectedProduct.Gross = parseFloat(basketInfo.Gross.replace(/,/g,''));
+                    
+                    if (g_productdetailIsPriceChanged) {
+                        g_pricelistSelectedProduct.RepNett = basketInfo.RepNett;
+                        g_pricelistSelectedProduct.RepDiscount = basketInfo.RepDiscount;
+                        g_pricelistSelectedProduct.RepChangedPrice = basketInfo.RepChangedPrice;
+                    }
 
                     productdetailValue('nett', g_addCommas(parseFloat(g_productdetailIsPriceChanged ? basketInfo.RepNett : basketInfo.Nett).toFixed(2)));
                     productdetailValue('discount', g_addCommas(parseFloat(g_productdetailIsPriceChanged ? basketInfo.RepDiscount : basketInfo.Discount).toFixed(2)) + '%');
@@ -1120,7 +1126,8 @@ function productdetailOkClicked(checkStock) {
                      return;
                 }
                 g_pricelistSelectedProduct.RepDiscount = discount;
-                g_pricelistSelectedProduct.RepNett = $('#divnettvalue input').val() || productdetailValue('nett'); 
+                var rNetStr = $('#divnettvalue input').val() || productdetailValue('nett'); 
+                g_pricelistSelectedProduct.RepNett = parseFloat(rNetStr.replace(/,/g,''));
                 $('#li' + g_pricelistSelectedProduct.ItemIndex + ' .price').text(g_addCommas(parseFloat(g_pricelistSelectedProduct.RepNett).toFixed(2)));
                     
             }
@@ -1155,8 +1162,9 @@ function productdetailSave(qty, type, product) {
     
     if (product.RepChangedPrice) {
         
-        product.RepNett = $('#divnettvalue input').val() || productdetailValue('nett');
-        product.RepDiscount = productdetailValue('discount');
+        var rNetStr = $('#divnettvalue input').val() || productdetailValue('nett');
+        product.RepNett = parseFloat(rNetStr.replace(/,/,''));
+        product.RepDiscount = parseInt(productdetailValue('discount'), 10); //productdetailValue('discount');
     }
     
     product.Stock = productdetailGetStock();    
