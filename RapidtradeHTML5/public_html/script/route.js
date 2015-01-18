@@ -119,9 +119,14 @@ var route = (function() {
                 
                 item.routeID = $.trim(item.routeID);
                 
+//                routeListHtml += '<li data-theme="c" id="' + item.routeID + '"' + ((routeNumbers[item.routeID] === 0) ? ' class="ui-disabled" ' : '') + ' ><a href>' + 
+//                                '<img class="ui-li-icon" src="' + ((route.UserID === '') ? 'img/yellow.png" alt="Available" ' : 
+//                                                ((route.UserID === g_currentUser().UserID) ? 'img/green.png" alt="Taken by you" ' : 
+//                                                'img/cancel.png" alt="Taken by other" '))  + '>' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
+
                 routeListHtml += '<li data-theme="c" id="' + item.routeID + '"' + ((routeNumbers[item.routeID] === 0) ? ' class="ui-disabled" ' : '') + ' ><a href>' + 
-                                '<img class="ui-li-icon" src="' + ((route.UserID === '') ? 'img/yellow.png" alt="Available" ' : 
-                                                ((route.UserID === g_currentUser().UserID) ? 'img/green.png" alt="Taken by you" ' : 
+                                '<img class="ui-li-icon" src="' + ((isSomeOfDelivsAreFree(route.UserID) && !isSomeOfDelivsAreTakenByMe(route.UserID)) ? 'img/yellow.png" alt="Available" ' : 
+                                                (isSomeOfDelivsAreTakenByMe(route.UserID) ? 'img/green.png" alt="Taken by you" ' : 
                                                 'img/cancel.png" alt="Taken by other" '))  + '>' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
                 
                 if (++addedRows === routes.length) {
@@ -196,7 +201,7 @@ var route = (function() {
         $('#noPods').addClass('invisible');
         
         var podListHtml = '';
-        var isItTaken = false;
+        var isItTaken = true;
         $.each(pods, function(index, pod) {
             //var index = i;
             var dao = new Dao();
@@ -207,8 +212,8 @@ var route = (function() {
 	        function (company) {
 	            podListHtml += '<li id="' + pod.OrderID + '" data-account="' + pod.AccountID + '" data-theme="c">' + 
                     '<a href id="' + pod.OrderID + '" data-account="' + pod.AccountID + '">' + 
-                    '<img class="ui-li-icon" style=" width: 45px; height: 45px;" src="' + ((pod.UserID === '') ? 'img/yellow.png" alt="Available" ' : 
-                                                ((pod.UserID === g_currentUser().UserID) ? 'img/green.png" alt="Taken by you" ' : 
+                    '<img id="' + pod.OrderID + '" class="ui-li-thumb" style=" width: 45px; height: 45px;" src="' + ((pod.UserID === '') ? 'img/yellow.png" alt="Available" data-taken="false" ' : 
+                                                ((pod.UserID === g_currentUser().UserID) ? 'img/green.png" alt="Taken by you" data-taken="true" ' : 
                                                 'img/cancel.png" alt="Taken by other" '))  + '>' + 
                                                 '<h3 class="ui-li-heading">' + pod.DeliveryName + '</h3><p>' + pod.Reference + '</p><p>Customer: ' + company.Name + '</p></a>' + 
                     '<a href id="' + pod.OrderID + '" data-account="' + pod.AccountID + '">Customer Details</a></li>';
@@ -224,7 +229,8 @@ var route = (function() {
                         showPods(podListHtml, isItTaken);
                 }	 
             );
-            if (pod.UserID !== '') isItTaken = true;  
+            
+            isItTaken = isItTaken && pod.UserID === g_currentUser().UserID;  
             
         });
     }
@@ -259,6 +265,9 @@ var route = (function() {
         if (isItTaken) {            
             if (!$('#takeRouteButton').hasClass('ui-disabled')) 
                 $('#takeRouteButton').addClass('ui-disabled');
+        } else {
+            if ($('#takeRouteButton').hasClass('ui-disabled')) 
+                $('#takeRouteButton').removeClass('ui-disabled');
         }
         
         $('#podList').html(podListHtml).listview('refresh');
@@ -328,6 +337,20 @@ var route = (function() {
 	    //g_alert('Company details for: ' + accID);   
             
             //g_busy(false);
+        });
+        
+        $('#podList li img').off().on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            g_busy(true);
+            
+            var deliveryID = this.id;
+            var isTaken = $(this).data('taken');
+            
+            takeALoad(deliveryID, isTaken);
+            
+            g_busy(false);
+            //return false;
         });
     }
         
@@ -458,6 +481,86 @@ var route = (function() {
             
             localStorage.setItem('Route' + selectedDate(), JSON.stringify(cachedRoutes));
         }        
+    }
+    
+    function isSomeOfDelivsAreTakenByMe(users, numberOfDelivs) {
+        var usersArray = users.split(',');
+        
+        //var res = false;
+        for (var i = 0; i < usersArray.length; ++i) {
+            if (usersArray[i].trim().toLowerCase() == g_currentUser().UserID.toLowerCase())
+                return true;
+        }
+        
+        return false;
+    }
+    
+    function isSomeOfDelivsAreFree(users, numberOfDelivs) {
+        var usersArray = users.split(',');
+        
+        //var res = false;
+        for (var i = 0; i < usersArray.length; ++i) {
+            if (usersArray[i].trim().toLowerCase() === '')
+                return true;
+        }
+        
+        return false;
+    }
+    
+    function takeALoad(deliveryID, isTaken) {
+        
+        if (!g_isOnline(false)) {
+            g_alert('Sorry, You must be online to perform this action.');
+            return;
+        }
+        
+        
+        var url = g_restPHPUrl + 'GetStoredProc?StoredProc=';
+        
+        if (isTaken) {
+            url += 'usp_deliveries_unassign&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + deliveryID + '%27)';
+        } else {
+            url += 'usp_deliveries_assign&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + deliveryID + '%27)';
+        }
+        
+        var onSuccess = function(deliveries) {
+            
+            if (deliveries.length === 0) {
+                onError(deliveries);
+                return;
+            } else if (deliveries.length > 1) {
+                onError(deliveries);
+                return;
+            } else if (deliveries.length === 1 && deliveries[0].Error) {
+                onError(deliveries);
+                return;
+            }
+            
+            
+            $.each(deliveries, function(index, delivery) {
+            //for (var i = 0; i < deliveries.length; ++i) {
+                //var index = i; 
+                
+                var onDeliveryPutSuccess = function() {
+                    
+                    fetchPods();
+                };
+                
+                
+                
+                var dao = new Dao();
+                dao.put(delivery, 'Orders', (delivery.SupplierID + delivery.OrderID),undefined, undefined, onDeliveryPutSuccess);
+            });
+        };
+        
+        var onError = function(error) {
+            g_alert('Sorry, Something went wrong.');
+        };
+        
+        
+        console.log(url);
+        g_ajaxget(url, onSuccess, onError);        
+        
     }
     
 })();

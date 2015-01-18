@@ -1351,7 +1351,7 @@ function pricelistAddLine(pricelist) {
             quantityText = basketInfo.Quantity;
             pricelist.d = basketInfo.Discount;
             pricelist.n = basketInfo.Nett;        
-            nett = '' + pricelist.n;
+            nett = '' + (basketInfo.RepChangedPrice ? basketInfo.RepNett : pricelist.n);
         }        
     	
     	if (productdetailCanChangeNett(pricelist.id))
