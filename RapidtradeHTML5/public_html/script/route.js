@@ -124,10 +124,10 @@ var route = (function() {
 //                                                ((route.UserID === g_currentUser().UserID) ? 'img/green.png" alt="Taken by you" ' : 
 //                                                'img/cancel.png" alt="Taken by other" '))  + '>' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
 
-                routeListHtml += '<li data-theme="c" id="' + item.routeID + '"' + ((routeNumbers[item.routeID] === 0) ? ' class="ui-disabled" ' : '') + ' ><a href>' + 
-                                '<img class="ui-li-icon" src="' + ((isSomeOfDelivsAreFree(route.UserID) && !isSomeOfDelivsAreTakenByMe(route.UserID)) ? 'img/yellow.png" alt="Available" ' : 
-                                                (isSomeOfDelivsAreTakenByMe(route.UserID) ? 'img/green.png" alt="Taken by you" ' : 
-                                                'img/cancel.png" alt="Taken by other" '))  + '>' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
+                routeListHtml += '<li data-theme="c" id="' + item.routeID + '"' + ((isSomeOfDelivsAreFree(route.UserID) || isSomeOfDelivsAreTakenByMe(route.UserID)) ? '' : ' class="ui-disabled" ') + ' ><a href>' + 
+                                '<img id="' + item.routeID + '" class="ui-li-thumb" style=" width: 85px; height: 85px;" src="' + ((isSomeOfDelivsAreFree(route.UserID) && !isSomeOfDelivsAreTakenByMe(route.UserID)) ? 'img/yellow.png" data-taken="false" alt="Available" ' : 
+                                                (isSomeOfDelivsAreTakenByMe(route.UserID) ? 'img/green.png" data-taken="false" alt="Taken by you" ' : 
+                                                'img/cancel.png" data-taken="true" alt="Taken by other" '))  + '>' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
                 
                 if (++addedRows === routes.length) {
                     
@@ -138,7 +138,17 @@ var route = (function() {
                         showPanel('#podsPanel');
                         selectedRouteId = this.id;
                         fetchPods();
-                    });             
+                    });  
+                    
+                    $('#routeList li img').off().on('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        selectedRouteId = this.id;
+                        var isTaken = $(this).data('taken');
+                        //g_alert("Selected route: " + selectedRouteId);
+                        takeARouteOnThumbClick(isTaken);
+                    });
 
                     g_busy(false);                    
                 }
@@ -177,7 +187,22 @@ var route = (function() {
                             takeARoute(true);
                         }
                     } else {
-                        preparePodsForView(routeDeliveries || []);
+                        var cachedRoutes = JSON.parse(localStorage.getItem('Route' + selectedDate()));
+                            
+                        var numOfDelivs = 0;
+                        if (cachedRoutes && (cachedRoutes != null) && cachedRoutes.length) {
+                            for (var i = 0; i < cachedRoutes.length; ++i) {
+                                if (cachedRoutes[i].routeID === selectedRouteId) {
+                                    numOfDelivs = cachedRoutes[i].numOfRouts;
+                                }
+                            }
+                        }
+
+                        if (numOfDelivs !== routeDeliveries.length) {
+                            takeARoute(true, routeDeliveries);
+                        } else {
+                            preparePodsForView(routeDeliveries || []);
+                        }
                     }
                 });
            // }
@@ -197,7 +222,7 @@ var route = (function() {
         }
         
         localStorage.setItem('POD' + selectedRouteId + selectedDate(), JSON.stringify(pods));
-        
+        modifyCachedRoutes();
         $('#noPods').addClass('invisible');
         
         var podListHtml = '';
@@ -210,9 +235,9 @@ var route = (function() {
 	        /*'3ALBL01'*/ pod.AccountID,
 	        'AccountID',
 	        function (company) {
-	            podListHtml += '<li id="' + pod.OrderID + '" data-account="' + pod.AccountID + '" data-theme="c">' + 
+	            podListHtml += '<li id="' + pod.OrderID + '" data-account="' + pod.AccountID + '" data-theme="c"' + ((pod.UserID === g_currentUser().UserID || pod.UserID === '') ? '' : ' class="ui-disabled" ') + '>' + 
                     '<a href id="' + pod.OrderID + '" data-account="' + pod.AccountID + '">' + 
-                    '<img id="' + pod.OrderID + '" class="ui-li-thumb" style=" width: 45px; height: 45px;" src="' + ((pod.UserID === '') ? 'img/yellow.png" alt="Available" data-taken="false" ' : 
+                    '<img id="' + pod.OrderID + '" class="ui-li-thumb" style=" width: 85px; height: 85px;" src="' + ((pod.UserID === '') ? 'img/yellow.png" alt="Available" data-taken="false" ' : 
                                                 ((pod.UserID === g_currentUser().UserID) ? 'img/green.png" alt="Taken by you" data-taken="true" ' : 
                                                 'img/cancel.png" alt="Taken by other" '))  + '>' + 
                                                 '<h3 class="ui-li-heading">' + pod.DeliveryName + '</h3><p>' + pod.Reference + '</p><p>Customer: ' + company.Name + '</p></a>' + 
@@ -230,7 +255,7 @@ var route = (function() {
                 }	 
             );
             
-            isItTaken = isItTaken && pod.UserID === g_currentUser().UserID;  
+            isItTaken = isItTaken && (pod.UserID === g_currentUser().UserID || pod.UserID !== '');  
             
         });
     }
@@ -354,7 +379,7 @@ var route = (function() {
         });
     }
         
-    function takeARoute(isRefreshPressed) {
+    function takeARoute(isRefreshPressed, routeDeliveries) {
         
         var onTakeRouteSuccess = function(deliveries) {
             if (deliveries.length === 0) {
@@ -372,6 +397,7 @@ var route = (function() {
                         var dao = new Dao();
                         dao.putMany((deliveryItems), 'OrderItems', undefined, undefined, function() {
                             if (index === deliveries.length - 1) {
+                                preparePodsForView(deliveries);
                                 if (isRefreshPressed) {
                                     //g_alert('You successfully refreshed local data.');
                                 } else {
@@ -379,7 +405,6 @@ var route = (function() {
                                   modifyCachedRoutes();
                                   //$('#refreshButton').click();
                                 }
-                                preparePodsForView(deliveries);
                             }
                         });
                     };
@@ -403,12 +428,63 @@ var route = (function() {
             } else {
                // g_alert('You are about to take the Route: ' + selectedRouteId + ' for date ' + $("#duedate").val() + '.');
             }
-            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=' + (isRefreshPressed ? 'usp_orders_readdeliveries3' : 'usp_route_TakeARoute') + '&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedRouteId + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
+            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=' + (isRefreshPressed ? 'usp_orders_readdeliveries4' : 'usp_route_TakeARoute') + '&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedRouteId + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
             console.log(url);
             localStorage.removeItem('POD' + selectedRouteId + selectedDate());
             g_ajaxget(url, onTakeRouteSuccess);
         } else {
             g_alert('Sorry, You must be online to perform this action.');
+            preparePodsForView(routeDeliveries || []);
+        }
+    }
+    
+    function takeARouteOnThumbClick(isTaken) {
+        var onTakeRouteOnThumbClickSuccess = function(deliveries) {
+            if (deliveries.length === 0) {
+                preparePodsForView(deliveries);
+                return;
+            }
+            $.each(deliveries, function(index, delivery) {
+            //for (var i = 0; i < deliveries.length; ++i) {
+                //var index = i; 
+                
+                var onDeliveryPutSuccess = function() {
+                    var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orderitems_deliveryDetails&params=(%27' + delivery.SupplierID + '%27|%27' + delivery.AccountID + '%27|%27' + delivery.OrderID + '%27)';
+                  
+                    var onGetDeliveryItemsSuccess = function(deliveryItems) {
+                        var dao = new Dao();
+                        dao.putMany((deliveryItems), 'OrderItems', undefined, undefined, function() {
+                            if (index === deliveries.length - 1) {
+                                preparePodsForView(deliveries);
+                                modifyCachedRoutes();
+                                fetchRoutes();
+                            }
+                        });
+                    };
+                    
+                    console.log(url);
+                    g_ajaxget(url, onGetDeliveryItemsSuccess);
+                };
+                
+                
+                
+                var dao = new Dao();
+                dao.put(delivery, 'Orders', (delivery.SupplierID + delivery.OrderID),undefined, undefined, onDeliveryPutSuccess);
+            });
+          
+        };
+        
+        
+        if (g_isOnline()) {
+            if (!isTaken) {
+                var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_TakeARoute&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedRouteId + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
+                console.log(url);
+                localStorage.removeItem('POD' + selectedRouteId + selectedDate());
+                g_ajaxget(url, onTakeRouteOnThumbClickSuccess);
+            }
+        } else {
+            g_alert('Sorry, You must be online to perform this action.');
+            //preparePodsForView(routeDeliveries || []);
         }
     }
         
@@ -468,13 +544,24 @@ var route = (function() {
         $('#refreshButton').toggle(isPodsPanel);
     }
     
-    function modifyCachedRoutes(deliveries) {
+    function modifyCachedRoutes() {
+        
+        var cachedDeliveries = JSON.parse(localStorage.getItem('POD' + selectedRouteId + selectedDate()));
+        // prepare new userID for selected route
+        var newUserID = '';
+        var comma = '';
+        if (cachedDeliveries && (cachedDeliveries != null) && cachedDeliveries.length) {
+            for (var i = 0; i < cachedDeliveries.length; ++i) {
+                newUserID = newUserID + comma + cachedDeliveries[i].UserID;
+                comma = ',';
+            }
+        }
         
         var cachedRoutes = JSON.parse(localStorage.getItem('Route' + selectedDate()));
         if (cachedRoutes && (cachedRoutes != null) && cachedRoutes.length) {
             for (var i = 0; i < cachedRoutes.length; ++i) {
                 if (cachedRoutes[i].routeID === selectedRouteId) {
-                    cachedRoutes[i].UserID = g_currentUser().UserID;
+                    cachedRoutes[i].UserID = newUserID;//g_currentUser().UserID;
                 }
             }
             
@@ -506,7 +593,7 @@ var route = (function() {
         
         return false;
     }
-    
+        
     function takeALoad(deliveryID, isTaken) {
         
         if (!g_isOnline(false)) {
@@ -541,9 +628,9 @@ var route = (function() {
             //for (var i = 0; i < deliveries.length; ++i) {
                 //var index = i; 
                 
-                var onDeliveryPutSuccess = function() {
-                    
+                var onDeliveryPutSuccess = function() {                    
                     fetchPods();
+                    //modifyCachedRoutes();
                 };
                 
                 
