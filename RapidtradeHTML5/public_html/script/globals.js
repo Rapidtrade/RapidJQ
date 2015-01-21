@@ -42,6 +42,7 @@ var g_callCycleCurrentUserID;
  * Company variables
  */
 var g_companyPageTranslation = {};
+var g_menuPageTranslation = {};
 
 /*
  * Pricelist variables

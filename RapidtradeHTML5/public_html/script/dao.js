@@ -142,6 +142,7 @@ function Dao() {
     this.deleteDB = function (pondbdeleted) {
     	var seq = localStorage.getItem('sequenceNumber');
     	var seqday = localStorage.getItem('sequenceDay');
+    	var portuguese = localStorage.getItem('Portuguese');
     	
         if (g_indexedDB)
             this.idbdeleteDB(pondbdeleted);
@@ -151,6 +152,7 @@ function Dao() {
         //reset sequence number
         if (seq) localStorage.setItem('sequenceNumber',seq);
         if (seqday) localStorage.setItem('sequenceDay',seqday);
+        if (portuguese) localStorage.setItem('Portuguese', portuguese);
     };
 
     this.clear = function (table) {

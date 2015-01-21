@@ -41,5 +41,12 @@
     "Search for products": {"pt": "Busca por produtos"},
     "Not available to purchase": {"pt": "Não disponível para compra"},
     "No activities for this customer yet. Create a": {"pt": "Não há atividades para este cliente ainda, criar um"},
-    "call report using the Add Activity button.": {"pt": "relatório de chamada usando Adicionar actividade."}
+    "call report using the Add Activity button.": {"pt": "relatório de chamada usando Adicionar actividade."},
+    "Online":  {"pt": "Ligado"},
+    "Offline":  {"pt": "Desligado"},
+    "Enter your text below:": {"pt": "Digite o texto abaixo:"},
+    "Enter your number below:": { "pt": "Digite o número abaixo:" },
+    "Cancel": {"pt": "Cancelar"},
+    "Take A Photo": { "pt": "Tirar uma foto" },
+    "Photo Taken - Click To Retake": {"pt": "Foto tomada - Clique para retomar"}
 }

@@ -30,6 +30,8 @@ function activityFormLoadIntoDiv(divSelector, canEdit) {
 
 function activityFormInit(divSelector) {
 	
+    g_companyPageTranslation = translation('companypage');
+
 	$(divSelector + ' #activityFormPanel').hide();
 	$(divSelector + ' #divContacts').hide();
 	$(divSelector + ' #divDuedate').hide();
@@ -114,7 +116,7 @@ function activityFormShow(activityType, parentDivSelector) {
 	$(g_activityFormParentDivSelector + ' #divPhoto').toggle(g_canTakePhoto && activityType.AllowPicture);
 	
 	if (g_canTakePhoto)
-	    $(g_activityFormParentDivSelector + ' #activityPhotoButton').button().text('Take A Photo');	
+	    $(g_activityFormParentDivSelector + ' #activityPhotoButton').button().text(g_companyPageTranslation.translateText('Take A Photo'));	
 	
 	//field type
 	switch (activityType.FieldType) {
@@ -289,7 +291,7 @@ function activityFormTakePhoto() {
 function activityFormTakePhotoOnSuccess(imageData) {
     setTimeout(function() {
         g_activityFormPhotoData = imageData;
-        $(g_activityFormParentDivSelector + ' #activityPhotoButton').button().text('Photo Taken - Click To Retake');  
+        $(g_activityFormParentDivSelector + ' #activityPhotoButton').button().text(g_companyPageTranslation.translateText('Photo Taken - Click To Retake'));  
     }, 0);
     
 }

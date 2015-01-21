@@ -244,8 +244,10 @@ function orderHeaderSaveOrder() {
         $.mobile.changePage('shoppingCart.html');
         return;
     }
+
+    var typeStrTemp = (sessionStorage.getItem("currentordertype").indexOf('Invoice') != -1) ? 'invoice' : g_orderHeaderOrder.Type.toLowerCase();
     
-    $('#infoPopup p').text(g_orderHeaderPageTranslation.translateText('Please wait, processing ' + g_orderHeaderOrder.Type.toLowerCase()));
+    $('#infoPopup p').text(g_orderHeaderPageTranslation.translateText('Please wait, processing ' + typeStrTemp));
     $('#infoPopup').popup('open');    
 
     g_markCustomerAsVisited(g_currentCompany().AccountID);	

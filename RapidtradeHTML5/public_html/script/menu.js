@@ -3,7 +3,7 @@ function menuOnPageBeforeCreate() {
      // this must be done as a first thing due to a specific initialisation of the company page
     g_companyPageTranslation = translation('companypage');
  
-    translation('menupage');    
+    g_menuPageTranslation = translation('menupage'); //translation('menupage');    
 }
 
 function menuOnPageShow() {
@@ -42,7 +42,7 @@ function menuBind() {
     $('#testDiv select').off().on('slidestop', function() {
        
         localStorage.setItem('Portuguese', $(this).val());
-        alert('Please restart the application for the language change to take effect.');
+        g_alert(g_menuPageTranslation.translateText('Please restart the application for the language change to take effect.'));
     });
 }
 
