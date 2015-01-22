@@ -165,7 +165,7 @@ function syncFetchUser() {
 	    }
 	};
 	var error = function (e, a) {
-            alert('You seem to be offline: ' + a);
+            g_alert(g_syncPageTranslation.translateText('You seem to be offline: ') + g_syncPageTranslation.translateText(a));
             $.mobile.hidePageLoadingMsg();
 	    console.log(e.message);
 	};
@@ -326,7 +326,7 @@ function syncPostedOK(index, skip){
         }
 
         //$('#results tbody tr:last td').text((index + 1) + ' of ' + g_syncPosted.length + ' rows sent OK' );
-        g_append('#results tbody','<tr><td>' + (index + 1) + ' of ' + g_syncPosted.length + ' rows sent OK</td></tr>');
+        g_append('#results tbody','<tr><td>' + (index + 1) + g_syncPageTranslation.translateText(' of ') + g_syncPosted.length + g_syncPageTranslation.translateText(' rows sent OK') + '</td></tr>');
     }
 
     if (index == (g_syncPosted.length - 1)){

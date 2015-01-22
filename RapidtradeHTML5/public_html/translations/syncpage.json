@@ -4,7 +4,7 @@
     "Password": {"pt": "Palavra passe"},
     "Please wait, downloading latest data": {"pt": "Espere por favor... A fazer download de ficheiros"},
     "Please wait, verifying your userid": {"pt": "Espere por favor... Verificar seu nome de usuário"},
-    "Sync completed OK. Click Menu button to continue": {"pt": "Sincronizaзгo completa, clique menu para continuar"},
+    "Sync completed OK. Click Menu button to continue": {"pt": "Sincronizar completa, clique menu para continuar"},
     "Support": {"pt": "Linha de ajuda"},
     "Log out": {"pt": "Sair"},
     "Submit": {"pt": "Submeter"},
@@ -26,5 +26,9 @@
     "DiscountValues": {"pt": "Valores com desconto"},
     "ProductCategories2": {"pt": "Categorias de produtos"},
     "up to date": {"pt": "atualizado"},
-    "downloaded": {"pt": "baixado"}
+    "downloaded": {"pt": "baixado"},
+    "You seem to be offline: ": { "pt": "Você parece estar desligado: " },
+    "error": { "pt": "erro" },
+    " of ": { "pt": " de " },
+    " rows sent OK": {"pt": " linhas enviado ok"}
 }

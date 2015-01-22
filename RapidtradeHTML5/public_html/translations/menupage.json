@@ -6,5 +6,7 @@
     "Call Cycle": {"pt": "Ciclo de clientes"},
     "You have unsent items": {"pt": "Você tem dados não enviados"},
     "please perform a Sync when possible": { "pt": "execute um sincronizar quando possível" },
-    "Please restart the application for the language change to take effect.":  {"pt": "Por favor, reinicie o pedido de mudança de idioma para entrar em vigor."}
+    "Please restart the application for the language change to take effect.":  {"pt": "Por favor, reinicie o pedido de mudança de idioma para entrar em vigor."},
+    "Yes": { "pt": "Sim" },
+    "No": { "pt": "Não"}
 }

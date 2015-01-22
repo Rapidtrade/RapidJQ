@@ -299,7 +299,7 @@ function activityFormTakePhotoOnSuccess(imageData) {
 
 function activityFormTakePhotoOnError(errorMessage) {
     setTimeout(function() {
-        alert('Error:' + errorMessage);
+        g_alert(g_companyPageTranslation.translateText('Error: ' + errorMessage));
     }, 0);
     
 }
@@ -310,7 +310,7 @@ function activityFormSave() {
     /*&& ($.trim(g_activityFormNewActivity.Label).match(/\*{2}$/))*/ && !g_activityFormPhotoData &&
             g_activityFormPhotoData === '') {
         
-        $('#activityErrorMessagePopup p').text('You must take a photo.');
+        $('#activityErrorMessagePopup p').text(g_companyPageTranslation.translateText('You must take a photo.'));
         $('#activityErrorMessagePopup').popup('open');
         return;
     }
@@ -521,10 +521,12 @@ function activityFormOnSaveSuccess() {
             activityShowPanel(g_activityFormPanels.activityList);
 
     } else {
-
-            $(g_activityFormParentDivSelector + ' .infoPanelText').html('<b>Activity saved OK.</b> Create another<br>by selecting another activity on the left.');
-            $(g_activityFormParentDivSelector + ' #activityFormPanel').hide();
-            $(g_activityFormParentDivSelector + ' .activityInfoPanel').fadeIn();
+        var tmpMsgText = '<b>' + g_companyPageTranslation.translateText('Activity saved OK.') + '</b> ' + g_companyPageTranslation.translateText('Create another') +
+            '<br>' + g_companyPageTranslation.translateText('by selecting another activity on the left.');
+        //$(g_activityFormParentDivSelector + ' .infoPanelText').html('<b>Activity saved OK.</b> Create another<br>by selecting another activity on the left.');
+        $(g_activityFormParentDivSelector + ' .infoPanelText').html(tmpMsgText);
+        $(g_activityFormParentDivSelector + ' #activityFormPanel').hide();
+        $(g_activityFormParentDivSelector + ' .activityInfoPanel').fadeIn();
     }
     
     g_activitySavedActivities[g_activityFormNewActivity.EventTypeID] = 'Saved';

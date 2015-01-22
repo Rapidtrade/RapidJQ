@@ -48,5 +48,10 @@
     "Enter your number below:": { "pt": "Digite o número abaixo:" },
     "Cancel": {"pt": "Cancelar"},
     "Take A Photo": { "pt": "Tirar uma foto" },
-    "Photo Taken - Click To Retake": {"pt": "Foto tomada - Clique para retomar"}
+    "Photo Taken - Click To Retake": {"pt": "Foto tomada - Clique para retomar"},
+    "You must take a photo.": { "pt": "Você deve capturar uma foto." },
+    "Error: User didn't capture a photo.": { "pt": "Erro: você não capturar uma foto." },
+    "Activity saved OK.": { "pt": "Atividade salvo ok." },
+    "Create another": { "pt": "Criar outro" },
+    "by selecting another activity on the left.": {"pt": "selecionando outra atividade na esquerda."}
 }
