@@ -8,5 +8,6 @@
     "please perform a Sync when possible": { "pt": "execute um sincronizar quando possível" },
     "Please restart the application for the language change to take effect.":  {"pt": "Por favor, reinicie o pedido de mudança de idioma para entrar em vigor."},
     "Yes": { "pt": "Sim" },
-    "No": { "pt": "Não"}
+    "No": { "pt": "Não"},
+    "You haven`t synchronised today. You should do so now to keep up to date.": {"pt": "Você não sincronizou hoje. Você deve fazê-lo agora para manter-se atualizado . Depois de clicar em OK , Clique no botão Sincronizar."}
 }

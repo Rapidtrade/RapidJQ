@@ -190,7 +190,7 @@ function menuInit(){
                     
                     if ((todaysDay !== lastSyncDay) && (!isMandatorySyncDayDefined || (todaysDay === mandatorySyncDay))) {
 
-                        alert('You haven\'t synchronised today. You should do so now to keep up to date.');
+                        g_alert(g_menuPageTranslation.translateText('You haven`t synchronised today. You should do so now to keep up to date.'));
                         
                         if (isMandatorySyncDayDefined) {
 

@@ -476,7 +476,7 @@ function syncFetchTable(supplierid, userid, table, method, skip, onSuccess, newR
     };
 
     var error = function (e, a) {
-        alert('You seem to have timed out, please check your connection and try again: ' + a);
+        g_alert('You seem to have timed out, please check your connection and try again: ' + a);
         $.mobile.hidePageLoadingMsg();
         console.log(e.Message);
     };

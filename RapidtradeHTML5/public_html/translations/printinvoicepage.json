@@ -1,6 +1,6 @@
 {
     "SG Invoice": {"pt": "Factura"},
-    "TAX INVOICE": {"pt": "NOTA FISCAL"},
+    "TAX INVOICE": {"pt": "Factura"},
     "Inv. Number": {"pt": "Número da factura"},
     "Inv. and Deliv. Date": {"pt": "Data"},
     "Details": {"pt": "Detalhes"},

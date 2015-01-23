@@ -66,13 +66,13 @@ var route = (function() {
         g_busy(true);
         
         if (isSubmitClicked && g_isOnline()) {
-            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_UnsentCount3&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
+            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_UnsentCount4&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
         
             // TEST
 //          url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_route_UnsentCount&params=(%27justsqueezed%27|%27FTP-100%27|%2720141106%27)';
         
             console.log(url);
-            g_ajaxget(url, showRoutes);
+            g_ajaxget(url, showRoutes,onFechRoutesOnlineError);
         } else {
             
             var cachedRoutes = JSON.parse(localStorage.getItem('Route' + selectedDate()));
@@ -91,6 +91,11 @@ var route = (function() {
         } 
         
         
+    }
+    
+    function onFechRoutesOnlineError(err) {
+        g_alert('You seem to have timed out, please check your connection and try again: ' + a);
+        showRoutes([]); 
     }
     
     function showRoutes(routes) {                    
@@ -160,7 +165,7 @@ var route = (function() {
     function fetchPods() {        
 
         g_busy(true);  
-        
+        $('#podList').empty();
         //if (g_isOnline()) {
             
         ///    var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_GetUndeliveredCollection&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedDate() + '%27|%27' + selectedRouteId + '%27)';        
@@ -378,7 +383,7 @@ var route = (function() {
             //return false;
         });
     }
-        
+             
     function takeARoute(isRefreshPressed, routeDeliveries) {
         
         var onTakeRouteSuccess = function(deliveries) {
@@ -409,8 +414,22 @@ var route = (function() {
                         });
                     };
                     
+                    var onGetDeliveryItemsError = function() {                        
+                        g_alert('You seem to have timed out, please check your connection and try again.');  
+                        if (index === deliveries.length - 1) {
+                            preparePodsForView(deliveries);
+                            if (isRefreshPressed) {
+                                //g_alert('You successfully refreshed local data.');
+                            } else {
+                              //g_alert('You successfully took this route.');
+                              modifyCachedRoutes();
+                              //$('#refreshButton').click();
+                            }
+                        }
+                    };
+                    
                     console.log(url);
-                    g_ajaxget(url, onGetDeliveryItemsSuccess);
+                    g_ajaxget(url, onGetDeliveryItemsSuccess, onGetDeliveryItemsError);
                 };
                 
                 
@@ -419,6 +438,11 @@ var route = (function() {
                 dao.put(delivery, 'Orders', (delivery.SupplierID + delivery.OrderID),undefined, undefined, onDeliveryPutSuccess);
             });
           
+        };
+        
+        var onGetDelivsError = function() {                        
+            g_alert('You seem to have timed out, please check your connection and try again.');  
+            preparePodsForView([]);            
         };
         
         
@@ -431,12 +455,14 @@ var route = (function() {
             var url = g_restPHPUrl + 'GetStoredProc?StoredProc=' + (isRefreshPressed ? 'usp_orders_readdeliveries4' : 'usp_route_TakeARoute') + '&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedRouteId + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
             console.log(url);
             localStorage.removeItem('POD' + selectedRouteId + selectedDate());
-            g_ajaxget(url, onTakeRouteSuccess);
+            g_ajaxget(url, onTakeRouteSuccess, onGetDelivsError);
         } else {
             g_alert('Sorry, You must be online to perform this action.');
             preparePodsForView(routeDeliveries || []);
         }
     }
+    
+    
     
     function takeARouteOnThumbClick(isTaken) {
         var onTakeRouteOnThumbClickSuccess = function(deliveries) {
