@@ -1102,7 +1102,7 @@ function pricelistBarcodeOnSuccessRead(product) {
  */
 function pricelistNewInstance(product) {
 	
-	var newProduct = [];
+	var newProduct = {};
 	
         newProduct.Barcode = product.b;
 	newProduct.CategoryName = product.cn;
@@ -1580,8 +1580,8 @@ function pricelistAddItemToBasket(itemIndex) {
     //TODO below should default to '1' or use #quantity with the correct optioninfo for MIDAS
 
     if (g_isQuantityValid(getQuantity(itemIndex), unit)) {
-
-        g_pricelistItems[itemIndex].g = $('#grossvalue').html();
+        if ($('#grossvalue').html())
+            g_pricelistItems[itemIndex].g = $('#grossvalue').html();
         
         basket.saveItem(pricelistNewInstance(g_pricelistItems[itemIndex]), getQuantity(itemIndex), function() {
             
