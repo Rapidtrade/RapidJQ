@@ -130,9 +130,9 @@ var route = (function() {
 //                                                'img/cancel.png" alt="Taken by other" '))  + '>' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
 
                 routeListHtml += '<li data-theme="c" id="' + item.routeID + '"' + ((isSomeOfDelivsAreFree(route.UserID) || isSomeOfDelivsAreTakenByMe(route.UserID)) ? '' : ' class="ui-disabled" ') + ' ><a href>' + 
-                                '<img id="' + item.routeID + '" class="ui-li-thumb" style=" width: 85px; height: 85px;" src="' + ((isSomeOfDelivsAreFree(route.UserID) && !isSomeOfDelivsAreTakenByMe(route.UserID)) ? 'img/yellow.png" data-taken="false" alt="Available" ' : 
-                                                (isSomeOfDelivsAreTakenByMe(route.UserID) ? 'img/green.png" data-taken="false" alt="Taken by you" ' : 
-                                                'img/cancel.png" data-taken="true" alt="Taken by other" '))  + '>' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
+                                '<img id="' + item.routeID + '" class="ui-li-thumb" style=" width: 85px; height: 85px;" src="' + ((isSomeOfDelivsAreFree(route.UserID) && !isSomeOfDelivsAreTakenByMe(route.UserID)) ? 'img/yellow.png" data-taken="free" alt="Available" ' : 
+                                                (isSomeOfDelivsAreTakenByMe(route.UserID) ? 'img/green.png" ' + (isSomeOfDelivsAreFree(route.UserID) ? 'data-taken="partially"' : 'data-taken="full"') + ' alt="Taken by you" ' : 
+                                                'img/cancel.png" data-taken="full" alt="Taken by other" '))  + '>' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
                 
                 if (++addedRows === routes.length) {
                     
@@ -385,7 +385,7 @@ var route = (function() {
     }
              
     function takeARoute(isRefreshPressed, routeDeliveries) {
-        
+        g_busy(true);
         var onTakeRouteSuccess = function(deliveries) {
             if (deliveries.length === 0) {
                 preparePodsForView(deliveries);
@@ -488,8 +488,17 @@ var route = (function() {
                         });
                     };
                     
+                    var onGetDeliveryItemsError = function() {                        
+                        g_alert('You seem to have timed out, please check your connection and try again.');  
+                        if (index === deliveries.length - 1) {
+                            preparePodsForView(deliveries);
+                            modifyCachedRoutes();
+                            fetchRoutes();                            
+                        }
+                    };
+                    
                     console.log(url);
-                    g_ajaxget(url, onGetDeliveryItemsSuccess);
+                    g_ajaxget(url, onGetDeliveryItemsSuccess, onGetDeliveryItemsError);
                 };
                 
                 
@@ -500,13 +509,23 @@ var route = (function() {
           
         };
         
+        var onTakeError = function() {                        
+            g_alert('You seem to have timed out, please check your connection and try again.');  
+            g_busy(false);        
+        };
         
         if (g_isOnline()) {
-            if (!isTaken) {
+            
+            if (isTaken !== 'full') { 
                 var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_TakeARoute&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedRouteId + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
                 console.log(url);
                 localStorage.removeItem('POD' + selectedRouteId + selectedDate());
-                g_ajaxget(url, onTakeRouteOnThumbClickSuccess);
+                g_ajaxget(url, onTakeRouteOnThumbClickSuccess, onTakeError);
+            } else {
+                var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_ReleaseARoute&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedRouteId + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
+                console.log(url);
+                localStorage.removeItem('POD' + selectedRouteId + selectedDate());
+                g_ajaxget(url, onTakeRouteOnThumbClickSuccess, onTakeError);
             }
         } else {
             g_alert('Sorry, You must be online to perform this action.');
