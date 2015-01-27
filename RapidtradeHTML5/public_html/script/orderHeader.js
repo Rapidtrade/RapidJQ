@@ -207,6 +207,22 @@ function orderHeaderInit() {
     
     g_orderHeaderJsonForm = new JsonForm();
     
+    g_orderHeaderJsonForm.oncomplete = function() {
+        setTimeout(function() {
+            $('input').keypress(function (event) {
+
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    if (!(/MSIE (\d+\.\d+);/.test(navigator.userAgent))) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        orderHeaderSaveOrder();
+                    }
+                }
+            });
+        }, 2000);  
+    };
+    
     var orderType = sessionStorage.getItem("currentordertype");
     
     var id = '';
