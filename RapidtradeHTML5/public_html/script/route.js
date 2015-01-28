@@ -132,7 +132,7 @@ var route = (function() {
                 routeListHtml += '<li data-theme="c" id="' + item.routeID + '"' + ((isSomeOfDelivsAreFree(route.UserID) || isSomeOfDelivsAreTakenByMe(route.UserID)) ? '' : ' class="ui-disabled" ') + ' ><a href>' + 
                                 '<img id="' + item.routeID + '" class="ui-li-thumb" style=" width: 85px; height: 85px;" src="' + ((isSomeOfDelivsAreFree(route.UserID) && !isSomeOfDelivsAreTakenByMe(route.UserID)) ? 'img/yellow.png" data-taken="free" alt="Available" ' : 
                                                 (isSomeOfDelivsAreTakenByMe(route.UserID) ? 'img/green.png" ' + (isSomeOfDelivsAreFree(route.UserID) ? 'data-taken="partially"' : 'data-taken="full"') + ' alt="Taken by you" ' : 
-                                                'img/cancel.png" data-taken="full" alt="Taken by other" '))  + '>' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
+                                                'img/cancel.png" data-taken="full" alt="Taken by other" '))  + '>Route Num: ' + item.routeID + ' - ' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
                 
                 if (++addedRows === routes.length) {
                     
