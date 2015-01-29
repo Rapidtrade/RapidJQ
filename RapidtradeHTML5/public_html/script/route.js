@@ -94,7 +94,7 @@ var route = (function() {
     }
     
     function onFechRoutesOnlineError(err) {
-        g_alert('You seem to have timed out, please check your connection and try again: ' + a);
+        g_alert('You seem to have timed out, please check your connection and try again: ' + err);
         showRoutes([]); 
     }
     
