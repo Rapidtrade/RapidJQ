@@ -183,7 +183,7 @@ function pricelistOnBackButtonClick() {
     	
         g_loadMenu();
         
-    } else if (sessionStorage.getItem("currentordertype") == "stock") {
+    } else if (sessionStorage.getItem("currentordertype") == "stock" && g_vanSales && g_pricelistView == 'pricelist') {
     	
         g_loadMenu();
         
