@@ -345,6 +345,10 @@ function shoppingCartIsGRV() {
 	return sessionStorage.getItem("currentordertype") == "grv" /*|| sessionStorage.getItem("currentordertype") == "pod"*/;
 }
 
+function shoppingCartIsPOD() {
+	return sessionStorage.getItem("currentordertype") == "POD";
+}
+
 function shoppingCartFetchBasket() {
     
     g_shoppingCartSummaryItems = {};
@@ -443,7 +447,7 @@ function shoppingCartAddItem(item, checkSummary) {
         step = 'step=' + step;
         
         var isPromotionItem = (item.Type === 'PROMO');
-        var quantityReadOnly = (isPromotionItem ? 'readonly' : '');
+        var quantityReadOnly = (isPromotionItem || shoppingCartIsPOD() ? 'readonly' : '');
 	
         var tableClass = 'shopcartItems' + (isPromotionItem ? ' promoItemTable' : '');
         
@@ -466,7 +470,7 @@ function shoppingCartAddItem(item, checkSummary) {
         '      <td colspan=3 class="productid ui-li-desc">' + item.ProductID + ((sessionStorage.getItem('shoppingCartViewType') === 'Summary') ? '(Case: ' + parseFloat(item.Quantity)/parseFloat(item.Unit) + ')': '') + '</td></tr>' +
         '  </table>' +
         '</a>' +
-        (shoppingCartIsGRV() ? '' :
+        (shoppingCartIsGRV() || shoppingCartIsPOD() ? '' :
              ' <a href="#" onclick="shoppingCartDeleteItem(\'' + item.key + '\', ' +  (DaoOptions.getValue('LostSaleActivityID') != undefined) + ', true)" class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
              '<span class="ui-btn-inner ui-btn-corner-all">' +
              '<span class="ui-icon ui-icon-delete ui-icon-shadow">delete</span>' +
