@@ -245,7 +245,8 @@ var route = (function() {
                     '<img id="' + pod.OrderID + '" class="ui-li-thumb" style=" width: 85px; height: 85px;" src="' + ((pod.UserID === '') ? 'img/yellow.png" alt="Available" data-taken="false" ' : 
                                                 ((pod.UserID === g_currentUser().UserID) ? 'img/green.png" alt="Taken by you" data-taken="true" ' : 
                                                 'img/cancel.png" alt="Taken by other" '))  + '>' + 
-                                                '<h3 class="ui-li-heading">' + pod.DeliveryName + '</h3><p>' + pod.Reference + '</p><p>Customer: ' + company.Name + '</p></a>' + 
+                                                '<h3 class="ui-li-heading">' + pod.DeliveryName  + ((pod.UserID !== '' && pod.UserID !== g_currentUser().UserID) ? ' (Taken by ' + pod.UserID + ')' : '') +'</h3>' + 
+                                                '<p>' + pod.Reference + '</p><p>Customer: ' + company.Name + '</p></a>' + 
                     '<a href id="' + pod.OrderID + '" data-account="' + pod.AccountID + '">Customer Details</a></li>';
                     
                 },

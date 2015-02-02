@@ -778,7 +778,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
             var value = $(this).text().replace(',','');
             g_shoppingCartTotalExcl += parseFloat(value);
         });
-        shoppingCartRecalcTotals();
+        shoppingCartRecalcTotals(basketInfo, quantity);
         
         if (DaoOptions.getValue('localTPM') === 'true') {
 
@@ -796,7 +796,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
 /*
  * set g_shoppingCartTotalExcl before calling
  */
-function shoppingCartRecalcTotals(){
+function shoppingCartRecalcTotals(basketInfo, quantity){
     $("#totalExcl").text(g_addCommas(g_roundToTwoDecimals(g_shoppingCartTotalExcl)));
     if (DaoOptions.getValue('DoubleTax') == 'true') {
     	var currentTotalWET = parseFloat($('#divTotalWET p').text());
