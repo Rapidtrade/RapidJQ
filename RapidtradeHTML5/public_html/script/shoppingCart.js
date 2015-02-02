@@ -37,7 +37,7 @@ function shoppingCartOnPageShow() {
         if (sessionStorage.getItem('ShoppingCartReturnPage') == 'route.html')
             g_shoppingCartPageTranslation.translateButton('#shoppingCartBackButton', 'Deliveries');        
 
-        if (shoppingCartIsGRV())
+        if (shoppingCartIsGRV() || DaoOptions.getValue('HideDeleteAllOn' + sessionStorage.getItem("currentordertype").toUpperCase() + 'Cart' , 'false') === 'true')
             $('#deleteShoppingCart').hide();
 
         var viewType = sessionStorage.getItem('shoppingCartViewType');
