@@ -250,6 +250,8 @@ function tpmTableLoaded(){
     
     tpmHideComplexRows();
     tpmSelectLinePromotions();
+    if ($('#verifyTPM').hasClass('ui-disabled'))
+        $('#verifyTPM').removeClass('ui-disabled');
 }
 
 /*
