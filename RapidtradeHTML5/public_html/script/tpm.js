@@ -511,7 +511,7 @@ function tpmVerifySuccess() {
 }
 
 function tpmOrderSuccess() {
-  
+  jsonform.getInstance().jsonArray = new Array();
     orderHeaderOnLineSaveSuccess();
 //    g_busy(false);
 //    
