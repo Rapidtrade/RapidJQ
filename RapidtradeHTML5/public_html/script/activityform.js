@@ -306,9 +306,8 @@ function activityFormTakePhotoOnError(errorMessage) {
 
 function activityFormSave() {
     
-    if (g_canTakePhoto && g_activityFormSelectedActivityType.AllowPicture 
-    /*&& ($.trim(g_activityFormNewActivity.Label).match(/\*{2}$/))*/ && !g_activityFormPhotoData &&
-            g_activityFormPhotoData === '') {
+    if (g_canTakePhoto && ($.trim(g_activityFormNewActivity.Label).match(/\*{2}$/)) && !g_activityFormPhotoData /*&& g_activityFormSelectedActivityType.AllowPicture &&
+            g_activityFormPhotoData === ''*/) {
         
         $('#activityErrorMessagePopup p').text(g_companyPageTranslation.translateText('You must take a photo.'));
         $('#activityErrorMessagePopup').popup('open');
