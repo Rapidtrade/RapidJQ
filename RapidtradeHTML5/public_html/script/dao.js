@@ -950,8 +950,9 @@ function Dao() {
 
     
     this.sqlindex = function (table, key, idx, ponsuccessread, ponerror, poncomplete) {
+        var sql = 'SELECT [json] FROM ' + table + ' where ' + checkindex(idx) + '= ?';
         db.transaction(function (tx) {
-            tx.executeSql('SELECT [json] FROM ' + table + ' where ' + checkindex(idx) + '= ?', [key], function (tx, results) {
+            tx.executeSql(sql, [key], function (tx, results) {
                 if (ponsuccessread != undefined) {
                     try {
                     	var len = results.rows.length, i;
@@ -1370,7 +1371,7 @@ function Dao() {
     
     this.sqlFetchRouteDeliveries =  function(routeID, selectedDate, ponsuccessread, ponerror, poncomplete) {
         var query = 'SELECT distinct ord.json FROM Orders ord' +
-                    ' where ord.json like \'%"CreateDate":"' + selectedDate + '%\' and index3 = \'' + routeID + '\''; 
+                    ' where ord.json like \'%"RequiredByDate":"' + selectedDate + '%\' and index3 = \'' + routeID + '\''; 
             
         console.log(query);
         

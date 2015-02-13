@@ -37,7 +37,7 @@ function orderHeaderOnPageShow() {
              $('#orderLabel').html('Replenishment Details');
         } else if (sessionStorage.getItem('currentordertype').indexOf('Invoice') != -1) {
             $('#orderLabel').html(g_orderHeaderPageTranslation.translateText('Invoice Details'));
-        } else if ((DaoOptions.getValue('DeliveryOrderType') && g_currentUser().Role === 'POD') || (g_vanSales && sessionStorage.getItem("currentordertype") == "grv")) {
+        } else if (orderHeaderIsPOD() || (g_vanSales && sessionStorage.getItem("currentordertype") == "grv")) {
             $('#orderLabel').html((DaoOptions.getValue('DeliveryOrderType') ? 'Delivery' : 'GRV') +  ' Details');
         } else if (sessionStorage.getItem("currentordertype") == "stock") {
             $('#orderLabel').html('Stocktake Details');
@@ -272,7 +272,7 @@ function orderHeaderSaveOrder() {
     else
         g_orderheaderOrderType = sessionStorage.getItem("currentordertype");
 
-    if (DaoOptions.getValue('DeliveryOrderType') && g_currentUser().Role === 'POD' && g_orderheaderOrderType != 'Invoice')
+    if (orderHeaderIsPOD())
         g_orderHeaderOrder.Type = 'POD';
     else
         g_orderHeaderOrder.Type = ((g_orderheaderOrderType == "repl") || (g_orderheaderOrderType == "grv")) ? g_orderheaderOrderType.toUpperCase() : g_orderheaderOrderType;      
@@ -288,7 +288,7 @@ function orderHeaderSaveOrder() {
         if (g_orderHeaderOrder.Type.indexOf('Invoice') != -1)
             id += 'InvoiceHeader';
         else
-            id +=  ((DaoOptions.getValue('DeliveryOrderType') && g_currentUser().Role === 'POD') ? 'POD' : sessionStorage.getItem("currentordertype")) + 'Header'; //OrderHeader
+            id +=  (orderHeaderIsPOD() ? 'POD' : sessionStorage.getItem("currentordertype")) + 'Header'; //OrderHeader
         
         g_orderHeaderOrder.Email = $('#email').val();
         
@@ -339,7 +339,7 @@ function orderHeaderSaveOrder() {
         //else
         orderHeaderVanSales();
         try {
-            if (DaoOptions.getValue('DeliveryOrderType') && g_currentUser().Role === 'POD' && type==='POD') {
+            if (orderHeaderIsPOD()) {
                 var addrDao = new Dao();
                 addrDao.index ('Orders',
                     g_orderHeaderOrder.UserField01,
@@ -458,7 +458,7 @@ function orderHeaderRemovedFromCartSuccess() {
     	
     	g_loadMenu();
     	
-    } else if (DaoOptions.getValue('DeliveryOrderType')  && g_currentUser().Role === 'POD' && g_orderHeaderOrder.Type.toUpperCase() === 'POD' && sessionStorage.getItem('orderheaderNext') === 'podsPanel') {
+    } else if (orderHeaderIsPOD() && sessionStorage.getItem('orderheaderNext') === 'podsPanel') {
             g_removeDeliveryFromLocalSQL();
     } else {
     	
@@ -482,7 +482,7 @@ function orderHeaderVanSales() {
         sessionStorage.setItem("currentOrder", JSON.stringify(g_orderHeaderOrder));
         sessionStorage.setItem('invoiceContinue', 'activity');
 		
-    } else if (DaoOptions.getValue('DeliveryOrderType') && g_currentUser().Role === 'POD') {
+    } else if (orderHeaderIsPOD()) {
         g_orderHeaderOrder.UserField01 = g_grv_replorderid;
     }
 	
@@ -702,7 +702,7 @@ function orderHeaderSaveFormedOrder(position) {
 
 
 function orderHeaderOnLineSaveSuccess() {
-
+ 
     var url = DaoOptions.getValue(g_orderHeaderOrder.Type + 'ExistsURL');
 
     if (!url) 
@@ -725,7 +725,18 @@ function orderHeaderOnLineSaveError(error, msg) {
         } else {		
             console.log('Error in saving order: ' + error);
             g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
-	}
+        }
+}
+
+function orderHeaderIsPOD(){
+    try {
+        var type =  g_orderHeaderOrder.Type.toUpperCase();
+        var podtype = DaoOptions.getValue('DeliveryOrderType','POD'); 
+        var rslt = (g_currentUser().Role.toUpperCase().indexOf('POD') !== -1  && type === podtype);
+        return rslt;
+    } catch (ex){
+        return false;
+    }  
 }
 
 function orderHeaderOfflineSaveSuccess() {
@@ -735,7 +746,7 @@ function orderHeaderOfflineSaveSuccess() {
     g_alert(g_orderHeaderPageTranslation.translateText('Your ' + type + ' was saved locally. Please sync later to send this ' + type + '.'));
     sessionStorage.setItem('HistoryCacheAccountID', '');
     orderHeaderRemoveFromCart();
-    if (DaoOptions.getValue('DeliveryOrderType') && g_currentUser().Role === 'POD' && type==='pod') {
+    if (orderHeaderIsPOD()) {
         g_removeDeliveryFromLocalSQL();
     }
 }
@@ -877,7 +888,7 @@ function orderHeaderOnOrderSaved() {
     g_alert($.isEmptyObject(g_orderHeaderPageTranslation) ? text : g_orderHeaderPageTranslation.translateText(text));
     sessionStorage.setItem('HistoryCacheAccountID', '');
 
-    if (DaoOptions.getValue('DeliveryOrderType') && g_currentUser().Role === 'POD')
+    if (orderHeaderIsPOD())
             localStorage.removeItem('CacheDeliveryOrders');
     try {
         if (!g_syncDao) g_syncDao = new Dao();

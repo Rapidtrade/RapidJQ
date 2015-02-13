@@ -121,7 +121,7 @@ var route = (function() {
             
             var dao = new Dao();
             dao.get('Route', route.routeID, function(item) {
-                
+                console.log('in');
                 item.routeID = $.trim(item.routeID);
                 
 //                routeListHtml += '<li data-theme="c" id="' + item.routeID + '"' + ((routeNumbers[item.routeID] === 0) ? ' class="ui-disabled" ' : '') + ' ><a href>' + 
@@ -130,9 +130,9 @@ var route = (function() {
 //                                                'img/cancel.png" alt="Taken by other" '))  + '>' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
 
                 routeListHtml += '<li data-theme="c" id="' + item.routeID + '"' + ((isSomeOfDelivsAreFree(route.UserID) || isSomeOfDelivsAreTakenByMe(route.UserID)) ? '' : ' class="ui-disabled" ') + ' ><a href>' + 
-                                '<img id="' + item.routeID + '" class="ui-li-thumb" style=" width: 85px; height: 85px;" src="' + ((isSomeOfDelivsAreFree(route.UserID) && !isSomeOfDelivsAreTakenByMe(route.UserID)) ? 'img/yellow.png" data-taken="free" alt="Available" ' : 
-                                                (isSomeOfDelivsAreTakenByMe(route.UserID) ? 'img/green.png" ' + (isSomeOfDelivsAreFree(route.UserID) ? 'data-taken="partially"' : 'data-taken="full"') + ' alt="Taken by you" ' : 
-                                                'img/cancel.png" data-taken="full" alt="Taken by other" '))  + '>Route Num: ' + item.routeID + ' - ' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
+                                '<img id="' + item.routeID + '" class="ui-li-thumb" src="' + ((isSomeOfDelivsAreFree(route.UserID) && !isSomeOfDelivsAreTakenByMe(route.UserID)) ? 'img/Ball-yellow-64.png" data-taken="free" alt="Available" ' : 
+                                                (isSomeOfDelivsAreTakenByMe(route.UserID) ? 'img/Ball-green-64.png" ' + (isSomeOfDelivsAreFree(route.UserID) ? 'data-taken="partially"' : 'data-taken="full"') + ' alt="Taken by you" ' : 
+                                                'img/Ball-red-64.png" data-taken="full" alt="Taken by other" '))  + '>Route Num: ' + item.routeID + ' - ' + item.Name + (routeNumbers[item.routeID] !== undefined ? '(' + routeNumbers[item.routeID] + ')' : '') + '</a></li>';
                 
                 if (++addedRows === routes.length) {
                     
@@ -238,13 +238,13 @@ var route = (function() {
 	    dao.index ('Companies',
                 // TEST
 	        /*'3ALBL01'*/ pod.AccountID,
-	        'AccountID',
+	        'index1',
 	        function (company) {
 	            podListHtml += '<li id="' + pod.OrderID + '" data-account="' + pod.AccountID + '" data-theme="c"' + ((pod.UserID === g_currentUser().UserID || pod.UserID === '') ? '' : ' class="ui-disabled" ') + '>' + 
                     '<a href id="' + pod.OrderID + '" data-account="' + pod.AccountID + '">' + 
-                    '<img id="' + pod.OrderID + '" class="ui-li-thumb" style=" width: 85px; height: 85px;" src="' + ((pod.UserID === '') ? 'img/yellow.png" alt="Available" data-taken="false" ' : 
-                                                ((pod.UserID === g_currentUser().UserID) ? 'img/green.png" alt="Taken by you" data-taken="true" ' : 
-                                                'img/cancel.png" alt="Taken by other" '))  + '>' + 
+                    '<img id="' + pod.OrderID + '" class="ui-li-thumb" style=" width: 85px; height: 85px;" src="' + ((pod.UserID === '') ? 'img/Ball-yellow-64.png" alt="Available" data-taken="false" ' : 
+                                                ((pod.UserID === g_currentUser().UserID) ? 'img/Ball-green-64.png" alt="Taken by you" data-taken="true" ' : 
+                                                'img/Ball-red-64.png" alt="Taken by other" '))  + '>' + 
                                                 '<h3 class="ui-li-heading">' + pod.DeliveryName  + ((pod.UserID !== '' && pod.UserID !== g_currentUser().UserID) ? ' (Taken by ' + pod.UserID + ')' : '') +'</h3>' + 
                                                 '<p>' + pod.Reference + '</p><p>Customer: ' + company.Name + '</p></a>' + 
                     '<a href id="' + pod.OrderID + '" data-account="' + pod.AccountID + '">Customer Details</a></li>';
@@ -315,7 +315,7 @@ var route = (function() {
 	    dao.index ('Companies',
                 // TEST
 	        /*'3ALBL01'*/ accID,
-	        'AccountID',
+	        'index1',
 	         function (company) {
 	             sessionStorage.setItem('currentCompany', JSON.stringify(company));
 	             //fetchPodItems(this.id, $(this).data('account'));
@@ -341,7 +341,7 @@ var route = (function() {
 	    dao.index ('Companies',
                 // TEST
 	        /*'3ALBL01'*/ accID,
-	        'AccountID',
+	        'index1',
 	        function (company) {
 	            sessionStorage.setItem('currentCompany', JSON.stringify(company));
 	             
@@ -448,11 +448,14 @@ var route = (function() {
         
         
         if (g_isOnline()) {
+            /*
             if (isRefreshPressed) {
                // g_alert('You are about to refresh deliveries for the Route: ' + selectedRouteId + ' for date ' + $("#duedate").val() + '.');
             } else {
                // g_alert('You are about to take the Route: ' + selectedRouteId + ' for date ' + $("#duedate").val() + '.');
             }
+<<<<<<< .mine
+            */
             var url = g_restPHPUrl + 'GetStoredProc?StoredProc=' + (isRefreshPressed ? 'usp_orders_readdeliveries4' : 'usp_route_TakeARoute') + '&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedRouteId + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
             console.log(url);
             localStorage.removeItem('POD' + selectedRouteId + selectedDate());
