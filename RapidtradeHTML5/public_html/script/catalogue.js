@@ -88,8 +88,14 @@ var catalogue = (function() {
                     '<table class="catalogueItemDataTable" style="width:' +  Math.floor(730 / itemsPerRow) + 'px"><tr><td>Item</td><td>' + item.ProductID + '</td></tr>' +
                     '<tr><td>Descr</td><td>' + item.Description  + '</td></tr>' +
                     '<tr><td>Inn/Ctn Qty</td><td>' + (item.CategoryName || 'N/A')  + '</td></tr>' +
-                    '<tr><td>Price (Excl)</td><td>$' + item.Nett  + '</td></tr>' +
-                    '<tr><td>Bar Code</td><td>' + (item.Barcode || 'N/A')  + '</td></tr></table>';
+                    '<tr><td>Price (Excl)</td><td>$' + item.Nett  + '</td></tr>';
+            
+            if (order.UserField01 && order.UserField01 === 'Yes') {
+                catalogueHTML +=  '</table><div class="catInnerBC" style="float:left;">' + (item.Barcode || 'N/A')  + '</div>' +
+                        '<div class="catOuterBC" style="float:left;">' + (item.UserField01 || 'N/A')  + '</div>';
+            } else {
+                catalogueHTML +=  '<tr><td>Bar Code</td><td>' + (item.UserField02 || 'N/A')  + '</td></tr></table>';
+            }
             
             catalogueHTML += '</td>';
             
@@ -110,6 +116,26 @@ var catalogue = (function() {
     function showCatalogue() {
         
         $('.printinvoiceContent').html(catalogueHTML);
+        
+        var barcodeDivs = $('.catInnerBC, .catOuterBC');
+        $.each(barcodeDivs, function(index, bcDiv) {
+            var currentCode = bcDiv.innerText;
+            if (currentCode !== 'N/A') {
+                //bcDiv.innerText = '';
+                //bcDiv.innerHtml = '';
+                var settings = {
+                    addQuietZone: "1",
+                    barHeight: "50",
+                    barWidth: "1",
+                    bgColor: "#FFFFFF",
+                    color: "#000000",
+                    moduleSize: "5",
+                    output: "css"
+                };
+                $(bcDiv).barcode(currentCode, "code128", settings);
+            }
+                
+        });
     }
     
 })();

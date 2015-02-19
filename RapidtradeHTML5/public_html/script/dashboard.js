@@ -381,8 +381,13 @@ function fetchDailySummary() {
             var n = arr.length - 1;
             for (i = n; i >= 0; i--) {
                 var item = arr[i];
-                var offset = new Date().getTimezoneOffset();
-                var duedate = new Date(parseInt(item.DueDate.substr(6, 13)) + offset * 60000);
+                
+                var mom = new moment(item.DueDate);
+                var duedate = mom.toDate(); 
+                duedate.setHours(duedate.getHours() - duedate.getTimezoneOffset() / 60);
+                
+                //var offset = new Date().getTimezoneOffset();
+                //var duedate = new Date(parseInt(item.DueDate.substr(6, 13)) + offset * 60000);
 
                 //todo add offset
                 var time;

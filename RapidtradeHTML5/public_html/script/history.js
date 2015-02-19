@@ -204,9 +204,11 @@ function historyActivitiesListView(activities){
     	
         var activity = activities[i];
         //get date
-        var substringedDate = activity.DueDate.substring(6);
-        var parsedIntDate = parseInt(substringedDate);
-        var duedate = new Date(parsedIntDate);
+        //var substringedDate = activity.DueDate.substring(6);
+        //var parsedIntDate = parseInt(substringedDate) + parseInt(substringedDate.split('+')[1]);
+        var mom = new moment(activity.DueDate);
+        var duedate = mom.toDate(); //new Date(parsedIntDate);
+        duedate.setHours(duedate.getHours() - duedate.getTimezoneOffset() / 60);
         var month = duedate.getMonth() + 1;
         var day = duedate.getDate();
         var year = duedate.getFullYear();

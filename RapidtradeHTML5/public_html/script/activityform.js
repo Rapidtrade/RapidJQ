@@ -321,9 +321,11 @@ function activityFormSave() {
                 activityFormSetDateTimeToNow();
                 $(g_activityFormParentDivSelector + ' #duration').val(30);
                 var now = moment();
-                g_activityFormNewActivity.DueDate = now.toDate();
-                now.add('h',1);
-                g_activityFormNewActivity.EndDate = now.toDate();
+                var now1 = now.toDate();
+                now1.setHours(now1.getHours() - now1.getTimezoneOffset() / 60);
+                g_activityFormNewActivity.DueDate = now1; // now.toDate();
+                var newNow = new moment(now1).add('h',1); //now.clone().add('h',1);
+                g_activityFormNewActivity.EndDate = newNow.toDate();
         } else {
                 var mom = new moment($(g_activityFormParentDivSelector + ' #duedate').val() + $(g_activityFormParentDivSelector + ' #time').val(), "YYYY-MM-DD HH:mm");
                 var now = mom.toDate();
