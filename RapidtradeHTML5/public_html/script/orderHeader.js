@@ -376,7 +376,7 @@ function orderHeaderSaveOrder() {
 function orderHeaderCaptureGPSAndSave() {
     
     if (((DaoOptions.getValue('AllowGPSWeb') === 'true') ||  g_phonegap) && navigator.geolocation)
-        navigator.geolocation.getCurrentPosition(orderHeaderSaveFormedOrder, orderHeaderSaveFormedOrder, {timeout:10000});
+        navigator.geolocation.getCurrentPosition(orderHeaderSaveFormedOrder, orderHeaderSaveFormedOrder, { timeout:20000, enableHighAccuracy: true});
     else
         orderHeaderSaveFormedOrder();
 }
@@ -730,7 +730,7 @@ function orderHeaderOnLineSaveError(error, msg) {
 
 function orderHeaderIsPOD(){
     try {
-        var type =  g_orderHeaderOrder.Type.toUpperCase();
+        var type =  g_orderheaderOrderType.toUpperCase();
         var podtype = DaoOptions.getValue('DeliveryOrderType','POD'); 
         var rslt = (g_currentUser().Role.toUpperCase().indexOf('POD') !== -1  && type === podtype);
         return rslt;
