@@ -87,14 +87,15 @@ var catalogue = (function() {
             catalogueHTML += '<div style="width:' + Math.floor(730 / itemsPerRow) + 'px;text-align:center;vertical-align:middle;height:180px;display:table-cell"><img src="' + productdetailGetImageUrl(item.ProductID, 180, false) + '"></div>' +
                     '<table class="catalogueItemDataTable" style="width:' +  Math.floor(730 / itemsPerRow) + 'px"><tr><td>Item</td><td>' + item.ProductID + '</td></tr>' +
                     '<tr><td>Descr</td><td>' + item.Description  + '</td></tr>' +
-                    '<tr><td>Inn/Ctn Qty</td><td>' + (item.CategoryName || 'N/A')  + '</td></tr>' +
+                    //'<tr><td>Inn/Ctn Qty</td><td>' + (item.CategoryName || 'N/A')  + '</td></tr>' +
+                    '<tr><td>Inn/Ctn Qty</td><td>' + (item.UserField03 || '-')  + '/' + (item.UserField04 || '-') + '</td></tr>' +
                     '<tr><td>Price (Excl)</td><td>$' + item.Nett  + '</td></tr>';
             
             if (order.UserField01 && order.UserField01 === 'Yes') {
-                catalogueHTML +=  '</table><div class="catInnerBC" style="float:left;">' + (item.Barcode || 'N/A')  + '</div>' +
-                        '<div class="catOuterBC" style="float:left;">' + (item.UserField01 || 'N/A')  + '</div>';
+                catalogueHTML +=  '</table><div class="catInnerBC" style="float:left;">' + (item.UserField01 || 'N/A')  + '</div>' +
+                        '<div class="catOuterBC" style="float:left;">' + (item.UserField02 || 'N/A')  + '</div>';
             } else {
-                catalogueHTML +=  '<tr><td>Bar Code</td><td>' + (item.UserField02 || 'N/A')  + '</td></tr></table>';
+                catalogueHTML +=  '<tr><td>Bar Code</td><td>' + (item.Barcode || 'N/A')  + '</td></tr></table>';
             }
             
             catalogueHTML += '</td>';
