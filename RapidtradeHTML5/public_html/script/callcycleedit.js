@@ -98,13 +98,17 @@ function callCycleEditFetch() {
 function callCycleEditGetNextMondayForWeek(week) {
 	
     var weekDifference = week - g_currentCallCycleWeek();	  
-    var now = moment().day(1);
+    var now = moment().day((new Date().getDay() === 0) ? -6 : 1);
 
     if (week < g_currentCallCycleWeek())		  
         now.add('weeks', callCycleEditNumberOfWeeks() + weekDifference); 
 
     else if (week > g_currentCallCycleWeek())			   
         now.add('weeks',  weekDifference);
+    
+    else
+        if ((new Date().getDay() === 0))
+            now.add('days',  28);
     
     var monthNames = [ "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December" ];
