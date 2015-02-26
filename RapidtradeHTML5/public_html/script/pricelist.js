@@ -6,6 +6,7 @@ var g_pricelistMobileLiveStockDiscount = false;
 var g_pricelistCanChangeDiscount = false;
 var g_productDetailInitialized = false;
 var g_pricelistVolumePrices = [];
+var g_pricelistMultiWarehouses = {};
 var g_pricelistIsAnyItemAdded = false;
 var g_lastScrollPosition = 0;
 var g_pricelistSearchPricelistText = '';
@@ -13,6 +14,7 @@ var g_numItemsPerPage = 100;
 var g_pricelistScrollto = false;
 
 var g_pricelistCaptureQuantityClicked = false;
+var g_pricelistMultiWarehouseClicked = false;
 var g_pricelistInvoiceWarehouse = '';
 var g_pricelistIsPrevNextPressed = false;
 
@@ -949,6 +951,7 @@ function pricelistFetchPricelistJob() {
     g_pricelistItemsHtml = '';
     g_pricelistItems = [];
     g_pricelistItemsOnPage = 0;
+    g_pricelistMultiWarehouses = {};
     
     $('#search').textinput(pricelistIsRangeSelected() && sessionStorage.getItem('lastRangeType') !== 'MyRange' ? 'disable' : 'enable');    
     
@@ -1031,6 +1034,7 @@ function pricelistFetchBarCode(){
         $('#barcodescanned').hide();
         g_pricelistItemsHtml = '';
         g_pricelistItems = [];
+        g_pricelistMultiWarehouses = {};
     }
 
     var dao = new Dao();
@@ -1128,6 +1132,10 @@ function pricelistNewInstance(product) {
 	newProduct.UserField08 = product.u8;
 	newProduct.UserField09 = product.u9;
 	newProduct.UserField10 = product.u10;
+        
+        if (DaoOptions.getValue('MobileSelectWhOnPricelist') == 'true') {
+            newProduct.Warehouse = $('#whChoiceDiv' + product.id + ' select').val();
+        }
 	
 	return newProduct;
 }
@@ -1324,6 +1332,15 @@ function pricelistBindCaptureQuantity() {
                 $(this).siblings('.quantity').text($(this).val());                
             });
 	}
+        
+        if (DaoOptions.getValue('MobileSelectWhOnPricelist') == 'true') {
+            $('select').selectmenu();
+            $('#pricelists').on('change', 'select', function() {
+                //g_alert('changed value to: ' + $(this).val());
+                pricelistCheckSelectedMultiWarehouse($(this).data('productid').toString(), $(this).val());
+            });
+            
+        }
 }
 
 function pricelistAddLine(pricelist) {
@@ -1387,15 +1404,36 @@ function pricelistAddLine(pricelist) {
                                                     + g_pricelistItems.length + 
                                                     '" class="captureQuantity ui-input-text ui-body-c ui-corner-all ui-shadow-inset"' + (canOrderItem ? '' : 'disabled') + ' value="' + (canOrderItem ? '' : 'Unavailable') + '"/>';
         }
+        
+        var multiWhHtml = '';
+        var messageHtml = '';
+        if (!canOrderItem && DaoOptions.getValue('MobileSelectWhOnPricelist') == 'true') {
+            messageHtml = ' <span style="font-size:13px;color:#8A2416;padding-left:15px;">** ALT BRNCH **</span> ';
+            var whsStocksData = '2B;-9999,10;50,50;0'; //this should be data from item's userField or something else
+            var whsStocksDataSplited = whsStocksData.split(',');
+            multiWhHtml += '<span id="whChoiceDiv' + pricelist.id + '" class="pricelistwhChoiceDiv" style="display:inline-block;" onclick="pricelistOnMultiWaregouseClick()">';
+            multiWhHtml += '<select data-productID="' + pricelist.id + '" data-mini="true" data-native-menu="true" data-inline="true">';
+            
+            for (var i = 0; i < whsStocksDataSplited.length; ++i) {
+                var whsData = whsStocksDataSplited[i].split(';');
+                
+                multiWhHtml += '<option value="' + whsData[0] + '" ' + ((pricelist.Warehouse && pricelist.Warehouse === whsData[0]) ? ' selected ' : '' ) +
+                    '>' + whsData[0] + ': ' + whsData[1] +  '</option>';
+            }
+            
+            multiWhHtml += '</select></span>';
+            g_pricelistMultiWarehouses[pricelist.id] = whsStocksDataSplited;
+            
+        }
 
         var special = (pricelist.onSpecial ? ' <span style="font-size:13px;color:#8A2416;padding-left:15px;">** On Special **</span> ' : '');
 
         //TODO below input box needs to only be for Midas. ie. which we have an option variable
         var pricelistHtml =       
             '<li id="li' + g_pricelistItems.length + '" style="position:relative" ' + pricelistScrollToPos(pricelist) + ' ' + alphaFilter.getInstance().addClass(pricelist.des) + '>' +
-            '<a href="#" onclick="pricelistOnItemClicked(\'' + g_pricelistItems.length + '\');">' +   
+            '<a href onclick="pricelistOnItemClicked(\'' + g_pricelistItems.length + '\');">' +   
             (DaoOptions.getValue('MobileThumbnails') == 'true' ? '<td rowspan="2" class="quantity" align="right"><img src="' + productdetailGetImageUrl(pricelist.id, 80) + '"></td>' : '') +
-            '<span style="font-size:11px;">' + pricelist.id + '</span>' + special + '<br/>' +
+            '<span style="font-size:11px;">' + pricelist.id + '</span>' + special + messageHtml + multiWhHtml +'<br/>' +
             '<span class="ui-li-desc" style="font-size:16px; padding-top:10px; display:inline-block; width:70%">' + pricelist.des + '</span>' +
             quantityInputHtml +        
             '<span id="' + g_pricelistItems.length + '" class="quantity" style="color:red;width:5%; position:relative; top:-10px; left:-15px; display:inline-block;text-align:right">' + quantityText + '</span>' +
@@ -1436,6 +1474,9 @@ function pricelistScrollToPos(pricelist){
 
 }
 
+function pricelistOnMultiWaregouseClick() {
+	g_pricelistMultiWarehouseClicked = true;
+}
 
 function pricelistOnCaptureQuantityClick() {
 	g_pricelistCaptureQuantityClicked = true;
@@ -1523,7 +1564,12 @@ function pricelistOnItemClicked(itemIndex) {
 
             g_pricelistCaptureQuantityClicked = false;
             return;
-    }		
+    }
+    
+    if (g_pricelistMultiWarehouseClicked) {
+        g_pricelistMultiWarehouseClicked = false;
+        return;
+    }     
 	
     if (itemIndex >= 0 && itemIndex < g_pricelistItems.length) {
         if (itemIndex > 0) {
@@ -1642,4 +1688,41 @@ function pricelistStoreItemData(itemIndex) {
     g_pricelistSelectedProduct.Basket = g_pricelistItems[itemIndex].Basket;		
     
     g_pricelistSelectedProduct.ItemIndex = itemIndex;
+}
+
+function pricelistCheckSelectedMultiWarehouse(productID, warehouse) {
+    var multivasehouses = g_pricelistMultiWarehouses[productID];
+    var whStock = -9999;
+    for (var i = 0; i < multivasehouses.length; ++i) {
+        var whData = multivasehouses[i].split(';');
+        if (whData[0] === warehouse) {
+            whStock = parseInt(whData[1], 10);
+            break;
+        }
+    }
+    var stockValue = whStock !== undefined ? g_stockDescriptions[whStock] || whStock.toString() : 'N/A';
+    //g_alert('Stock for warehouse "' + warehouse + '" is ' + stockValue);
+    
+    $('#' + productID + 'Stock').html(stockValue);
+    
+    var canOrderItem = true;
+    if ((whStock !== undefined) && isNaN(stockValue)) {
+        canOrderItem = false;
+    }
+    
+    var quantityInputHtml = '';
+    if (DaoOptions.getValue('AllowPriceQuickCapt') == 'true') {
+        var inputElement = ($('#' + productID + 'Stock').parent().parent()).find('input');
+        var index = parseInt(inputElement.attr('id').replace('quantity', ''), 10);
+        var tmpProduct = g_pricelistItems[index];
+        var step = '';
+        if (canOrderItem)    		
+            step = 'step=' + (g_isPackSizeUnitValid(tmpProduct.u) ? tmpProduct.u : 1) + ' min=0';
+
+        quantityInputHtml = '<input type="' + (canOrderItem ? 'number' : 'text') + '" style="width:85px;position:relative;top:-10px;display:inline" ' + step + ' onclick="pricelistOnCaptureQuantityClick();" id="quantity' 
+                            + index + 
+                            '" class="captureQuantity ui-input-text ui-body-c ui-corner-all ui-shadow-inset"' + (canOrderItem ? '' : 'disabled') + ' value="' + (canOrderItem ? '' : 'Unavailable') + '"/>';
+        inputElement.replaceWith(quantityInputHtml);
+    }
+    
 }
