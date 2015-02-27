@@ -1409,7 +1409,7 @@ function pricelistAddLine(pricelist) {
         var messageHtml = '';
         if (!canOrderItem && DaoOptions.getValue('MobileSelectWhOnPricelist') == 'true') {
             messageHtml = ' <span style="font-size:13px;color:#8A2416;padding-left:15px;">** ALT BRNCH **</span> ';
-            var whsStocksData = '2B;-9999,10;50,50;0'; //this should be data from item's userField or something else
+            var whsStocksData = pricelist.u6; //'2B;-9999,10;50,50;0'; //this should be data from item's userField or something else
             var whsStocksDataSplited = whsStocksData.split(',');
             multiWhHtml += '<span id="whChoiceDiv' + pricelist.id + '" class="pricelistwhChoiceDiv" style="display:inline-block;" onclick="pricelistOnMultiWaregouseClick()">';
             multiWhHtml += '<select data-productID="' + pricelist.id + '" data-mini="true" data-native-menu="true" data-inline="true">';
@@ -1432,7 +1432,7 @@ function pricelistAddLine(pricelist) {
         var pricelistHtml =       
             '<li id="li' + g_pricelistItems.length + '" style="position:relative" ' + pricelistScrollToPos(pricelist) + ' ' + alphaFilter.getInstance().addClass(pricelist.des) + '>' +
             '<a href onclick="pricelistOnItemClicked(\'' + g_pricelistItems.length + '\');">' +   
-            (DaoOptions.getValue('MobileThumbnails') == 'true' ? '<td rowspan="2" class="quantity" align="right"><img src="' + productdetailGetImageUrl(pricelist.id, 80) + '"></td>' : '') +
+            (DaoOptions.getValue('MobileThumbnails') == 'true' ? '<td rowspan="2" class="quantity" align="right"><img src="' + productdetailGetImageUrl(pricelist.id, 80) + '" /></td>' : '') +
             '<span style="font-size:11px;">' + pricelist.id + '</span>' + special + messageHtml + multiWhHtml +'<br/>' +
             '<span class="ui-li-desc" style="font-size:16px; padding-top:10px; display:inline-block; width:70%">' + pricelist.des + '</span>' +
             quantityInputHtml +        

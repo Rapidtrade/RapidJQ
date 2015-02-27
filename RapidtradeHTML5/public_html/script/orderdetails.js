@@ -4,6 +4,7 @@ var g_orderdetailsCurrentOrder = {};
 var g_orderdetailsComplexQuantities = {};
 var g_orderdetailsPageTranslation = {};
 var g_orderdetailsSOHInfo = {};
+var g_orderdetailsShowThumbNail = false;
 
 /**
  * Always call openDB, which in turn call's init
@@ -384,7 +385,10 @@ function orderdetailsSendOrderItem(itemKey) {
         $('#complexProductId').text(itemKey);
         var unit = g_orderdetailsCurrentOrder[DaoOptions.getValue('MasterChartComplexUnit')] || 1;
         //$('#complexProductUOM').text('UOM: ' + unit);
-
+        
+        g_orderdetailsShowThumbNail = (DaoOptions.getValue('ShowThumbNailsOnHistory','false') === 'true') && 
+            (!localStorage.getItem('usageMode') || localStorage.getItem('usageMode') === 'Online');
+        
         var tableRowsHTML = '';
         
         for (var i = 0; i < g_orderdetailsComplexItems[itemKey].length; ++i) {
@@ -405,7 +409,8 @@ function orderdetailsSendOrderItem(itemKey) {
                 quantity = g_orderdetailsComplexQuantities[itemKey][item.ProductID] || 0;
             }
             
-            tableRowsHTML += '<tr id="' + i +'"><td>' + item.ProductID + '</td><td>' + item.Description + '</td><td><input type="number" min="0" value="' + quantity + '" onchange="orderdetailsOnComplexQuantityChange(this)"></td></tr>';
+            tableRowsHTML += '<tr id="' + i +'"><td>' + item.ProductID + '</td><td>' + ((g_orderdetailsShowThumbNail && orderdetailsAddThumbnailChecker(item, true)) ? '<img style="vertical-align: middle;" src="' + productdetailGetImageUrl(item.ProductID, 80) + '" /> ' : '') +
+                    item.Description + '</td><td><input type="number" min="0" value="' + quantity + '" onchange="orderdetailsOnComplexQuantityChange(this)"></td></tr>';
         }
         
         $('#complexProductTable tbody').html(tableRowsHTML);                
@@ -670,7 +675,10 @@ function orderdetailsFetchOrderItems() {
  
  function orderdetailsShowOrderItems(orderItems) {
      
-     var isComplexView = orderdetailsIsComplexView();
+    var isComplexView = orderdetailsIsComplexView();
+    
+    g_orderdetailsShowThumbNail = (DaoOptions.getValue('ShowThumbNailsOnHistory','false') === 'true') && 
+            (!localStorage.getItem('usageMode') || localStorage.getItem('usageMode') === 'Online');
      
     g_orderdetailsOrderItems = [];
     g_orderdetailsComplexItems = {};
@@ -719,7 +727,8 @@ function orderdetailsFetchOrderItems() {
         orderItem.Description = ((!orderItem.Description || orderItem.Description == null) ? '' : orderItem.Description.replace(/'/g, '&quot;')) + (barcode ? ' (' + barcode + ')' : '');
 
         g_append('#orderitemlist', '<li data-theme="c" id="' + itemKey + '">' +
-            '   <a><p class="ui-li-heading"><strong>' + (isComplexView ? orderItem[DaoOptions.getValue('MasterChartComplexDesc')] : orderItem.Description) + '</strong></p>' +
+            '   <a>' + ((g_orderdetailsShowThumbNail && orderdetailsAddThumbnailChecker(orderItem, false)) ? '<img src="' + productdetailGetImageUrl(orderItem.ProductID, 80) + '" />' : '') +
+            '   <p class="ui-li-heading"><strong>' + (isComplexView ? orderItem[DaoOptions.getValue('MasterChartComplexDesc')] : orderItem.Description) + '</strong></p>' +
             '   <table class="ui-li-desc historyOrderItems"><tr><td class="itemId">' + orderItem.ItemID + '</td><td class="productId">' + (isComplexView ? complexProductId : orderItem.ProductID) + 
             '</td><td class="quantity">' + orderItem.Quantity + '</td><td class="value">' + g_roundToTwoDecimals(nettValue) + 
             '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td><td class="orderedQuantity"></td>' + quantityInputHtml + '</tr></table></a>' +
@@ -847,4 +856,39 @@ function orderdetailsFetchOrderItems() {
 	};
  };
 
+function orderdetailsAddThumbnailChecker(orderItem, isPopupShow) {
+    var field = DaoOptions.getValue('ShowThumbNailsUserfield');
+    var popUpOnlyValue = DaoOptions.getValue('ShowThumbNailsPopUpOnly');
+    var normalThumb = DaoOptions.getValue('ShowNormalOrdHistThumb', 'false');
+    var masterThumb = DaoOptions.getValue('ShowThumbNailsMaster');
+        
+    if (isPopupShow) {
+        
+        // if we were not set field to check we will not show thumbnail on popup
+        if (field == undefined) {
+            return false;
+        }
+        
+        // we need to show thumbnail on popup
+        if (orderItem[field] === popUpOnlyValue) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        
+        // check if this is a master order
+        if (popUpOnlyValue !== undefined && masterThumb !== undefined && orderItem[field] === masterThumb) {
+            return true;
+        } else if (orderItem[field] === popUpOnlyValue) {
+            return false;
+        } else if (normalThumb === 'true') {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    
+}
 
