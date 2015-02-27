@@ -376,7 +376,7 @@ function orderHeaderSaveOrder() {
 function orderHeaderCaptureGPSAndSave() {
     
     if (((DaoOptions.getValue('AllowGPSWeb') === 'true') ||  g_phonegap) && navigator.geolocation)
-        navigator.geolocation.getCurrentPosition(orderHeaderSaveFormedOrder, orderHeaderSaveFormedOrder, { timeout:20000, enableHighAccuracy: true});
+        navigator.geolocation.getCurrentPosition(orderHeaderSaveFormedOrder, orderHeaderSaveFormedOrder); // , { timeout:20000, enableHighAccuracy: true});
     else
         orderHeaderSaveFormedOrder();
 }
