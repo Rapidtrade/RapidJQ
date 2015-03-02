@@ -82,9 +82,9 @@ var catalogue = (function() {
             
             var item = order.orderItems[currentIndex];
             
-            catalogueHTML += '<td style="vertical-align: bottom;padding:10px 15px;">';                      
+            catalogueHTML += '<td style="vertical-align: top;padding:10px 10px;">';                      
             
-            catalogueHTML += '<div style="width:' + Math.floor(730 / itemsPerRow) + 'px;text-align:center;vertical-align:middle;height:180px;display:table-cell"><img src="' + productdetailGetImageUrl(item.ProductID, 180, false) + '"></div>' +
+            catalogueHTML += '<div style="width:' + Math.floor(730 / itemsPerRow) + 'px;text-align:center;vertical-align:middle;height:190px;display:table-cell"><img src="' + productdetailGetImageUrl(item.ProductID, 180, false) + '"></div>' +
                     '<table class="catalogueItemDataTable" style="width:' +  Math.floor(730 / itemsPerRow) + 'px"><tr><td>Item</td><td>' + item.ProductID + '</td></tr>' +
                     '<tr><td>Descr</td><td>' + item.Description  + '</td></tr>' +
                     //'<tr><td>Inn/Ctn Qty</td><td>' + (item.CategoryName || 'N/A')  + '</td></tr>' +
@@ -116,7 +116,7 @@ var catalogue = (function() {
     
     function showCatalogue() {
         
-        $('.printinvoiceContent').html(catalogueHTML);
+        $('.catalogueContent').html(catalogueHTML);
         
         var barcodeDivs = $('.catInnerBC, .catOuterBC');
         $.each(barcodeDivs, function(index, bcDiv) {

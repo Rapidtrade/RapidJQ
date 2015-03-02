@@ -586,6 +586,16 @@
 	background-color: white;
 }
 
+.catalogueContent {
+	width:90%;
+	margin:auto;
+	font-size:12px;
+	font-family: Arial, Helvetica, sans-serif;
+        color:black;
+        font-weight: 600;
+	background-color: white;
+}
+
 .printinvoiceFramedTable {
 	border:1px solid;
 	padding: 10px;
@@ -659,6 +669,20 @@
     display: none;
 }
 
+.catalogueContent .page:not(:first-child) .header {
+    
+    display: none;
+}
+
+.catalogueContent .page:not(:last-child) .footer {
+    
+    display: none;
+}
+
+.catalogueContent .pageNumber {
+    
+    display: none;
+}
 #complexProductTable {
     
     border-collapse: collapse;
@@ -733,7 +757,33 @@
         margin-left: auto;
         width:95%;
         text-align: right;
-    }     
+    }
+    
+    .catalogueContent {
+        font-weight: 600;
+        color: black;
+    }
+    
+    .catalogueContent .page:not(:first-child) .header {
+
+        display: block;
+    }
+
+    .catalogueContent .page:not(:last-child) .footer {
+
+        display: block;
+        text-align: right;
+    } 
+    
+    .catalogueContent .pageNumber {
+
+        display: block;
+        margin-top: 110px;
+        margin-right: auto;
+        margin-left: auto;
+        width:95%;
+        text-align: right;
+    }
 }
 
 @page {margin: 0;}

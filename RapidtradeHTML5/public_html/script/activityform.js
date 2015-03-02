@@ -322,14 +322,14 @@ function activityFormSave() {
                 $(g_activityFormParentDivSelector + ' #duration').val(30);
                 var now = moment();
                 var now1 = now.toDate();
-                now1.setHours(now1.getHours() - now1.getTimezoneOffset() / 60);
+                //now1.setHours(now1.getHours() - now1.getTimezoneOffset() / 60 + 2);
                 g_activityFormNewActivity.DueDate = now1; // now.toDate();
                 var newNow = new moment(now1).add('h',1); //now.clone().add('h',1);
                 g_activityFormNewActivity.EndDate = newNow.toDate();
         } else {
                 var mom = new moment($(g_activityFormParentDivSelector + ' #duedate').val() + $(g_activityFormParentDivSelector + ' #time').val(), "YYYY-MM-DD HH:mm");
                 var now = mom.toDate();
-                now.setHours(now.getHours() - now.getTimezoneOffset() / 60);
+                //now.setHours(now.getHours() - now.getTimezoneOffset() / 60 + 2);
                 g_activityFormNewActivity.DueDate = now;
                 var mom2 = new moment(now);
                 mom2.add('hours', 1); //$("#duration").val());

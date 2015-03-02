@@ -66,7 +66,7 @@ var route = (function() {
         g_busy(true);
         
         if (isSubmitClicked && g_isOnline()) {
-            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_UnsentCount4&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
+            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_UnsentCount5&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
         
             // TEST
 //          url = 'http://107.21.55.154/rest/index.php/GetStoredProc?StoredProc=usp_route_UnsentCount&params=(%27justsqueezed%27|%27FTP-100%27|%2720141106%27)';
