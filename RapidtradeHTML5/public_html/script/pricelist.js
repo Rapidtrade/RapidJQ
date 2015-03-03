@@ -1745,6 +1745,26 @@ function pricelistCheckSelectedMultiWarehouse(productID, warehouse) {
 //            });
 
                
+        } else {
+            pricelistStoreItemData(index);
+            var deleteItemOnSuccess = function() {
+
+                if (productdetailCanChangeNett(g_pricelistSelectedProduct.ProductID)) {
+
+                    pricelistShowExpandCategory(true);
+                    pricelistBasicSearch();
+
+                } else {
+
+                    $('#' + g_pricelistSelectedProduct.ItemIndex).text('');
+                }
+
+            };
+
+            shoppingCartDeleteItem(g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID, 
+                                    DaoOptions.getValue('LostSaleActivityID') != undefined, 
+                                    undefined, 
+                                    deleteItemOnSuccess, '', pricelistOnBackButtonClick);
         }
     }
     
