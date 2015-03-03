@@ -1415,7 +1415,7 @@ function pricelistAddLine(pricelist) {
             messageHtml = ' <span style="font-size:13px;color:#8A2416;padding-left:15px;">** ALT BRNCH **</span> ';
             var whsStocksData = pricelist.u6; //'2B;-9999,10;50,50;0'; //this should be data from item's userField or something else
             var whsStocksDataSplited = whsStocksData.split(',');
-            multiWhHtml += '<span id="whChoiceDiv' + pricelist.id + '" class="pricelistwhChoiceDiv" style="display:inline-block; position:relative; top:-10px; text-align:right" onclick="pricelistOnMultiWaregouseClick()">';
+            multiWhHtml += '<span id="whChoiceDiv' + pricelist.id + '" class="pricelistwhChoiceDiv ui-li-count" onclick="pricelistOnMultiWaregouseClick()">';
             multiWhHtml += '<select data-productID="' + pricelist.id + '" data-mini="true" data-native-menu="true" data-inline="true">';
             
             for (var i = 0; i < whsStocksDataSplited.length; ++i) {
