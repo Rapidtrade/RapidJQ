@@ -1,7 +1,7 @@
 ﻿CACHE MANIFEST
 # Explicitly cached 'master entries'...........................................
 
-# Version 8.9.8
+# Version 8.9.9
 
 CACHE:
 
@@ -150,6 +150,22 @@ script/today.js
 script/tpm.js
 script/utility.js
 translations/translations.js
+
+# my json translation files
+translations/callcycleeditpage.json
+translations/callcyclepage.json
+translations/companypage.json
+translations/dashboardpage.json
+translations/menupage.json
+translations/monthlysummary.json
+translations/myterritorypage.json
+translations/orderHeaderpage.json
+translations/orderdetailspage.json
+translations/printinvoicepage.json
+translations/shoppingCartpage.json
+translations/syncpage.json
+translations/todaypage.json
+translations/userDailySalesDetail.json
 
 # my html files
 about.html
