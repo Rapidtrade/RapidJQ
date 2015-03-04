@@ -88,11 +88,14 @@
     <script>
         //<!-- uncomment below for PhoneGap -->
         /*
+        $('#menupage').bind('pagebeforecreate', menuOnPageBeforeCreate);
+        $(document).on("pageshow", "#menupage", menuOnPageShow);
+    
         document.addEventListener("deviceready", function() { 
                                     $('#status').text('Starting Cordova');
                                     window.setTimeout(g_phonegapon(function(){
-                                                            menuOnPageBeforeCreate();
-                                                            menuOnPageShow();
+                                                            //menuOnPageBeforeCreate();
+                                                            //menuOnPageShow();
                                                         }), 1000); 
                                     }, false);  
         */                            
@@ -229,7 +232,7 @@
 	   	</div>
 	      
         <div style="text-align:center;color:#555555;">
-        Version 8.9.9
+        Version 8.9.10
         </div>
         <div id="status" style="text-align:center;color:#555555;">
         </div>

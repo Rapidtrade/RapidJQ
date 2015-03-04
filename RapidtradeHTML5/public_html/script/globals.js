@@ -118,7 +118,7 @@ function g_phonegapon(onComplete){
         g_deviceVersion = parseFloat(window.device.version);
         $('#status').text('Device ready ' + g_deviceVersion);
         if (!sap) {
-            onComplete();
+            if (onComplete) { onComplete(); }
         } else {
             g_smpon(onComplete);
         }

@@ -24,10 +24,10 @@ function menuOnPageShow() {
     sessionStorage.setItem('orderheaderNext', 'menu');
 
     var dao = new Dao();
-    dao.openDB(function (user) { menuInit(); });
+    dao.openDB(function (user) { menuInit(); menuFetchMandatoryActivities();});
     $('#nosync').hide();
 
-    menuFetchMandatoryActivities();
+    //menuFetchMandatoryActivities();
     menuBind();        
 }
 
