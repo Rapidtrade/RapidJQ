@@ -89,7 +89,7 @@ var catalogue = (function() {
                     '<tr><td>Descr</td><td>' + item.Description  + '</td></tr>' +
                     //'<tr><td>Inn/Ctn Qty</td><td>' + (item.CategoryName || 'N/A')  + '</td></tr>' +
                     '<tr><td>Inn/Ctn Qty</td><td>' + (item.UserField03 || '-')  + '/' + (item.UserField04 || '-') + '</td></tr>' +
-                    '<tr><td>Price (Excl)</td><td>$' + item.Nett  + '</td></tr>';
+                    '<tr><td>Price (Excl)</td><td>$' + ( item.RepChangedPrice ? ('' + item.RepNett) : ('' + item.Nett))  + '</td></tr>';
             
             if (order.UserField01 && order.UserField01 === 'Yes') {
                 catalogueHTML +=  '</table><div class="catInnerBC" style="float:left;">' + (item.UserField01 || 'N/A')  + '</div>' +
