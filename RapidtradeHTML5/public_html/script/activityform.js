@@ -380,7 +380,8 @@ function activityFormSave() {
         }
 
         if (g_activityFormSelectedActivityType.AllowGPS)		
-                navigator.geolocation ? navigator.geolocation.getCurrentPosition(activityFormSavePosition, activityFormSaveStep2) : activityFormSaveStep2; //, { timeout:20000, enableHighAccuracy: true}) : g_alert("ERROR: GPS is not supported on your device.");
+                //navigator.geolocation ? navigator.geolocation.getCurrentPosition(activityFormSavePosition, activityFormSaveStep2) : activityFormSaveStep2; //, { timeout:20000, enableHighAccuracy: true}) : g_alert("ERROR: GPS is not supported on your device.");
+                navigator.geolocation ? navigator.geolocation.getCurrentPosition(activityFormSavePosition, activityFormOnPositionError, { timeout:20000, enableHighAccuracy: true}) : activityFormOnPositionError({code: 2, message: 'GPS is not supported on your device.'}); //, { timeout:20000, enableHighAccuracy: true}) : g_alert("ERROR: GPS is not supported on your device.");    
         else
                 activityFormSaveStep2();
 
@@ -448,11 +449,11 @@ function activityFormSaveStep2() {
 }
 
 function activityFormSavePosition(position) {
-    //setTimeout(function() {
+    setTimeout(function() {
         g_activityFormNewActivity.Latitude = position.coords.latitude;
 	g_activityFormNewActivity.Longitude = position.coords.longitude;
 	activityFormSaveStep2();
-    //}, 0);
+    }, 0);
 	
 }
 
