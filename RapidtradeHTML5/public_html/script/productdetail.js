@@ -4,6 +4,7 @@ var g_productdetailIsPriceChanged = false;
 var g_productdetailEditingNettValue = false;
 var g_productdetailStockValues = [];
 var g_productdetailCurrentImageNumber = 0;
+var g_productdetailComponentMultiWarehouses = {};
 
 function productdetailInit() {
 
@@ -501,14 +502,39 @@ function productdetailFetchComponentsOnSuccess(json) {
 
     $.each(json, function(index, component) {
 
-            var stockValue = g_stockDescriptions[component.Stock] || component.Stock;
+            var canOrderComponent = true;
+            
+            var stockValue = component.Stock !== undefined ? g_stockDescriptions[component.Stock] || component.Stock.toString() : 'N/A';
+            
+            if ((component.Stock !== undefined) && isNaN(stockValue)) 
+                canOrderComponent = false; 
+            
+            //var stockValue = g_stockDescriptions[component.Stock] || component.Stock;
 
             var rowHtml = '<tr id="' + component.ProductID + '"><td>' + component.ProductID + '</td><td>' + component.Description + '</td>';
 
             if (showAllColumns) {
+                
+                var multiWhHtml = '';
+                if (!canOrderComponent && DaoOptions.getValue('MobileSelectWhOnPricelist') == 'true') {
+                    var whsStocksData = component.Stock; //'2B;-9999,10;50,50;0'; 
+                    var whsStocksDataSplited = whsStocksData.split(',');
+                    multiWhHtml += '<span id="whChoiceDivAltComponent' + component.ProductID + '" class="altComponentChoiceDiv ui-li-count"  >';
+                    multiWhHtml += '<select data-productID="' + component.ProductID + '" data-mini="true" data-native-menu="true" data-inline="true">';
 
-                rowHtml += '<td>' + component.Nett + '</td><td>' + stockValue + '</td><td>' + component.UOM + '</td><td class="quantity"></td>' + 
-                           '<td class="order"><a data-role="button" data-inline="true" data-mini="true" ' + (isNaN(stockValue) ? 'class="ui-disabled"' : '') + '>Order Now</a></td>';
+                    for (var i = 0; i < whsStocksDataSplited.length; ++i) {
+                        var whsData = whsStocksDataSplited[i].split(';');
+
+                        multiWhHtml += '<option value="' + whsData[0] + '" >' + whsData[0] + ': ' + (whsData[1] !== undefined ? g_stockDescriptions[whsData[1]] || whsData[1] : 'N/A')  +  '</option>';
+                    }
+
+                    multiWhHtml += '</select></span>';
+                    g_productdetailComponentMultiWarehouses[component.ProductID] = whsStocksDataSplited;
+                    
+                }
+                var buttonDisabled = ((!canOrderComponent && DaoOptions.getValue('MobileSelectWhOnPricelist') == 'true') ? g_productdetailComponentMultiWarehouses[component.ProductID][0].split(';')[1] === '-9999' : isNaN(stockValue) )
+                rowHtml += '<td>' + component.Nett + '</td><td>' + ((!canOrderComponent && DaoOptions.getValue('MobileSelectWhOnPricelist') == 'true') ? multiWhHtml : stockValue) + '</td><td>' + component.UOM + '</td><td class="quantity"></td>' + 
+                           '<td class="order"><a data-role="button" data-inline="true" data-mini="true" ' + (buttonDisabled ? 'class="ui-disabled"' : '') + '>Order Now</a></td>';
             }
 
             rowHtml += '</tr>';
@@ -529,6 +555,20 @@ function productdetailFetchComponentsOnSuccess(json) {
                             if (g_isQuantityValid(parseInt(quantity, 10), parseInt(component.UOM, 10))) {
 
                                     $('tr#' + component.ProductID + ' td.quantity').text(quantity);
+                                    if (DaoOptions.getValue('MobileSelectWhOnPricelist') == 'true') {
+                                        component.Warehouse = $('#componentsTableDiv #whChoiceDivAltComponent' + component.ProductID + ' select').val();
+                                        var sv = '-9999';
+                                        var multivasehouses = g_productdetailComponentMultiWarehouses[component.ProductID];
+                                        for (var i = 0; i < multivasehouses.length; ++i) {
+                                            var whData = multivasehouses[i].split(';');
+                                            if (whData[0] === component.Warehouse) {
+                                                sv = parseInt(whData[1], 10);
+                                                break;
+                                            }
+                                        }
+                                        component.UserField06 = component.Stock;
+                                        component.Stock = sv;
+                                    }
                                     basket.saveItem(component, quantity);
 
                                     pricelistCheckBasket(false);
@@ -536,6 +576,15 @@ function productdetailFetchComponentsOnSuccess(json) {
                     });
             });		
     });
+    
+    if (DaoOptions.getValue('MobileSelectWhOnPricelist') == 'true') {
+            $('#componentsTableDiv select').selectmenu();
+            $('#componentsTableDiv').on('change', '.altComponentChoiceDiv select', function() {
+                //g_alert('changed value to: ' + $(this).val());
+                productdetailAltComponentOnMultWhsChange($(this).data('productid').toString(), $(this).val());
+            });
+            
+        }
 
     $.mobile.hidePageLoadingMsg();
 	
@@ -548,6 +597,10 @@ function productdetailFetchComponentsOnSuccess(json) {
           if (basketInfo.AccountID == g_currentCompany().AccountID && basketInfo.Type == sessionStorage.getItem("currentordertype")) {
         	  
         	  $('tr#' + basketInfo.ProductID + ' td.quantity').text(basketInfo.Quantity);
+                  if (DaoOptions.getValue('MobileSelectWhOnPricelist') === 'true') {
+                      $('#componentsTableDiv #whChoiceDivAltComponent' + basketInfo.ProductID + ' select').val(basketInfo.Warehouse);
+                      $('#componentsTableDiv #whChoiceDivAltComponent' + basketInfo.ProductID + ' select').trigger('change');
+                  }
           };
       });
 }
@@ -556,6 +609,39 @@ function productdetailFetchComponentsOnError(error) {
 	
 	$.mobile.hidePageLoadingMsg();
 	console.log('Error in retrieving components: ' + error);
+}
+
+function productdetailAltComponentOnMultWhsChange(productID, warehouse) {
+    var multivasehouses = g_productdetailComponentMultiWarehouses[productID];
+    var whStock = -9999;
+    for (var i = 0; i < multivasehouses.length; ++i) {
+        var whData = multivasehouses[i].split(';');
+        if (whData[0] === warehouse) {
+            whStock = parseInt(whData[1], 10);
+            break;
+        }
+    }
+    var stockValue = whStock !== undefined ? g_stockDescriptions[whStock] || whStock.toString() : 'N/A';
+    
+    var button = $('#whChoiceDivAltComponent' + productID).parent().parent().find('td.order:last a');
+    
+    if (isNaN(stockValue)) {
+        //disable order button
+        if (!button.hasClass('ui-disabled'))
+            button.addClass('ui-disabled');
+        
+        // delete item from basket
+        $('tr#' + productID + ' td.quantity').text('');
+        shoppingCartDeleteItem(productID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID, 
+                                    DaoOptions.getValue('LostSaleActivityID') != undefined, 
+                                    undefined, 
+                                    undefined, '', undefined);
+        
+    } else {
+        //enable order button
+        if (button.hasClass('ui-disabled'))
+            button.removeClass('ui-disabled');
+    }
 }
 
 function productdetailFetchLongText(tabId, selector, onSuccess) {
