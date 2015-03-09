@@ -373,7 +373,7 @@ function shoppingCartAllowToChangeQty(item) {
 }
 
 function shoppingCartCanNotDelSingleBask() {
-    return DaoOptions.getValue('CanNotChangeBasketUF', 'false') === 'true';
+    return DaoOptions.getValue('CanNotDelSingleBask', 'false') === 'true';
 }
 
 function shoppingCartFetchBasket() {
