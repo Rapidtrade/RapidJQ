@@ -1431,12 +1431,14 @@ function pricelistAddLine(pricelist) {
         }
 
         var special = (pricelist.onSpecial ? ' <span style="font-size:13px;color:#8A2416;padding-left:15px;">** On Special **</span> ' : '');
+        
+        var showThumbnail = (DaoOptions.getValue('MobileThumbnails') == 'true') && (!localStorage.getItem('usageMode') || localStorage.getItem('usageMode') === 'Online');
 
         //TODO below input box needs to only be for Midas. ie. which we have an option variable
         var pricelistHtml =       
             '<li id="li' + g_pricelistItems.length + '" style="position:relative" ' + pricelistScrollToPos(pricelist) + ' ' + alphaFilter.getInstance().addClass(pricelist.des) + '>' +
             '<a href onclick="pricelistOnItemClicked(\'' + g_pricelistItems.length + '\');">' +   
-            (DaoOptions.getValue('MobileThumbnails') == 'true' ? '<td rowspan="2" class="quantity" align="right"><img src="' + productdetailGetImageUrl(pricelist.id, 80) + '" /></td>' : '') +
+            (/*DaoOptions.getValue('MobileThumbnails') == 'true'*/ showThumbnail ? '<td rowspan="2" class="quantity" align="right"><img src="' + productdetailGetImageUrl(pricelist.id, 80) + '" /></td>' : '') +
             '<span style="font-size:11px;">' + pricelist.id + '</span>' + special + messageHtml +'<br/>' +
             '<span class="ui-li-desc" style="font-size:16px; padding-top:10px; display:inline-block; width:50%">' + pricelist.des + '</span>' +
             quantityInputHtml +        

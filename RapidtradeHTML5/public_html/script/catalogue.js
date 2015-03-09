@@ -28,6 +28,10 @@ var catalogue = (function() {
             catalogueHTML = '';
             order = JSON.parse(sessionStorage.getItem('currentOrder'));
             
+            if (order.UserField01 && order.UserField01 === 'Yes') {
+                itemsPerPage = 6;
+            }
+            
             bind();
             fetch();
         }
