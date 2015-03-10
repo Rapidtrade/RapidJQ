@@ -778,9 +778,10 @@
     .catalogueContent .pageNumber {
 
         display: block;
-        margin-top: 110px;
+        margin-top: 65px;
         margin-right: auto;
         margin-left: auto;
+        vertical-align: top;
         width:95%;
         text-align: right;
     }
