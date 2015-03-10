@@ -519,16 +519,23 @@ function productdetailFetchComponentsOnSuccess(json) {
                 if (!canOrderComponent && DaoOptions.getValue('MobileSelectWhOnPricelist') == 'true') {
                     var whsStocksData = component.Stock; //'2B;-9999,10;50,50;0'; 
                     var whsStocksDataSplited = whsStocksData.split(',');
-                    multiWhHtml += '<span id="whChoiceDivAltComponent' + component.ProductID + '" class="altComponentChoiceDiv ui-li-count"  >';
-                    multiWhHtml += '<select data-productID="' + component.ProductID + '" data-mini="true" data-native-menu="true" data-inline="true">';
+                    
+                    
+                    if (whsStocksDataSplited.length === 1) {
+                        multiWhHtml += '<span id="whChoiceDivAltComponent' + component.ProductID + '" class="altComponentChoiceDiv ui-li-count ui-btn-up-c ui-btn-corner-all"  style="font-size:12.5px;">' + 
+                                whsStocksDataSplited[0].split(';')[1] + '</span>';
+                    } else {
+                        multiWhHtml += '<span id="whChoiceDivAltComponent' + component.ProductID + '" class="altComponentChoiceDiv ui-li-count"  >';
+                        multiWhHtml += '<select data-productID="' + component.ProductID + '" data-mini="true" data-native-menu="true" data-inline="true">';
+                        for (var i = 0; i < whsStocksDataSplited.length; ++i) {
+                            var whsData = whsStocksDataSplited[i].split(';');
 
-                    for (var i = 0; i < whsStocksDataSplited.length; ++i) {
-                        var whsData = whsStocksDataSplited[i].split(';');
-
-                        multiWhHtml += '<option value="' + whsData[0] + '" >' + whsData[0] + ': ' + (whsData[1] !== undefined ? g_stockDescriptions[whsData[1]] || whsData[1] : 'N/A')  +  '</option>';
+                            multiWhHtml += '<option value="' + whsData[0] + '" >' + whsData[0] + ': ' + (whsData[1] !== undefined ? g_stockDescriptions[whsData[1]] || whsData[1] : 'N/A')  +  '</option>';
+                        }
+                        multiWhHtml += '</select></span>';
                     }
 
-                    multiWhHtml += '</select></span>';
+                    
                     g_productdetailComponentMultiWarehouses[component.ProductID] = whsStocksDataSplited;
                     
                 }
@@ -556,18 +563,24 @@ function productdetailFetchComponentsOnSuccess(json) {
 
                                     $('tr#' + component.ProductID + ' td.quantity').text(quantity);
                                     if (DaoOptions.getValue('MobileSelectWhOnPricelist') == 'true') {
-                                        component.Warehouse = $('#componentsTableDiv #whChoiceDivAltComponent' + component.ProductID + ' select').val();
-                                        var sv = '-9999';
                                         var multivasehouses = g_productdetailComponentMultiWarehouses[component.ProductID];
-                                        for (var i = 0; i < multivasehouses.length; ++i) {
-                                            var whData = multivasehouses[i].split(';');
-                                            if (whData[0] === component.Warehouse) {
-                                                sv = parseInt(whData[1], 10);
-                                                break;
+                                        if (multivasehouses.length === 1) {
+                                            component.UserField06 = component.Stock;
+                                            component.Stock = parseInt(multivasehouses[0].split(';')[1], 10);
+                                        } else {
+                                            component.Warehouse = $('#componentsTableDiv #whChoiceDivAltComponent' + component.ProductID + ' select').val();
+                                            var sv = '-9999';
+                                            //var multivasehouses = g_productdetailComponentMultiWarehouses[component.ProductID];
+                                            for (var i = 0; i < multivasehouses.length; ++i) {
+                                                var whData = multivasehouses[i].split(';');
+                                                if (whData[0] === component.Warehouse) {
+                                                    sv = parseInt(whData[1], 10);
+                                                    break;
+                                                }
                                             }
+                                            component.UserField06 = component.Stock;
+                                            component.Stock = sv;
                                         }
-                                        component.UserField06 = component.Stock;
-                                        component.Stock = sv;
                                     }
                                     basket.saveItem(component, quantity);
 
