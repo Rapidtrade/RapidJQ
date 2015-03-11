@@ -185,6 +185,21 @@ function g_checkUsageMode() {
     });    
 }
 
+function g_checkThumbnailMode() {
+
+    $("#thumbnailMode option").filter(function() {        	
+        return $(this).attr('value') === localStorage.getItem('thumbnailMode');
+    }).attr('selected', true);
+
+    $('#thumbnailMode').selectmenu('refresh');
+    
+    $('#thumbnailMode').off().on('change', function() {
+       
+        localStorage.setItem('thumbnailMode', $(this).val());
+        $('#thumbnailMode').selectmenu('refresh');
+    });    
+}
+
 function g_loadMenu() {
 
     $.mobile.changePage('index.html');

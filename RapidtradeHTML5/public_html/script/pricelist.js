@@ -1432,7 +1432,8 @@ function pricelistAddLine(pricelist) {
 
         var special = (pricelist.onSpecial ? ' <span style="font-size:13px;color:#8A2416;padding-left:15px;">** On Special **</span> ' : '');
         
-        var showThumbnail = (DaoOptions.getValue('MobileThumbnails') == 'true') && (!localStorage.getItem('usageMode') || localStorage.getItem('usageMode') === 'Online');
+        var showThumbnail = (DaoOptions.getValue('MobileThumbnails') == 'true') && (!localStorage.getItem('usageMode') || localStorage.getItem('usageMode') === 'Online') &&
+            (!localStorage.getItem('thumbnailMode') || localStorage.getItem('thumbnailMode') === 'On Thumbs');
 
         //TODO below input box needs to only be for Midas. ie. which we have an option variable
         var pricelistHtml =       

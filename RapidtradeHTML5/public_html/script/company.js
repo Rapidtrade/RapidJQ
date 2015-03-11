@@ -33,6 +33,12 @@ function companyOnPageShow() {
     companyHideFooter();
     overlaySetMenuItems();
     g_checkUsageMode();
+    
+    if (!DaoOptions.getValue('MobileThumbnails')) {
+        $('#thumbnailModeDiv').hide();
+    } else {
+        g_checkThumbnailMode(); 
+    }
 
     if (sessionStorage.getItem('companyBack') == 'today.html')
         $('#companyBackButton .ui-btn-text').text('Today');

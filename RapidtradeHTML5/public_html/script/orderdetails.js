@@ -78,13 +78,20 @@ function orderdetailsBind() {
 //    	$("#creditDelivery").attr("checked",true).checkboxradio("refresh");
 //    	if (orderdetailsIsCreditSelected()) $('#creditInfoPopup').popup('open');
 //    });
-	
+           
     $('#shoppingcartButton').unbind();
     $('#shoppingcartButton').click(function () {
     	sessionStorage.setItem('ShoppingCartReturnPage', 'orderdetails.html');
         $.mobile.changePage("shoppingCart.html");
     });
-	
+    
+    if (!DaoOptions.getValue('MobileThumbnails')) {
+        $('#thumbnailModeDiv').hide();
+    } else {
+        g_checkThumbnailMode(); 
+    }
+    
+    
     $('#sendToBasketButton').unbind();
     var needToHideSendToBasket = DaoOptions.getValue('HideSendAllOrderType');
     var needToHideSendToBasketForAllTypes = DaoOptions.getValue('HideSendAllToCartAllTypes', 'false');
@@ -387,7 +394,8 @@ function orderdetailsSendOrderItem(itemKey) {
         //$('#complexProductUOM').text('UOM: ' + unit);
         
         g_orderdetailsShowThumbNail = (DaoOptions.getValue('ShowThumbNailsOnHistory','false') === 'true') && 
-            (!localStorage.getItem('usageMode') || localStorage.getItem('usageMode') === 'Online');
+            (!localStorage.getItem('usageMode') || localStorage.getItem('usageMode') === 'Online') &&
+            (!localStorage.getItem('thumbnailMode') || localStorage.getItem('thumbnailMode') === 'On Thumbs');
         
         var tableRowsHTML = '';
         
@@ -678,7 +686,8 @@ function orderdetailsFetchOrderItems() {
     var isComplexView = orderdetailsIsComplexView();
     
     g_orderdetailsShowThumbNail = (DaoOptions.getValue('ShowThumbNailsOnHistory','false') === 'true') && 
-            (!localStorage.getItem('usageMode') || localStorage.getItem('usageMode') === 'Online');
+            (!localStorage.getItem('usageMode') || localStorage.getItem('usageMode') === 'Online') &&
+            (!localStorage.getItem('thumbnailMode') || localStorage.getItem('thumbnailMode') === 'On Thumbs');
      
     g_orderdetailsOrderItems = [];
     g_orderdetailsComplexItems = {};

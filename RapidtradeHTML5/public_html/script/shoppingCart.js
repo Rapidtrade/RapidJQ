@@ -497,7 +497,7 @@ function shoppingCartAddItem(item, checkSummary) {
         '      <td colspan=3 class="productid ui-li-desc">' + item.ProductID + ((sessionStorage.getItem('shoppingCartViewType') === 'Summary') ? '(Case: ' + parseFloat(item.Quantity)/parseFloat(item.Unit) + ')': '') + '</td></tr>' +
         '  </table>' +
         '</a>' +
-        (shoppingCartIsGRV() || shoppingCartIsPOD() || shoppingCartCanNotDelSingleBask() ? '' :
+        (shoppingCartIsGRV() || shoppingCartIsPOD() || (shoppingCartCanNotDelSingleBask() && quantityReadOnly !== '') ? '' :
              ' <a href="#" onclick="shoppingCartDeleteItem(\'' + item.key + '\', ' +  (DaoOptions.getValue('LostSaleActivityID') != undefined) + ', true)" class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
              '<span class="ui-btn-inner ui-btn-corner-all">' +
              '<span class="ui-icon ui-icon-delete ui-icon-shadow">delete</span>' +
