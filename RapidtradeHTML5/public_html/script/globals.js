@@ -187,17 +187,34 @@ function g_checkUsageMode() {
 
 function g_checkThumbnailMode() {
 
-    $("#thumbnailMode option").filter(function() {        	
-        return $(this).attr('value') === localStorage.getItem('thumbnailMode');
-    }).attr('selected', true);
+//    $("#thumbnailMode input").filter(function() {        	
+//        return $(this).attr('value') === localStorage.getItem('thumbnailMode');
+//    }).attr('selected', true);
+//
+//    $('#thumbnailMode').controlgroup('refresh');
+//    
+//    $('#thumbnailMode').off().on('change', function() {
+//       
+//        localStorage.setItem('thumbnailMode', $(this).val());
+//        $('#thumbnailMode').controlgroup('refresh');
+//    }); 
 
-    $('#thumbnailMode').selectmenu('refresh');
-    
     $('#thumbnailMode').off().on('change', function() {
        
-        localStorage.setItem('thumbnailMode', $(this).val());
-        $('#thumbnailMode').selectmenu('refresh');
-    });    
+        localStorage.setItem('thumbnailMode', $(this).find('input:checked').val());
+        $('#thumbnailMode').controlgroup('refresh');
+    });
+
+    if (localStorage.getItem('thumbnailMode')=='On_Thumbs') {
+		
+        $("#On_Thumbs").attr("checked", true).checkboxradio("refresh");
+        $("#Off_Thumbs").attr("checked", false).checkboxradio("refresh");
+
+    } else {
+
+        $("#On_Thumbs").attr("checked", false).checkboxradio("refresh");
+        $("#Off_Thumbs").attr("checked", true).checkboxradio("refresh");
+    }
 }
 
 function g_loadMenu() {

@@ -291,6 +291,11 @@
     white-space: nowrap;
 }
 
+.historyOrderItems td.productId {
+	
+    width: 200px;
+}
+
 .historyOrderItems td.value {
 	text-align: right;
 	padding-right: 15px;

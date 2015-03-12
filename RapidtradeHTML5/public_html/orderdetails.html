@@ -29,14 +29,23 @@
         	<div data-role="header" >
                     <h1 class="multiLanguage">Order Details</h1>
                 <a id="orderDetailsBackButton" data-role="button" data-icon="arrow-l" data-iconpos="left" data-direction="reverse" data-transition="none" class="ui-btn-left">Back</a>
-                <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right">
+                <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right" style="vertical-align: top;">
+                    <!--<span id="thumbnailModeDiv"><select id="thumbnailMode" data-mini="true" data-native-menu="true" data-inline="true">
+                            <option value="On Thumbs">On Thumbs</option>                                
+                            <option value="Off Thumbs">Off Thumbs</option>
+                        </select></span>-->
+                    <div id="thumbnailModeDiv" style="float:left; vertical-align: top;">
+                    <fieldset data-role="controlgroup" data-type="horizontal" id="thumbnailMode" data-mini="true" style="height: 30px; margin: 0px;">
+                                <input type="radio" data-icon="bullets" data-iconpos="right" name="thumbnailMode" id="On_Thumbs" value="On_Thumbs"  />
+                                <label for="On_Thumbs" id="On_ThumbsLabel"><img src="jquery/jquery14/images/icons-png/bullets-white.png" /></label>
+                                <input type="radio" data-icon="bars" data-iconpos="right" name="thumbnailMode" id="Off_Thumbs" value="Off_Thumbs"  />
+                                <label for="Off_Thumbs" id="Off_ThumbsLabel"><img src="jquery/jquery14/images/icons-png/bars-white.png" /></label>
+                            </fieldset>
+                    </div>
                     <a id="deleteButton" data-role="button" data-icon="delete" data-iconpos="right" data-transition="none" class="invisible">Delete</a>
                     <a id="csvButton" data-role="button" data-icon="grid" data-iconpos="right" data-transition="none" class="invisible">CSV</a>
                     <a id="reprintButton" data-role="button" data-icon="arrow-r" data-iconpos="right" data-transition="none" class="invisible">Reprint</a>
-                    <span id="thumbnailModeDiv"><select id="thumbnailMode" data-mini="true" data-native-menu="true" data-inline="true">
-                            <option value="On Thumbs">On Thumbs</option>                                
-                            <option value="Off Thumbs">Off Thumbs</option>
-                        </select></span>
+                    
                     <a id="shoppingcartButton" data-role="button" data-icon="arrow-r" data-iconpos="right" data-transition="none" class="ui-disabled">Shopping Cart</a>
                 </div>                 
             </div>
