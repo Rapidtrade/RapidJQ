@@ -376,7 +376,7 @@ function orderHeaderSaveOrder() {
 function orderHeaderCaptureGPSAndSave() {
     
     if (((DaoOptions.getValue('AllowGPSWeb') === 'true') ||  g_phonegap) && navigator.geolocation)
-        navigator.geolocation.getCurrentPosition(orderHeaderSaveFormedOrder, orderHeaderSaveFormedOrder); // , { timeout:20000, enableHighAccuracy: true});
+        navigator.geolocation.getCurrentPosition(orderHeaderSaveFormedOrder, orderHeaderSaveFormedOrder, {timeout:10000}); //); // , { timeout:20000, enableHighAccuracy: true});
     else
         orderHeaderSaveFormedOrder();
 }
@@ -603,8 +603,8 @@ function orderHeaderSaveFormedOrder(position) {
         
     	g_orderHeaderOrder.Userfield04 = position.coords.latitude;
 	g_orderHeaderOrder.Userfield05 = position.coords.longitude;
-    } else if (position && position.code && position.code == 3) {
-        return;
+   // } else if (position && position.code && position.code == 3) {
+   //     return;
     }
 
     if (!orderHeaderAreItemsValid())
