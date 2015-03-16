@@ -21,7 +21,7 @@
 
 .greypanel {
 	margin-left:auto; margin-right:auto;
-	-webkit-border-radius: 12px; /* Safari 3-4, iOS 1-3.2, Android ÃƒÂ¢Ã¢â‚¬Â°Ã‚Â¤1.6 */
+	-webkit-border-radius: 12px; /* Safari 3-4, iOS 1-3.2, Android ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤1.6 */
           	border-radius: 12px; /* Opera 10.5, IE9+, Safari 5, Chrome, Firefox 4+, iOS 4, Android 2.1+ */
     -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
          
@@ -34,7 +34,7 @@
 
 .yellowpanel {
 	margin-left:auto; margin-right:auto;
- /* Safari 3-4, iOS 1-3.2, Android ÃƒÂ¢Ã¢â‚¬Â°Ã‚Â¤1.6 */
+ /* Safari 3-4, iOS 1-3.2, Android ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤1.6 */
           	border-radius: 12px; /* Opera 10.5, IE9+, Safari 5, Chrome, Firefox 4+, iOS 4, Android 2.1+ */
     -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
 
@@ -53,7 +53,7 @@
 .redpanel {
 	margin-left:auto; margin-right:auto;
 
-	-webkit-border-radius: 12px; /* Safari 3-4, iOS 1-3.2, Android ÃƒÂ¢Ã¢â‚¬Â°Ã‚Â¤1.6 */
+	-webkit-border-radius: 12px; /* Safari 3-4, iOS 1-3.2, Android ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤1.6 */
           	border-radius: 12px; /* Opera 10.5, IE9+, Safari 5, Chrome, Firefox 4+, iOS 4, Android 2.1+ */
     -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
 
@@ -780,16 +780,17 @@
         text-align: right;
     } 
     
-    .catalogueContent .pageNumber {
+    .catalogueContent .page .pageNumber {
 
         display: block;
-        margin-top: 65px;
+        margin-top: 95px;
         margin-right: auto;
         margin-left: auto;
         vertical-align: top;
         width:95%;
         text-align: right;
     }
+    
 }
 
 @page {margin: 0;}

@@ -29,7 +29,7 @@ var catalogue = (function() {
             order = JSON.parse(sessionStorage.getItem('currentOrder'));
             
             if (order.UserField01 && order.UserField01 === 'Yes') {
-                itemsPerPage = 6;
+                //itemsPerPage = 6;
             }
             
             bind();
@@ -88,7 +88,7 @@ var catalogue = (function() {
             
             catalogueHTML += '<td style="vertical-align: top;padding:10px 10px;">';                      
             
-            catalogueHTML += '<div style="width:' + Math.floor(730 / itemsPerRow) + 'px;text-align:center;vertical-align:middle;height:190px;display:table-cell"><img src="' + productdetailGetImageUrl(item.ProductID, 180, false) + '"></div>' +
+            catalogueHTML += '<div style="width:' + Math.floor(730 / itemsPerRow) + 'px;text-align:center;vertical-align:middle;height:160px;display:table-cell"><img src="' + productdetailGetImageUrl(item.ProductID, 150, false) + '"></div>' +
                     '<table class="catalogueItemDataTable" style="width:' +  Math.floor(730 / itemsPerRow) + 'px"><tr><td>Item</td><td>' + item.ProductID + '</td></tr>' +
                     '<tr><td>Descr</td><td>' + item.Description  + '</td></tr>' +
                     //'<tr><td>Inn/Ctn Qty</td><td>' + (item.CategoryName || 'N/A')  + '</td></tr>' +
@@ -96,8 +96,8 @@ var catalogue = (function() {
                     '<tr><td>Price (Excl)</td><td>$' + ( item.RepChangedPrice ? ('' + item.RepNett) : ('' + item.Nett))  + '</td></tr>';
             
             if (order.UserField01 && order.UserField01 === 'Yes') {
-                catalogueHTML +=  '</table><div class="catInnerBC" style="float:left;">' + (item.UserField01 || 'N/A')  + '</div>' +
-                        '<div class="catOuterBC" style="float:left;">' + (item.UserField02 || 'N/A')  + '</div>';
+                catalogueHTML +=  '</table><div style="padding:0px !important; margin: 0px !important;"><span class="catInnerBC" >' + (item.UserField01 || 'N/A')  + '</span>' +
+                        '<span class="catOuterBC" >' + (item.UserField02 || 'N/A')  + '</span></div>';
             } else {
                 catalogueHTML +=  '<tr><td>Bar Code</td><td>' + (item.Barcode || 'N/A')  + '</td></tr></table>';
             }
@@ -129,15 +129,18 @@ var catalogue = (function() {
                 //bcDiv.innerText = '';
                 //bcDiv.innerHtml = '';
                 var settings = {
-                    addQuietZone: "1",
-                    barHeight: "50",
+                    addQuietZone: "0",
+                    barHeight: "35",
                     barWidth: "1",
                     bgColor: "#FFFFFF",
                     color: "#000000",
-                    moduleSize: "5",
-                    output: "css"
+                    moduleSize: "3",
+                    output: "bmp",
+                    showHRI: false
                 };
                 $(bcDiv).barcode(currentCode, "code128", settings);
+                $(bcDiv).children().css('width', '118px');
+                $(bcDiv).children().css('height', '35px');
             }
                 
         });
