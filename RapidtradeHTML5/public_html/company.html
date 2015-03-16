@@ -492,8 +492,23 @@
 			            <a id="cancelButton" href="company.html" data-role="button" data-inline="false">
 			                   Cancel
 			            </a>  
-		      		</div>	
-				</div>        
+		      		</div>
+                                <div data-role="popup" id="discOverwritePassPopup" data-history="false" data-theme="b" data-overlay-theme="a" class="ui-content">
+                                    <div >
+                                        Please enter Your password to allow discount overwrite.
+                                    </div>
+                                    <div data-role="fieldcontain" >
+                                               <label for="discOverwritePassInput" style="height:27px; padding-top:5px">
+                                          Password
+                                                    </label>
+                                            <input name="" id="discOverwritePassInput" type="password" placeholder="Password" data-mini="true" />
+                                            <span id="discOverwritePassMessage" style="font-size: 10px; color: red;" >Wrong password!</span>
+                                     </div>
+                                    <a id="discOverwritePassOKButton" href data-role="button" data-inline="false">
+                                        OK
+                                    </a>
+                                </div>
+                            </div>        
 		    </div>
 		    <div id="productInfoPanel" data-role="content" class="invisible companyPagePanel">
 		        <table style="width: 100%"><tr>

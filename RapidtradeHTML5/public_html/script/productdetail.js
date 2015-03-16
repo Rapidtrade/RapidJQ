@@ -1248,8 +1248,19 @@ function productdetailOkClicked(checkStock) {
 
                 if ((discount < minDiscount) || (discount > maxDiscount)) {
                     
-                     g_alert('The discount must be ' + minDiscount + ' - ' + maxDiscount + ' %');
-                     return;
+                    if (DaoOptions.getValue('OverWriteMaxDiscPass') === undefined) {
+                        // user is not allowed to overwrite discount
+                        g_alert('The discount must be ' + minDiscount + ' - ' + maxDiscount + ' %');
+                        return;
+                    } else if (DaoOptions.getValue('OverWriteMaxDiscPass') && (localStorage.getItem('overwriteDiscountCheckedOK') === undefined ||
+                            localStorage.getItem('overwriteDiscountCheckedOK') === null)) {
+                        // show popoup
+                        productdetailsShowDiscOverwritePasswordPopup();
+                        return;
+                    } else if (DaoOptions.getValue('OverWriteMaxDiscPass') && localStorage.getItem('overwriteDiscountCheckedOK') !== undefined && 
+                            localStorage.getItem('overwriteDiscountCheckedOK') !== null && localStorage.getItem('overwriteDiscountCheckedOK')) {
+                        // this is ok!
+                    }
                 }
                 g_pricelistSelectedProduct.RepDiscount = discount;
                 var rNetStr = $('#divnettvalue input').val() || productdetailValue('nett'); 
@@ -1323,4 +1334,27 @@ function productdetailIsVolumePriceCorrect(volumePrice) {
 		result = result && (g_pricelistSelectedProduct.ProductID == volumePrice[i].ProductID)
 	}
 	return result;
+}
+
+function productdetailsShowDiscOverwritePasswordPopup() {
+    
+    $('#discOverwritePassMessage').hide();
+    $('#discOverwritePassInput').val('');
+    $('#discOverwritePassPopup').popup('open');
+    
+    $('#discOverwritePassOKButton').unbind();
+    $('#discOverwritePassOKButton').click(function() {
+
+            var pass = $('#discOverwritePassInput').val();				
+
+            if (pass === DaoOptions.getValue('OverWriteMaxDiscPass')) {
+
+                $('#discOverwritePassMessage').hide();
+                localStorage.setItem('overwriteDiscountCheckedOK',true);
+                productdetailOkClicked();
+                $('#discOverwritePassPopup').popup('close');
+            } else {
+                $('#discOverwritePassMessage').show();
+            }
+    });
 }

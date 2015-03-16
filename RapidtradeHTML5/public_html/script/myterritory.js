@@ -458,6 +458,9 @@ function myterritoryOnCompanyClicked(key, page){
                                      g_fetchAvailableCredit();
 
                             sessionStorage.setItem('clearSearch', true);
+                            try {
+                                localStorage.removeItem('overwriteDiscountCheckedOK');
+                            } catch (ex) {}
                             $.mobile.changePage("company.html");
 
                     },
