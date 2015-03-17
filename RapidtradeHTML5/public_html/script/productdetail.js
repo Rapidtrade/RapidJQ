@@ -1244,7 +1244,7 @@ function productdetailOkClicked(checkStock) {
                     maxDiscount = DaoOptions.getValue('MaxRepDiscount', 100);
                 }
                 
-                var discount = parseInt(productdetailValue('discount'), 10);
+                var discount = parseFloat(productdetailValue('discount'));
 
                 if ((discount < minDiscount) || (discount > maxDiscount)) {
                     
@@ -1301,7 +1301,7 @@ function productdetailSave(qty, type, product) {
         
         var rNetStr = $('#divnettvalue input').val() || productdetailValue('nett');
         product.RepNett = parseFloat(rNetStr.replace(/,/,''));
-        product.RepDiscount = parseInt(productdetailValue('discount'), 10); //productdetailValue('discount');
+        product.RepDiscount = parseFloat(productdetailValue('discount')); //productdetailValue('discount');
     }
     
     product.Stock = productdetailGetStock();    
