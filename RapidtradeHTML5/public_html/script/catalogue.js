@@ -71,7 +71,7 @@ var catalogue = (function() {
     
     function addPage(pageIndex, totalPages) {        
         
-        catalogueHTML += '<div class="page' + (pageIndex < totalPages - 1 ? ' page-break' : '') + '"><div class="header"><img src="' + DaoOptions.getValue('QuoteHeader') + '" style="width:100%"></div>';
+        catalogueHTML += '<div class="page' + (pageIndex < totalPages - 1 ? ' page-break' : '') + '" style="position:relaive; height: 100%;"><div class="header"><img src="' + DaoOptions.getValue('QuoteHeader') + '" style="width:100%"></div>';
              
         var currentIndex = pageIndex *  itemsPerPage;
         
@@ -112,10 +112,10 @@ var catalogue = (function() {
         
         catalogueHTML += '</table></div>';        
         
-        catalogueHTML += '<div class="pageNumber">' + 'Page ' + (+pageIndex + 1) + '</div>';
+        //catalogueHTML += '<div class="pageNumber">' + 'Page ' + (+pageIndex + 1) + '</div>';
         
         var footerImageURL = DaoOptions.getValue('QuoteFooter');
-        catalogueHTML += '<div class="footer">' + (footerImageURL ? '<img src="' + footerImageURL + '" style="width:100%">' : '') + '</div></div>';
+        catalogueHTML += '<div class="footer" style="width:95%;text-align: right;"><div >' + 'Page ' + (+pageIndex + 1) + '</div>' + (footerImageURL ? '<img src="' + footerImageURL + '" style="width: 100%;">' : '') + '</div></div>';
     }   
     
     function showCatalogue() {
