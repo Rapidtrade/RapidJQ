@@ -1411,7 +1411,7 @@ function pricelistAddLine(pricelist) {
         
         var multiWhHtml = '';
         var messageHtml = '';
-        if (!canOrderItem && DaoOptions.getValue('MobileSelectWhOnPricelist') == 'true') {
+        if ((DaoOptions.getValue('MobileSelectWhOnPricelist') === 'true') && (!canOrderItem || pricelist.Stock <= 0)) {
             messageHtml = ' <span style="font-size:13px;color:#8A2416;padding-left:15px;">** ALT BRNCH **</span> ';
             var whsStocksData = pricelist.u6; //'2B;-9999,10;50,50;0'; //this should be data from item's userField or something else
             var whsStocksDataSplited = whsStocksData.split(',');

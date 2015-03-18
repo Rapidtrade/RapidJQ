@@ -205,7 +205,7 @@ function g_checkThumbnailMode() {
         $('#thumbnailMode').controlgroup('refresh');
     });
 
-    if (localStorage.getItem('thumbnailMode')=='On_Thumbs') {
+    if (localStorage.getItem('thumbnailMode') === undefined || localStorage.getItem('thumbnailMode') === null || localStorage.getItem('thumbnailMode')=='On_Thumbs') {
 		
         $("#On_Thumbs").attr("checked", true).checkboxradio("refresh");
         $("#Off_Thumbs").attr("checked", false).checkboxradio("refresh");
