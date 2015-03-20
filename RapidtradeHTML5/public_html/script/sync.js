@@ -5,6 +5,7 @@ var g_syncUserID;
 var g_syncTables = [];
 var g_syncPosted = [];
 var g_syncCount = 0;
+var g_syncRetryCount = 0;
 var g_syncDao = undefined;
 var g_syncNumRows = 300;
 var g_syncStopSync = false;
@@ -167,7 +168,7 @@ function syncFetchUser() {
 	var error = function (e, a) {
             g_alert(g_syncPageTranslation.translateText('You seem to be offline: ') + g_syncPageTranslation.translateText(a));
             $.mobile.hidePageLoadingMsg();
-	    console.log(e.message);
+	    console.log(e.statusText);
 	};
 
 	g_ajaxget(url, success, error);
@@ -361,6 +362,7 @@ function syncAll() {
 
     g_syncTables = [];
     g_syncCount = 0;
+    g_syncRetryCount = 0;
     
     if (localStorage.getItem('lastSyncDate') != g_today()) {
         
@@ -469,16 +471,29 @@ function syncFetchTable(supplierid, userid, table, method, skip, onSuccess, newR
     
     console.log(url);
     var success = function (json) {
+        g_syncRetryCount = 0;
         syncSaveToDB(json, supplierid, userid, version, table, method, skip, newRest);
         
         if (onSuccess)
             onSuccess();
     };
 
-    var error = function (e, a) {
-        g_alert('You seem to have timed out, please check your connection and try again: ' + a);
-        $.mobile.hidePageLoadingMsg();
-        console.log(e.Message);
+    var error = function (e, a, b) {
+        //if ((e.status === 503) || (a && a.indexOf('Access-Control-Allow-Origin') > 0) || (e.statusText && e.statusText.indexOf('Access-Control-Allow-Origin') > 0)) {
+            if (g_syncRetryCount++ < 5 ) {
+                setTimeout(function() {
+                    syncFetchTable(supplierid, userid, table, method, skip, onSuccess, newRest);
+                }, 2000);
+            } else {
+                g_alert('Error communicating with server. Please try again shortly.');
+                $.mobile.hidePageLoadingMsg();
+                console.log(e.statusText);
+            }
+        //} else {
+        //    g_alert('You seem to have timed out, please check your connection and try again: ' + a);
+        //    $.mobile.hidePageLoadingMsg();
+        //    console.log(e.statusText);
+        //}
     };
 
     g_ajaxget(url, success, error);	
