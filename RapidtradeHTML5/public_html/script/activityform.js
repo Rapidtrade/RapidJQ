@@ -1,6 +1,7 @@
 var g_activityFormSelectedActivityType = {};
 var g_activityFormNewActivity = {};
 var g_activityFormPhotoData = '';
+var g_activityFormRetryCount = 0;
 
 function activityFormLoadIntoDiv(divSelector, canEdit) {
 		
@@ -421,9 +422,10 @@ function activityFormSaveStep2() {
 
         g_saveObjectForSync(image, image.Id, 'File', 'UploadImage');
     }
-
+    
     if (g_isOnline(false)) {
-    try {		
+        g_activityFormRetryCount = 0;
+        try {		
             var activityInfo = {};  
             activityInfo.Table = "Activities";
             activityInfo.Method = "Modify";
@@ -434,17 +436,24 @@ function activityFormSaveStep2() {
             };
 
             var onFailure = function(error) {
-                    activityFormSaveOffline();
+                    //activityFormSaveOffline();
                     //((error.status == 0) || (error.status == 200)) ? onSuccess() : activityFormSaveOffline();
+                    if (g_activityFormRetryCount++ < 5 ) {
+                        setTimeout(function() {
+                            g_ajaxpost(jQuery.param(activityInfo), g_restUrl + 'post/post.aspx', onSuccess, onFailure);
+                        }, 2000);
+                    } else {
+                        activityFormSaveOffline();
+                    }
             };
 
             g_ajaxpost(jQuery.param(activityInfo), g_restUrl + 'post/post.aspx', onSuccess, onFailure);  
-    } catch (error) {
+        } catch (error) {
             activityFormSaveOffline();   		
-    } 
+        } 
 
     } else {
-            activityFormSaveOffline();
+        activityFormSaveOffline();
     }
 }
 

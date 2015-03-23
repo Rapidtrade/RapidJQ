@@ -7,9 +7,10 @@ var g_orderHeaderInvalidItemKeys = [];
 var g_orderHeaderValidItems = [];
 var g_orderHeaderOrderItemsLoaded = false;
 var g_orderHeaderJsonForm = undefined;
+var g_orderHeaderRetryCount = 0;
 
 var g_orderHeaderPageTranslation = {};
-var NO_REFERENCE_MESSAGE = 'You must enter a reference before you can continue.'
+var NO_REFERENCE_MESSAGE = 'You must enter a reference before you can continue.';
 
 function orderHeaderOnPageBeforeCreate() {
     
@@ -606,10 +607,10 @@ function orderHeaderSaveFormedOrder(position) {
    // } else if (position && position.code && position.code == 3) {
    //     return;
     }
-
+    
     if (!orderHeaderAreItemsValid())
         return;
-    
+    g_orderHeaderRetryCount = 0;
     // this option we are going to use to clear search text
     // on pricelist page
     sessionStorage.setItem('clearSearch', true);
@@ -716,19 +717,40 @@ function orderHeaderOnLineSaveSuccess() {
 
 function orderHeaderOnLineSaveError(error, msg) {
     if (error.status===200) {
-            //seems we sometimes get error even though we get a 200
-            orderHeaderOnLineSaveSuccess();
-            return;
-        }
+        //seems we sometimes get error even though we get a 200
+        orderHeaderOnLineSaveSuccess();
+        return;
+    }
+    
+    if (g_orderHeaderRetryCount++ < 5 ) {
+        setTimeout(function() {
+            var orderHeaderInfo = {};  	
+            orderHeaderInfo.Table = "Orders";
+            orderHeaderInfo.Method = "Modify2";
+            orderHeaderInfo.json = JSON.stringify(g_orderHeaderOrder);   
+            console.log(JSON.stringify(g_orderHeaderOrder));
+            var url = DaoOptions.getValue(g_orderHeaderOrder.Type + 'LiveURL');
+
+            if (!url) 
+                url = g_restUrl + 'post/post.aspx';
+
+            g_ajaxpost(jQuery.param(orderHeaderInfo), url, orderHeaderOnLineSaveSuccess, orderHeaderOnLineSaveError);
+        }, 2000);
+    } else {
+        console.log('Error in saving order: ' + error);
+        g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
+    }
         
-        if(msg === "timeout") {
-            g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);            
-        } else if (((error.status === 0) || (error.status === 200)) /*&& error.statusText!=='error'*/) {		
-            orderHeaderOnLineSaveSuccess();		
-        } else {		
-            console.log('Error in saving order: ' + error);
-            g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
-        }
+                
+        
+//        if(msg === "timeout") {
+//            g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);            
+//        } else if (((error.status === 0) || (error.status === 200)) /*&& error.statusText!=='error'*/) {		
+//            orderHeaderOnLineSaveSuccess();		
+//        } else {		
+//            console.log('Error in saving order: ' + error);
+//            g_saveObjectForSync(g_orderHeaderOrder, g_orderHeaderOrder.SupplierID + g_orderHeaderOrder.AccountID + g_orderHeaderOrder.OrderID, "Orders", "Modify2", orderHeaderOfflineSaveSuccess);
+//        }
 }
 
 function orderHeaderIsPOD(){
