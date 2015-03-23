@@ -21,5 +21,6 @@
     "Invoice Details": {"pt":"Detalhes da factura"},
     "Error: The order items are not created with the current order type.": {"pt":"Erro: os itens não são criados com o tipo de ordem atual."},
     "OK": {"pt":"OK"},
-    "Cancel": {"pt":"cancelar"}
+    "Cancel": {"pt":"cancelar"},
+    "Insufficient payment entered, please adjust payment or order.": {"pt": "Entrou pagamento insuficiente, por favor ajustar pagamento ou fatura."}
 }

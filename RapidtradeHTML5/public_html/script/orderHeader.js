@@ -261,7 +261,7 @@ function orderHeaderSaveOrder() {
         $.mobile.changePage('shoppingCart.html');
         return;
     }
-
+    
     var typeStrTemp = (sessionStorage.getItem("currentordertype").indexOf('Invoice') != -1) ? 'invoice' : g_orderHeaderOrder.Type.toLowerCase();
     
     $('#infoPopup p').text(g_orderHeaderPageTranslation.translateText('Please wait, processing ' + typeStrTemp));
@@ -298,7 +298,20 @@ function orderHeaderSaveOrder() {
             if (orderHeader.hasOwnProperty(property))
                 g_orderHeaderOrder[property] = orderHeader[property];
         
-        
+        if (DaoOptions.getValue('CalcChange','false') === 'true') {
+            var amountGiven = g_orderHeaderOrder[DaoOptions.getValue('CalcAmntEntered')] ? parseFloat(g_orderHeaderOrder[DaoOptions.getValue('CalcAmntEntered')]) : 0.00;
+
+            if (amountGiven === 0.00 || g_shoppingCartTotalIncl > amountGiven) {
+		$('#infoPopup').popup('close');
+                $('#orderInsufficientPaymentPopup a').off().on('click', function() {
+                    $('#orderInsufficientPaymentPopup').popup('close');
+                });
+                $('#orderInsufficientPaymentPopup').popup('open');
+                return;		
+            }
+        	
+        }
+
         g_orderHeaderOrder.DeliveryName = $('#name').val();
         for (var index = 1; index < 4; ++index)
             g_orderHeaderOrder['DeliveryAddress' + index] = $('#address' + index).val();
