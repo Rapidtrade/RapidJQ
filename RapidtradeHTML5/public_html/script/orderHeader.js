@@ -390,7 +390,15 @@ function orderHeaderSaveOrder() {
 function orderHeaderCaptureGPSAndSave() {
     
     if (((DaoOptions.getValue('AllowGPSWeb') === 'true') ||  g_phonegap) && navigator.geolocation)
-        navigator.geolocation.getCurrentPosition(orderHeaderSaveFormedOrder, orderHeaderSaveFormedOrder, {timeout:10000}); //); // , { timeout:20000, enableHighAccuracy: true});
+        navigator.geolocation.getCurrentPosition(function(position) {
+            setTimeout(function(){
+                orderHeaderSaveFormedOrder(position);
+            }, 5);
+        }, function(position) {
+            setTimeout(function(){
+                orderHeaderSaveFormedOrder(position);
+            }, 5);
+        }, {timeout:10000}); //); // , { timeout:20000, enableHighAccuracy: true});
     else
         orderHeaderSaveFormedOrder();
 }

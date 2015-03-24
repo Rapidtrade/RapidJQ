@@ -31,7 +31,7 @@ function activityFormLoadIntoDiv(divSelector, canEdit) {
 
 function activityFormInit(divSelector) {
 	
-    g_companyPageTranslation = translation('companypage');
+    //g_companyPageTranslation = translation('companypage');
 
 	$(divSelector + ' #activityFormPanel').hide();
 	$(divSelector + ' #divContacts').hide();
