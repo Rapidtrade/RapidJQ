@@ -5,6 +5,7 @@ var g_productdetailEditingNettValue = false;
 var g_productdetailStockValues = [];
 var g_productdetailCurrentImageNumber = 0;
 var g_productdetailComponentMultiWarehouses = {};
+var g_productdetailRetryCount = 0;
 
 function productdetailInit() {
 
@@ -210,7 +211,8 @@ function productdetailInit() {
         }
 
         if (g_pricelistMobileLiveStockDiscount && ($('#mode').val() === 'Online') && g_isOnline(false)) {
-
+            
+            g_productdetailRetryCount = 0;
             productdetailFetchLiveStockDiscount();
             
         } else {
@@ -926,16 +928,24 @@ function productdetailFetchLiveStockDiscount(livePriceUrl, checkUrl) {
 //    			if (e.status == 200 || e.status == 0) {
 //    				productdetailPriceOnSuccess;
 //    			}
-        		console.log(e.message);
-        		$.mobile.hidePageLoadingMsg();
-        		$('.pricelistBusyImg').hide();
-        		$('#quantity').removeClass('ui-disabled');
+                        if (g_productdetailRetryCount++ < 3 ) {
+                            setTimeout(function() {
+                                productdetailFetchLiveStockDiscount();
+                            }, 2000);
+                        } else {                            
+                            console.log(e.message);
+                            $.mobile.hidePageLoadingMsg();
+                            $('.pricelistBusyImg').hide();
+                            $('#quantity').removeClass('ui-disabled');
+                        }
     		});
 }
 
 
 function productdetailPriceOnSuccess (json) {
         
+    g_productdetailRetryCount = 0;
+    
     if (json.Errormsg) {
         
         $('#productMessagePopup p').text(json.Errormsg)

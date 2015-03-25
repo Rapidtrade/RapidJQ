@@ -17,6 +17,7 @@ var g_pricelistCaptureQuantityClicked = false;
 var g_pricelistMultiWarehouseClicked = false;
 var g_pricelistInvoiceWarehouse = '';
 var g_pricelistIsPrevNextPressed = false;
+var g_pricelistRetryCount = 0;
 
 /**
  * Always call openDB, which in turn call's init
@@ -957,6 +958,7 @@ function pricelistFetchPricelistJob() {
     
     if (pricelistIsRangeSelected() || ((DaoOptions.getValue('MobileOnlinePricelist') === 'true') || g_advancedSearchProducts.length)) { 
     	
+        g_pricelistRetryCount = 0;
     	pricelistFetchPricelistLive();
     	
     } else {
@@ -980,7 +982,7 @@ function pricelistFetchPricelistJob() {
 
 function pricelistFetchPricelistLiveOnSuccess(json) {
     
-    
+        g_pricelistRetryCount = 0;
 	if (json) {            
             
 		$.each(json, function(index, pricelist) {                    
@@ -1019,8 +1021,16 @@ function pricelistFetchPricelistLiveOnSuccess(json) {
 }
 
 function pricelistFetchPricelistLiveOnError() {	
-	$.mobile.hidePageLoadingMsg();
+    if (g_pricelistRetryCount++ < 3 ) {
+        setTimeout(function() {
+            pricelistFetchPricelistLive();
+        }, 2000);
+    } else {
+        $.mobile.hidePageLoadingMsg();
 	g_alert('ERROR: Cannot fetch the pricelist.');
+    }
+//	$.mobile.hidePageLoadingMsg();
+//	g_alert('ERROR: Cannot fetch the pricelist.');
 }
 
 function pricelistFetchBarCode(){
