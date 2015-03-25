@@ -35,7 +35,7 @@ function Dao() {
 //    	console.log('Inserting ' + key + ' into table ' + table);
     	
         if (g_indexedDB)
-            this.idbputMany(items, table, key, ponsuccesswrite, ponerror, poncomplete);
+            this.idbputMany(items, table, ponsuccesswrite, ponerror, poncomplete);
         else
             this.sqlputMany(items, table, ponsuccesswrite, ponerror, poncomplete);
     };
@@ -68,7 +68,7 @@ function Dao() {
     
     this.cursor1 = function (table, ponsuccessread, ponerror, poncomplete) {
         if (g_indexedDB) {
-            //this.idbcursor(table, ponsuccessread, ponerror, poncomplete);
+            this.idbcursor1(table, ponsuccessread, ponerror, poncomplete);
         }
         else {
             this.sqlcursor1(table, ponsuccessread, ponerror, poncomplete);
@@ -151,7 +151,7 @@ function Dao() {
         
         //reset sequence number
         if (seq) localStorage.setItem('sequenceNumber',seq);
-        if (seqday) localStorage.setItem('sequenceDay',seqday);
+        if (seqday) localStorage.setItem('sequenceDay', seqday);
         if (portuguese) localStorage.setItem('Portuguese', portuguese);
     };
 
@@ -203,7 +203,7 @@ function Dao() {
     		g_pricelistSortField = DaoOptions.getValue('PriceListSortField') || 'des';
     		if (g_indexedDB)
     			//TODO: implement offset / limit in indexeddb
-    			this.idbFetchPricelist(searchWords, ponsuccessread, ponerror, poncomplete);
+    			this.idbFetchPricelist(searchWords, ponsuccessread, ponerror, poncomplete, offset, limit, warehouse);
     		else 
     			this.sqlFetchPricelist(searchWords, ponsuccessread, ponerror, poncomplete, offset, limit, warehouse);
     		
@@ -221,9 +221,25 @@ function Dao() {
     
     this.fetchRoutesByDate = function (selectedDate, ponsuccessread, ponerror, poncomplete) { 
         if (g_indexedDB) {
-            // TO-DO: implement 
+            this.idFetchRoutesByDate(selectedDate, ponsuccessread, ponerror, poncomplete);
         } else {
             this.sqlFetchRoutesByDate(selectedDate, ponsuccessread, ponerror, poncomplete);
+        };
+    };
+
+    this.fetchRouteDeliveries = function (routeID, selectedDate, ponsuccessread, ponerror, poncomplete) {
+        if (g_indexedDB) {
+            this.idFetchRouteDeliveries(routeID, selectedDate, ponsuccessread, ponerror, poncomplete);
+        } else {
+            this.sqlFetchRouteDeliveries(routeID, selectedDate, ponsuccessread, ponerror, poncomplete);
+        };
+    };
+
+    this.fetchDeliveryDetails = function (podID, accountID, ponsuccessread, ponerror, poncomplete) {
+        if (g_indexedDB) {
+            this.idFetchDeliveryDetails(podID, accountID, ponsuccessread, ponerror, poncomplete);
+        } else {
+            this.sqlFetchDeliveryDetails(podID, accountID, ponsuccessread, ponerror, poncomplete);
         };
     };
 
@@ -253,8 +269,16 @@ function Dao() {
     /*
 	 * pass in a jsonobject and 
 	 */
-    this.idbputMany = function (json, table, key, ponsuccesswrite, ponerror, poncomplete) {
-    	
+    this.idbputMany = function (json, table, ponsuccesswrite, ponerror, poncomplete) {
+        $.each(json, function (index, j) {
+            var k = syncGetKeyField(j, table);
+            var dao = new Dao();
+            dao.idbput(j, table, k, ponsuccesswrite, ponerror, function () {
+                if ((index === json.lengthv - 1) && poncomplete)
+                    poncomplete();
+            });
+
+        });
     };
     
     /*
@@ -298,7 +322,15 @@ function Dao() {
 
     this.idbindex = function (table, key, idx, ponsuccessread, ponerror, poncomplete) {
     	
-    	
+        if (table === 'ProductCategories2') {
+            if (idx === 'index1')
+                idx = 'p';
+            else if (idx === 'index2')
+                idx = 'c';
+        } else if (table === 'BasketInfo') {
+            if (idx === 'index1') idx = 'AccountID';
+        }
+        
     	
         var transaction = db.transaction(table, "readwrite");
         // Do something when all the data is added to the database.
@@ -338,6 +370,14 @@ function Dao() {
     };
 
     this.idbcursor = function (table, key, index, ponsuccessread, ponerror, poncomplete) {
+        if (!db || db === null) {
+            if (navigator && navigator.notification) {
+                navigator.notification.alert("The database is not ready yet!");
+            } else {
+                g_alert("The database is not ready yet!");
+            }
+            return;
+        }
         var transaction = db.transaction(table, "readwrite");
         // Do something when all the data is added to the database.
         transaction.oncomplete = function (event) {
@@ -420,6 +460,7 @@ function Dao() {
             try {
                 objectStore = db.createObjectStore("Pricelists", { keyPath: "key" });
                 objectStore.createIndex("CategoryName", "cn", { unique: false });
+                objectStore.createIndex("UserField01", "UserField01", { unique: false });
                 objectStore.createIndex(g_pricelistSortField, g_pricelistSortField, { unique: false });
             } catch (error) {
                 console.log("Already exists");
@@ -453,6 +494,7 @@ function Dao() {
             }
             try {
                 objectStore = db.createObjectStore("BasketInfo", { keyPath: "key" });
+                objectStore.createIndex("AccountID", "AccountID", { unique: false });
             } catch (error) {
                 console.log("Already exists");
             }
@@ -519,12 +561,13 @@ function Dao() {
                 objectStore = db.createObjectStore("TPM", { keyPath: "key" });
             } catch (error) {
                 console.log("Already exists");
-            } 
+			} 
             try {
                 objectStore = db.createObjectStore("Route", { keyPath: "key" });
+				objectStore.createIndex("routeID", "routeID", { unique: false });
             } catch (error) {
                 console.log("Already exists");
-            }             
+            }               
         };
         request.onsuccess = function (event) {
             db = request.result;
@@ -532,6 +575,52 @@ function Dao() {
         };
     };
 
+    this.idbcount = function (table, key, index, poncomplete, ponerror) {
+        //if (index != 'index1' && index != 'index2' && index != 'index3' && index != 'index4') {
+        //    index = 'index1'; // index can only be either Index1 or Index2. so default to index1 of not valid
+        //    console.log('Issue with this index used, defaulting to index1');
+        //}
+
+        var transaction = db.transaction(table, 'readonly');
+
+        var tmpCount = 0;
+
+        transaction.oncomplete = function (event) {
+
+            if (poncomplete && tmpCount > 0)
+                poncomplete(tmpCount);
+        };
+
+        transaction.onerror = function (event) {
+
+            if (ponerror)
+                ponerror(event);
+        };
+
+        var objectStore = transaction.objectStore(table);
+        var idx = objectStore.index('AccountID');
+        var singleKeyRange = IDBKeyRange.only(key);
+        idx.openCursor(singleKeyRange).onsuccess = function (event) {
+
+            var cursor = event.target.result;
+
+            if (cursor) {
+
+                
+                var accountID = new String(cursor.value.AccountID);
+
+                if (accountID == key)
+                    ++tmpCount;
+
+                cursor['continue']();
+
+            } else if (ponerror) {
+
+                ponerror("No record found.");
+            }
+        };
+
+    };
 
     this.idbdeleteDB = function (pondbdeleted) {
         localStorage.clear();
@@ -539,9 +628,25 @@ function Dao() {
         for (var x = 0; x < db.objectStoreNames.length; x++) {
             var table = db.objectStoreNames.item(x);
             var transaction = db.transaction(table, 'readwrite');
+
+            // report on the success of opening the transaction
+            transaction.oncomplete = function (event) {
+                console.log('Transaction completed: database modification finished.');
+            };
+
+
+            transaction.onerror = function (event) {
+                console.log('Transaction not opened due to error: ' + transaction.error );
+            };
+
             try {
                 var objectStore = transaction.objectStore(table);
-                objectStore.clear();
+                var objectStoreRequest = objectStore.clear();
+
+                objectStoreRequest.onsuccess = function (event) {
+                    // report the success of our clear operation
+                    console.log('Data cleared for table: ' + event.target.source.name);
+                };
             } catch (error) {
                 g_alert(error.toString());
             }
@@ -656,10 +761,12 @@ function Dao() {
     };
 
     
-    this.idbFetchPricelist = function(searchWords, ponsuccessread, ponerror, poncomplete) {
+    this.idbFetchPricelist = function (searchWords, ponsuccessread, ponerror, poncomplete, offset, limit, warehouse) {
     	
     	var isProductFound = function(product) {
     		
+    	    if (product.del)
+    	        return false;
             var isFound = true;
             
             if (!((searchWords.length == 1) && ('' == searchWords[0]))) {
@@ -667,7 +774,7 @@ function Dao() {
             	// if there are search words
             	           	
                 var productId = new String(product.id).toLowerCase();
-                var description = new String(product.des).toLowerCase();
+                var description = new String(product[g_pricelistSortField]).toLowerCase();
             
                 for (var i = 0; i < searchWords.length; ++i) {
                 	
@@ -683,7 +790,7 @@ function Dao() {
             return isFound;
     	};
     	
-        var transaction = db.transaction('Pricelists');
+    	var transaction = db.transaction('Pricelists', 'readonly');
 
         transaction.oncomplete = function (event) {
         	
@@ -1368,6 +1475,16 @@ function Dao() {
                 });    
             });
     };
+
+    this.idFetchRoutesByDate = function (selectedDate, ponsuccessread, ponerror, poncomplete) {
+        if (ponerror)
+            ponerror("Function Dao.idFetchRoutesByDate is still not correntlly implemented!!!");
+
+        if (poncomplete) {
+            var res = [];
+            poncomplete(res);
+        }
+    };
     
     this.sqlFetchRouteDeliveries =  function(routeID, selectedDate, ponsuccessread, ponerror, poncomplete) {
         var query = 'SELECT distinct ord.json FROM Orders ord' +
@@ -1407,8 +1524,56 @@ function Dao() {
                 });    
             });
     };
+
+    this.idFetchRouteDeliveries = function (routeID, selectedDate, ponsuccessread, ponerror, poncomplete) {
+        var transaction = db.transaction('Orders');
+
+        var delivResult = [];
+
+        // Do something when all the data is added to the database.
+        transaction.oncomplete = function (event) {
+
+            if (poncomplete)
+                poncomplete(delivResult);
+        };
+
+        transaction.onerror = function (event) {
+
+            if (ponerror)
+                ponerror(event);
+        };
+
+        var objectStore = transaction.objectStore('Orders');
+        //var index = objectStore.index();
+
+        objectStore.openCursor().onsuccess = function (event) {
+
+            var cursor = event.target.result;
+
+            if (cursor) {
+
+                var rID = cursor.value.UserField01;
+                var cDate = cursor.value.CreateDate;
+                var ordType = cursor.value.Type;
+
+                cDate = cDate ? cDate.substring(0, 10).trim() : '';
+
+                if (rID === routeID && ordType === 'Deliv' && cDate === selectedDate)
+                    delivResult.push(cursor.value);
+
+
+                
+
+                cursor['continue']();
+
+            } else if (ponerror) {
+
+                ponerror("No record found.");
+            }
+        };
+    };
     
-    this.sqlDeliveryDetails =  function(podID, accountID, ponsuccessread, ponerror, poncomplete) {
+    this.sqlFetchDeliveryDetails = function (podID, accountID, ponsuccessread, ponerror, poncomplete) {
         var query = 'SELECT distinct oi.json FROM OrderItems oi' +
                     ' where oi.index2=\'' + podID + '\' '; 
             
@@ -1445,6 +1610,52 @@ function Dao() {
                     };
                 });    
             });
+    };
+
+    this.idFetchDeliveryDetails = function (podID, accountID, ponsuccessread, ponerror, poncomplete) {
+        var transaction = db.transaction('OrderItems');
+
+        var delivResult = [];
+
+        // Do something when all the data is added to the database.
+        transaction.oncomplete = function (event) {
+
+            if (poncomplete)
+                poncomplete(delivResult);
+        };
+
+        transaction.onerror = function (event) {
+
+            if (ponerror)
+                ponerror(event);
+        };
+
+        var objectStore = transaction.objectStore('OrderItems');
+        //var index = objectStore.index();
+
+        objectStore.openCursor().onsuccess = function (event) {
+
+            var cursor = event.target.result;
+
+            if (cursor) {
+
+                var pID = cursor.value.OrderID;
+                var accID = cursor.value.AccountID;
+
+
+                if (pID === podID && accID === accountID)
+                    delivResult.push(cursor.value);
+
+
+
+
+                cursor['continue']();
+
+            } else if (ponerror) {
+
+                ponerror("No record found.");
+            }
+        };
     };
     
     this.sqlcursor1 =  function(table, ponsuccessread, ponerror, poncomplete) {
@@ -1483,6 +1694,40 @@ function Dao() {
                     };
                 });    
             });
+    };
+
+    this.idbcursor1 = function (table, ponsuccessread, ponerror, poncomplete) {
+        
+        var result = [];
+
+        var transaction = db.transaction(table, "readwrite");
+        // Do something when all the data is added to the database.
+        transaction.oncomplete = function (event) {
+            if (poncomplete != undefined)
+                poncomplete(result);
+        };
+
+        transaction.onerror = function (event) {
+            if (ponerror != undefined)
+                ponerror(event);
+        };
+
+        var objectStore = transaction.objectStore(table);
+        objectStore.dao = this;
+        objectStore.openCursor().onsuccess = function (event) {
+            var cursor = event.target.result;
+            if (cursor) {
+                //$(document).trigger('rowreadOK',cursor.value);
+                if (ponsuccessread != undefined)
+                    ponsuccessread(cursor.value);
+
+                result.push(cursor.value);
+
+                cursor['continue']();
+            }
+                
+            
+        };
     };
 }
         

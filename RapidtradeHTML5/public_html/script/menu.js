@@ -3,7 +3,10 @@ function menuOnPageBeforeCreate() {
      // this must be done as a first thing due to a specific initialisation of the company page
     g_companyPageTranslation = translation('companypage');
  
-    g_menuPageTranslation = translation('menupage'); //translation('menupage');    
+    g_menuPageTranslation = translation('menupage');
+
+    if (sessionStorage.getItem('currentActivity'))
+        sessionStorage.removeItem('currentActivity');
 }
 
 function menuOnPageShow() {
@@ -24,7 +27,7 @@ function menuOnPageShow() {
     sessionStorage.setItem('orderheaderNext', 'menu');
 
     var dao = new Dao();
-    dao.openDB(function (user) { menuInit(); menuFetchMandatoryActivities();});
+    dao.openDB(function (user) { menuInit(); menuFetchMandatoryActivities(); });
     $('#nosync').hide();
 
     //menuFetchMandatoryActivities();
@@ -134,8 +137,8 @@ function menuOnGRVClick() {
 
 function menuOnPODClick() {
 	
-    sessionStorage.removeItem('currentCompany');
-    sessionStorage.setItem("currentordertype", "POD");
+	 sessionStorage.removeItem('currentCompany');
+     sessionStorage.setItem("currentordertype", "POD");
 //    $.mobile.changePage("grv.html", { transition: "slide" });
     $.mobile.changePage("route.html", { transition: "slide" });
 }

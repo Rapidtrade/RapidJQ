@@ -33,17 +33,16 @@ function syncOnPageShow() {
 
     g_syncPageTranslation.safeExecute(function() {
         
-        g_syncPageTranslation.translateButton('#signinagain', 'Log out');         
+        g_syncPageTranslation.translateButton('#signinagain', 'Log out');
         g_syncPageTranslation.translateButton('#syncButton', 'Submit');
-    });
-    
-    if (sessionStorage.getItem('disableMenuButton') === 'true')
+    });	
+	if (sessionStorage.getItem('disableMenuButton') === 'true')
          $('#syncMenu').addClass('ui-disabled');
 
     //first open database and it will call init
     g_syncDao = new Dao();
-    g_syncDao.openDB(syncInit);
-    syncBind();        
+    g_syncDao.openDB(function () { syncInit(); syncBind(); });
+    //syncBind();        
 }
 
 /*
@@ -160,7 +159,7 @@ function syncFetchUser() {
 	        }
 	    } else {
 	        $.mobile.hidePageLoadingMsg();
-	        g_alert('Wrong password...');
+	        g_alert(g_syncPageTranslation.translateText('Wrong password...'));
 	        $('#syncimg').attr('src', 'img/info-48.png');
 	        $('#message').text('Enter your password and click OK');
 	    }
@@ -708,7 +707,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip, ne
                                 
     	                    	var transaction = db.transaction('Pricelists');
     	                        var objectStore = transaction.objectStore('Pricelists');
-    	                        objectStore.createIndex(g_pricelistSortField, g_pricelistSortField, { unique: false });
+    	                        //objectStore.createIndex(g_pricelistSortField, g_pricelistSortField, { unique: false });
                             };
                     	}
                     }
