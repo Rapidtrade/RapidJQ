@@ -301,11 +301,31 @@ function g_vat() {
 function g_isOnline(showAlert) {
 
     showAlert = (showAlert !== undefined) ? showAlert : true;
+    
+    if (g_deviceVersion !== undefined) {
+        var networkState = navigator.network.connection.type;
 
-    if (!navigator.onLine && showAlert)
-            alert('This feature is disabled in the offline mode.');
+        var states = {};
+        states[Connection.UNKNOWN]  = false; //'Unknown connection';
+        states[Connection.ETHERNET] = true;  //'Ethernet connection';
+        states[Connection.WIFI]     = true;  //'WiFi connection';
+        states[Connection.CELL_2G]  = true;  //'Cell 2G connection';
+        states[Connection.CELL_3G]  = true;  //'Cell 3G connection';
+        states[Connection.CELL_4G]  = true;  //'Cell 4G connection';
+        states[Connection.NONE]     = false; //'No network connection';
+        
+        if (!states[networkState] && showAlert)
+            g_alert('This feature is disabled in the offline mode.');
+        
+        return states[networkState];
+    } else {
+        if (!navigator.onLine && showAlert)
+            g_alert('This feature is disabled in the offline mode.');
 
-    return navigator.onLine;
+        return navigator.onLine;
+    }
+    
+    
 }
 
 function g_setLeadingZero(number) {
