@@ -1341,6 +1341,16 @@ function pricelistBindCaptureQuantity() {
                 pricelistAddItemToBasket(itemIndex);
                 $(this).siblings('.quantity').text($(this).val());                
             });
+            
+            $('.captureQuantity').keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+
+                if (keycode == '13') {
+                    var itemIndex = Number(this.id.replace('quantity', ''));
+                    pricelistAddItemToBasket(itemIndex);
+                    $(this).siblings('.quantity').text($(this).val()); 
+                }
+            });
 	}
         
         if (DaoOptions.getValue('MobileSelectWhOnPricelist') == 'true') {
@@ -1749,6 +1759,17 @@ function pricelistCheckSelectedMultiWarehouse(productID, warehouse) {
                 pricelistAddItemToBasket(itemIndex);
                 $(this).siblings('.quantity').text($(this).val());                
             });
+            
+            $('.captureQuantity').keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+
+                if (keycode == '13') {
+                    var itemIndex = Number(this.id.replace('quantity', ''));
+                    pricelistAddItemToBasket(itemIndex);
+                    $(this).siblings('.quantity').text($(this).val()); 
+                }
+            });
+            
 //            $('#pricelists').on('blur', 'input', function() {
 //                if (this.id === inputElement.attr('id')) {
 //                    var itemIndex = Number(this.id.replace('quantity', ''));
