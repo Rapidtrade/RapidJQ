@@ -149,6 +149,11 @@ function g_isiPad() {
 			|| /iPhone OS 3_2_2/i.test(userAgent);
 }
 
+function g_isAndroid() {
+    var userAgent = navigator.userAgent;
+    return /Android/i.test(userAgent);
+}
+
 
 function g_isIOS7(){
     if (g_phonegap == false) return
@@ -707,12 +712,18 @@ function g_alert(message) {
 	}
 }
 
-function g_print(selector) {    
-    if (g_isiPad()) {
-        cordova.exec(null, null, "PrintPlugin", "print", [{'printHTML': $(selector).html()}]);
+function g_print(selector) {
+    if (g_deviceVersion !== undefined) {
+        if (g_isiPad()) {
+            cordova.exec(null, null, "PrintPlugin", "print", [{'printHTML': $(selector).html()}]);
+        } else if (g_isAndroid()){
+            //enter your code here
+        } else {
+            print();
+        }
     } else {
         print();
-    }
+    }    
 }
 
 function g_isQuantityValid(quantity, unit) {

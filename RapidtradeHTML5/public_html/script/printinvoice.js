@@ -1,5 +1,6 @@
 var g_printInvoicePrintAgain = false;
 var g_printInvoicePageTranslation = {};
+var g_printInvoiceMobileData = '';
 
 function printinvoiceOnPageBeforeCreate() {
 	
@@ -54,27 +55,36 @@ function printinvoiceOnPrint() {
 function printinvoiceFetchOrder() {
 	
     var order = JSON.parse(sessionStorage.getItem("currentOrder"));
-
+    g_printInvoiceMobileData = 'TAX INVOICE';
     printinvoiceShowOptionalText('.printinvoiceContent h3', 'InvoiceHeader');
 
     if (DaoOptions.getValue('InvoiceDoNotShowBarCode') !== 'true')
         $('#invoiceBarcode').barcode(order.UserField01, "code128");
         
     $('#invoiceNumber').text(order.UserField01);
-
-    $('#customerVATLabel').text(g_printInvoicePageTranslation.translateText(DaoOptions.getValue('VATLineText', 'Cust VAT')));
-    printinvoiceGetCustomerVAT();
-
+    g_printInvoiceMobileData += '/*/Inv. Number:\t\t\t' + order.UserField01;
+    
     $('#date').text(g_today());
-
+    g_printInvoiceMobileData += '/*/Inv. and Deliv. Date:\t\t\t' + g_today();
+    
+    g_printInvoiceMobileData += '/*/Supplied By/*/ID:\t\t';
+    
+    
     $('#id').text(order.UserID);
+    g_printInvoiceMobileData += order.UserID;
+    
+    g_printInvoiceMobileData += '/*/Details: ';
+    printinvoiceShowOptionalText('#details', 'MyAddress');
+    
 
     printinvoiceSetAddress('BillTo', order);
     printinvoiceSetAddress('ShipTo', order);
+    
+    $('#customerVATLabel').text(g_printInvoicePageTranslation.translateText(DaoOptions.getValue('VATLineText', 'Cust VAT')));
+    printinvoiceGetCustomerVAT();
 	
     key = g_currentUser().SupplierID + 'MobileLiveStockDiscount';
     
-    printinvoiceShowOptionalText('#details', 'MyAddress');
 	
     $('#acc').text(order.AccountID);
 
@@ -85,7 +95,7 @@ function printinvoiceFetchOrder() {
     var subTotal = 0;
 
     var vat = 0;
-
+    g_printInvoiceMobileData += '/*//*//*/Product\t\tDescription\t\t\t\tQty\tDisc\tPrice\tValue ';
     $.each(order.orderItems, function() {
 
         if (localStorage.getItem('printer') == 'small') {
@@ -109,7 +119,12 @@ function printinvoiceFetchOrder() {
                         '<td>' + this.Value + '</td>' +
                         '</tr>';	
         }
-
+        g_printInvoiceMobileData += '/*/' + this.ProductID + 
+                                    '\t\t' + this.Description +
+                                    '\t\t\t\t' + this.Quantity + 
+                                    '\t' + this.Discount + 
+                                    '\t' + this.Nett + 
+                                    '\t' + this.Value;
         quantityTotal += this.Quantity;
         subTotal += parseFloat(this.Value);
 
@@ -121,13 +136,20 @@ function printinvoiceFetchOrder() {
 
     g_append('#productListTable tbody', productLinesHtml);
     //$('#productListTable tbody').append(productLinesHtml);
-    $('#quantityTotal').text(quantityTotal);
-    $('#subTotal').text(g_roundToTwoDecimals(subTotal));    
+    $('#subTotal').text(g_roundToTwoDecimals(subTotal));
+    g_printInvoiceMobileData += '/*/\t\t\t\tSub Total:\t\t\t' + g_roundToTwoDecimals(subTotal);
+    if (DaoOptions.getValue('TaxText')) {
+    	$('#taxText').html(DaoOptions.getValue('TaxText'));
+        g_printInvoiceMobileData += '/*/\t\t\t\t' + DaoOptions.getValue('TaxText') + ':\t\t\t' + g_roundToTwoDecimals(vat);
+    } else {
+        g_printInvoiceMobileData += '/*/\t\t\t\tVat:\t\t\t' + g_roundToTwoDecimals(vat);
+    }
     $('#vat').text(g_roundToTwoDecimals(vat));
+    $('#quantityTotal').text(quantityTotal);
+    g_printInvoiceMobileData += '/*/\t\t\t\tTotal:\t' + quantityTotal + '\t\t\t' + g_roundToTwoDecimals(parseFloat(subTotal) + parseFloat(vat));
     $('#total').text(g_roundToTwoDecimals(parseFloat(subTotal) + parseFloat(vat)));
 	
-    if (DaoOptions.getValue('TaxText'))
-    	$('#taxText').html(DaoOptions.getValue('TaxText'));
+    
 }
 
 
@@ -145,8 +167,10 @@ function printinvoiceShowOptionalText(selector, optionName) {
     	var lines = text.split(';');
     	var textHtml = '';
 
-    	for (var i = 0; i < lines.length; ++i)
-    		textHtml += lines[i] + '<br/>'; 
+    	for (var i = 0; i < lines.length; ++i) {
+            textHtml += lines[i] + '<br/>'; 
+            g_printInvoiceMobileData += '/*/\t\t\t\t' + lines[i];
+        }
 
     	$(selector).html(textHtml);
     }

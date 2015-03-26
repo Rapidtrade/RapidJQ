@@ -215,7 +215,7 @@ function orderdetailsDeleteOrder() {
     orderHeaderInfo.Table = "Orders";
     orderHeaderInfo.Method = "Modify2";
 
-    g_orderdetailsCurrentOrder.Type = 'Deleted';
+    g_orderdetailsCurrentOrder.Type = 'Delet';
 
     orderHeaderInfo.json = JSON.stringify(g_orderdetailsCurrentOrder);   
 
