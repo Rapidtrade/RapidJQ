@@ -381,11 +381,12 @@ function companySyncHistory() {
         g_syncDao = new Dao();
         
     g_busy(true);
-
+    g_syncRetryCount = 0;
     syncFetchTable(g_currentUser().SupplierID, g_currentUser().UserID, 'Orders', 'GetCollectionByType3', 0, function() {
         
-        syncFetchTable(g_currentUser().SupplierID, g_currentUser().UserID, 'Orders', 'GetOrderItemsByType3', 0, function() {
+        syncFetchTable(g_currentUser().SupplierID, g_currentUser().UserID, 'Orders', 'GetOrderItemsByType3', 0, function(res) {
             
+            if (res)
             g_busy(false);
         });
     });    

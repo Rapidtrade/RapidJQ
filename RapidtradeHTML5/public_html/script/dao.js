@@ -329,6 +329,8 @@ function Dao() {
                 idx = 'c';
         } else if (table === 'BasketInfo') {
             if (idx === 'index1') idx = 'AccountID';
+        } else if (table === 'Orders') {
+            if (idx === 'index1') idx = 'AccountID';
         }
         
     	
@@ -549,6 +551,7 @@ function Dao() {
             
             try {
                 objectStore = db.createObjectStore("Orders", { keyPath: "key" });
+                objectStore.createIndex("AccountID", "AccountID", { unique: false });
             } catch (error) {
                 console.log("Already exists");
             }

@@ -471,10 +471,10 @@ function syncFetchTable(supplierid, userid, table, method, skip, onSuccess, newR
     console.log(url);
     var success = function (json) {
         g_syncRetryCount = 0;
-        syncSaveToDB(json, supplierid, userid, version, table, method, skip, newRest);
+        syncSaveToDB(json, supplierid, userid, version, table, method, skip, newRest, onSuccess);
         
         if (onSuccess)
-            onSuccess();
+            onSuccess(g_syncNumRows > json.length);
     };
 
     var error = function (e, a, b) {
@@ -545,7 +545,7 @@ function syncNextItem() {
  * Any time we save data, it needs to be in a save<...> method
  * This method saves the sync data to local database
  */
-function syncSaveToDB(json, supplierid, userid, version, table, method, skip, newRest) {
+function syncSaveToDB(json, supplierid, userid, version, table, method, skip, newRest, onSuccess) {
     
     if (('Companies' === table) && (0 === skip) && (0 === version) && (json._Items === null)) {
         
@@ -621,8 +621,10 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip, ne
 	    }
 	} else {
 	        //get the next 250 records for the table
-	        $('#results tbody tr:last td').text(g_syncPageTranslation.translateText(syncGetLocalTableName(table, method)) + ' (' + (skip + json._Items.length) + ') ' + g_syncPageTranslation.translateText('downloaded'));
-	        syncFetchTable(supplierid, userid, table, method, skip + g_syncNumRows, undefined, newRest); //get next 250 records	    
+                try {
+                    $('#results tbody tr:last td').text(g_syncPageTranslation.translateText(syncGetLocalTableName(table, method)) + ' (' + (skip + json._Items.length) + ') ' + g_syncPageTranslation.translateText('downloaded'));
+                } catch (exErr) { console.log(exErr.message); }
+	        syncFetchTable(supplierid, userid, table, method, skip + g_syncNumRows, onSuccess, newRest); //get next 250 records	    
 	}
 	
     try {
