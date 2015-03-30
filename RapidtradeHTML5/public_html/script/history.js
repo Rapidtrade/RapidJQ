@@ -1,4 +1,6 @@
 var g_historyLastRadioButton;
+var g_historyActRetryCount = 0;
+var g_historyOrdRetryCount = 0;
 
 /**
  * Always call openDB, which in turn call's init
@@ -155,9 +157,9 @@ function historyFetchActivities() {
     var fromDate = (date.getFullYear() - 1).toString() + month.toString() + day.toString();
     var url = g_restUrl + 'Activities2/GetCollection?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') +  '&fromDate=' + fromDate + '&toDate=' + toDate + '&skip=0&top=0&format=json';
     console.log(url);
-   
+    g_historyActRetryCount = 0;
     var success = function (json) {
-    	
+    	g_historyActRetryCount = 0;
         try {
         	
             sessionStorage.setItem('CacheHistoryActivities', JSON.stringify(json)); //cache results		
@@ -174,9 +176,16 @@ function historyFetchActivities() {
     };
     
     var error = function (e) {
-    	alert('You dont seem to be online');
-        console.log(e.message);
-        historyFetchOrders();        
+        if (g_historyActRetryCount++ < 3 ) {
+            setTimeout(function() {
+                g_ajaxget(url, success, error);
+            }, 2000);
+        } else {                            
+            g_alert('You dont seem to be online');
+            console.log(e.message);
+            historyFetchOrders(); 
+        }
+    	       
     };
     
     g_ajaxget(url, success, error);	 
@@ -314,6 +323,9 @@ function historyFetchOrders() {
         return;        
     }
 
+    $.mobile.showPageLoadingMsg();
+    g_historyOrdRetryCount = 0;
+
     var url = DaoOptions.getValue('LiveHistoryOrders') || g_restUrl + 'Orders/GetCollection';
 
     url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') + '&skip=0&top=100&format=json';
@@ -321,13 +333,21 @@ function historyFetchOrders() {
     console.log(url);
 
     var success = function (json) {
-
+        g_historyOrdRetryCount = 0;
         sessionStorage.setItem('CacheHistoryOrders',JSON.stringify(json)); //cache results
         historyOrderListView(json);            
     };
 
     var error = function (e) {
-        console.log(e.message);
+        if (g_historyOrdRetryCount++ < 3 ) {
+            setTimeout(function() {
+                g_ajaxget(url, success, error);
+            }, 2000);
+        } else {                            
+            g_alert('You dont seem to be online');
+            console.log(e.message);
+            $.mobile.hidePageLoadingMsg();
+        }
     };
 
     g_ajaxget(url, success, error);
@@ -396,11 +416,13 @@ function historyOrderListView(orders) {
     
     if (ordersList === ''){
     	$('#noorders').show();
+        $.mobile.hidePageLoadingMsg();
     	return;
     }
     
     g_append('#orderlist', ordersList);
-    $('#orderlist').listview('refresh');  
+    $('#orderlist').listview('refresh');
+    $.mobile.hidePageLoadingMsg();  
 }
 
 function historyOrderOnClick(cnt) {	
