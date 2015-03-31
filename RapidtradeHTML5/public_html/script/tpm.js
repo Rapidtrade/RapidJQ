@@ -482,8 +482,7 @@ function tpmVerifySuccess() {
     
     g_busy(false);
     
-    $('#verifyTPM').addClass('invisible');
-    $('#saveDiv').removeClass('invisible');
+    
     $('#promotionsDiv').empty();
     var url = DaoOptions.getValue('LiveGetResultsURL');
     if (!url) url = g_restUrl + 'Orders/Exists';	
@@ -495,15 +494,16 @@ function tpmVerifySuccess() {
                 $('#infoPopup p').text(json._getErrorMsg || 'Unknown error');
                 $('#infoPopup').popup('open');
                 setTimeout(function() {
-
+                    tpmFetchBasket();
                     $('#infoPopup').popup('close');
-                    showTable(json);
+                    //showTable(json);
                 //    $.mobile.changePage('orderHeader.html');        
 
-                }, 2000);                 
+                }, 3000);                 
                 
             } else {                
-                
+                $('#verifyTPM').addClass('invisible');
+                $('#saveDiv').removeClass('invisible');
                 showTable(json);
             }
         }, 
