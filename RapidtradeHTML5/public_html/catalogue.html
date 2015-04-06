@@ -18,7 +18,7 @@ and open the template in the editor.
         <script type="application/javascript" src="script/catalogue.js"></script>
     </head>
     <body>
-        <div data-role="page" id="cataloguePage" style="width:793px;position:relative">
+        <div data-role="page" id="cataloguePage" style="width:793px; position:relative;">
             <script>
                 $('#cataloguePage').bind("pageshow", catalogue.init({itemsPerPage:9, itemsPerRow:3}));
             </script>
@@ -31,8 +31,167 @@ and open the template in the editor.
                     Continue
                 </a>
             </div>
-            <div data-role="content" class="catalogueContent" style="width:100%;margin: 0;padding: 0;font-weight: 600;"> 
+            <div data-role="content" class="catalogueContent invisible" style="width: 100%; margin: 0px;padding: 0px;"> 
             </div>
+            <div data-role="content" class="catalogueHeaderEditor" style="width: 100%; margin: 0px;padding: 0px;"> 
+                <fieldset data-role="controlgroup" data-mini="true" style="width:70%;  display: inline-block; padding-left: 1px;">
+                        <label for="catalogueHeadT1">
+                            Title
+                        </label>
+                        <input name="" id="catalogueHeadT1" value="" type="text" >
+		</fieldset>
+                <div data-role="fieldset" style=" display: inline-block; width: 135px;">
+                        <label for="catalogueHeadT1Font">
+                            Font
+                        </label>
+                        <select id="catalogueHeadT1Font" data-mini="true" data-native-menu="true" data-inline="true">
+                            <option value="Arial,Arial,Helvetica,sans-serif">Arial</option>
+                            <option value="Arial Black,Arial Black,Gadget,sans-serif">Arial Black</option>
+                            <option value="Comic Sans MS,Comic Sans MS,cursive">Comic Sans MS</option>
+                            <option value="Courier New,Courier New,Courier,monospace">Courier New</option>
+                            <option value="Georgia,Georgia,serif">Georgia</option>
+                            <option value="Impact,Charcoal,sans-serif">Impact</option>
+                            <option value="Lucida Console,Monaco,monospace">Lucida Console</option>
+                            <option value="Lucida Sans Unicode,Lucida Grande,sans-serif">Lucida Sans Unicode</option>
+                            <option value="Palatino Linotype,Book Antiqua,Palatino,serif">Palatino Linotype</option>
+                            <option value="Tahoma,Geneva,sans-serif">Tahoma</option>
+                            <option value="Times New Roman,Times,serif">Times New Roman</option>
+                            <option value="Trebuchet MS,Helvetica,sans-serif" selected="selected">Trebuchet MS</option>
+                            <option value="Verdana,Geneva,sans-serif">Verdana</option>
+                        </select>
+		</div>
+                <div data-role="fieldset" style=" display: inline-block; ">
+                        <label for="catalogueHeadT1FontSize">
+                            Font size
+                        </label>
+                        <select id="catalogueHeadT1FontSize" data-mini="true" data-native-menu="true" data-inline="true">
+                            <option value="10">10</option>
+                            <option value="12">12</option>
+                            <option value="14">14</option>
+                            <option value="16">16</option>
+                            <option value="18">18</option>
+                            <option value="20">20</option>
+                            <option value="22">22</option>
+                            <option value="24" selected="selected">24</option>
+                            <option value="26">26</option>
+                            <option value="30">30</option>
+                        </select>
+		</div>
+                <fieldset data-role="controlgroup" data-mini="true" style="width:70%;  display: inline-block; padding-left: 1px;">
+                        <label for="catalogueHeadT2">
+                            Title 2
+                        </label>
+                        <input name="" id="catalogueHeadT2" value="" type="text" >
+		</fieldset>
+                <div data-role="fieldset" style=" display: inline-block; width: 135px;">
+                        <label for="catalogueHeadT2Font">
+                            Font
+                        </label>
+                        <select id="catalogueHeadT2Font" data-mini="true" data-native-menu="true" data-inline="true">
+                            <option value="Arial,Arial,Helvetica,sans-serif">Arial</option>
+                            <option value="Arial Black,Arial Black,Gadget,sans-serif">Arial Black</option>
+                            <option value="Comic Sans MS,Comic Sans MS,cursive">Comic Sans MS</option>
+                            <option value="Courier New,Courier New,Courier,monospace">Courier New</option>
+                            <option value="Georgia,Georgia,serif">Georgia</option>
+                            <option value="Impact,Charcoal,sans-serif">Impact</option>
+                            <option value="Lucida Console,Monaco,monospace">Lucida Console</option>
+                            <option value="Lucida Sans Unicode,Lucida Grande,sans-serif">Lucida Sans Unicode</option>
+                            <option value="Palatino Linotype,Book Antiqua,Palatino,serif">Palatino Linotype</option>
+                            <option value="Tahoma,Geneva,sans-serif">Tahoma</option>
+                            <option value="Times New Roman,Times,serif">Times New Roman</option>
+                            <option value="Trebuchet MS,Helvetica,sans-serif" selected="selected">Trebuchet MS</option>
+                            <option value="Verdana,Geneva,sans-serif">Verdana</option>
+                        </select>
+		</div>
+                <div data-role="fieldset" style=" display: inline-block; ">
+                        <label for="catalogueHeadT2FontSize">
+                            Font size
+                        </label>
+                        <select id="catalogueHeadT2FontSize" data-mini="true" data-native-menu="true" data-inline="true">
+                            <option value="10">10</option>
+                            <option value="12">12</option>
+                            <option value="14" selected="selected">14</option>
+                            <option value="16">16</option>
+                            <option value="18">18</option>
+                            <option value="20">20</option>
+                            <option value="22">22</option>
+                            <option value="24">24</option>
+                            <option value="26">26</option>
+                            <option value="30">30</option>
+                        </select>
+		</div>
+                <fieldset data-role="controlgroup" data-mini="true" style="width:70%;  display: inline-block; padding-left: 1px;">
+                        <label for="catalogueHeadT3">
+                            Title 3
+                        </label>
+                        <input name="" id="catalogueHeadT3" value="" type="text" >
+		</fieldset>
+                <div data-role="fieldset" style=" display: inline-block; width: 135px; ">
+                        <label for="catalogueHeadT3Font">
+                            Font
+                        </label>
+                        <select id="catalogueHeadT3Font" data-mini="true" data-native-menu="true" data-inline="true">
+                            <option value="Arial,Arial,Helvetica,sans-serif">Arial</option>
+                            <option value="Arial Black,Arial Black,Gadget,sans-serif">Arial Black</option>
+                            <option value="Comic Sans MS,Comic Sans MS,cursive">Comic Sans MS</option>
+                            <option value="Courier New,Courier New,Courier,monospace">Courier New</option>
+                            <option value="Georgia,Georgia,serif">Georgia</option>
+                            <option value="Impact,Charcoal,sans-serif">Impact</option>
+                            <option value="Lucida Console,Monaco,monospace">Lucida Console</option>
+                            <option value="Lucida Sans Unicode,Lucida Grande,sans-serif">Lucida Sans Unicode</option>
+                            <option value="Palatino Linotype,Book Antiqua,Palatino,serif">Palatino Linotype</option>
+                            <option value="Tahoma,Geneva,sans-serif">Tahoma</option>
+                            <option value="Times New Roman,Times,serif">Times New Roman</option>
+                            <option value="Trebuchet MS,Helvetica,sans-serif" selected="selected">Trebuchet MS</option>
+                            <option value="Verdana,Geneva,sans-serif">Verdana</option>
+                        </select>
+		</div>
+                <div data-role="fieldset" style=" display: inline-block; ">
+                        <label for="catalogueHeadT3FontSize">
+                            Font size
+                        </label>
+                        <select id="catalogueHeadT3FontSize" data-mini="true" data-native-menu="true" data-inline="true">
+                            <option value="10">10</option>
+                            <option value="12">12</option>
+                            <option value="14" selected="selected">14</option>
+                            <option value="16">16</option>
+                            <option value="18">18</option>
+                            <option value="20">20</option>
+                            <option value="22">22</option>
+                            <option value="24">24</option>
+                            <option value="26">26</option>
+                            <option value="30">30</option>
+                        </select>
+		</div>
+                <fieldset data-role="controlgroup" data-mini="true" style="width:98%; padding-left: 1px;">
+                        <label for="catalogueHeadImageFile">
+                            Header logo image
+                        </label>
+                        <input name="catalogueHeadImageFile" id="catalogueHeadImageFile"  type="file" style="display: inline-block;" >
+                        <output id="catalogueHeadImageName" style="display: inline-block;"></output>
+		</fieldset>
+                <fieldset data-role="controlgroup" data-mini="true" style="width:45%; display: inline-block;  padding-left: 1px;">
+                        <label for="catalogueHeadBGColor">
+                            Background color
+                        </label>
+                        <input name="" id="catalogueHeadBGColor" value="#39649B" type="color" >
+		</fieldset>
+                <fieldset data-role="controlgroup" data-mini="true" style="width:45%; display: inline-block;  padding-left: 1px;">
+                        <label for="catalogueHeadFontColor">
+                            Font color
+                        </label>
+                        <input name="" id="catalogueHeadFontColor" value="#FFFFFF" type="color" >
+		</fieldset>
+                <div  style="width: 97% !important; float: right; padding: 10px;" >
+                    <a href data-role="button" data-mini="true" id="catalogueHeaderOKButton" style="width: 80px; display: inline-block; float: right;">OK</a>
+                    <a href data-role="button" data-mini="true" id="catalogueHeaderApplyButton" style="width: 80px; display: inline-block; float: right;">Apply</a>
+                </div>
+                
+                <div style="width: 98%; margin: 65px 1px 1px 1px;">
+                    <div id="catalogueHeadPreview"></div>
+                </div>
+            </div>
+            
         </div>
     </body>
 </html>
