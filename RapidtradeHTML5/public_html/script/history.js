@@ -319,7 +319,7 @@ function historyFetchOrders() {
 
         }, undefined, showOrders);
 
-        g_busy(false);
+        //g_busy(false);
         return;        
     }
 
@@ -364,10 +364,12 @@ function historyOrderListView(orders) {
     
     if (orders == null){
     	$('#noorders').show();
+        $.mobile.hidePageLoadingMsg();
     	return;
     }
     if (orders.length == 0){
     	$('#noorders').show();
+        $.mobile.hidePageLoadingMsg();
     	return;
     } else 
     	$('#noorders').hide();
