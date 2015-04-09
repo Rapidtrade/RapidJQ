@@ -546,7 +546,7 @@ var route = (function() {
         //    g_ajaxget(url, sendItemsToBasket);
         //} else {
             var dao = new Dao();
-            dao.sqlDeliveryDetails(podId, accountId, undefined
+            dao.sqlFetchDeliveryDetails(podId, accountId, undefined
                 , function(message) {
                     console.log(message);}, 
                 function(deliveryItems) {

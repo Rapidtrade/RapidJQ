@@ -282,6 +282,8 @@ function menuShowButtons() {
                         $('#vanonlydelivery').hide();
                         $('#vansalesonlystocktake').hide();
                         
+                        $('#myTerritoryButton')[(role.indexOf('POD ONLY') != -1) ? 'hide' : 'show']();
+                        $('#todayButton')[(role.indexOf('POD ONLY') != -1) ? 'hide' : 'show']();
                         $('#vansalesonlyreplenishstock')[(role.indexOf('REPL') != -1) ? 'show' : 'hide']();
 			$('#vansalesonlyreceivestock')[(role.indexOf('GRV') != -1) ? 'show' : 'hide']();
 			$('#vanonlydelivery')[(role.indexOf('POD') != -1) ? 'show' : 'hide']();
