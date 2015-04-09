@@ -170,24 +170,36 @@ and open the template in the editor.
                         <input name="catalogueHeadImageFile" id="catalogueHeadImageFile"  type="file" style="display: inline-block;" >
                         <output id="catalogueHeadImageName" style="display: inline-block;"></output>
 		</fieldset>
-                <fieldset data-role="controlgroup" data-mini="true" style="width:45%; display: inline-block;  padding-left: 1px;">
+                <fieldset data-role="controlgroup" data-mini="true" style="width: 23%; display: inline-block;  padding-left: 1px;">
+                        <label for="catalogueHeadFontColor">
+                            Font color
+                        </label>
+                        <input name="" id="catalogueHeadFontColor" value="#FFFFFF" type="color" >
+		</fieldset>
+                <fieldset data-role="controlgroup" data-mini="true" style="width: 23%; display: inline-block;  padding-left: 1px;">
                         <label for="catalogueHeadBGColor">
                             Background color
                         </label>
                         <input name="" id="catalogueHeadBGColor" value="#39649B" type="color" >
 		</fieldset>
-                <fieldset data-role="controlgroup" data-mini="true" style="width:45%; display: inline-block;  padding-left: 1px;">
-                        <label for="catalogueHeadFontColor">
-                            Font color
+                <fieldset data-role="controlgroup" data-mini="true" style="width: 23%; display: inline-block;  padding-left: 1px;">
+                        <label for="catalogueHeadUBBGColor">
+                            Under Bubbles
                         </label>
-                        <input name="" id="catalogueHeadFontColor" value="#FFFFFF" type="color" >
+                        <input name="" id="catalogueHeadUBBGColor" value="#C5CAE0" type="color" >
+		</fieldset>
+                <fieldset data-role="controlgroup" data-mini="true" style="width: 23%; display: inline-block;  padding-left: 1px;">
+                        <label for="showBubbles">
+                            Show Bubbles
+                        </label>
+                        <input type="checkbox" name="showBubbles" id="showBubbles" />
 		</fieldset>
                 <div  style="width: 97% !important; float: right; padding: 10px;" >
                     <a href data-role="button" data-mini="true" id="catalogueHeaderOKButton" style="width: 80px; display: inline-block; float: right;">OK</a>
                     <a href data-role="button" data-mini="true" id="catalogueHeaderApplyButton" style="width: 80px; display: inline-block; float: right;">Apply</a>
                 </div>
                 
-                <div style="width: 98%; margin: 65px 1px 1px 1px;">
+                <div style="width: 100%; margin: 65px 0px 0px 0px;">
                     <div id="catalogueHeadPreview"></div>
                 </div>
             </div>

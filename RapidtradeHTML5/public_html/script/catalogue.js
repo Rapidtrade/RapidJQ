@@ -237,22 +237,43 @@ var catalogue = (function() {
     }
     
     function applyChangesOnHeader() {
-        var headerHTML = '<div style="width: 100%; height: 111px; background-color: ' + $('#catalogueHeadBGColor').val() + '; display: inline-block;">' + 
-				'<div style="height: 111px; width: 111px; padding: 5px; float: left; display: inline-block;">' +
-					'<img src="' + localStorage.getItem('catalogueLogoImageData') + '" style="width: 101px; height: 101px;"/>' +
-				'</div>' +
-				'<div style="width:620px; float: left; vertical-align: middle;display: inline-block; padding: 5px; text-align:center; font-family: \'Trebuchet MS\'; color: ' + $('#catalogueHeadFontColor').val() + ';">' +
-					'<h1 style="margin: 5px 5px 5px 5px; font-size: ' + $('#catalogueHeadT1FontSize').val() + 'px; font-family: ' + $('#catalogueHeadT1Font').val() + ';">' + $('#catalogueHeadT1').val().replace(/ /g,'&nbsp;') + '</h1>' + 
-					'<h4 style="margin: 5px 5px 5px 5px; font-size: ' + $('#catalogueHeadT2FontSize').val() + 'px; font-family: ' + $('#catalogueHeadT2Font').val() + ';">' + $('#catalogueHeadT2').val().replace(/ /g,'&nbsp;') + '</h4>' +
-					'<p style="margin: 5px 20px 0px 20px; font-size: ' + $('#catalogueHeadT3FontSize').val() + 'px; font-family: ' + $('#catalogueHeadT3Font').val() + ';">' + $('#catalogueHeadT3').val().replace(/ /g,'&nbsp;') + '</p>' +
-				'</div>' +
-			'</div>'; /* +
-			<div style="width: 100%; ">
-				<img src="header_bottom.png" style="width: 100%;"/>
-			</div>
-        '</div>';*/
-        
-        $('#catalogueHeadPreview').html(headerHTML);
+        var showBubbles = $('#showBubbles').attr("checked");
+        if (showBubbles) {
+            var headerHTML = '<div style="width: 100%; height: 97px; background-color: ' + $('#catalogueHeadBGColor').val() + ';">' + 
+                                    '<div style="height: 92px; width: 92px; padding: 5px 5px 0px 5px; float: left; display: inline-block;">' +
+                                            '<img src="' + localStorage.getItem('catalogueLogoImageData') + '" style="width: 92px; height: 92px;"/>' +
+                                    '</div>' +
+                                    '<div style="width:620px; height: 87px; float: left; vertical-align: middle;display: inline-block; padding: 5px; text-align:center; font-family: \'Trebuchet MS\'; color: ' + $('#catalogueHeadFontColor').val() + ';">' +
+                                            '<h1 style="margin: 5px 5px 5px 5px; font-size: ' + $('#catalogueHeadT1FontSize').val() + 'px; font-family: ' + $('#catalogueHeadT1Font').val() + ';">' + $('#catalogueHeadT1').val().replace(/ /g,'&nbsp;') + '</h1>' + 
+                                            '<h4 style="margin: 5px 5px 5px 5px; font-size: ' + $('#catalogueHeadT2FontSize').val() + 'px; font-family: ' + $('#catalogueHeadT2Font').val() + ';">' + $('#catalogueHeadT2').val().replace(/ /g,'&nbsp;') + '</h4>' +
+                                            '<p style="margin: 5px 20px 0px 20px; font-size: ' + $('#catalogueHeadT3FontSize').val() + 'px; font-family: ' + $('#catalogueHeadT3Font').val() + ';">' + $('#catalogueHeadT3').val().replace(/ /g,'&nbsp;') + '</p>' +
+                                    '</div>' +
+                            '</div>';
+            headerHTML += '<div style="width: 100%; height: 14px; background-color: ' + $('#catalogueHeadUBBGColor').val() + '; text-align: center; padding: 0px; margin: 0px;">';
+            for (var i = 0; i < 56; ++i) {
+              headerHTML += '<div style="width: 14.16px; height: 7px; -moz-border-bottom-right-radius: 7px; border-bottom-right-radius: 7px; -moz-border-bottom-left-radius: 7px; border-bottom-left-radius: 7px; background-color: ' + $('#catalogueHeadBGColor').val() + '; float: left;"></div>';  
+            }
+            headerHTML += '</div>';
+
+            $('#catalogueHeadPreview').html(headerHTML);
+        } else {
+            var headerHTML = '<div style="width: 100%; height: 111px; background-color: ' + $('#catalogueHeadBGColor').val() + '; display: inline-block;">' + 
+                                    '<div style="height: 111px; width: 111px; padding: 5px; float: left; display: inline-block;">' +
+                                            '<img src="' + localStorage.getItem('catalogueLogoImageData') + '" style="width: 101px; height: 101px;"/>' +
+                                    '</div>' +
+                                    '<div style="width:620px; float: left; vertical-align: middle;display: inline-block; padding: 5px; text-align:center; font-family: \'Trebuchet MS\'; color: ' + $('#catalogueHeadFontColor').val() + ';">' +
+                                            '<h1 style="margin: 5px 5px 5px 5px; font-size: ' + $('#catalogueHeadT1FontSize').val() + 'px; font-family: ' + $('#catalogueHeadT1Font').val() + ';">' + $('#catalogueHeadT1').val().replace(/ /g,'&nbsp;') + '</h1>' + 
+                                            '<h4 style="margin: 5px 5px 5px 5px; font-size: ' + $('#catalogueHeadT2FontSize').val() + 'px; font-family: ' + $('#catalogueHeadT2Font').val() + ';">' + $('#catalogueHeadT2').val().replace(/ /g,'&nbsp;') + '</h4>' +
+                                            '<p style="margin: 5px 20px 0px 20px; font-size: ' + $('#catalogueHeadT3FontSize').val() + 'px; font-family: ' + $('#catalogueHeadT3Font').val() + ';">' + $('#catalogueHeadT3').val().replace(/ /g,'&nbsp;') + '</p>' +
+                                    '</div>' +
+                            '</div>'; /* +
+                            <div style="width: 100%; ">
+                                    <img src="header_bottom.png" style="width: 100%;"/>
+                            </div>
+            '</div>';*/
+
+            $('#catalogueHeadPreview').html(headerHTML);
+        }
     }
     
 })();
