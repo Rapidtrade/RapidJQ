@@ -177,7 +177,7 @@ var catalogue = (function() {
                     '<tr><td width="25%">Descr</td><td style="white-space: nowrap;">' + item.Description  + '</td></tr>' +
                     //'<tr><td>Inn/Ctn Qty</td><td>' + (item.CategoryName || 'N/A')  + '</td></tr>' +
                     '<tr><td width="25%">Inn/Ctn Qty</td><td>' + (item.UserField03 || '-')  + '/' + (item.UserField04 || '-') + '</td></tr>' +
-                    '<tr><td width="25%">Price (Excl)</td><td>$' + ( item.RepChangedPrice ? ('' + item.RepNett) : ('' + item.Nett))  + '</td></tr>';
+                    '<tr><td width="25%">Price (Excl)</td><td>$' + ( item.RepChangedPrice ? ('' + g_addCommas(parseFloat(item.RepNett).toFixed(2))) : ('' + g_addCommas(parseFloat(item.Nett).toFixed(2))))  + '</td></tr>';
             
             if (order.UserField01 && order.UserField01 === 'Yes') {
                 catalogueHTML +=  '<tr align="center"><td colspan="2"><span class="catalogueItemBarCodeW' + itemsPerPage + '"  ><span class="catInnerBC" >' + (item.UserField01 || 'N/A')  + '</span></span>' +
