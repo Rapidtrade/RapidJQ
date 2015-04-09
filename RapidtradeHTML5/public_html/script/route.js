@@ -140,8 +140,8 @@ var route = (function() {
 
                     $('#routeList li').off().on('click', function() {
                         
-                        showPanel('#podsPanel');
                         selectedRouteId = this.id;
+                        showPanel('#podsPanel');
                         fetchPods();
                     });  
                     
@@ -591,6 +591,18 @@ var route = (function() {
         if ($('#takeRouteButton').hasClass('ui-disabled')) 
                 $('#takeRouteButton').removeClass('ui-disabled');
         $('#refreshButton').toggle(isPodsPanel);
+        if (isPodsPanel) {
+            $('#podsPanelHeader').text('Route Num: ' + selectedRouteId);
+            if (!$('#routePage .logoSml').hasClass('invisible'))
+                $('#routePage .logoSml').addClass('invisible');
+            if ($('#podsPanelHeader').hasClass('invisible'))
+                $('#podsPanelHeader').removeClass('invisible');
+        } else {
+            if (!$('#podsPanelHeader').hasClass('invisible'))
+                $('#podsPanelHeader').addClass('invisible');
+            if ($('#routePage .logoSml').hasClass('invisible'))
+                $('#routePage .logoSml').removeClass('invisible');
+        }
     }
     
     function modifyCachedRoutes() {
