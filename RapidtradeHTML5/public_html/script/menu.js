@@ -61,6 +61,10 @@ function menuOnPageShowSmall() {
             $('#replenishImg').attr('src', 'img/Truck-32.png');
             $('#grvImg').attr('src', 'img/receipt-32.png');
             $('#menuMainPanel').attr('class','greypanel menuMainPanelSml');
+            
+            var menuBtns = $('.menuIconLabel');
+            menuBtns.removeClass('menuIconLabel');
+            menuBtns.addClass('menuIconLabelSmall');
     }	
 }
 
