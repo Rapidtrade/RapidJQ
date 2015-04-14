@@ -20,6 +20,8 @@ var route = (function() {
     
     var selectedRouteId = 0;
     
+    var routeRetryCount = 0;
+    
     var panelSelectors = {
         routesPanel: '#routesPanel',
         podsPanel: '#podsPanel'
@@ -28,7 +30,7 @@ var route = (function() {
     function bind() {
         
         $('#backButton').off().on('click', goBack);
-        $('#submit').off().on('click', function() { fetchRoutes(true); });
+        $('#submit').off().on('click', function() { routeRetryCount = 0; fetchRoutes(true); });
         $('#refreshButton').off().on('click', function() { takeARoute(true); });
         $('#takeRouteButton').off().on('click', function() { takeARoute(false); });
         if (localStorage.getItem('routesLastSelectedDate')) {
@@ -94,13 +96,21 @@ var route = (function() {
     }
     
     function onFechRoutesOnlineError(err) {
-        g_alert('You seem to have timed out, please check your connection and try again: ' + err);
-        showRoutes([]); 
+        if (routeRetryCount++ < 3 ) {
+            setTimeout(function() {
+                fetchRoutes(true);
+            }, 2000);
+        } else {
+            g_alert('You seem to have timed out, please check your connection and try again: ' + err);
+            showRoutes([]);
+        } 
     }
     
     function showRoutes(routes) {                    
         
         $('#routeList').empty();
+        
+        routeRetryCount = 0;
         
         if (!routes.length) {
             
@@ -546,7 +556,7 @@ var route = (function() {
         //    g_ajaxget(url, sendItemsToBasket);
         //} else {
             var dao = new Dao();
-            dao.sqlFetchDeliveryDetails(podId, accountId, undefined
+            dao.fetchDeliveryDetails(podId, accountId, undefined
                 , function(message) {
                     console.log(message);}, 
                 function(deliveryItems) {
