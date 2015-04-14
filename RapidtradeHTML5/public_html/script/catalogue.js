@@ -54,7 +54,10 @@ var catalogue = (function() {
             }
             
             bind();
-            if (/*true*/  DaoOptions.getValue('AllowEditCatalogueHeader','false')) {
+            
+            var showCustomizeHeaderScreen = (DaoOptions.getValue('AllowEditCatalogueHeader','false') === 'true') && (order.UserField03 === 'Yes');
+            
+            if (showCustomizeHeaderScreen) {
                 if (!$('.catalogueContent').hasClass('invisible')) {
                     $('.catalogueContent').addClass('invisible');
                 }
@@ -115,6 +118,15 @@ var catalogue = (function() {
                 });
                 applyChangesOnHeader();
             } else {
+                if ($('.catalogueContent').hasClass('invisible')) {
+                    $('.catalogueContent').removeClass('invisible');
+                }
+                if (!$('.catalogueHeaderEditor').hasClass('invisible')) {
+                    $('.catalogueHeaderEditor').addClass('invisible');
+                }
+                if ($('.ui-btn-left').hasClass('ui-disabled')) {
+                    $('.ui-btn-left').removeClass('ui-disabled');
+                }
                 fetch();
             }
         }
@@ -154,8 +166,10 @@ var catalogue = (function() {
     
     function addPage(pageIndex, totalPages) {        
         
+        var showCustomHeader = (DaoOptions.getValue('AllowEditCatalogueHeader','false') === 'true') && (order.UserField03 === 'Yes') && $('#catalogueHeadPreview').html().trim();
+        
         catalogueHTML += '<div class="page' + (pageIndex < totalPages - 1 ? ' page-break' : '') + '" style="position:relaive; height: 100%;"><div class="header">' + 
-                ($('#catalogueHeadPreview').html().trim() ? $('#catalogueHeadPreview').html() : '<img src="' + DaoOptions.getValue('QuoteHeader') + '" style="width:100%">' ) + '</div>';
+                (showCustomHeader ? $('#catalogueHeadPreview').html() : '<img src="' + DaoOptions.getValue('QuoteHeader') + '" style="width:100%">' ) + '</div>';
              
         var currentIndex = pageIndex *  itemsPerPage;
         
