@@ -12,6 +12,7 @@ var route = (function() {
             
             $('#refreshButton').hide();
             $('#takeRouteButton').hide();
+            $('.headerLogo').attr('src', g_logo);
             bind();
         }
     }

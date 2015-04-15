@@ -35,6 +35,8 @@ function callCycleEditInit() {
 }
 
 function callCycleEditBind() {
+    
+    $('.headerLogo').attr('src', g_logo);
 
  	$('#nextWeek, #prevWeek').click(function() {
  		

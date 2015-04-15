@@ -1,4 +1,6 @@
 ﻿function myKPIsOnPageShow() {
+    
+    $('.headerLogo').attr('src', g_logo);
 	
     myKPIsInit();
     myKPISBind();

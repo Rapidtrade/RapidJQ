@@ -9,6 +9,7 @@ var g_myterritoryPageTranslation = {};
 
 function myterritoryOnPageBeforeCreate() {
     
+    $('.headerLogo').attr('src', g_logo);
     g_myterritoryPageTranslation = translation('myterritorypage');
 }
 

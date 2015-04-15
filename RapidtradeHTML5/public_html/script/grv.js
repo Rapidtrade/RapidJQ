@@ -3,6 +3,8 @@
  * This is called from script tag inside page
  */
 function grvOnPageShow() {
+    
+    $('.headerLogo').attr('src', g_logo);
     	
     if (sessionStorage.getItem("currentordertype")==='POD') {
             $('#grvTitle').html('Deliveries');

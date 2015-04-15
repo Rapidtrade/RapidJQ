@@ -14,6 +14,8 @@ function callCycleOnPageShow() {
 }
 
 function callCycleBind() {
+    
+    $('.headerLogo').attr('src', g_logo);
 	
     $('#callcycletoMenu').button()
 .click(function (event) {

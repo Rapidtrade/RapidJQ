@@ -49,6 +49,8 @@ function orderHeaderOnPageShow() {
         g_checkUsageMode();
     });
     
+    $('.headerLogo').attr('src', g_logo);
+    
     var dao = new Dao();
     dao.openDB(function () {
         orderHeaderInit();

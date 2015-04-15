@@ -39,6 +39,8 @@ $(document).ready(function () {
 
 //********************************************************************************** Bind Events
 function bind() {
+    
+    $('.headerLogo').attr('src', g_logo);
 	
     $("#msName").change(function () {
         $("#msActivity")[0].selectedIndex = 0;

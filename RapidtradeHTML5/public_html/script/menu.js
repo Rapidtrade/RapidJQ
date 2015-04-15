@@ -4,6 +4,8 @@ function menuOnPageBeforeCreate() {
     g_companyPageTranslation = translation('companypage');
  
     g_menuPageTranslation = translation('menupage');
+    
+    $('.menuLogo').attr('src', g_menuLogo);
 
     if (sessionStorage.getItem('currentActivity'))
         sessionStorage.removeItem('currentActivity');
