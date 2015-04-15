@@ -22,6 +22,7 @@ var g_vanSales = false;
 var g_restPHPUrl = "http://107.21.55.154/rest/index.php/";
 var g_logo = 'img/logoSml.png';
 var g_menuLogo = 'img/logo.png';
+
 var g_indexedDB;
 var g_defaultDisplayFields = [];
 var g_builtInScanner = false;

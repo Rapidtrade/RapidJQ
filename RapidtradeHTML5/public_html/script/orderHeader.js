@@ -300,7 +300,7 @@ function orderHeaderSaveOrder() {
             if (orderHeader.hasOwnProperty(property))
                 g_orderHeaderOrder[property] = orderHeader[property];
         
-        if (DaoOptions.getValue('CalcChange','false') === 'true') {
+        if (DaoOptions.getValue('CalcChange','false') === 'true' && g_orderheaderOrderType === 'Invoice') {
             var amountGiven = g_orderHeaderOrder[DaoOptions.getValue('CalcAmntEntered')] ? parseFloat(g_orderHeaderOrder[DaoOptions.getValue('CalcAmntEntered')]) : 0.00;
 
             if (amountGiven === 0.00 || g_shoppingCartTotalIncl > amountGiven) {
