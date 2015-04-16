@@ -5,14 +5,14 @@ function menuOnPageBeforeCreate() {
  
     g_menuPageTranslation = translation('menupage');
     
-    $('.menuLogo').attr('src', g_menuLogo);
-
+    
     if (sessionStorage.getItem('currentActivity'))
         sessionStorage.removeItem('currentActivity');
 }
 
 function menuOnPageShow() {
         
+    $('.menuLogo').attr('src', g_menuLogo);
     g_iPadBar('#menupage');
     if (window.MSApp) {
         WinJS.Application.onsettings = function (e) {

@@ -22,6 +22,7 @@ var g_syncPageTranslation = {};
 
 function syncOnPageBeforeCreate() {
     
+    $('.menuLogo').attr('src', g_menuLogo);
     g_syncPageTranslation = translation('syncpage');
 }
 
