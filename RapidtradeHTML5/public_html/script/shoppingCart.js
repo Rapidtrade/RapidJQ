@@ -133,22 +133,33 @@ function shoppingCartBind() {
                     
                     for (var i = range[0]; i <= range[1]; ++i) {
                        
-                        var item = g_shoppingCartDetailItems[i]; 
-                        item.UserField01 = $(this).val();
+                        //var item = g_shoppingCartDetailItems[i]; 
+                        g_shoppingCartDetailItems[i].UserField01 = $(this).val();
                         
-                        dao.put(item, 'BasketInfo', item.key, function() {
-                            console.log('Item ' + item.key + ' added to basket');
-                        });                        
+//                        dao.put(item, 'BasketInfo', item.key, function() {
+//                            console.log('Item ' + item.key + ' added to basket');
+//                        });                        
                     } 
                 });
                 
-                setTimeout(function() {
-                    
-                    g_busy(false);
-                    $.mobile.changePage('orderHeader.html', {transition:'none'});
-                }, 2000);
+                basket.saveItems(g_shoppingCartDetailItems, function() {
+           
+                    setTimeout(function() {
+
+                        g_busy(false);
+                        $.mobile.changePage('orderHeader.html', {transition:'none'});
+                    }, 2000);
+
+                    return;            
+                });
                 
-                return;
+//                setTimeout(function() {
+//                    
+//                    g_busy(false);
+//                    $.mobile.changePage('orderHeader.html', {transition:'none'});
+//                }, 2000);
+//                
+//                return;
             }   
             
         } else if (shoppingCartIsTotalQuantityValid()) {
@@ -425,8 +436,23 @@ function shoppingCartAddItem(item, checkSummary) {
     if (checkSummary === undefined)
         checkSummary = true;
     
-    var summaryField = DaoOptions.getValue('SummaryReportField');
-    var orderByField = DaoOptions.getValue('SummaryReportOrderBy');
+    var summaryField;// = DaoOptions.getValue('SummaryReportField');
+    var orderByField;// = DaoOptions.getValue('SummaryReportOrderBy');
+    
+    if (DaoOptions.getValue('SummaryReportAltAccGroup')) {
+        var accGrps = DaoOptions.getValue('SummaryReportAltAccGroup').replace(/'/g,'').split(',');
+        if ($.inArray(g_currentCompany().AccountGroup, accGrps) !== -1) {
+            summaryField = DaoOptions.getValue('SummaryReportAltField');
+            orderByField = DaoOptions.getValue('SummaryReportAltOrderBy');
+        } else {
+            summaryField = DaoOptions.getValue('SummaryReportField');
+            orderByField = DaoOptions.getValue('SummaryReportOrderBy');
+        }
+        
+    } else {
+        summaryField = DaoOptions.getValue('SummaryReportField');
+        orderByField = DaoOptions.getValue('SummaryReportOrderBy');
+    }
     
     if ((sessionStorage.getItem('shoppingCartViewType') === 'Summary') && checkSummary && (item[summaryField])) {                
         

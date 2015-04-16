@@ -353,6 +353,9 @@ function orderHeaderSaveOrder() {
         //if (g_vanSales)
         //	g_orderHeaderNextSavingStep();
         //else
+        if (!orderHeaderAreItemsValid())
+            return;
+        
         orderHeaderVanSales();
         try {
             if (orderHeaderIsPOD()) {
@@ -613,6 +616,9 @@ function orderHeaderAreItemsValid() {
                 
                 isValid = false;
                 $('#infoPopup p').text(g_orderHeaderPageTranslation.translateText('Error: The order items are not created with the current order type.'));
+                setTimeout(function() {
+                    $('#infoPopup').popup('close');
+                },5000);
                 break;
             }
         }
@@ -631,8 +637,8 @@ function orderHeaderSaveFormedOrder(position) {
    //     return;
     }
     
-    if (!orderHeaderAreItemsValid())
-        return;
+//    if (!orderHeaderAreItemsValid())
+//        return;
     g_orderHeaderRetryCount = 0;
     // this option we are going to use to clear search text
     // on pricelist page
