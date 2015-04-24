@@ -68,7 +68,7 @@ var route = (function() {
                 
         g_busy(true);
         
-        if (isSubmitClicked && g_isOnline()) {
+        if (isSubmitClicked && g_isOnline(false)) {
             var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_UnsentCount5&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';
         
             // TEST
@@ -458,7 +458,7 @@ var route = (function() {
         };
         
         
-        if (g_isOnline()) {
+        if (g_isOnline(false)) {
             /*
             if (isRefreshPressed) {
                // g_alert('You are about to refresh deliveries for the Route: ' + selectedRouteId + ' for date ' + $("#duedate").val() + '.');
@@ -529,7 +529,7 @@ var route = (function() {
             g_busy(false);        
         };
         
-        if (g_isOnline()) {
+        if (g_isOnline(false)) {
             
             if (isTaken !== 'full') { 
                 var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_route_TakeARoute&params=(%27' + g_currentUser().SupplierID + '%27|%27' + selectedRouteId + '%27|%27' + g_currentUser().UserID + '%27|%27' + selectedDate() + '%27)';

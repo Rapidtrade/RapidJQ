@@ -108,7 +108,10 @@ function todayFetchActivities() {
 		var url = g_restUrl + 'Activities2/GetCollection2?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + 
 								'&includeReps=false&activityTypes=' + DaoOptions.getValue('TodayActivityList') + '&fromDate=' + moment().format('YYYYMMDD') + '&toDate=' + moment().add('days', 1).format('YYYYMMDD') + '&skip=0&top=300&format=json';
 		
-		g_ajaxget(url, todayShowActivities);
+		g_ajaxget(url, todayShowActivities, function(errObj, errMssg) {
+                    $.mobile.hidePageLoadingMsg();
+                    console.log(errObj.responseText);
+                });
 	}
 }
 

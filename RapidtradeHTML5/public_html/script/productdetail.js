@@ -1278,6 +1278,12 @@ function productdetailOkClicked(checkStock) {
                 $('#li' + g_pricelistSelectedProduct.ItemIndex + ' .price').text(g_addCommas(parseFloat(g_pricelistSelectedProduct.RepNett).toFixed(2)));
                     
             }
+            
+            if (DaoOptions.getValue('SetRepBoolDiscountUF') && g_pricelistSelectedProduct[DaoOptions.getValue('SetRepBoolDiscountUF')] && !g_pricelistSelectedProduct.RepChangedPrice) {
+                g_pricelistSelectedProduct.RepChangedPrice = true;
+                g_pricelistSelectedProduct.RepNett = g_pricelistSelectedProduct.Nett;
+                g_pricelistSelectedProduct.RepDiscount = g_pricelistSelectedProduct.Discount;
+            }
                         
             productdetailSave(qty, type, g_pricelistSelectedProduct);
             g_clearCacheDependantOnBasket(false);

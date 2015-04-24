@@ -1,7 +1,7 @@
 ﻿CACHE MANIFEST
 # Explicitly cached 'master entries'...........................................
 
-# Version 8.9.53
+# Version 8.9.54
 
 CACHE:
 
@@ -106,7 +106,8 @@ img/calendarday512.png
 img/graph512.png
 img/image128.png
 img/lightning128.png
-img/logo.png
+img/SGlogoSml.png
+img/sglogo.png
 img/map128.png
 img/notifications128.png
 img/search128.png
