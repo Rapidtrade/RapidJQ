@@ -145,6 +145,8 @@ function menuOnPODClick() {
 	
 	 sessionStorage.removeItem('currentCompany');
      sessionStorage.setItem("currentordertype", "POD");
+     if ((DaoOptions.getValue('UseRoutesLastSelectedDate') === undefined || DaoOptions.getValue('UseRoutesLastSelectedDate') === 'false') && localStorage.getItem('routesLastSelectedDate'))
+         localStorage.removeItem('routesLastSelectedDate');
 //    $.mobile.changePage("grv.html", { transition: "slide" });
     $.mobile.changePage("route.html", { transition: "slide" });
 }

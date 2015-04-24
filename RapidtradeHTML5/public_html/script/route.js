@@ -34,7 +34,7 @@ var route = (function() {
         $('#submit').off().on('click', function() { routeRetryCount = 0; fetchRoutes(true); });
         $('#refreshButton').off().on('click', function() { takeARoute(true); });
         $('#takeRouteButton').off().on('click', function() { takeARoute(false); });
-        if (DaoOptions.getValue('UseRoutesLastSelectedDate', 'false') === 'true' && localStorage.getItem('routesLastSelectedDate')) {
+        if (localStorage.getItem('routesLastSelectedDate')) {
             $("#duedate").val(localStorage.getItem('routesLastSelectedDate'));
             selectedRouteId = localStorage.getItem('routesLastSelectedRouteID');
             if (localStorage.getItem('routesLastPanelViewed') === '#routesPanel') {
