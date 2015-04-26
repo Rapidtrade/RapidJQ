@@ -252,7 +252,7 @@ var route = (function() {
 	        'index1',
 	        function (company) {
 	            podListHtml += '<li id="' + pod.OrderID + '" data-account="' + pod.AccountID + '" data-theme="c"' + ((pod.UserID === g_currentUser().UserID || pod.UserID === '') ? '' : ' class="ui-disabled" ') + '>' + 
-                    '<a href id="' + pod.OrderID + '" data-account="' + pod.AccountID + '">' + 
+                    '<a href id="' + pod.OrderID + '" data-account="' + pod.AccountID + '" data-invoice-number="Invoice Number: ' + pod.ERPOrderNumber + '" >' + 
                     '<img id="' + pod.OrderID + '" class="ui-li-thumb" style=" width: 85px; height: 85px;" src="' + ((pod.UserID === '') ? 'img/Ball-yellow-64.png" alt="Available" data-taken="false" ' : 
                                                 ((pod.UserID === g_currentUser().UserID) ? 'img/Ball-green-64.png" alt="Taken by you" data-taken="true" ' : 
                                                 'img/Ball-red-64.png" alt="Taken by other" '))  + '>' + 
@@ -321,6 +321,8 @@ var route = (function() {
             
             var podID = this.id;
             var accID = $(this).data('account');
+            var invNum = $(this).data('invoiceNumber');
+            localStorage.setItem('PODsInvNumber', invNum);
             
 	    var dao = new Dao();
 	    dao.index ('Companies',

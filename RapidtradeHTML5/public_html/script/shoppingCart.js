@@ -332,7 +332,10 @@ function shoppingCartInit() {
     } else if (sessionStorage.getItem("currentordertype") == "stock") {
         $('#shoppingCartLabel').html('Stocktake Cart');
     } else if (sessionStorage.getItem("currentordertype") == "POD") {
-        $('#shoppingCartLabel').html('Proof of Delivery');    
+        $('#shoppingCartLabel').html('Proof of Delivery');
+        if (DaoOptions.getValue('ShowInvNumOnShopcart', 'false') === 'true' && localStorage.getItem('PODsInvNumber')) {
+            $('#shopcartPODsInvNumber').text(localStorage.getItem('PODsInvNumber'));
+        }
     } else if (sessionStorage.getItem('currentordertype').indexOf('Invoice') != -1) {
         
         $('#shoppingCartLabel').html(sessionStorage.getItem('currentordertype').replace('Invoice', g_shoppingCartPageTranslation.translateText('Invoice')));   
