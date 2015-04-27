@@ -809,7 +809,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
         	
         	while (j < 5) {
         		
-        		if (qty < volumePrice['Qty' + j]) 
+        		if (quantity < volumePrice['Qty' + j]) 
         			break;    			
         		
         		j++;
@@ -823,6 +823,11 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
         	basketInfo.Discount = discount;
         	basketInfo.Nett = nett;
         	basketInfo.Gross = gross;
+                
+                if (DaoOptions.getValue('SetRepBoolDiscountUF') && basketInfo[DaoOptions.getValue('SetRepBoolDiscountUF')]) {
+                    basketInfo.RepNett = nett;
+                    basketInfo.RepDiscount = discount;
+        	}
     	}
     	
         basket.saveItem(basketInfo, quantity);

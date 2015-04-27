@@ -127,7 +127,7 @@ function productdetailInit() {
 
                     g_pricelistSelectedProduct.Discount = basketInfo.Discount;
                     g_pricelistSelectedProduct.Nett = basketInfo.Nett;
-                    g_pricelistSelectedProduct.Gross = parseFloat(basketInfo.Gross.replace(/,/g,''));
+                    g_pricelistSelectedProduct.Gross = (typeof g_pricelistSelectedProduct.Nett !== 'number') ? parseFloat(basketInfo.Gross.replace(/,/g,'')) : basketInfo.Gross;
                     
                     if (g_productdetailIsPriceChanged) {
                         g_pricelistSelectedProduct.RepNett = basketInfo.RepNett;
@@ -883,7 +883,8 @@ function productdetailFetchPrice() {
     volumePrice = JSON.parse(sessionStorage.getItem('volumePrice' + g_currentCompany().AccountID));
     sessionStorage.setItem('CachePricelistQty',JSON.stringify(qty));
 
-    if (!g_productdetailIsPriceChanged && qty && volumePrice && volumePrice !="" && productdetailIsVolumePriceCorrect(volumePrice)) {
+    if ((!g_productdetailIsPriceChanged || (DaoOptions.getValue('SetRepBoolDiscountUF') && g_pricelistSelectedProduct[DaoOptions.getValue('SetRepBoolDiscountUF')])) && 
+            qty && volumePrice && volumePrice !="" && productdetailIsVolumePriceCorrect(volumePrice)) {
         productdetailCalculateDiscount(volumePrice);
     }
 
@@ -971,7 +972,7 @@ function productdetailPriceOnSuccess (json) {
     if (DaoOptions.getValue('LocalDiscounts') !== 'true') {
         
         //show previous changed price
-        if (!g_productdetailIsPriceChanged) {		
+        if (!g_productdetailIsPriceChanged || (DaoOptions.getValue('SetRepBoolDiscountUF') && g_pricelistSelectedProduct[DaoOptions.getValue('SetRepBoolDiscountUF')])) {		
             if (json.volumePrice && json.volumePrice[0]) {		    	
                 productdetailCalculateDiscount(json.volumePrice);
                 sessionStorage.setItem('volumePrice' + g_currentCompany().AccountID, JSON.stringify(json.volumePrice));
@@ -1279,7 +1280,7 @@ function productdetailOkClicked(checkStock) {
                     
             }
             
-            if (DaoOptions.getValue('SetRepBoolDiscountUF') && g_pricelistSelectedProduct[DaoOptions.getValue('SetRepBoolDiscountUF')] && !g_pricelistSelectedProduct.RepChangedPrice) {
+            if (DaoOptions.getValue('SetRepBoolDiscountUF') && g_pricelistSelectedProduct[DaoOptions.getValue('SetRepBoolDiscountUF')]) {
                 g_pricelistSelectedProduct.RepChangedPrice = true;
                 g_pricelistSelectedProduct.RepNett = g_pricelistSelectedProduct.Nett;
                 g_pricelistSelectedProduct.RepDiscount = g_pricelistSelectedProduct.Discount;
