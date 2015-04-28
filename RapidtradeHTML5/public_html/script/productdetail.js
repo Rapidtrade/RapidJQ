@@ -171,13 +171,18 @@ function productdetailInit() {
     $('#grossvalue').html(g_addCommas(parseFloat(g_pricelistSelectedProduct.Gross).toFixed(2)));
     $('.hproductId').text(g_pricelistSelectedProduct.ProductID);
     
+    var descriptionComment = false;
+    if (DaoOptions.getValue('ProductDetailsAddFieldDesc') && g_pricelistSelectedProduct[DaoOptions.getValue('ProductDetailsAddFieldDesc')]) {
+        descriptionComment = true;
+    }
+    
     if (productdetailCanChangeNett(g_pricelistSelectedProduct.ProductID)) {
     	
     	$('.hdescription').replaceWith('<input class="hdescription ui-input-text ui-body-c ui-corner-all ui-shadow-inset" type="text" value="' + g_pricelistSelectedProduct.Description + '"/>');
     	
     } else {
     	
-    	$('.hdescription').replaceWith('<h3 class="hdescription">' + g_pricelistSelectedProduct.Description + '</h3>');
+    	$('.hdescription').replaceWith('<h3 class="hdescription">' + g_pricelistSelectedProduct.Description + (descriptionComment ? ' (' + g_pricelistSelectedProduct[DaoOptions.getValue('ProductDetailsAddFieldDesc')] + ')' : '') + '</h3>');
     }
     
     type = sessionStorage.getItem("currentordertype");
