@@ -69,7 +69,7 @@ function overlayInit(pageId) {
             menuPanel += '</ul>';
     }
 
-    var showPricelistMenu = (DaoOptions.getValue('MobileCategories') == 'true') || (DaoOptions.getValue('AllowAdvancedSearch') == 'true');
+    var showPricelistMenu = (DaoOptions.getValue('MobileCategories') == 'true') || (DaoOptions.getValue('AllowAdvancedSearch') == 'true') || (DaoOptions.getValue('extrasearch'));
     var pricelistMenuEnd = '</ul></div>';
 
 
