@@ -132,7 +132,7 @@ var route = (function() {
             
             var dao = new Dao();
             dao.get('Route', route.routeID, function(item) {
-                console.log('in');
+//                console.log('in');
                 item.routeID = $.trim(item.routeID);
                 
 //                routeListHtml += '<li data-theme="c" id="' + item.routeID + '"' + ((routeNumbers[item.routeID] === 0) ? ' class="ui-disabled" ' : '') + ' ><a href>' + 

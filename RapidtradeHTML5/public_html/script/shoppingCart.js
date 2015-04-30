@@ -308,6 +308,27 @@ function shoppingCartRemoveAllItems() {
     }
 }
 
+function shoppingCartRemovePODsItems() {
+    
+    $.mobile.showPageLoadingMsg();
+    var dao = new Dao();
+    dao.cursor('BasketInfo', undefined, undefined,
+     function (basketInfo) {
+         if ((basketInfo.AccountID == g_currentCompany().AccountID) /*&& (basketInfo.Type == sessionStorage.getItem("currentordertype"))*/)
+             shoppingCartDeleteItem(basketInfo.key, DaoOptions.getValue('LostSaleActivityID') != undefined);
+     },
+     undefined,
+     function (event) {
+
+        setTimeout(function() {
+
+            sessionStorage.removeItem('shoppingCartViewType');
+            $.mobile.changePage('route.html', { transition: "none" });                
+        }, 1000);
+    });
+    
+}
+
 function shoppingCartOnBack() {
 	
     $.mobile.showPageLoadingMsg();
@@ -319,7 +340,9 @@ function shoppingCartOnBack() {
         page = 'company.html';
     }
 
-    if (page)	
+    if (page && page === 'route.html' && shoppingCartIsPOD())
+        shoppingCartRemovePODsItems();
+    else if (page)
         $.mobile.changePage(page, { transition: "none" });
 }
 
