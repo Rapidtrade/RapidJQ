@@ -26,7 +26,7 @@ var basket = (function() {
             
             item.Quantity =  quantity || item.Quantity;
             
-            if (!item.Quantity) {
+            if (!item.Quantity && !(sessionStorage.getItem('wasOnShoppingCart') === 'true')) {
                 
                 log('!!! ERROR: Quantity is not defined for product ' + item.ProductID);
                 return;

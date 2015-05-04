@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Always call openDB, which in turn call's init
  * This is called from script tag inside page
  */
@@ -402,6 +402,10 @@ function shoppingCartAllowToChangeQty(item) {
             $('#shoppingCartInfoPanel').removeClass('invisible');
         }
         
+        if (shoppingCartIsAltAccGroup()) {
+            sessionStorage.setItem('wasOnShoppingCart', true);
+        }
+        
         return false;
     }
     
@@ -457,6 +461,18 @@ function shoppingCartItemNett(item) {
     return item.RepChangedPrice ? item.RepNett : item.Nett;
 }
 
+function shoppingCartIsAltAccGroup() {
+    
+    if (!DaoOptions.getValue('SummaryReportAltAccGroup')) {
+        return false;
+    }
+    
+    var accGrps = DaoOptions.getValue('SummaryReportAltAccGroup').replace(/'/g,'').split(',');
+    
+    return $.inArray(g_currentCompany().AccountGroup, accGrps) !== -1;
+    
+}
+
 function shoppingCartAddItem(item, checkSummary) {
     
     if (checkSummary === undefined)
@@ -465,16 +481,9 @@ function shoppingCartAddItem(item, checkSummary) {
     var summaryField;// = DaoOptions.getValue('SummaryReportField');
     var orderByField;// = DaoOptions.getValue('SummaryReportOrderBy');
     
-    if (DaoOptions.getValue('SummaryReportAltAccGroup')) {
-        var accGrps = DaoOptions.getValue('SummaryReportAltAccGroup').replace(/'/g,'').split(',');
-        if ($.inArray(g_currentCompany().AccountGroup, accGrps) !== -1) {
-            summaryField = DaoOptions.getValue('SummaryReportAltField');
-            orderByField = DaoOptions.getValue('SummaryReportAltOrderBy');
-        } else {
-            summaryField = DaoOptions.getValue('SummaryReportField');
-            orderByField = DaoOptions.getValue('SummaryReportOrderBy');
-        }
-        
+    if (shoppingCartIsAltAccGroup()) {
+        summaryField = DaoOptions.getValue('SummaryReportAltField');
+        orderByField = DaoOptions.getValue('SummaryReportAltOrderBy');
     } else {
         summaryField = DaoOptions.getValue('SummaryReportField');
         orderByField = DaoOptions.getValue('SummaryReportOrderBy');
@@ -529,6 +538,8 @@ function shoppingCartAddItem(item, checkSummary) {
         var quantityReadOnly = (isPromotionItem || shoppingCartIsPOD() || !shoppingCartAllowToChangeQty(item) ? 'readonly' : '');
 	
         var tableClass = 'shopcartItems' + (isPromotionItem ? ' promoItemTable' : '');
+        
+        if (!qty) return;
         
 	g_basketHTML +=
         '<li id="LI' + itemIndex + '"' + alphaFilter.getInstance().addClass(item.Description) + '>' +
@@ -648,8 +659,9 @@ function shoppingCartAddSummaryItems() {
             }
             
             totalProductsAdded += itemArray.length;
-
-            shoppingCartAddItem(summaryItem, false);            
+            if (summaryItem.Quantity) {
+                shoppingCartAddItem(summaryItem, false);
+            }
         }
         
         if (shoppingCartIsGroupingEnabled()) {

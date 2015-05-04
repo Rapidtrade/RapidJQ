@@ -271,7 +271,9 @@ function orderdetailsCheckBasket() {
     dao.indexsorted('BasketInfo', g_currentCompany().AccountID, 'index1', 'index4',
     function (item) {
         
-        totalItems++;                          
+        if (item.Quantity) {
+            totalItems++;
+        }
 
         if (orderdetailsIsComplexView()) {
          
@@ -284,7 +286,7 @@ function orderdetailsCheckBasket() {
             
         } else {                            
             
-            $('#orderitemlist td.productId:contains("' + item.ProductID + '")').nextAll('.orderedQuantity').text(item.Quantity);        
+            $('#orderitemlist td.productId:contains("' + item.ProductID + '")').nextAll('.orderedQuantity').text(item.Quantity ? item.Quantity : '');        
         }
         
     },
@@ -308,7 +310,7 @@ function orderdetailsCheckBasket() {
                         totalQuantity += +quantity;
                     });
                     
-                    $('#orderitemlist td.productId:contains("' + complexProductId + '")').nextAll('.orderedQuantity').text(totalQuantity);
+                    $('#orderitemlist td.productId:contains("' + complexProductId + '")').nextAll('.orderedQuantity').text(totalQuantity ? totalQuantity : '');
                 });
             }
         }
@@ -445,6 +447,14 @@ function orderdetailsSendOrderItem(itemKey) {
                     item.Quantity = quantity;
                     orderedItems.push(item);                        
                     
+                } else if (quantity === 0 && sessionStorage.getItem('wasOnShoppingCart') === 'true') {
+                    totalQuantity += 0;  
+                    
+                    if (g_orderdetailsComplexQuantities[itemKey] && (g_orderdetailsComplexQuantities[itemKey][productId] > 0)) {
+                        var item = g_orderdetailsComplexItems[itemKey][this.id];
+                        item.Quantity = 0;
+                        orderedItems.push(item);
+                    }
                 } else {
                     
                     var isProductInBasket = g_orderdetailsComplexQuantities[itemKey] && (g_orderdetailsComplexQuantities[itemKey][productId] > 0);

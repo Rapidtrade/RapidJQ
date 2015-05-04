@@ -803,6 +803,9 @@ function orderHeaderOfflineSaveSuccess() {
     if (orderHeaderIsPOD()) {
         g_removeDeliveryFromLocalSQL();
     }
+    try {
+        sessionStorage.removeItem('wasOnShoppingCart');
+    } catch (e) {};
 }
 
 
@@ -950,6 +953,10 @@ function orderHeaderOnOrderSaved() {
     } catch(err){
         console.log(err.message);
     }
+    
+    try {
+        sessionStorage.removeItem('wasOnShoppingCart');
+    } catch (e) {};
 
     orderHeaderRemoveFromCart();
 }
