@@ -171,6 +171,14 @@ function companySetNextButton(title) {
         switch(title) {
 
             case 'Shopping Cart':
+                if (DaoOptions.getValue('ExclusiveOrderTypes')) {
+                    var exclTypes = DaoOptions.getValue('ExclusiveOrderTypes').split(',');
+                    var isInList = $.inArray(g_currentExclusiveOrderType, exclTypes) !== -1;
+                    if (sessionStorage.getItem('currentordertype') !== g_currentExclusiveOrderType) {
+                        g_alert(DaoOptions.getValue('ExclusiveOrderTypMsg') + '  Please complete the E2 first.');
+                        return;
+                    }
+                }
                 $.mobile.changePage('shoppingCart.html');
                 break;
 

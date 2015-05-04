@@ -230,6 +230,10 @@ function overlayHighlightMenuItem(item) {
 	
     var $item = ('.orderItem' === item) ? $(item).first() : $(item);			
     $item.addClass('ui-btn-active').siblings('li').removeClass('ui-btn-active');
+    
+    if ('.orderItem' === item) {
+        sessionStorage.setItem('currentordertype', $.trim($($item).attr('id').replace('pricelist', '').replace('Item', '')));
+    }
 
     if ($item.closest('ul').attr('id') === 'mainMenu')
         sessionStorage.setItem('lastMenuItemId', $item.attr('id'));    

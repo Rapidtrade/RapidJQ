@@ -109,6 +109,13 @@ var g_menuGRVLabelText = 'Receive my stock';
  */
 var g_stockDescriptions = {'-9999': 'N/A', '-9998': 'Back Order'};
 
+
+/*
+ * global Order type variable
+ */
+
+var g_currentExclusiveOrderType;
+
 /*
  * global functions
  */

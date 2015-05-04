@@ -1173,6 +1173,22 @@ function productdetailOkClicked(checkStock) {
         }            
     }
     
+    if (DaoOptions.getValue('ExclusiveOrderTypes')) {
+        var exclTypes = DaoOptions.getValue('ExclusiveOrderTypes').split(',');
+           
+        
+        
+        if (g_currentExclusiveOrderType !== undefined) {
+            var isInList = $.inArray(g_currentExclusiveOrderType, exclTypes) !== -1;
+            if (isInList) {
+                g_alert(DaoOptions.getValue('ExclusiveOrderTypMsg') + '  Please complete the E2 first.');
+                return;
+            }
+        } else {            
+            g_currentExclusiveOrderType = sessionStorage.getItem('currentordertype');
+        }
+    }
+    
     checkStock = (checkStock !== undefined) ? checkStock : true;
         
     var stock = productdetailGetStock();
