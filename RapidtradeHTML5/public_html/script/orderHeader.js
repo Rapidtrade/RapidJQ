@@ -797,6 +797,7 @@ function orderHeaderOfflineSaveSuccess() {
 	
     $('#infoPopup').popup('close');
     var type =  g_orderHeaderOrder.Type.toLowerCase();
+    g_currentExclusiveOrderType = undefined;
     g_alert(g_orderHeaderPageTranslation.translateText('Your ' + type + ' was saved locally. Please sync later to send this ' + type + '.'));
     sessionStorage.setItem('HistoryCacheAccountID', '');
     orderHeaderRemoveFromCart();
@@ -941,6 +942,7 @@ function orderHeaderOnOrderSaved() {
     
     $('#infoPopup').popup('close');
     var text = 'Your ' + g_orderHeaderOrder.Type.toLowerCase() + ' was saved OK';
+    g_currentExclusiveOrderType = undefined;
  
     g_alert($.isEmptyObject(g_orderHeaderPageTranslation) ? text : g_orderHeaderPageTranslation.translateText(text));
     sessionStorage.setItem('HistoryCacheAccountID', '');

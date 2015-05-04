@@ -290,6 +290,7 @@ function shoppingCartRemoveAllItems() {
     if (confirm(g_shoppingCartPageTranslation.translateText('Are you sure you want to clear the shopping cart?'))) {
     
         $.mobile.showPageLoadingMsg();
+        g_currentExclusiveOrderType = undefined;
         var dao = new Dao();
         dao.cursor('BasketInfo', undefined, undefined,
          function (basketInfo) {
@@ -684,6 +685,7 @@ function shoppingCartCheckItemsCount() {
     
     if (($.mobile.activePage.attr('id') === 'shoppingCartpage') && $('#shoppingCartitemlist li').length === 0) {
         
+        g_currentExclusiveOrderType = undefined;
         sessionStorage.removeItem('shoppingCartViewType');
     	shoppingCartOnBack();
     }
