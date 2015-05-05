@@ -18,12 +18,18 @@ var g_shoppingCartDetailItems = [];
 
 var g_shoppingCartPageTranslation = {};
 
+var g_shoppingCartMultilineDiscItems = [];
+var g_shoppingCartMultilineDiscQty = 0;
+
 function shoppingCartOnPageBeforeCreate() {
     
     g_shoppingCartPageTranslation = translation('shoppingCartpage');
 }
 
 function shoppingCartOnPageShow() {
+    
+    g_shoppingCartMultilineDiscItems = [];
+    g_shoppingCartMultilineDiscQty = 0;
     
     g_shoppingCartPageTranslation.safeExecute(function() {
         
@@ -518,6 +524,14 @@ function shoppingCartAddItem(item, checkSummary) {
         var itemIndex = g_shoppingCartItemKeys.length;
         g_shoppingCartItemKeys.push(item.key);
         
+        
+    
+        if (shoppingCartIsMultilineItem(item)){
+            g_shoppingCartMultilineDiscItems[itemIndex] = item;
+            g_shoppingCartMultilineDiscQty += qty;
+        }
+    
+        
         var view = sessionStorage.getItem('shoppingCartViewType');
         if (!view || view === 'Detail')
             g_shoppingCartDetailItems.push(item);        
@@ -618,6 +632,10 @@ function shoppingCartOnAllItemsAdded() {
         $('#shoppingCartitemlist .nett').addClass('invisible');
         $('#shoppingCartitemlist .total').addClass('invisible');
         $('#totallist').addClass('invisible');
+    }
+    
+    if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
+        shoppingCartRecalcMultilineDiscounts();
     }
 }
 
@@ -811,6 +829,9 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
     	
 //    	if (confirm('Are you sure you want to remove the item from basket?')) {
     		shoppingCartDeleteItem(g_shoppingCartItemKeys[itemIndex], DaoOptions.getValue('LostSaleActivityID') != undefined, true);
+                if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
+                    shoppingCartRecalcMultilineDiscounts();
+                }
     		return;
 //    	}
     	
@@ -889,6 +910,9 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
     );
    
     g_clearCacheDependantOnBasket();
+    if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
+        shoppingCartRecalcMultilineDiscounts();
+    }
 }
 
 /*
@@ -920,6 +944,86 @@ function shoppingCartAlphaInit(descr){
 	$('#alphabet').empty();
 }
 
+function shoppingCartIsMultilineItem(item) {
+    return DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true' && 
+            g_pricelistVolumePrices[item.ProductID] && 
+            g_pricelistVolumePrices[item.ProductID].ID === DaoOptions.getValue('MultiLineDiscountID');
+}
 
+function shoppingCartRecalcMultilineDiscounts() {
+    
+    var itemIndexes = Object.keys(g_shoppingCartMultilineDiscItems);
+    g_shoppingCartMultilineDiscQty = 0;
+    $.each(itemIndexes, function(index, itemIndex) {
+        g_shoppingCartMultilineDiscQty += parseInt($('#' + itemIndex).val() ? $('#' + itemIndex).val() : '0',10) ;
+    });
+    
+    if (!g_shoppingCartMultilineDiscQty) return;
+    itemIndexes = Object.keys(g_shoppingCartMultilineDiscItems);
+    $.each(itemIndexes, function(index, itemIndex) {
+    //for (var itemIndex in g_shoppingCartMultilineDiscItems) {
+        if (g_shoppingCartMultilineDiscItems.hasOwnProperty(itemIndex) && $('#' + itemIndex).val()) {
+            //var volPrice = g_pricelistVolumePrices[g_shoppingCartMultilineDiscItems[itemIndex].ProductID];
+            
+            var dao = new Dao();
+            dao.get("BasketInfo", g_shoppingCartItemKeys[itemIndex], function(basketInfo) {
+                var qtyStr = $('#' + itemIndex).val();
+                var quantity = parseInt(qtyStr, 10);
+                
+                
+                var volumePrice = g_pricelistVolumePrices[basketInfo.ProductID];
 
+                if (volumePrice) {    
 
+                        var j = 1;
+
+                    // increase index according to quantity
+
+                        while (j < 5) {
+
+                                if (g_shoppingCartMultilineDiscQty < volumePrice['Qty' + j]) 
+                                        break;    			
+
+                                j++;
+                        }
+
+                        var gross = parseFloat(volumePrice.Gross);
+                        var nett  = parseFloat(volumePrice['Nett' + j]);
+                        var discount = parseFloat(volumePrice['Discount' + j]);
+
+                        if (g_pricelistMobileLiveStockDiscount && (nett > gross)) gross = nett;
+                        basketInfo.Discount = discount;
+                        basketInfo.Nett = nett;
+                        basketInfo.Gross = gross;
+
+                        if (DaoOptions.getValue('SetRepBoolDiscountUF') && basketInfo[DaoOptions.getValue('SetRepBoolDiscountUF')]) {
+                            basketInfo.RepNett = nett;
+                            basketInfo.RepDiscount = discount;
+                        }
+                }
+
+                //basket.saveItem(basketInfo, quantity);
+
+                $('#' + itemIndex + 'nett').text('' + g_roundToTwoDecimals(shoppingCartItemNett(basketInfo))); //$('#' + itemIndex + 'nett').text('' + basketInfo.Nett);
+                $('#' + itemIndex + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  == 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * quantity));
+                g_shoppingCartTotalExcl = 0;
+                $.each($(".total") ,function() {
+                    var value = $(this).text().replace(',','');
+                    g_shoppingCartTotalExcl += parseFloat(value);
+                });
+                shoppingCartRecalcTotals(basketInfo, quantity);
+
+                if (DaoOptions.getValue('localTPM') === 'true') {
+
+                     promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
+                     return;
+                }        
+            }, 
+            undefined,
+            undefined   
+            );
+
+            g_clearCacheDependantOnBasket();
+                }
+    });
+}
