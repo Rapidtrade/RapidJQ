@@ -829,11 +829,15 @@ function userDailySalesDetailOnPageShow() {
     
       
     $('#udsSubmit').off().on('click', fetchUserDailySalesDetail);
-    
-    $('#printButton').off().on('click', function() {
-        
-        g_print('#userDailySalesDetail');
-    });
+    if (g_isVanUser()) {
+        $('#printButton').off().on('click', function() {
+
+            g_print('#userDailySalesDetail');
+        });
+    } else {
+        $('#printButton').off();
+        $('#printButton').hide('invisible');
+    }
 }
 
 function fetchUserDailySalesDetail() {   

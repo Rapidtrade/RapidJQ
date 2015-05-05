@@ -944,4 +944,8 @@ function g_removeDeliveryFromLocalSQL() {
      
      localStorage.removeItem('routesLastDeliverySentToBasket');
  }
+ 
+ function g_isVanUser() {
+     return g_currentUser().Role && (g_currentUser().Role.indexOf('van=') !== -1);
+ }
 
