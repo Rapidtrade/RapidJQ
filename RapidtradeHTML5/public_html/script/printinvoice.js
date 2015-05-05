@@ -1,6 +1,7 @@
 var g_printInvoicePrintAgain = false;
 var g_printInvoicePageTranslation = {};
 var g_printInvoiceMobileData = '';
+var g_printInvoiceMobileAddrData = ''
 
 function printinvoiceOnPageBeforeCreate() {
 	
@@ -32,8 +33,23 @@ function printinvoiceInit() {
 
     if ('small' === printer)
         $('.printinvoiceHeader h3').empty();
-
-    printinvoiceFetchOrder();
+    
+    var order = JSON.parse(sessionStorage.getItem("currentOrder"));
+    var dao = new Dao();
+    dao.get('Address',
+            order.SupplierID + order.AccountID + 'BillTo', 
+            function(address) {
+                g_printInvoiceMobileAddrData = 'Acc Num: ' + g_currentCompany().AccountID + '/*/Customer: ' + g_currentCompany().Name + 
+                                '/*/|' + address.Street + '/*/|' + address.City + '/*/|' + address.PostalCode + '/*/';
+                
+            }, 
+            function() {
+                g_printInvoiceMobileAddrData = '';
+            }, 
+            printinvoiceFetchOrder
+    );
+    
+    //printinvoiceFetchOrder();
 }
 
 function printinvoiceBind() {
@@ -55,33 +71,35 @@ function printinvoiceOnPrint() {
 function printinvoiceFetchOrder() {
 	
     var order = JSON.parse(sessionStorage.getItem("currentOrder"));
-    g_printInvoiceMobileData = 'TAX INVOICE';
+    g_printInvoiceMobileData = 'TAX INVOICE/*/';
     printinvoiceShowOptionalText('.printinvoiceContent h3', 'InvoiceHeader');
 
     if (DaoOptions.getValue('InvoiceDoNotShowBarCode') !== 'true')
         $('#invoiceBarcode').barcode(order.UserField01, "code128");
         
     $('#invoiceNumber').text(order.UserField01);
-    g_printInvoiceMobileData += '/*/Inv. Number:\t\t\t' + order.UserField01;
+    g_printInvoiceMobileData += 'Inv. Number: ' + order.UserField01 + '/*/';
     
     $('#date').text(g_today());
-    g_printInvoiceMobileData += '/*/Inv. and Deliv. Date:\t\t\t' + g_today();
+    g_printInvoiceMobileData += 'Inv. and Deliv. Date: ' + g_today() + '/*/';
     
-    g_printInvoiceMobileData += '/*/Supplied By/*/ID:\t\t';
+    g_printInvoiceMobileData += 'Supplied By/*/ID: ';
     
     
     $('#id').text(order.UserID);
-    g_printInvoiceMobileData += order.UserID;
+    g_printInvoiceMobileData += order.UserID + '/*/';
     
-    g_printInvoiceMobileData += '/*/Details: ';
+    g_printInvoiceMobileData += 'Details: ';
     printinvoiceShowOptionalText('#details', 'MyAddress');
     
-
+    g_printInvoiceMobileData += g_printInvoiceMobileAddrData ? '/*/Bill To: /*/' + g_printInvoiceMobileAddrData : '';
     printinvoiceSetAddress('BillTo', order);
     printinvoiceSetAddress('ShipTo', order);
     
+    g_printInvoiceMobileData += g_printInvoicePageTranslation.translateText(DaoOptions.getValue('VATLineText', 'Cust VAT')) + ': ';
     $('#customerVATLabel').text(g_printInvoicePageTranslation.translateText(DaoOptions.getValue('VATLineText', 'Cust VAT')));
     printinvoiceGetCustomerVAT();
+    g_printInvoiceMobileData += '/*/';
 	
     key = g_currentUser().SupplierID + 'MobileLiveStockDiscount';
     
@@ -89,13 +107,14 @@ function printinvoiceFetchOrder() {
     $('#acc').text(order.AccountID);
 
     $('#comment').text(order.Reference);
+    g_printInvoiceMobileData += 'Reference: ' + order.Reference + '/*/';
 
     var productLinesHtml = '';
     var quantityTotal = 0;
     var subTotal = 0;
 
     var vat = 0;
-    g_printInvoiceMobileData += '/*//*//*/Product\t\tDescription\t\t\t\tQty\tDisc\tPrice\tValue ';
+    //g_printInvoiceMobileData += '/*//*//*/Product\t\tDescription\t\t\t\tQty\tDisc\tPrice\tValue ';
     $.each(order.orderItems, function() {
 
         if (localStorage.getItem('printer') == 'small') {
@@ -119,12 +138,9 @@ function printinvoiceFetchOrder() {
                         '<td>' + this.Value + '</td>' +
                         '</tr>';	
         }
-        g_printInvoiceMobileData += '/*/' + this.ProductID + 
-                                    '\t\t' + this.Description +
-                                    '\t\t\t\t' + this.Quantity + 
-                                    '\t' + this.Discount + 
-                                    '\t' + this.Nett + 
-                                    '\t' + this.Value;
+        g_printInvoiceMobileData += '' + this.ProductID + '|' + this.Quantity + '|' + this.Value + '|' + this.Description + '/*/';
+                                    
+                                    
         quantityTotal += this.Quantity;
         subTotal += parseFloat(this.Value);
 
@@ -137,18 +153,27 @@ function printinvoiceFetchOrder() {
     g_append('#productListTable tbody', productLinesHtml);
     //$('#productListTable tbody').append(productLinesHtml);
     $('#subTotal').text(g_roundToTwoDecimals(subTotal));
-    g_printInvoiceMobileData += '/*/\t\t\t\tSub Total:\t\t\t' + g_roundToTwoDecimals(subTotal);
+    g_printInvoiceMobileData += '|Sub Total: ||' + g_roundToTwoDecimals(subTotal) + '/*/';
     if (DaoOptions.getValue('TaxText')) {
     	$('#taxText').html(DaoOptions.getValue('TaxText'));
-        g_printInvoiceMobileData += '/*/\t\t\t\t' + DaoOptions.getValue('TaxText') + ':\t\t\t' + g_roundToTwoDecimals(vat);
+        g_printInvoiceMobileData += '|' + DaoOptions.getValue('TaxText') + ': ||' + g_roundToTwoDecimals(vat) + '/*/';
     } else {
-        g_printInvoiceMobileData += '/*/\t\t\t\tVat:\t\t\t' + g_roundToTwoDecimals(vat);
+        g_printInvoiceMobileData += '|Vat: ||' + g_roundToTwoDecimals(vat) + '/*/';
     }
     $('#vat').text(g_roundToTwoDecimals(vat));
     $('#quantityTotal').text(quantityTotal);
-    g_printInvoiceMobileData += '/*/\t\t\t\tTotal:\t' + quantityTotal + '\t\t\t' + g_roundToTwoDecimals(parseFloat(subTotal) + parseFloat(vat));
-    $('#total').text(g_roundToTwoDecimals(parseFloat(subTotal) + parseFloat(vat)));
-	
+    g_printInvoiceMobileData += '|Total: |' + quantityTotal + '|' + g_roundToTwoDecimals(parseFloat(subTotal) + parseFloat(vat)) + '/*/';
+    $('#total').text(g_roundToTwoDecimals(parseFloat(subTotal) + parseFloat(vat))) + '/*/';
+    
+    if (DaoOptions.getValue('CalcChange') === 'true') {
+        g_printInvoiceMobileData += '|Money Received: ||' + g_roundToTwoDecimals(parseFloat(order.UserField02)) + '/*/';
+        g_printInvoiceMobileData += '|Change Given: ||' + g_roundToTwoDecimals(parseFloat(order.UserField03)) + '/*/';
+    }
+    g_printInvoiceMobileData += g_printInvoicePageTranslation.translateText('I / We acknowledge receipt of goods as detailed.') + '[b]/*//*/';
+    g_printInvoiceMobileData += g_printInvoicePageTranslation.translateText('Authorised Name:') + '||' + g_printInvoicePageTranslation.translateText('Store Stamp') + '/*//*//*//*/';
+    g_printInvoiceMobileData += g_printInvoicePageTranslation.translateText('Signature:') + '||' + g_printInvoicePageTranslation.translateText('GRN Number') + '/*//*//*//*/[pf]/*/';
+    
+    console.log(g_printInvoiceMobileData);
     
 }
 
@@ -169,7 +194,7 @@ function printinvoiceShowOptionalText(selector, optionName) {
 
     	for (var i = 0; i < lines.length; ++i) {
             textHtml += lines[i] + '<br/>'; 
-            g_printInvoiceMobileData += '/*/\t\t\t\t' + lines[i];
+            g_printInvoiceMobileData += '|' + lines[i] + '/*/';
         }
 
     	$(selector).html(textHtml);
@@ -186,6 +211,7 @@ function printinvoiceGetCustomerVAT() {
         'AccountID',
          function (company) {
     		$('#customerVAT').text(company.Userfield03);
+                g_printInvoiceMobileData += company.Userfield03 + '/*/';
          },
          undefined, undefined
  
@@ -200,10 +226,13 @@ function printinvoiceSetAddress(addressType, order) {
             order.SupplierID + order.AccountID + addressType, 
             function(address) {
                     var addressHtml = g_currentCompany().Name + '<br/>' + address.Street + '<br/>' + address.City + '<br/>' + address.PostalCode;
-                    if (addressType == 'BillTo')
-                            $('#customer').html(addressHtml);
-                    else if (addressType == 'ShipTo')
-                            $('#address').html(addressHtml);
+                    if (addressType == 'BillTo') {
+                        $('#customer').html(addressHtml);
+                        //g_printInvoiceMobileData += 'Acc Num: ' + g_currentCompany().AccountID + '/*/Customer: ' + g_currentCompany().Name + 
+                        //        '/*/|' + address.Street + '/*/|' + address.City + '/*/|' + address.PostalCode + '/*/';
+                    } else if (addressType == 'ShipTo') {
+                        $('#address').html(addressHtml);
+                    }
             }, 
             undefined, 
             undefined);
