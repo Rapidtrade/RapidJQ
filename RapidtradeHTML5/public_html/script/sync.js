@@ -62,6 +62,7 @@ function syncBind() {
             g_syncLastUserID = '';
             g_syncPricelistSyncMethod = 'Sync5';
             g_syncLivePricelist = false;
+            g_currentExclusiveOrderType = undefined;
             syncDeleteDB();
             if (g_smp) smp.getInstance().logoff(syncSMPLogon, function(errorInfo){alert("error: " + JSON.stringify(errorInfo));} );
         });

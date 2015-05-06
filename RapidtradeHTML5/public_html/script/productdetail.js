@@ -1180,7 +1180,7 @@ function productdetailOkClicked(checkStock) {
         
         if (g_currentExclusiveOrderType !== undefined) {
             var isInList = $.inArray(g_currentExclusiveOrderType, exclTypes) !== -1;
-            if (isInList) {
+            if (sessionStorage.getItem('currentordertype') !== g_currentExclusiveOrderType) {
                 g_alert(DaoOptions.getValue('ExclusiveOrderTypMsg') + '  Please complete the E2 first.');
                 return;
             }

@@ -84,7 +84,7 @@ function orderdetailsBind() {
         if (DaoOptions.getValue('ExclusiveOrderTypes')) {
             var exclTypes = DaoOptions.getValue('ExclusiveOrderTypes').split(',');
             var isInList = $.inArray(g_currentExclusiveOrderType, exclTypes) !== -1;
-            if (sessionStorage.getItem('currentordertype') !== g_currentExclusiveOrderType) {
+            if (g_currentExclusiveOrderType && g_currentExclusiveOrderType !== sessionStorage.getItem('currentordertype')) {
                 g_alert(DaoOptions.getValue('ExclusiveOrderTypMsg') + '  Please complete the E2 first.');
                 return;
             }
@@ -825,7 +825,7 @@ function orderdetailsFetchOrderItems() {
         
         if (g_currentExclusiveOrderType !== undefined) {
             var isInList = $.inArray(g_currentExclusiveOrderType, exclTypes) !== -1;
-            if (!isInList) {
+            if (sessionStorage.getItem('currentordertype') !== g_currentExclusiveOrderType) {
                 g_alert(DaoOptions.getValue('ExclusiveOrderTypMsg') + '  Please complete the E1 first.');
                 return;
             }

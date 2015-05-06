@@ -174,7 +174,7 @@ function companySetNextButton(title) {
                 if (DaoOptions.getValue('ExclusiveOrderTypes')) {
                     var exclTypes = DaoOptions.getValue('ExclusiveOrderTypes').split(',');
                     var isInList = $.inArray(g_currentExclusiveOrderType, exclTypes) !== -1;
-                    if (sessionStorage.getItem('currentordertype') !== g_currentExclusiveOrderType) {
+                    if (g_currentExclusiveOrderType && g_currentExclusiveOrderType !== sessionStorage.getItem('currentordertype')) {
                         g_alert(DaoOptions.getValue('ExclusiveOrderTypMsg') + '  Please complete the E2 first.');
                         return;
                     }

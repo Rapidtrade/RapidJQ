@@ -962,7 +962,7 @@ function shoppingCartRecalcMultilineDiscounts() {
     itemIndexes = Object.keys(g_shoppingCartMultilineDiscItems);
     $.each(itemIndexes, function(index, itemIndex) {
     //for (var itemIndex in g_shoppingCartMultilineDiscItems) {
-        if (g_shoppingCartMultilineDiscItems.hasOwnProperty(itemIndex) && $('#' + itemIndex).val()) {
+        if (g_shoppingCartMultilineDiscItems.hasOwnProperty(itemIndex) && $('#' + itemIndex).val() && ($('#' + itemIndex).val() !== '0')) {
             //var volPrice = g_pricelistVolumePrices[g_shoppingCartMultilineDiscItems[itemIndex].ProductID];
             
             var dao = new Dao();
@@ -1002,7 +1002,7 @@ function shoppingCartRecalcMultilineDiscounts() {
                         }
                 }
 
-                //basket.saveItem(basketInfo, quantity);
+                basket.saveItem(basketInfo, quantity);
 
                 $('#' + itemIndex + 'nett').text('' + g_roundToTwoDecimals(shoppingCartItemNett(basketInfo))); //$('#' + itemIndex + 'nett').text('' + basketInfo.Nett);
                 $('#' + itemIndex + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  == 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * quantity));
