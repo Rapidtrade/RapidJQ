@@ -103,8 +103,13 @@ function overlayInit(pageId) {
 
                     var extraMenuItemArray = JSON.parse(DaoOptions.getValue('extrasearch'));
 
-                    for ( var i = 0; i < extraMenuItemArray.length; i++)
+                    for ( var i = 0; i < extraMenuItemArray.length; i++) {
+                        if (DaoOptions.getValue('extrasearch' + extraMenuItemArray[i].search + 'isComplex', 'false') === 'true') { 
+                            menuPanel += '<li id="' + extraMenuItemArray[i].search + '" data-icon="false"><a href >' + extraMenuItemArray[i].label + /*'<span class="ui-li-count"><img src="jquery/jquery14/images/icons-png/carat-d-black.png" /></span>*/ '</a></li>';
+                        } else {
                             menuPanel += '<li id="' + extraMenuItemArray[i].search + '">' + extraMenuItemArray[i].label + '</li>';
+                        }
+                    }
                 }	 
 
                 menuPanel += pricelistMenuEnd;
@@ -189,9 +194,12 @@ function overlayBind() {
         overlayOnItemClick(this);
 
         if ('pricelistMenu' == $(this).closest('div').attr('id')) { 
-
-            pricelistDoSearch(this.id);
             sessionStorage.setItem('lastPricelistMenuItemId', this.id);
+            if (DaoOptions.getValue('extrasearch' + this.id + 'isComplex', 'false') === 'true') {
+                pricelistDoExtraCoplexSearch();
+            } else {                
+                pricelistDoSearch(this.id);
+            }
 
         } else {
 
@@ -290,7 +298,12 @@ function overlaySetMenuItems() {
     
     if ($('#pricelistMenu').length) {
     	
-    	overlayHighlightMenuItem('#basic');    	    	
+        if (sessionStorage.getItem('lastPricelistMenuItemId')) {
+            overlayHighlightMenuItem('#' + sessionStorage.getItem('lastPricelistMenuItemId'));
+        } else {
+            overlayHighlightMenuItem('#basic');
+        }
+    	    	    	
     	$('#pricelistMenu').toggle($('#pricelistPanel').is(':visible'));
     }
     

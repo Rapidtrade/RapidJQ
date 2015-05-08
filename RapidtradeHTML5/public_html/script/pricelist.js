@@ -1808,3 +1808,97 @@ function pricelistCheckSelectedMultiWarehouse(productID, warehouse) {
     }
     
 }
+
+function pricelistDoExtraCoplexSearch() {
+    var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_pricelist_ListPromo&params=(%27' + g_currentUser().SupplierID + '%27)';
+    
+    var onSuccess = function(json) {
+        console.log(JSON.stringify(json));
+        if (!json.length) {
+            
+            return;
+        }
+        
+        var itemsHTML = '';
+        
+        for (var i=0; i < json.length; ++i) {
+            itemsHTML += (json[i] && json[i].Promotion) ? ('<li id="' + json[i].Promotion + '"><a href >' + json[i].Promotion + '</a></li>') : '';
+        }
+        
+        $('#extrasearchComplexList ul').html(itemsHTML);
+        
+        $('#extrasearchComplexPopup').popup('open');
+        $('#extrasearchComplexList ul').listview('refresh');
+        
+        $('#extrasearchComplexList').off().on('click', 'li', function () {
+           console.log('Promotion: ' + this.id);
+           pricelistFetshExtrasearchItems(this.id);
+           $('#extrasearchComplexPopup').popup('close');
+        });
+    };
+    
+    var onError = function(json) {
+        console.log(JSON.stringify(json));
+    };
+    
+    g_ajaxget(url, onSuccess, onError);
+}
+
+function pricelistFetshExtrasearchItems(promoID) {
+    var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_pricelist_GetPromoCollection&params=(%27' + g_currentUser().SupplierID + '%27|%27' + promoID + '%27|%27'+ g_currentCompany().AccountID + '%27)';
+    
+    var onSuccess = function(json) {
+        console.log(JSON.stringify(json));
+        if (!json.length) {
+            
+            return;
+        }
+        
+        $.each(g_pricelistCurrentBasket, function(itemIndex, basketinfo) {
+            for (var i = 0; i < json.length; ++i) {
+                if (basketinfo.ProductID === json[i].id) {
+                    json[i].BasketInfo = basketinfo;
+                    break;
+                }
+            }
+        });
+        
+        g_pricelistItemsOnPage = 0;
+        g_pricelistCurrentPricelistPage = 1;
+        $('#pricelists').empty();
+        g_pricelistItemsHtml = '';
+        g_pricelistItems = [];
+        g_pricelistMultiWarehouses = {};
+        
+        
+        pricelistFetchPricelistLiveOnSuccess(json);
+        
+        
+    };
+    
+    var onError = function(json) {
+        console.log(JSON.stringify(json));
+    };
+    
+    //if (!g_indexedDB && (DaoOptions.getValue('MobileOnlinePricelist') !== 'true') && (DaoOptions.getValue('CanDoNonStock') !== 'true')) {
+            //pricelistFetchPricelistJob();
+    //        return;
+    //} else {		    
+        var dao = new Dao();
+        var i = 0;
+        g_pricelistCurrentBasket = [];
+
+        dao.cursor('BasketInfo', undefined, undefined,
+        function (basketinfo) {
+            if ((basketinfo.AccountID == g_currentCompany().AccountID) /*&& (basketinfo.Type == sessionStorage.getItem("currentordertype"))*/) {
+                g_pricelistCurrentBasket[i++] = basketinfo;
+            }
+        }, undefined,
+        function (event)  {
+            g_ajaxget(url, onSuccess, onError);
+        }
+        );
+    //}
+    
+//    g_ajaxget(url, onSuccess, onError);
+}

@@ -5,6 +5,8 @@
 
 function companyOnPageBeforeCreate() {
     
+    g_syncPageTranslation = translation('syncpage');
+    
     activityFormLoadIntoDiv('#activitydetails', true);
     activityFormLoadIntoDiv('#activityPopup', true);
     overlayInit('companypage');   
