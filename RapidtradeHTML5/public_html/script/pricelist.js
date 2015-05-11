@@ -1811,11 +1811,11 @@ function pricelistCheckSelectedMultiWarehouse(productID, warehouse) {
 
 function pricelistDoExtraCoplexSearch() {
     var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_pricelist_ListPromo&params=(%27' + g_currentUser().SupplierID + '%27)';
-    
+    $.mobile.showPageLoadingMsg();
     var onSuccess = function(json) {
         console.log(JSON.stringify(json));
         if (!json.length) {
-            
+            $.mobile.hidePageLoadingMsg();
             return;
         }
         
@@ -1829,6 +1829,7 @@ function pricelistDoExtraCoplexSearch() {
         
         $('#extrasearchComplexPopup').popup('open');
         $('#extrasearchComplexList ul').listview('refresh');
+        $.mobile.hidePageLoadingMsg();
         
         $('#extrasearchComplexList').off().on('click', 'li', function () {
            console.log('Promotion: ' + this.id);
@@ -1838,6 +1839,7 @@ function pricelistDoExtraCoplexSearch() {
     };
     
     var onError = function(json) {
+        $.mobile.hidePageLoadingMsg();
         console.log(JSON.stringify(json));
     };
     
@@ -1845,12 +1847,13 @@ function pricelistDoExtraCoplexSearch() {
 }
 
 function pricelistFetshExtrasearchItems(promoID) {
+    $.mobile.showPageLoadingMsg();
     var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_pricelist_GetPromoCollection&params=(%27' + g_currentUser().SupplierID + '%27|%27' + promoID + '%27|%27'+ g_currentCompany().AccountID + '%27)';
     
     var onSuccess = function(json) {
         console.log(JSON.stringify(json));
         if (!json.length) {
-            
+            $.mobile.hidePageLoadingMsg();
             return;
         }
         
@@ -1877,6 +1880,7 @@ function pricelistFetshExtrasearchItems(promoID) {
     };
     
     var onError = function(json) {
+        $.mobile.hidePageLoadingMsg();
         console.log(JSON.stringify(json));
     };
     
