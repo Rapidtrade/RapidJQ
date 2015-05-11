@@ -1635,7 +1635,7 @@ function pricelistAddItemToBasket(itemIndex) {
 	
     var getQuantity = function(itemIndex) {
 
-        return DaoOptions.getValue('AllowPriceQuickCapt') == 'true' ? $('#quantity' + itemIndex).val() : pricelistGetNewQuantityForItem(itemIndex);
+        return DaoOptions.getValue('AllowPriceQuickCapt') == 'true' ? parseInt($('#quantity' + itemIndex).val(), 10) : pricelistGetNewQuantityForItem(itemIndex);
     };
 
     var deleteItemOnSuccess = function() {
