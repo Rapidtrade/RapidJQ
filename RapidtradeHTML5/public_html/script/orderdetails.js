@@ -318,7 +318,8 @@ function orderdetailsCheckBasket() {
                         totalQuantity += +quantity;
                     });
                     
-                    $('#orderitemlist td.productId:contains("' + complexProductId + '")').nextAll('.orderedQuantity').text(totalQuantity ? totalQuantity : '');
+                    //$('#orderitemlist td.productId:contains("' + complexProductId + '")').nextAll('.orderedQuantity').text(totalQuantity ? totalQuantity : '');
+                    $('#orderitemlist td.productId').filter(function(index) { return $(this).text() === complexProductId;}).nextAll('.orderedQuantity').text(totalQuantity ? totalQuantity : '');
                 });
             }
         }
