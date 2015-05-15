@@ -148,7 +148,7 @@ function historyInit() {
 function historyFetchActivities() {
 	
     var date = new Date();
-    var day = g_setLeadingZero(date.getDate());
+    var day = g_setLeadingZero(date.getDate() + 1);
     var month = g_setLeadingZero(date.getMonth()+1);
     
     $.mobile.showPageLoadingMsg();
