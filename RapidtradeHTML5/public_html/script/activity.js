@@ -53,7 +53,7 @@ function activityFetchActivityTypes() {
             function(activityType) {
                 var mustadd = true;
                 var requiredActivities = ''; 
-                if (activityType.ForAccntGrp!=='') {
+                if (activityType.ForAccntGrp && activityType.ForAccntGrp!=='') {
                         var accountGroups = activityType.ForAccntGrp.split(',');  
                         mustadd = ($.inArray(g_currentCompany().AccountGroup, accountGroups)===-1)? false:true;
                 }                                              
