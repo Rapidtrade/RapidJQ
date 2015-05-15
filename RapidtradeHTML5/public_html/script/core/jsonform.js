@@ -413,7 +413,7 @@ var jsonform = (function(){
             $('#jsonsettings').trigger('create');
             $('#jsondetail').trigger('create');
             
-            if (me.vJsonFormOnComplete) this.vJsonFormOnComplete();
+            //if (me.vJsonFormOnComplete) this.vJsonFormOnComplete();
             
             //$('#jsontbl').table-columntoggle( "refresh" );
         };

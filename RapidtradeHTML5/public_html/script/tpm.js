@@ -568,6 +568,9 @@ function tpmVerifyTableLoaded(){
     $okRows.find('#Selected').each(function() {
         $(this).trigger('change');
     });
+    
+    //hide promotion items with 0 'Free Stock'
+    $("#jsontable td:nth-child(7)").filter(function() {return $(this).text() === '0';}).parent().hide();
 }
 
 function tpmMapId(id) {
