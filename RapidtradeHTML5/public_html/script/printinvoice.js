@@ -33,23 +33,39 @@ function printinvoiceInit() {
 
     if ('small' === printer)
         $('.printinvoiceHeader h3').empty();
-    
-    var order = JSON.parse(sessionStorage.getItem("currentOrder"));
-    var dao = new Dao();
-    dao.get('Address',
-            order.SupplierID + order.AccountID + 'BillTo', 
-            function(address) {
-                g_printInvoiceMobileAddrData = 'Acc Num: ' + g_currentCompany().AccountID + '/*/Customer: ' + g_currentCompany().Name + 
-                                '/*/|' + address.Street + '/*/|' + address.City + '/*/|' + address.PostalCode + '/*/';
-                
-            }, 
-            function() {
-                g_printInvoiceMobileAddrData = '';
-            }, 
-            printinvoiceFetchOrder
-    );
-    
-    //printinvoiceFetchOrder();
+    if (g_currentUser().SupplierID.indexOf('OTI') === 0) {
+        var order = JSON.parse(sessionStorage.getItem("currentOrder"));
+        var dao = new Dao();
+        dao.get('Address',
+                order.SupplierID + order.AccountID + 'BillTo', 
+                function(address) {
+                    g_printInvoiceMobileAddrData = 'Acc Num: ' + g_currentCompany().AccountID + '/*/Customer: ' + g_currentCompany().Name + 
+                                    '/*/|' + address.Street + '/*/|' + address.City + '/*/|' + address.PostalCode + '/*/';
+
+                }, 
+                function() {
+                    g_printInvoiceMobileAddrData = '';
+                }, 
+                function () {
+                    setTimeout(function() {
+                        var daoDeliv = new Dao();
+                        daoDeliv.get('Address',
+                        order.SupplierID + order.AccountID + 'ShipTo', 
+                        function(address) {
+                            g_printInvoiceMobileAddrData += '/*/Deliver To: Addr: ' + address.Street + '/*/|' + address.City + '/*/|' + address.PostalCode + '/*/';
+
+                        }, 
+                        undefined,
+                        printinvoiceFetchOrder
+                        );
+                    },5);
+                    
+                }
+        );
+    } else {
+        printinvoiceFetchOrder();
+    }
+        
 }
 
 function printinvoiceBind() {
@@ -92,7 +108,7 @@ function printinvoiceFetchOrder() {
     g_printInvoiceMobileData += 'Details: ';
     printinvoiceShowOptionalText('#details', 'MyAddress');
     
-    g_printInvoiceMobileData += g_printInvoiceMobileAddrData ? '/*/Bill To: /*/' + g_printInvoiceMobileAddrData : '';
+    g_printInvoiceMobileData += g_printInvoiceMobileAddrData ? '/*/Bill To: /*//*/' + g_printInvoiceMobileAddrData : '';
     printinvoiceSetAddress('BillTo', order);
     printinvoiceSetAddress('ShipTo', order);
     
@@ -153,7 +169,7 @@ function printinvoiceFetchOrder() {
     g_append('#productListTable tbody', productLinesHtml);
     //$('#productListTable tbody').append(productLinesHtml);
     $('#subTotal').text(g_roundToTwoDecimals(subTotal));
-    g_printInvoiceMobileData += '|Sub Total: ||' + g_roundToTwoDecimals(subTotal) + '/*/';
+    g_printInvoiceMobileData += '/*/|Sub Total: ||' + g_roundToTwoDecimals(subTotal) + '/*/';
     if (DaoOptions.getValue('TaxText')) {
     	$('#taxText').html(DaoOptions.getValue('TaxText'));
         g_printInvoiceMobileData += '|' + DaoOptions.getValue('TaxText') + ': ||' + g_roundToTwoDecimals(vat) + '/*/';
@@ -162,16 +178,16 @@ function printinvoiceFetchOrder() {
     }
     $('#vat').text(g_roundToTwoDecimals(vat));
     $('#quantityTotal').text(quantityTotal);
-    g_printInvoiceMobileData += '|Total: |' + quantityTotal + '|' + g_roundToTwoDecimals(parseFloat(subTotal) + parseFloat(vat)) + '/*/';
+    g_printInvoiceMobileData += '|Total: |' + quantityTotal + '|' + g_roundToTwoDecimals(parseFloat(subTotal) + parseFloat(vat)) + '/*//*/';
     $('#total').text(g_roundToTwoDecimals(parseFloat(subTotal) + parseFloat(vat))) + '/*/';
     
     if (DaoOptions.getValue('CalcChange') === 'true') {
         g_printInvoiceMobileData += '|Money Received: ||' + g_roundToTwoDecimals(parseFloat(order.UserField02)) + '/*/';
-        g_printInvoiceMobileData += '|Change Given: ||' + g_roundToTwoDecimals(parseFloat(order.UserField03)) + '/*/';
+        g_printInvoiceMobileData += '|Change Given: ||' + g_roundToTwoDecimals(parseFloat(order.UserField03)) + '/*//*/';
     }
     g_printInvoiceMobileData += g_printInvoicePageTranslation.translateText('I / We acknowledge receipt of goods as detailed.') + '[b]/*//*/';
     g_printInvoiceMobileData += g_printInvoicePageTranslation.translateText('Authorised Name:') + '||' + g_printInvoicePageTranslation.translateText('Store Stamp') + '/*//*//*//*/';
-    g_printInvoiceMobileData += g_printInvoicePageTranslation.translateText('Signature:') + '||' + g_printInvoicePageTranslation.translateText('GRN Number') + '/*//*//*//*/[pf]/*/';
+    g_printInvoiceMobileData += g_printInvoicePageTranslation.translateText('Signature:') + '||' + g_printInvoicePageTranslation.translateText('GRN Number') + '/*//*//*//*//*/';
     
     console.log(g_printInvoiceMobileData);
     

@@ -323,6 +323,7 @@ function g_isOnline(showAlert) {
         states[Connection.CELL_2G]  = true;  //'Cell 2G connection';
         states[Connection.CELL_3G]  = true;  //'Cell 3G connection';
         states[Connection.CELL_4G]  = true;  //'Cell 4G connection';
+        states[Connection.CELL]     = true;  //'Cell generic connection';
         states[Connection.NONE]     = false; //'No network connection';
         
         if (!states[networkState] && showAlert)
