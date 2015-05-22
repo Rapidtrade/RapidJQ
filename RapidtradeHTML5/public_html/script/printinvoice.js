@@ -145,13 +145,13 @@ function printinvoiceFetchOrder() {
 
         } else {
 
-                productLinesHtml += '<tr>'  + 
-                        '<td>' + this.ProductID + '</td>' +
-                        '<td>' + this.Description + '</td>' +
-                        '<td>' + this.Quantity + '</td>' +
-                        '<td>' + this.Discount + '</td>' +
-                        '<td>' + this.Nett + '</td>' +
-                        '<td>' + this.Value + '</td>' +
+                productLinesHtml += '<tr style="width: 100% !important;" >'  + 
+                        '<td style="width: 101px !important;" >' + this.ProductID + '</td>' +
+                        '<td style="width: 269px !important;" >' + this.Description + '</td>' +
+                        '<td style="width: 25px !important;" >' + this.Quantity + '</td>' +
+                        '<td style="width: 33px !important;" >' + this.Discount + '</td>' +
+                        '<td style="width: 48px !important;" >' + g_roundToTwoDecimals(parseFloat(this.Nett)) + '</td>' +
+                        '<td style="width: 59px !important;" >' + g_roundToTwoDecimals(parseFloat(this.Value)) + '</td>' +
                         '</tr>';	
         }
         g_printInvoiceMobileData += '' + this.ProductID + '|' + this.Quantity + '|' + this.Value + '|' + this.Description + '/*/';
@@ -190,6 +190,22 @@ function printinvoiceFetchOrder() {
     g_printInvoiceMobileData += g_printInvoicePageTranslation.translateText('Signature:') + '||' + g_printInvoicePageTranslation.translateText('GRN Number') + '/*//*//*//*//*/';
     
     console.log(g_printInvoiceMobileData);
+	
+    if (DaoOptions.getValue('BreakPrintInvoiceItemsTable', 'false') === 'true') {
+        if (order.orderItems.length > 19) {
+            $('.printinvoiceContent').addClass('page');
+            var head = $('#productListTable thead tr');
+            $( "#productListTable tbody tr:nth-child(35n+19)" ).after(head.clone());
+//            var pNumber=1;
+//            var ar = $( '#productListTable tbody tr.printinvoiceProductListTableHead' ); 
+//            $.each(ar, function() {
+//                    $(this).before('<div class="footer" style="width:95%;text-align: right;">Page ' + (pNumber++).toString() + '</div>');
+//            });
+//            $( '#productListTable tbody tr.printinvoiceProductListTableHead:last' ).after('<div class="footer" style="width:95%;text-align: right;">Page ' + (pNumber++).toString() + '</div>');
+        } else if (order.orderItems.length > 10) {
+            $('#productListTable').after('<div> </div><div style="page-break-before: always; page-break-inside: avoid;"> </div>');
+        }
+    }
     
 }
 

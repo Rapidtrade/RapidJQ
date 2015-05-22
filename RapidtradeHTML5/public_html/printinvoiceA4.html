@@ -17,7 +17,7 @@
         
     </head>
     <body>
-		<div data-role="page" id="printinvoicepage" style="width:595px;">
+		<div data-role="page" id="printinvoicepage" style="width:595px; position:relative;">
 		    <script>
                         $('#printinvoicepage').bind("pagebeforecreate", printinvoiceOnPageBeforeCreate);
 		        $('#printinvoicepage').bind("pageshow", printinvoiceOnPageShow);
@@ -69,14 +69,21 @@
 				<p>
 				<table class="printinvoiceProductListTable" rules=groups id="productListTable">
 					<thead>	
-                                            <tr><th class="multiLanguage">Product</th><th class="multiLanguage">Description</th><th class="multiLanguage">Qty</th><th class="multiLanguage">Disc</th><th class="multiLanguage">Price</th><th class="multiLanguage">Value</th></tr>
+                                            <tr class="printinvoiceProductListTableHead">
+                                                <th style="width: 101px !important;" class="multiLanguage">Product</th>
+                                                <th style="width: 269px !important;" class="multiLanguage">Description</th>
+                                                <th style="width: 25px !important;" class="multiLanguage">Qty</th>
+                                                <th style="width: 33px !important;" class="multiLanguage">Disc</th>
+                                                <th style="width: 48px !important;" class="multiLanguage">Price</th>
+                                                <th style="width: 59px !important;" class="multiLanguage">Value</th>
+                                            </tr>
 					</thead>
 					<tbody>
 					</tbody>
 					<tfoot>
-						<tr><td></td><td class="printinvoiceTotalLabel">Sub Total</td><td colspan="3"></td><td id="subTotal"></td></tr>
-						<tr><td></td><td class="printinvoiceTotalLabel" id="taxText">VAT</td><td colspan="3"></td><td id="vat"></td></tr>
-						<tr><td></td><td class="printinvoiceTotalLabel">Total</td><td id="quantityTotal"></td><td colspan="2"></td><td id="total"></td></tr>
+						<tr><td style="width: 101px !important;" ></td><td style="width: 269px !important;" class="printinvoiceTotalLabel">Sub Total</td><td  style="width: 25px !important;" ></td><td  style="width: 33px !important;" ></td><td  style="width: 48px !important;" ></td><td  style="width: 59px !important;" id="subTotal"></td></tr>
+						<tr><td style="width: 101px !important;" ></td><td style="width: 269px !important;" class="printinvoiceTotalLabel" id="taxText">VAT</td><td style="width: 25px !important;" ></td><td style="width: 33px !important;" ><td style="width: 48px !important;" ></td><td style="width: 59px !important;" id="vat"></td></tr>
+						<tr><td style="width: 101px !important;" ></td><td style="width: 269px !important;" class="printinvoiceTotalLabel">Total</td><td style="width: 25px !important;" id="quantityTotal"></td><td  style="width: 33px !important;" ></td><td  style="width: 48px !important;" ></td><td style="width: 59px !important;" id="total"></td></tr>
 					</tfoot>
 				</table>	
 				</p>

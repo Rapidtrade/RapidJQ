@@ -624,13 +624,14 @@
 	text-align:left;
 }
 
-.printinvoiceProductListTable thead {
+.printinvoiceProductListTable .printinvoiceProductListTableHead {
 	border-bottom: 1px solid;
 }
 
 .printinvoiceProductListTable tfoot {
 	text-align: left;
 	border-top: 1px solid;
+        border-bottom: 1px solid;
 }
 
 .printinvoiceProductListTable tr { 
@@ -707,6 +708,24 @@
     font-size: 15px;
 }
 
+.printinvoiceProductListTable tr{
+    display:block;
+}
+ 
+tbody tr.printinvoiceProductListTableHead {
+    page-break-before: always;
+    page-break-inside: avoid;
+}
+
+@media screen {
+    tbody .printinvoiceProductListTableHead{
+        display: none;
+    }
+    .printinvoiceContent .footer {
+        display: none;
+    }
+}
+
 @media print {	
     .printinvoiceHeader, #udsInputsDiv, #udsHeader {
         display: none;
@@ -716,7 +735,10 @@
         font-weight: 800;
         color: black;
     }
-
+    
+    .printinvoiceProductListTable tr{
+            /*display:block;*/
+    }
     .printinvoiceProductListTable { 
         font-weight: bolder;
         page-break-inside:auto;
@@ -753,6 +775,15 @@
         display: block;
         text-align: right;
     } 
+    
+    .printinvoiceContent .footer {
+        font-size: 10px;
+        font-weight: normal;
+        display: block;
+        text-align: right;
+        /*position: absolute;*/
+        /*bottom: 12px;*/
+    }
     
     .printinvoiceContent .pageNumber {
 
