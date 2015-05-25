@@ -386,8 +386,16 @@ function fetchDailySummary() {
                 
                 var dateFromSrv = (item.DueDate ? item.DueDate.replace('/Date(','').replace(')/','').split('+') : new Array(0,1));
                 var mom = new moment(parseInt(dateFromSrv[0]));
-                var duedate = mom.toDate(); 
-                duedate.setHours(duedate.getHours() + parseInt(dateFromSrv[1].replace(/0/g,'')));
+                var duedate;
+                
+                //if (item.EventTypeID === 'ORDERS') {
+                //    var offset = new Date().getTimezoneOffset();
+                //    duedate = new Date(parseInt(item.DueDate.substr(6, 13)) + offset * 60000);
+                //} else {
+                    duedate = mom.toDate(); 
+                    duedate.setHours(duedate.getHours() + parseInt(dateFromSrv[1].substr(0,2)));
+                //}
+                
                 
                 //var offset = new Date().getTimezoneOffset();
                 //var duedate = new Date(parseInt(item.DueDate.substr(6, 13)) + offset * 60000);

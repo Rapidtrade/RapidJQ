@@ -218,7 +218,7 @@ function historyActivitiesListView(activities){
         var dateFromSrv = (activity.DueDate ? activity.DueDate.replace('/Date(','').replace(')/','').split('+') : new Array(0,1));
         var mom = new moment(parseInt(dateFromSrv[0])); //new moment(activity.DueDate);
         var duedate = mom.toDate(); //new Date(parsedIntDate);
-        duedate.setHours(duedate.getHours() + parseInt(dateFromSrv[1].replace(/0/g,''))/*- duedate.getTimezoneOffset() / 60*/);
+        duedate.setHours(duedate.getHours() + parseInt(dateFromSrv[1].substr(0,2))/*- duedate.getTimezoneOffset() / 60*/);
         var month = duedate.getMonth() + 1;
         var day = duedate.getDate();
         var year = duedate.getFullYear();
@@ -235,7 +235,7 @@ function historyActivitiesListView(activities){
         
         //
         var liStr = '<li id="' + activity.EventID + '"><a class="activityLink">' +
-					'        <p class="ui-li-aside ui-li-desc"><strong>' + duedate.toLocaleTimeString() + '</strong></p>' +
+					'        <p class="ui-li-aside ui-li-desc"><strong>' + g_setLeadingZero(duedate.getHours()) + ':' + g_setLeadingZero(duedate.getMinutes()) + ':' + g_setLeadingZero(duedate.getSeconds()) + '</strong></p>' +
 					'        <h3 class="ui-li-heading">' + g_companyPageTranslation.translateText(activity.Description) + '</h3>' +
 					'        <p class="ui-li-desc data">' + activity.Data + '</p>' +
 					'        <p class="ui-li-desc notes"><strong>' + activity.Notes + '</strong></p>' +

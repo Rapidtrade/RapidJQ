@@ -592,7 +592,7 @@ function pricelistDoSearch(searchType) {
 	
 	$('#advancedSearchButton').toggle('advanced' == searchType);	
 	
-	var isLiveAdvancedSearch = (searchType == 'advanced') && (DaoOptions.getValue('LiveAdvanceSearch') != '');
+	var isLiveAdvancedSearch = (searchType == 'advanced') && (DaoOptions.getValue('LiveAdvanceSearch', '') != '');
 	
 	$('.rtTableLabel').toggle(!isLiveAdvancedSearch);
 	
