@@ -176,10 +176,15 @@ function orderdetailsInit() {
     } catch (err){
 
     }
+    
+    if (orderdetailsCanDeleteOrder()) {
+        $('#deleteButton').removeClass('invisible');
+    }
 
     if (g_orderdetailsCurrentOrder.Type === 'Quote') {
 
-        $('#csvButton, #deleteButton').removeClass('invisible');
+//        $('#csvButton, #deleteButton').removeClass('invisible');
+        $('#csvButton').removeClass('invisible');
         
         if (DaoOptions.getValue('PrintQuote') === 'true') {
             
@@ -217,7 +222,7 @@ function orderdetailsIsComplexView() {
     return complexIndicator && (g_orderdetailsCurrentOrder[complexIndicator] === 'Y');       
 }
 
-function orderdetailsDeleteOrder() {
+function orderdetailsDeleteOrder_OLD() {
     
     var orderHeaderInfo = {};  	
     orderHeaderInfo.Table = "Orders";
@@ -245,6 +250,28 @@ function orderdetailsDeleteOrder() {
     function onFailure() {
         
         g_alert('ERROR: The order is not deleted.');
+    }
+}
+
+function orderdetailsDeleteOrder() {
+    if (confirm('Are you sure you want to delete current ' + g_orderdetailsCurrentOrder.Type.toLowerCase() + '?')) {
+        var url = g_restUrl + 'Orders/deleteorder?supplierID=' + g_orderdetailsCurrentOrder.SupplierID + '&orderid=' + g_orderdetailsCurrentOrder.OrderID + '&format=json';
+
+        g_ajaxget(url, onSuccess, onFailure);
+
+        function onSuccess(json) {
+            if (json._Status) {
+                sessionStorage.setItem('HistoryCacheAccountID', '');
+                orderdetailsOnBackClicked();
+            } else {
+                onFailure();   
+            }        
+        }
+
+        function onFailure() {
+
+            g_alert('ERROR: The ' + g_orderdetailsCurrentOrder.Type.toLowerCase() + ' is not deleted.');
+        }
     }
 }
 
@@ -936,5 +963,15 @@ function orderdetailsAddThumbnailChecker(orderItem, isPopupShow) {
     }
     
     
+}
+
+function orderdetailsCanDeleteOrder() {
+    var options = DaoOptions.getValue('AllowDeleteOrderType', '');
+    
+    if (options === '') return false;
+    
+    var optionValues = options.split(',');
+    
+    return ($.inArray(g_orderdetailsCurrentOrder.Type, optionValues) > -1);
 }
 

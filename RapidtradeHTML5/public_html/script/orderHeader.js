@@ -1020,9 +1020,9 @@ function orderHeaderCreateOrderObject() {
 	else {
 	    g_orderHeaderOrder.Type = sessionStorage.getItem("currentordertype");
 	}
-	//var date = new Date();
+	/*var date = new Date();
 	//g_orderHeaderOrder.CreateDate = date.getFullYear() + "-" + g_setLeadingZero((date.getMonth() + 1)) + "-" + g_setLeadingZero(date.getDate()) + "T" +
-	//								g_setLeadingZero(date.getHours()) + ":"  + g_setLeadingZero(date.getMinutes()) + ":00";
+	//								g_setLeadingZero(date.getHours()) + ":"  + g_setLeadingZero(date.getMinutes()) + ":00"; */
         var now = moment();
         g_orderHeaderOrder.CreateDate = now.toDate();
 }
