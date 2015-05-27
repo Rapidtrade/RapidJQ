@@ -1226,15 +1226,27 @@ function productdetailOkClicked(checkStock) {
 
     if (checkStock && g_isOnline(false)) {
 
-        if ((DaoOptions.getValue('musthavestock') == 'true') && (isNaN(stock) || stock <= 0 || (-1 == parseInt($('#nett-r').text(), 10)))) {
+        var checkForOrderTypes = DaoOptions.getValue('OrderTypeMustHaveStock');
+    
+        if (checkForOrderTypes === undefined) {
             
-            if (sessionStorage.getItem('currentordertype').toLowerCase() === 'repl' && DaoOptions.getValue('ReplenishZeroStock', 'false') === 'true') {
+            if ((DaoOptions.getValue('musthavestock') == 'true') && (isNaN(stock) || stock <= 0 || (-1 == parseInt($('#nett-r').text(), 10)))) {
+                if (sessionStorage.getItem('currentordertype').toLowerCase() === 'repl' && DaoOptions.getValue('ReplenishZeroStock', 'false') === 'true') {
                 
-            } else {
+                } else {
+                    showMessage();
+                    return;
+                }
+            }
+        } else {
+            if (($.inArray(sessionStorage.getItem('currentordertype'), checkForOrderTypes.split(',')) !== -1) && (isNaN(stock) || stock <= 0 )) {                   
                 showMessage();
-                return;
+                return;                    
             }
         }
+            
+            
+        
     }
 	
     type = $.trim(sessionStorage.getItem("currentordertype"));

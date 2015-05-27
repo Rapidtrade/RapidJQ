@@ -345,7 +345,17 @@ function g_setLeadingZero(number) {
 }
 
 function g_isPackSizeUnitValid(unit) {
-	return (orderdetailsIsComplexView() || (DaoOptions.getValue('ForcePackSize')  == 'true')) && !isNaN(unit);
+    var checkForOrderTypes = DaoOptions.getValue('OrderTypePackSize');
+    
+    if (checkForOrderTypes === undefined) {
+        return (orderdetailsIsComplexView() || (DaoOptions.getValue('ForcePackSize')  == 'true')) && !isNaN(unit);
+    } else {
+        if ($.inArray(sessionStorage.getItem('currentordertype'), checkForOrderTypes.split(',')) !== -1) {
+            return (orderdetailsIsComplexView() || (DaoOptions.getValue('ForcePackSize')  == 'true')) && !isNaN(unit);
+        } else {
+            return (orderdetailsIsComplexView() || false);
+        }
+    }
 }
 
 /*

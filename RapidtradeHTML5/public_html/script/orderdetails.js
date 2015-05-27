@@ -665,6 +665,24 @@ function orderdetailsFetchOrderItems() {
 
     var showOrderItems = function() {
         
+        if (orderItems.length === 0) {
+            var url = '';
+            if (DaoOptions.getValue('CalcTaxPerProduct') === 'true') {
+                url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orderitems_' + (orderdetailsIsSpecialOrder() ? 'readbytype3' : 'readlist');
+
+                url += '&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentCompany().AccountID.replace('&', '%26') + '%27|%27' + g_orderdetailsCurrentOrder.OrderID + '%27|0|300)';
+            } else {
+                url = (DaoOptions.getValue('DownloadOrderURL') ? DaoOptions.getValue('DownloadOrderURL') + '/rest/Orders/GetOrderItems' +  (orderdetailsIsSpecialOrder() ? 'ByType3' : '') : (DaoOptions.getValue('LiveHistoryItems', g_restUrl + 'Orders/GetOrderItems')));
+
+                url += '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') + '&orderID=' + g_orderdetailsCurrentOrder.OrderID + '&skip=0&top=300&format=json';
+            }
+            
+            console.log(url);
+            
+            g_ajaxget(url, success, error);
+            return;
+        }
+        
         if (!itemsShown) {
             
             $.mobile.hidePageLoadingMsg();
@@ -674,7 +692,7 @@ function orderdetailsFetchOrderItems() {
         }
     }; 
 
-    if (!g_isOnline(false) && orderdetailsIsSpecialOrder()) {
+    if (!g_isOnline(false) || orderdetailsIsSpecialOrder()) {
         
         itemsShown = false;
         
