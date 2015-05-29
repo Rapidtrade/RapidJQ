@@ -205,7 +205,10 @@ function orderHeaderInit() {
     
     if (DaoOptions.getValue('HideAddressInfo') != 'true') {
     	
-        $('#address, #addressForm').removeClass('invisible');   	
+        $('#address, #addressForm').removeClass('invisible'); 
+        if (DaoOptions.getValue('HideEmailInAddressInfo') != 'true') {
+            $('#addressEmailSection').removeClass('invisible');
+        }
     }
     
     g_orderHeaderJsonForm = new JsonForm();
