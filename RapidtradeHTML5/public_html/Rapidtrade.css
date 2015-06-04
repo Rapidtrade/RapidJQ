@@ -1125,3 +1125,15 @@ tbody tr.printinvoiceProductListTableHead {
     padding-left: 5px;
     padding-right: 5px;
 }
+
+#localTPMItemsTable {    
+    border-collapse: collapse;
+}
+
+#localTPMItemsTable .firstPromoRow  {
+    border-top: 1px solid black;
+}
+
+#localTPMItemsTable tr.firstPromoRow > td {    
+    padding-top: 20px;
+}

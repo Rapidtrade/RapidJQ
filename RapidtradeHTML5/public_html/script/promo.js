@@ -196,7 +196,7 @@ var promo = (function(){
                             item.Description = tpmcond.Free[x].Description;
                             item.MaxQty = maxQty;
                             
-                            itemsHTML += '<tr><td>' + tpm.TPMID + '</td>';
+                            itemsHTML += '<tr ' + ((i !== 0 && (j+x) === 0 )? ' class="firstPromoRow" ' : '') + ' ><td>' + tpm.TPMID + '</td>';
                             itemsHTML += '<td>' + tpmcond.Free[x].ID + '</td>';
                             itemsHTML += '<td>' + tpmcond.Free[x].Description + '</td>';
                             itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Qty" type="number" min="0" max="' + maxQty + '" + value="' + maxQtyPerItem+ '" style="width: 100%;"/></td></tr>'; 
@@ -247,8 +247,10 @@ var promo = (function(){
                             item.Type = 'PROMO';
                             item.PromoID = allFreeItems[x].TPMID;
                             item.Quantity = parseInt($('#promoItem' + x + 'Qty').val() === '' ? 0 : $('#promoItem' + x + 'Qty').val(), 10);
-
-                            prItems.push(item);
+                            
+                            if (item.Quantity) {
+                                prItems.push(item);
+                            }
                         }
 
                         basket.saveItems(prItems, function () {
