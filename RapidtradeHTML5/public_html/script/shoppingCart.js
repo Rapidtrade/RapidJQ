@@ -153,9 +153,17 @@ function shoppingCartBind() {
                 basket.saveItems(g_shoppingCartDetailItems, function() {
            
                     setTimeout(function() {
-
-                        g_busy(false);
-                        $.mobile.changePage('orderHeader.html', {transition:'none'});
+                        var finish = function() {
+                            g_busy(false);
+                            $.mobile.changePage('orderHeader.html', {transition:'none'});
+                        };
+                        if (DaoOptions.getValue('localTPM') === 'true') {
+                            promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), finish);
+                        } else {
+                            finish();
+                        }
+                            
+                        
                     }, 2000);
 
                     return;            
@@ -177,9 +185,17 @@ function shoppingCartBind() {
                 $('#creditLimitPopup').popup('open');
 
             } else {
-
-                var isTPMOrder = ($.inArray(sessionStorage.getItem('currentordertype'), DaoOptions.getValue('TPMOrderTypes') && DaoOptions.getValue('TPMOrderTypes').split(',') || []) !== -1);            
-                $.mobile.changePage((isTPMOrder ? "tpm.html" : "orderHeader.html"), { transition: "none" });
+                var finish = function() {
+                    var isTPMOrder = ($.inArray(sessionStorage.getItem('currentordertype'), DaoOptions.getValue('TPMOrderTypes') && DaoOptions.getValue('TPMOrderTypes').split(',') || []) !== -1);            
+                    $.mobile.changePage((isTPMOrder ? "tpm.html" : "orderHeader.html"), { transition: "none" });
+                };
+                
+                if (DaoOptions.getValue('localTPM') === 'true') {
+                    promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), finish);
+                } else {
+                    finish();
+                }
+                
             }
         }        
     });
@@ -379,9 +395,9 @@ function shoppingCartInit() {
     
     g_basketHTML = '';
     
-    if (DaoOptions.getValue('localTPM') === 'true')
-        promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
-    else
+    //if (DaoOptions.getValue('localTPM') === 'true')
+    //    promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
+    //else
         shoppingCartFetchBasket();
 
 //    shoppingCartFetchBasket();
@@ -755,15 +771,15 @@ function shoppingCartDeleteItem(key, saveLostSale, removeNode, onSuccess, resetI
                             
                             var itemIndex = $.inArray(key, g_shoppingCartItemKeys);                            
                             
-                            if (DaoOptions.getValue('localTPM') === 'true') {
-
-                                $('#LI' + itemIndex).remove();
-                                if ($('#shoppingCartitemlist li').length)
-                                    promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
-                                else
-                                    shoppingCartCheckItemsCount();
-                                return;
-                            }                             
+//                            if (DaoOptions.getValue('localTPM') === 'true') {
+//
+//                                $('#LI' + itemIndex).remove();
+//                                if ($('#shoppingCartitemlist li').length)
+//                                    promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
+//                                else
+//                                    shoppingCartCheckItemsCount();
+//                                return;
+//                            }                             
 
                             try {
 
@@ -912,11 +928,11 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
         });
         shoppingCartRecalcTotals(basketInfo, quantity);
         
-        if (DaoOptions.getValue('localTPM') === 'true') {
-
-             promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
-             return;
-        }        
+//        if (DaoOptions.getValue('localTPM') === 'true') {
+//
+//             promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
+//             return;
+//        }        
     }, 
     undefined,
     undefined   
@@ -1030,11 +1046,11 @@ function shoppingCartRecalcMultilineDiscounts(changedItemIndex) {
                         });
                         shoppingCartRecalcTotals(basketInfo, quantity);
 
-                        if (DaoOptions.getValue('localTPM') === 'true') {
-
-                             promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
-                             return;
-                        }        
+//                        if (DaoOptions.getValue('localTPM') === 'true') {
+//
+//                             promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
+//                             return;
+//                        }        
                     }, 
                     undefined,
                     undefined   
@@ -1109,11 +1125,11 @@ function shoppingCartRecalcMultilineDiscounts(changedItemIndex) {
                             });
                             shoppingCartRecalcTotals(basketInfo, quantity);
 
-                            if (DaoOptions.getValue('localTPM') === 'true') {
-
-                                 promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
-                                 return;
-                            }        
+//                            if (DaoOptions.getValue('localTPM') === 'true') {
+//
+//                                 promo.getInstance().checkMandatoryPromos(g_currentUser(), g_currentCompany(), shoppingCartFetchBasket);
+//                                 return;
+//                            }        
                         }, 
                         undefined,
                         undefined   

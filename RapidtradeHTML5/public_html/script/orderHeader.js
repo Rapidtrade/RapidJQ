@@ -62,8 +62,24 @@ function orderHeaderOnPageShow() {
 function orderHeaderBind() {
 
     $('#orderHeaderBackPage').click(function() {		
-        var page = sessionStorage.getItem('OrderHeaderReturnPage');
-        $.mobile.changePage(page ? page : 'shoppingCart.html');
+        var finish = function() {
+            var page = sessionStorage.getItem('OrderHeaderReturnPage');
+            $.mobile.changePage(page ? page : 'shoppingCart.html');
+        };
+        if (true) {
+            var dao= new Dao();            
+            dao.cursor('BasketInfo', '', '', function(item) {
+                
+                if (item.Type === 'PROMO') {
+                    var key = item.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID; 
+                    dao.deleteItem('BasketInfo', key);
+                }
+                
+            }, undefined, finish);
+        } else {
+            finish();
+        }
+        
     });
 	
     $('#choosebtn').click(function () {
