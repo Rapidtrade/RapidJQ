@@ -66,13 +66,36 @@ function orderHeaderBind() {
             var page = sessionStorage.getItem('OrderHeaderReturnPage');
             $.mobile.changePage(page ? page : 'shoppingCart.html');
         };
-        if (true) {
+        if (DaoOptions.getValue('localTPM') === 'true') {
             var dao= new Dao();            
             dao.cursor('BasketInfo', '', '', function(item) {
                 
-                if (item.Type === 'PROMO') {
+                if (item.Type === 'PROMO') {                    
                     var key = item.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID; 
                     dao.deleteItem('BasketInfo', key);
+                } else if (item.UserField03 && item.PromoID && item.PromoType) {                    
+                    if (item.PromoType === 'DISCOUNT') {
+                        item.RepChangedPrice = false;
+                        item.RepNett = undefined;
+                        item.RepDiscount = 0;
+                        
+                        item.UserField03 = undefined;
+                        item.PromoID = undefined;
+                        item.PromoType = undefined;
+                        
+                    } else if (item.PromoType === 'FREE') {
+                        item.RepChangedPrice = false;
+                        item.RepNett = undefined;
+                        item.RepDiscount = 0;
+                        
+                        item.UserField03 = undefined;
+                        item.PromoID = undefined;
+                        item.PromoType = undefined;
+                        
+                        item.Quantity -= item.FreeQty;
+                        item.FreeQty = undefined;
+                    }
+                    basket.saveItem(item, item.Quantity);
                 }
                 
             }, undefined, finish);
