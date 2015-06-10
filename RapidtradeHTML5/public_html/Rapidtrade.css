@@ -1137,3 +1137,11 @@ tbody tr.printinvoiceProductListTableHead {
 #localTPMItemsTable tr.firstPromoRow > td {    
     padding-top: 20px;
 }
+
+a.promoItemSelectBtnAccept {
+    color:#00BB00 !important;
+}
+
+a.promoItemSelectBtnRemove {
+    color:#FF0000 !important;
+}

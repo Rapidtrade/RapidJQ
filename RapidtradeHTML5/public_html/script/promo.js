@@ -63,7 +63,7 @@ var promo = (function(){
 //                 }  
                 
                     //var val = cond.Values[z]; 
-                    if ($.inArray($this.account[cond.ObjectProperty], cond.Values) > -1) useTPM  = true; 
+                    if (cond.ObjectProperty === 'All' || $.inArray($this.account[cond.ObjectProperty], cond.Values) > -1) useTPM  = true; 
                 
              } 
              
@@ -179,7 +179,7 @@ var promo = (function(){
             if ($this.mathcingTPMs.length === 0) {
                 $this.onComplete();
             } else {
-                var itemsHTMLHeader = '<thead><tr><th>Promotion</th><th>Product</th><th>Description</th><th>Quantity</th></tr></thead>';
+                var itemsHTMLHeader = '<thead><tr><th>Promotion</th><th>Product</th><th>Description</th><th style="width: 55px;">Free</th><th>Disc &#37;</th></tr></thead>';
                 var itemsHTML = '';
                 var allFreeItems = [];
                 for (var i = 0; i < $this.mathcingTPMs.length; ++i) {
@@ -216,8 +216,9 @@ var promo = (function(){
                             itemsHTML += '<tr ' + ((i !== 0 && (j) === 0 )? ' class="firstPromoRow" ' : '') + ' ><td>' + tpm.TPMID + '</td>';
                             itemsHTML += '<td></td>';
                             itemsHTML += '<td>' + tpm.Description + '</td>';
-                            itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Qty" class="promoItemInput' + tpm.TPMID + '" type="number" min="0" max="' + tpm.json.Discount + '" + value="' + tpm.json.Discount + '" style="width: 70%;" readonly /></td>'; 
-                            itemsHTML += '<td><a id="promoItemSelectBtn' + allFreeItems.length + '" class="promoItemSelectBtn promoSelect' + tpm.TPMID + '" data-role="button" data-mini="true" href >Select</a></td></tr>';
+                            itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Qty" class="promoItemInput' + tpm.TPMID + 'Qty" type="number" min="0" max="0" style="width: 100%;" readonly /></td>';
+                            itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Disc" class="promoItemInput' + tpm.TPMID + 'Disc" type="number" min="0" max="' + tpm.json.Discount + '" + value="' + tpm.json.Discount + '" style="width: 100%;" readonly /></td>'; 
+                            itemsHTML += '<td><a id="promoItemSelectBtn' + allFreeItems.length + '" class="promoItemSelector promoItemSelectBtnAccept promoSelect' + tpm.TPMID + '" data-role="button" data-mini="true" href >Accept</a></td></tr>';
 
                             allFreeItems.push(item);
                             
@@ -238,8 +239,9 @@ var promo = (function(){
                                 itemsHTML += '<tr ' + ((i !== 0 && (j+x) === 0 )? ' class="firstPromoRow" ' : '') + ' ><td>' + tpm.TPMID + '</td>';
                                 itemsHTML += '<td>' + tpmcond.Free[x].ID + '</td>';
                                 itemsHTML += '<td>' + tpmcond.Free[x].Description + '</td>';
-                                itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Qty" class="promoItemInput' + tpm.TPMID + '" type="number" min="0" max="' + maxQty + '" + value="' + maxQtyPerItem+ '" style="width: 100%;"/></td>'; 
-                                itemsHTML += '<td><a id="promoItemSelectBtn' + allFreeItems.length + '" class="promoItemSelectBtn promoSelect' + tpm.TPMID + '" data-role="button" data-mini="true" href >Select</a></td></tr>';
+                                itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Qty" class="promoItemInput' + tpm.TPMID + 'Qty" type="number" min="0" max="' + maxQty + '" + value="' + maxQtyPerItem+ '" style="width: 100%;"/></td>'; 
+                                itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Disc" class="promoItemInput' + tpm.TPMID + 'Disc" type="number" min="0" max="0" style="width: 100%;" readonly /></td>'; 
+                                itemsHTML += '<td><a id="promoItemSelectBtn' + allFreeItems.length + '" class="promoItemSelector promoItemSelectBtnAccept promoSelect' + tpm.TPMID + '" data-role="button" data-mini="true" href >Accept</a></td></tr>';
 
                                 allFreeItems.push(item);
                             }
@@ -252,10 +254,10 @@ var promo = (function(){
                 $('#localTPMItemsTable').html(itemsHTMLHeader + itemsHTML);
                 $('#shoppingCartLocalTPMPopup').popup('open');
                 
-                $('#localTPMItemsTable .promoItemSelectBtn').button().off().on('click', function() {
+                $('#localTPMItemsTable .promoItemSelector').button().off().on('click', function() {
 //                    g_alert('clicked on Select button');
-//                    var itemIndex = $(this).attr('id').replace('promoItemSelectBtn','promoItemSelectBtn');
-//                    $this.checkOverlapping(itemIndex, $this, allFreeItems);
+                    var itemIndex = parseInt($(this).attr('id').replace('promoItemSelectBtn',''), 10);
+                    $this.checkOverlapping(itemIndex, $this, allFreeItems);
                 });
 
                 $('#localTPMItemsTable tbody input').keydown(function(event) {
@@ -267,14 +269,17 @@ var promo = (function(){
                     var qtySum = 0;
                     var promID = '';
                     var qtyOK = true;
+                    var selectedItems = [];
                     for (var i = 0; i < promoItemQtys.length; ++i) {
+                        var tmpItem = $('#promoItem' + i + 'Qty').parents('tbody').hasClass('ui-disabled');
+                        selectedItems.push(!tmpItem);
                         if (promID !== allFreeItems[i].TPMID) {
                             promID = allFreeItems[i].TPMID;
                             qtySum = 0;
                         }
                         qtySum += parseInt($('#promoItem' + i + 'Qty').val() === '' ? 0 : $('#promoItem' + i + 'Qty').val(), 10);
                         
-                        if (allFreeItems[i].PromoType === 'FREE')
+                        if (selectedItems[i] && allFreeItems[i].PromoType === 'FREE')
                             qtyOK = qtySum <= allFreeItems[i].MaxQty;
                         
                         if (!qtyOK) {
@@ -287,6 +292,7 @@ var promo = (function(){
                     } else {
                         var prItems = [];
                         for (var x = 0; x < allFreeItems.length; ++x) {
+                            if (selectedItems[x]) continue;
                             var item = {};
                             item.ProductID = allFreeItems[x].ProductID;
                             item.Description = allFreeItems[x].Description;
@@ -296,7 +302,7 @@ var promo = (function(){
                             item.Type = 'PROMO';
                             item.PromoType = allFreeItems[x].PromoType;
                             item.PromoID = allFreeItems[x].TPMID;
-                            item[item.PromoType === 'FREE' ? 'Quantity' : 'PromoDiscount'] = parseInt($('#promoItem' + x + 'Qty').val() === '' ? 0 : $('#promoItem' + x + 'Qty').val(), 10);
+                            item[item.PromoType === 'FREE' ? 'Quantity' : 'PromoDiscount'] = parseInt($('#promoItem' + x + (item.PromoType === 'FREE' ? 'Qty' : 'Disc')).val() === '' ? 0 : $('#promoItem' + x + (item.PromoType === 'FREE' ? 'Qty' : 'Disc')).val(), 10);
                             
                             item.noOtherDiscounts = allFreeItems[x].noOtherDiscounts;
                             item.triggerItems = allFreeItems[x].triggerItems;
@@ -429,9 +435,10 @@ var promo = (function(){
                     id = allFreeItems[i].TPMID;
                     promoObj = {};
                     promoObj.TPMID = allFreeItems[i].TPMID;
-                    promoObj.Priority = allFreeItems[i].Priority;
+                    promoObj.Priority = allFreeItems[i].priority;
                     promoObj.triggerItems = allFreeItems[i].triggerItems;
                     promoObj.selected = false;
+                    promoObj.promoType = allFreeItems[i].PromoType;
                     
                     qtySum = 0;
                 }
@@ -446,13 +453,43 @@ var promo = (function(){
                     promoObj.selected = promoObj.clickedSelect;
                 }
             }
+            promoObjects.push(promoObj);
+            var promosPreviousState = $('#localTPMItemsTable tbody');
+            for (var i = 0; i < promosPreviousState.length; ++i) {
+                promosPreviousState[i] = $(promosPreviousState[i]).hasClass('ui-disabled');
+            }
+            $('#localTPMItemsTable tbody').removeClass('ui-disabled');
             
+            $('#localTPMItemsTable .promoItemSelector').removeClass('promoItemSelectBtnRemove');
+            $('#localTPMItemsTable .promoItemSelector').addClass('promoItemSelectBtnAccept');
+            $('#localTPMItemsTable .promoItemSelector .ui-btn-text').text('Accept');
             
-            
-            var promoSelectButtons = $('#localTPMItemsTable .promoItemSelectBtn');
-            for (var i=0; i < allFreeItems.length; ++i) {
-                var inputIsDisabled = $('#promoItem' + i + 'Qty').hasClass('ui-disabled');
-                var promoInputButtonIsDisabled = $(promoSelectButtons[i]).hasClass('ui-disabled');
+            if (promoObjects.length === 1) {
+                if (promoObjects[0].selected) {
+                    $('#localTPMItemsTable .promoItemSelector').addClass('promoItemSelectBtnRemove');
+                    $('#localTPMItemsTable .promoItemSelector .ui-btn-text').text('Remove');
+                }
+            } else {
+                for (var i=0; i < promoObjects.length; ++i) {
+                    for (var j=i; j < promoObjects.length; ++j) {
+                        if (i === j) continue;
+                        var intersectionArray = getIntersectionOfTriggerItems(promoObjects[i].triggerItems, promoObjects[j].triggerItems);
+                        if (intersectionArray.length > 0) {
+                            if (promoObjects[i].selected && promoObjects[i].Priority < promoObjects[j].Priority) {
+                                $('#localTPMItemsTable tbody:eq(' + j + ')').addClass('ui-disabled');
+                                
+                                $('#localTPMItemsTable tbody:eq(' + i + ') .promoItemSelector').addClass('promoItemSelectBtnRemove');
+                                $('#localTPMItemsTable tbody:eq(' + i + ') .promoItemSelector .ui-btn-text').text('Remove');
+                            } else if (promoObjects[j].selected && !promoObjects[i].selected && !promosPreviousState[i]) {
+                                $('#localTPMItemsTable tbody:eq(' + i + ')').addClass('ui-disabled');
+                                
+                                $('#localTPMItemsTable tbody:eq(' + j + ') .promoItemSelector').addClass('promoItemSelectBtnRemove');
+                                $('#localTPMItemsTable tbody:eq(' + j + ') .promoItemSelector .ui-btn-text').text('Remove');
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         };
     };
