@@ -270,7 +270,7 @@ var promo = (function(){
                     var promID = '';
                     var qtyOK = true;
                     var selectedItems = [];
-                    for (var i = 0; i < promoItemQtys.length; ++i) {
+                    for (var i = 0; i < allFreeItems.length; ++i) {
                         var tmpItem = $('#promoItem' + i + 'Qty').parents('tbody').hasClass('ui-disabled');
                         selectedItems.push(!tmpItem);
                         if (promID !== allFreeItems[i].TPMID) {
@@ -292,7 +292,7 @@ var promo = (function(){
                     } else {
                         var prItems = [];
                         for (var x = 0; x < allFreeItems.length; ++x) {
-                            if (selectedItems[x]) continue;
+                            if (!selectedItems[x]) continue;
                             var item = {};
                             item.ProductID = allFreeItems[x].ProductID;
                             item.Description = allFreeItems[x].Description;
