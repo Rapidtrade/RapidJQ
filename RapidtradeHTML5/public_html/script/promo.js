@@ -257,7 +257,27 @@ var promo = (function(){
                 $('#localTPMItemsTable .promoItemSelector').button().off().on('click', function() {
 //                    g_alert('clicked on Select button');
                     var itemIndex = parseInt($(this).attr('id').replace('promoItemSelectBtn',''), 10);
+                    var tmoBtnValue = $('#promoItemSelectBtn' + itemIndex + ' .ui-btn-text').text() === 'Remove';
+                    if (allFreeItems[itemIndex].PromoType === 'FREE' && tmoBtnValue) {
+                            $('#promoItem' + itemIndex + 'Qty').val('0');
+                        }
                     $this.checkOverlapping(itemIndex, $this, allFreeItems);
+                    
+                    if (tmoBtnValue) {
+                        $('#promoItemSelectBtn' + itemIndex).removeClass('promoItemSelectBtnRemove');
+                        $('#promoItemSelectBtn' + itemIndex).addClass('promoItemSelectBtnAccept');
+                        $('#promoItemSelectBtn' + itemIndex + ' .ui-btn-text').text('Accept');
+                        if (allFreeItems[itemIndex].PromoType === 'FREE') {
+                            $('#promoItem' + itemIndex + 'Qty').val('0');
+                        }
+                    } else {
+                        if ((allFreeItems[itemIndex].PromoType === 'FREE' && $('#promoItem' + itemIndex + 'Qty').val() !== '0') ||
+                                (allFreeItems[itemIndex].PromoType === 'DISCOUNT')) {
+                            $('#promoItemSelectBtn' + itemIndex).removeClass('promoItemSelectBtnAccept');
+                            $('#promoItemSelectBtn' + itemIndex).addClass('promoItemSelectBtnRemove');
+                            $('#promoItemSelectBtn' + itemIndex + ' .ui-btn-text').text('Remove');
+                        }
+                    }
                 });
 
                 $('#localTPMItemsTable tbody input').keydown(function(event) {
@@ -272,7 +292,9 @@ var promo = (function(){
                     var selectedItems = [];
                     for (var i = 0; i < allFreeItems.length; ++i) {
                         var tmpItem = $('#promoItem' + i + 'Qty').parents('tbody').hasClass('ui-disabled');
-                        selectedItems.push(!tmpItem);
+                        var tmoBtnValue = $('#promoItemSelectBtn' + i + ' .ui-btn-text').text() === 'Remove';
+                        //selectedItems.push(!tmpItem);
+                        selectedItems.push(tmoBtnValue);
                         if (promID !== allFreeItems[i].TPMID) {
                             promID = allFreeItems[i].TPMID;
                             qtySum = 0;
@@ -460,16 +482,16 @@ var promo = (function(){
             }
             $('#localTPMItemsTable tbody').removeClass('ui-disabled');
             
-            $('#localTPMItemsTable .promoItemSelector').removeClass('promoItemSelectBtnRemove');
-            $('#localTPMItemsTable .promoItemSelector').addClass('promoItemSelectBtnAccept');
-            $('#localTPMItemsTable .promoItemSelector .ui-btn-text').text('Accept');
+//            $('#localTPMItemsTable .promoItemSelector').removeClass('promoItemSelectBtnRemove');
+//            $('#localTPMItemsTable .promoItemSelector').addClass('promoItemSelectBtnAccept');
+//            $('#localTPMItemsTable .promoItemSelector .ui-btn-text').text('Accept');
             
-            if (promoObjects.length === 1) {
-                if (promoObjects[0].selected) {
-                    $('#localTPMItemsTable .promoItemSelector').addClass('promoItemSelectBtnRemove');
-                    $('#localTPMItemsTable .promoItemSelector .ui-btn-text').text('Remove');
-                }
-            } else {
+//            if (promoObjects.length === 1) {
+//                if (promoObjects[0].selected) {
+//                    $('#localTPMItemsTable .promoItemSelector').addClass('promoItemSelectBtnRemove');
+//                    $('#localTPMItemsTable .promoItemSelector .ui-btn-text').text('Remove');
+//                }
+//            } else {
                 for (var i=0; i < promoObjects.length; ++i) {
                     for (var j=i; j < promoObjects.length; ++j) {
                         if (i === j) continue;
@@ -478,19 +500,19 @@ var promo = (function(){
                             if (promoObjects[i].selected && promoObjects[i].Priority < promoObjects[j].Priority) {
                                 $('#localTPMItemsTable tbody:eq(' + j + ')').addClass('ui-disabled');
                                 
-                                $('#localTPMItemsTable tbody:eq(' + i + ') .promoItemSelector').addClass('promoItemSelectBtnRemove');
-                                $('#localTPMItemsTable tbody:eq(' + i + ') .promoItemSelector .ui-btn-text').text('Remove');
+//                                $('#localTPMItemsTable tbody:eq(' + i + ') .promoItemSelector').addClass('promoItemSelectBtnRemove');
+//                                $('#localTPMItemsTable tbody:eq(' + i + ') .promoItemSelector .ui-btn-text').text('Remove');
                             } else if (promoObjects[j].selected && !promoObjects[i].selected && !promosPreviousState[i]) {
                                 $('#localTPMItemsTable tbody:eq(' + i + ')').addClass('ui-disabled');
                                 
-                                $('#localTPMItemsTable tbody:eq(' + j + ') .promoItemSelector').addClass('promoItemSelectBtnRemove');
-                                $('#localTPMItemsTable tbody:eq(' + j + ') .promoItemSelector .ui-btn-text').text('Remove');
+//                                $('#localTPMItemsTable tbody:eq(' + j + ') .promoItemSelector').addClass('promoItemSelectBtnRemove');
+//                                $('#localTPMItemsTable tbody:eq(' + j + ') .promoItemSelector .ui-btn-text').text('Remove');
                                 break;
                             }
                         }
                     }
                 }
-            }
+//            }
         };
     };
     
