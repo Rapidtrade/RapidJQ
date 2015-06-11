@@ -442,7 +442,7 @@ function syncFetchTable(supplierid, userid, table, method, skip, onSuccess, newR
     
     var baseURLInfo = {
       
-        Orders: (g_syncDownloadOrderURL || DaoOptions.getValue('DownloadOrderURL')) + '/rest/',
+        Orders: (g_syncDownloadOrderURL || DaoOptions.getValue('DownloadOrderURL')) ? (g_syncDownloadOrderURL || DaoOptions.getValue('DownloadOrderURL')) + '/rest/' : g_restUrl,
         Tpm: 'http://www.super-trade.co.za:8083/rest/index.php/',
         Default: g_restUrl
     }; 
@@ -463,7 +463,7 @@ function syncFetchTable(supplierid, userid, table, method, skip, onSuccess, newR
                                                          userParameter + 
                                                         '&version=' + version + 
                                                         '&skip=' + skip + 
-                                                        ('Orders' === table ? '&orderType=' + (g_syncDownloadOrderType || DaoOptions.getValue('DownloadOrderType')) : '') +
+                                                        ('Orders' === table ? '&orderType=' + (g_syncDownloadOrderType || DaoOptions.getValue('DownloadOrderType') || sessionStorage.getItem('lastRangeType')) : '') +
                                                         (('Orders' === table) && ($.mobile.activePage.attr('id') === 'companypage') ? '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') : '') +
                                                         ('Orders' === table ? '&CallWeekNumber=' + g_currentCallCycleWeek() : '') +
                                                         ('Orders' === table ? '&CallDayOfWeek=' + todayGetCurrentDay() : '') +

@@ -842,12 +842,15 @@ function pricelistFetchTemplateItems() {
     function onLocalFetchFailure(error) {
         
 //        g_busy(true);    
+        if (g_isOnline() && ($('#mode').val() === 'Online')) {
+            var url = DaoOptions.getValue('MyRangeURL', g_restUrl) + '/Orders/GetOrderItemsByType3?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') + 
+                    '&userID=' + g_currentUser().UserID + '&orderType=' + sessionStorage.getItem('lastRangeType') + '&skip=0&top=300'; 
 
-        var url = DaoOptions.getValue('MyRangeURL', g_restUrl) + '/Orders/GetOrderItemsByType3?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID.replace('&', '%26') + 
-                '&userID=' + g_currentUser().UserID + '&orderType=' + sessionStorage.getItem('lastRangeType') + '&skip=0&top=300'; 
-
-        console.log(url);
-        g_ajaxget(url, onRemoteFetchSuccess, onRemoteFetchFailure);
+            console.log(url);
+            g_ajaxget(url, onRemoteFetchSuccess, onRemoteFetchFailure);
+        } else {
+            pricelistOnComplete();
+        }
     }  
     
     function onRemoteFetchSuccess(json) {
@@ -857,12 +860,15 @@ function pricelistFetchTemplateItems() {
             g_busy(true);
             g_syncDao = g_syncDao || new Dao();
 
-            syncSaveToDB(json, g_currentUser().SupplierID, g_currentUser().UserID, 0, 'Orders', 'GetOrderItemsByType3', 0);
-            setTimeout(function() {
+            syncSaveToDB(json, g_currentUser().SupplierID, g_currentUser().UserID, 0, 'Orders', 'GetOrderItemsByType3', 0, undefined, function(isFinished) {
+            	if (isFinished) {
+            		setTimeout(function() {
 
-    //           g_busy(true);
-                pricelistFetchTemplateItems();
-            }, 2000);
+    //           		g_busy(true);
+                		pricelistFetchTemplateItems();
+            		}, 2000);
+            	}
+            });
             
         } else {
             
@@ -1406,7 +1412,7 @@ function pricelistAddLine(pricelist) {
     	    }
     }
     
-    var stockValue = pricelist.Stock !== undefined ? g_stockDescriptions[pricelist.Stock] || pricelist.Stock.toString() : 'N/A';
+    var stockValue = (pricelist.Stock !== undefined && pricelist.Stock !== null)? g_stockDescriptions[pricelist.Stock] || pricelist.Stock.toString() : 'N/A';
     var stockText = g_indexedDB || (DaoOptions.getValue('HideStockBubble', 'false') == 'true') ? '' : '<span id="' + pricelist.id + 'Stock" class="ui-li-count">' + stockValue + '</span>';
     if (stockValue==="list-divider") {
         pricelistHtml='<li data-role="list-divider">' + pricelist.des + '</li>';
