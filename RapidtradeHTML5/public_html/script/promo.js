@@ -373,14 +373,14 @@ var promo = (function(){
                                 regularItem.RepNett = regularItem.Gross;
                                 regularItem.RepDiscount = 0;
                                 regularItem.RepChangedPrice = true;
-                                regularItem.UserField03 = promoItem.PromoID;
-                                regularItem.PromoType = promoItem.PromoType;
-                                if (promoItem.ProductID === regularItem.ProductID) {
-                                    regularItem.FreeQty = promoItem.Quantity;
-                                    regularItem.Quantity += regularItem.FreeQty;
-                                }
+//                                regularItem.UserField03 = promoItem.PromoID;
+//                                regularItem.PromoType = promoItem.PromoType;
+//                                if (promoItem.ProductID === regularItem.ProductID) {
+//                                    regularItem.FreeQty = promoItem.Quantity;
+//                                    regularItem.Quantity += regularItem.FreeQty;
+//                                }
                                 
-                                if (promoItem.Quantity && promoItem.ProductID !== regularItem.ProductID) {
+                                if (promoItem.Quantity /*&& promoItem.ProductID !== regularItem.ProductID*/) {
                                     freePromoItemsToBeAdded.push(promoItem);
                                 }
                             }

@@ -71,8 +71,8 @@ function orderHeaderBind() {
             dao.cursor('BasketInfo', '', '', function(item) {
                 
                 if (item.Type === 'PROMO') {                    
-                    var key = item.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID; 
-                    dao.deleteItem('BasketInfo', key);
+                    //var key = item.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID; 
+                    dao.deleteItem('BasketInfo', item.key);
                 } else if (item.UserField03 && item.PromoID && item.PromoType) {                    
                     if (item.PromoType === 'DISCOUNT') {
                         item.RepChangedPrice = false;

@@ -75,7 +75,7 @@ var basket = (function() {
             item.UserID = item.UserID || g_currentUser().UserID;            
                         
             item.RepChangedPrice =  item.RepChangedPrice || (item.RepNett && (item.Nett !== item.RepNett));            
-            item.key = item.ProductID.trim() + g_currentUser().SupplierID + g_currentUser().UserID + item.AccountID.trim();        
+            item.key = item.ProductID.trim() + g_currentUser().SupplierID + g_currentUser().UserID + item.AccountID.trim() + item.Type;        
     }
     
     function onItemSaved() {
