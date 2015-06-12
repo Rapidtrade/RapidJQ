@@ -120,7 +120,7 @@ function productdetailInit() {
 
     var dao = new Dao();
     dao.get('BasketInfo',
-            (g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID).trim(),
+            (g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID).trim() + sessionStorage.getItem('currentordertype'),
             function(basketInfo) {
 
                     g_productdetailIsPriceChanged = basketInfo.RepChangedPrice ? basketInfo.RepChangedPrice : false;
@@ -159,7 +159,11 @@ function productdetailInit() {
                             productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
                             productdetailValue('discount', g_addCommas(parseFloat(g_pricelistSelectedProduct.Discount).toFixed(2)) + '%');					
                     }
-                    $('#quantity').val('');
+                    if (DaoOptions.getValue('DefaultOrderQuantity')) {
+                        $('#quantity').val(DaoOptions.getValue('DefaultOrderQuantity'));
+                    } else {                        
+                        $('#quantity').val('');
+                    }
                     //productdetailSetFocus();
 
 
@@ -652,7 +656,7 @@ function productdetailAltComponentOnMultWhsChange(productID, warehouse) {
         
         // delete item from basket
         $('tr#' + productID + ' td.quantity').text('');
-        shoppingCartDeleteItem(productID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID, 
+        shoppingCartDeleteItem(productID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID + sessionStorage.getItem('currentordertype'), 
                                     DaoOptions.getValue('LostSaleActivityID') != undefined, 
                                     undefined, 
                                     undefined, '', undefined);
@@ -1129,7 +1133,7 @@ function productdetailDeleteItem() {
             pricelistOnBackButtonClick();
     };
 
-    shoppingCartDeleteItem(g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID, 
+    shoppingCartDeleteItem(g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID + sessionStorage.getItem('currentordertype'), 
                             DaoOptions.getValue('LostSaleActivityID') != undefined, 
                             undefined, 
                             deleteItemOnSuccess, '', pricelistOnBackButtonClick);		

@@ -497,7 +497,7 @@ function orderdetailsSendOrderItem(itemKey) {
                     
                     if (isProductInBasket) {
                         
-                        shoppingCartDeleteItem($.trim(productId) + g_currentUser().SupplierID + g_currentUser().UserID + $.trim(g_currentCompany().AccountID), 
+                        shoppingCartDeleteItem($.trim(productId) + g_currentUser().SupplierID + g_currentUser().UserID + $.trim(g_currentCompany().AccountID) + sessionStorage.getItem('currentordertype'), 
                                 DaoOptions.getValue('LostSaleActivityID') != undefined, 
                                 false, 
                                 function() {
@@ -585,7 +585,7 @@ function orderdetailsSendOrderItem(itemKey) {
                 orderdetailsCheckBasket();
             };                
 
-            shoppingCartDeleteItem($.trim(item.ProductID) + $.trim(item.SupplierID) + g_currentUser().UserID + $.trim(item.AccountID), 
+            shoppingCartDeleteItem($.trim(item.ProductID) + $.trim(item.SupplierID) + g_currentUser().UserID + $.trim(item.AccountID) + sessionStorage.getItem('currentordertype'), 
                     DaoOptions.getValue('LostSaleActivityID') != undefined, 
                     false, 
                     deleteItemOnSuccess);

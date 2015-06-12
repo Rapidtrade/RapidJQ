@@ -1086,7 +1086,7 @@ function pricelistBarcodeOnSuccessRead(product) {
     
 	var dao = new Dao();
 	dao.get('BasketInfo',
-			(newProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID).trim(),
+			(newProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID).trim() + sessionStorage.getItem('currentordertype'),
 			function(basketInfo) {		
             
 				if (pricelistIsSGScan()) {
@@ -1651,7 +1651,7 @@ function pricelistAddItemToBasket(itemIndex) {
 
     if (!getQuantity(itemIndex)) {
 
-        shoppingCartDeleteItem(g_pricelistItems[itemIndex].id + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID, 
+        shoppingCartDeleteItem(g_pricelistItems[itemIndex].id + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID + sessionStorage.getItem('currentordertype'), 
                         DaoOptions.getValue('LostSaleActivityID') != undefined, 
                         undefined, 
                         deleteItemOnSuccess, false);
@@ -1806,7 +1806,7 @@ function pricelistCheckSelectedMultiWarehouse(productID, warehouse) {
 
             };
 
-            shoppingCartDeleteItem(g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID, 
+            shoppingCartDeleteItem(g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID + sessionStorage.getItem('currentordertype'), 
                                     DaoOptions.getValue('LostSaleActivityID') != undefined, 
                                     undefined, 
                                     deleteItemOnSuccess, '', pricelistOnBackButtonClick);
