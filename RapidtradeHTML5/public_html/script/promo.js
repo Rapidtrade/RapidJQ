@@ -29,11 +29,17 @@ var promo = (function(){
             
             var $this = this;
             
+            var today = new Date();
+            
             var dao= new Dao();            
             dao.cursor('TPM', '', '', function(item) {
                 
-                item.json = JSON.parse(item.json);
-                $this.tpms.push(item);
+                if ((new Date(item.FromDate)) <= today && today <= (new Date(item.ToDate))) {
+                    item.json = JSON.parse(item.json);
+                    $this.tpms.push(item);                    
+                } else {
+                    dao.deleteItem('TPM', item.key);
+                }
                 
             }, onComplete, function() {
                 
