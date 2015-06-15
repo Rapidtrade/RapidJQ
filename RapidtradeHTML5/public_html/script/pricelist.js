@@ -222,6 +222,10 @@ function pricelistOnBackButtonClick() {
            	$('#search').val('');	
         }
         
+        if (!g_deviceVersion) {
+            $('#search').focus();
+        }
+        
     } else if (sessionStorage.getItem('fromCategory') == 'true') {
     	
     	pricelistDoSearch('categories');

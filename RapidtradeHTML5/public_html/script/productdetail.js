@@ -41,14 +41,20 @@ function productdetailInit() {
     if (!g_productDetailInitialized) {		
 
             $('#divgrossvalue').append('<p class="ui-li-aside" id="grossvalue"></p>');
-            $('#divdiscountvalue').append('<p class="ui-li-aside" id="discount-r"></p>');	
+            
+            if (productdetailsUserCanChangeDiscount()) {
+                $('#divdiscountvalue').append('<input id="discount-r" class="ui-li-aside ui-input-text ui-body-c ui-corner-all ui-shadow-inset" style="position:relative;top:-17px;width:90px;height:10px;" type="text" value="" tabindex="2"/>');
+                $('#divnettvalue').append('<p class="ui-li-aside" style="position:relative;top:-18px;" id="nett-r"></p>');
+            } else {
+                $('#divdiscountvalue').append('<p class="ui-li-aside" id="discount-r"></p>');
+                $('#divnettvalue').append('<p class="ui-li-aside" id="nett-r"></p>');	
+            }
 
-            $('#divnettvalue').append('<p class="ui-li-aside" id="nett-r"></p>');
 
             if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true' && ($('#mode').val() === 'Online') && g_isOnline(false))
                     $('#whChoiceDiv').append('<p class="ui-li-aside" id="stockvalue" style="position:relative; top:-32px;"></p>');
             else
-                    $('#divstockvalue').append('<p class="ui-li-aside" id="stockvalue"></p>');
+                    $('#divstockvalue').append('<p class="ui-li-aside" id="stockvalue" ' + (productdetailsUserCanChangeDiscount() ? 'style="position:relative;top:-18px;"' : '') + '></p>');
 
             g_productDetailInitialized = true;
     }
@@ -58,7 +64,7 @@ function productdetailInit() {
     if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true' && ($('#mode').val() === 'Online') && g_isOnline(false))
         $('#whChoiceDiv').append('<p class="ui-li-aside" id="stockvalue" style="position:relative; top:-32px;"></p>');
     else
-        $('#divstockvalue').append('<p class="ui-li-aside" id="stockvalue"></p>');
+        $('#divstockvalue').append('<p class="ui-li-aside" id="stockvalue" ' + (productdetailsUserCanChangeDiscount() ? 'style="position:relative;top:-18px;"' : '') + '></p>');
 
     if (productdetailCanChangeNett(g_pricelistSelectedProduct.ProductID))
             $('#nett-r').replaceWith('<input class="ui-li-aside ui-input-text ui-body-c ui-corner-all ui-shadow-inset" style="position:relative;top:-17px;width:90px" type="text" value="" onchange="productdetailOnNettChange()"/>');
@@ -82,7 +88,9 @@ function productdetailInit() {
                         productdetailEditValue(valueType);
                 });
         });
-
+        if (productdetailsUserCanChangeDiscount()) {
+            $('#divdiscountvalue a img.pricelistChangePriceImg').hide();
+        }
         $('p').css('margin-right', '10px');
         $('img').attr('title', 'Change');
         
@@ -305,6 +313,16 @@ function productdetailBind() {
     
     $('#deleteItemButton').off();
     $('#deleteItemButton').on('click', productdetailDeleteItem);
+    
+     if (productdetailsUserCanChangeDiscount()) {
+        $("#discount-r").keypress(function (event) {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+
+            if (keycode == '13') {
+                productdetailOkClicked();
+            }
+        });
+     }
 }
 
 function productdetailCanChangeNett(productId) {
@@ -778,6 +796,12 @@ function productdetailValue(valueType, value) {
 	var selector = '#' + valueType + '-r';
 	var method = 'html';
 	
+        if (valueType === 'discount' && productdetailsUserCanChangeDiscount()) {
+            method = 'val';
+            if (value)
+                value = value.replace('%', '');
+        }
+        
 	if (value)			
 		$(selector)[method](value);	
 	else
@@ -1141,9 +1165,26 @@ function productdetailDeleteItem() {
 
 function productdetailOkClicked(checkStock) {
     
+    if (productdetailsUserCanChangeDiscount()) {
+        var tmpGross = parseFloat($('#grossvalue').html().replace(/,/g, ''));
+        var tmpNett = parseFloat(productdetailValue('nett').replace(/,/g, ''));
+        var tmpDiscount = productdetailValue('discount').replace(/,/g, '');
+        try {
+            tmpDiscount = parseFloat(tmpDiscount);
+        } catch (ex ) {
+            tmpDiscount = 0.00;
+        }
+        
+        tmpNett = tmpGross - (tmpGross * (tmpDiscount/100.00));
+        productdetailValue('nett', g_addCommas(g_roundToTwoDecimals(tmpNett)));
+    }
+    
+    
     if ($('#quantity').hasClass('ui-disabled')) {
         return;
     }
+    
+    
     
     var showMessage = function(message) {
         
@@ -1411,4 +1452,13 @@ function productdetailsShowDiscOverwritePasswordPopup() {
                 $('#discOverwritePassMessage').show();
             }
     });
+}
+
+function productdetailsUserCanChangeDiscount() {
+    var tmpRole = g_currentUser().Role;
+    if (tmpRole && tmpRole.indexOf('CanChangeDiscount=true') !== -1) {
+        return true;
+    }
+    
+    return false;
 }

@@ -287,7 +287,7 @@ function monthlySummaryOnPageShow() {
 
 //*************************************************************************** Monthy Summary
 function fetchMonthySummary() {
- 	var url = g_restUrl + 'Dashboard/GetActivities?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&format=json&callback=?';
+ 	var url = g_restUrl + 'Dashboard/GetActivities?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&format=json';
 
  	var names = ' ';
  	var activities = ' ';
@@ -792,7 +792,7 @@ function showImage(number) {
 
 //******************************************************************************** Order Count By User
 function fetchOrderCountByUser() {
-    var url = g_restUrl + 'Dashboard/GetUserOrdering?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&format=json&callback=?';
+    var url = g_restUrl + 'Dashboard/GetUserOrdering?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&format=json';
     $.mobile.loading("show");
     $.ajax({
         type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback', contentType: "application/json", dataType: 'jsonp',
