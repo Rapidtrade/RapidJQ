@@ -1214,6 +1214,10 @@ function pricelistOnComplete(event) {
     g_pricelistItemsHtml = '';
     pricelistShowNextPrev();
     pricelistScrollTo('scrollto');
+    
+    if (g_pricelistItems.length === 1) {
+        pricelistOnItemClicked(0);
+    }
 }
 
 function pricelistFetchMasterChartBarcode(productId, onSuccess) {

@@ -169,6 +169,7 @@ function myterritoryFetchCompanies(){
 	$.mobile.showPageLoadingMsg();
 	$('#g_myterritoryCustomerList').empty();
 	
+        g_myterritoryItems = [];
     var dao = new Dao();
     dao.fetchCompanies(g_myterritorySearchMyTerritoryText, myterritoryOnSuccessRead, undefined, myterritoryOnComplete);
 }
@@ -241,6 +242,11 @@ function myterritoryOnComplete() {
 	
 	myterritoryShowNextPrev();
 	$.mobile.hidePageLoadingMsg();	
+        
+        // *** if we have only one customer after search, auto go to pricelist screen
+        if (g_myterritoryItems.length === 1) {
+            myterritoryOnCompanyClicked(g_myterritoryItems[0].key, 'companyPanel');
+        }
 }
 
 
