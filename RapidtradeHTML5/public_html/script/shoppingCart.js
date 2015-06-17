@@ -22,6 +22,13 @@ var g_shoppingCartMultilineDiscItems = {};
 var g_shoppingCartMultilineDiscQty = {};
 var g_shoppingCartMultilineItemPromoID = [];
 
+
+/***
+ * variables that onkeydown and onkeyup listeners are going to use 
+ */
+var g_keyMap = [];
+var g_keyMatchCount = 0;
+
 function shoppingCartOnPageBeforeCreate() {
     
     g_shoppingCartPageTranslation = translation('shoppingCartpage');
@@ -40,9 +47,9 @@ function shoppingCartOnPageShow() {
         g_shoppingCartPageTranslation.translateButton('#deleteShoppingCart', 'Delete All');
         
         g_showCurrentCompanyName();
-        if (sessionStorage.getItem('ShoppingCartReturnPage') == 'orderdetails.html')
+        if (sessionStorage.getItem('ShoppingCartReturnPage') === 'orderdetails.html')
             g_shoppingCartPageTranslation.translateButton('#shoppingCartBackButton', 'Order Details');
-        if (sessionStorage.getItem('ShoppingCartReturnPage') == 'route.html')
+        if (sessionStorage.getItem('ShoppingCartReturnPage') === 'route.html')
             g_shoppingCartPageTranslation.translateButton('#shoppingCartBackButton', 'Deliveries');        
 
         if (shoppingCartIsGRV() || DaoOptions.getValue('HideDeleteAllOn' + sessionStorage.getItem("currentordertype").toUpperCase() + 'Cart' , 'false') === 'true')
@@ -52,7 +59,7 @@ function shoppingCartOnPageShow() {
         if (viewType)
             g_shoppingCartPageTranslation.translateButton('#summaryButton', viewType === 'Summary' ? 'Detail' : 'Summary');
 
-        $('#shoppingCartFooter').toggle((sessionStorage.getItem('ShoppingCartNoFooter') == undefined) || (sessionStorage.getItem('ShoppingCartNoFooter') == 'false'));
+        $('#shoppingCartFooter').toggle((sessionStorage.getItem('ShoppingCartNoFooter') === undefined) || (sessionStorage.getItem('ShoppingCartNoFooter') === 'false'));
 
         if (DaoOptions.getValue('AllowSummaryButt', 'false') === 'true') {
 
@@ -70,7 +77,7 @@ function shoppingCartOnPageShow() {
             shoppingCartInit();
         });
 
-        if (DaoOptions.getValue('DoubleTax') == 'true') {
+        if (DaoOptions.getValue('DoubleTax') === 'true') {
             $('.shopcartHeader').css('height', '200px');
                 var wetNode =  $('<li data-theme="d"><div id="divTotalWET"><label>' + (DaoOptions.getValue('DoubleTaxText') || 'WET') +  ':</label></div></li>');  
                 wetNode.insertAfter($('#totallist li:first'));
@@ -211,7 +218,7 @@ function shoppingCartBind() {
     	
         var keycode = (event.keyCode ? event.keyCode : event.which);
         
-        if ('13' == keycode)
+        if ('13' === keycode)
         	shoppingCartConfirmScanOnScan();
     });
     
@@ -222,7 +229,31 @@ function shoppingCartBind() {
             shoppingCartConfirmScanResetBarcode();
         }
     });
-
+    
+    /***
+     * on each initialization of the page we want our variables reset
+     */
+    g_keyMap = [];
+    g_keyMatchCount = 0;
+    onkeydown = function(e) {
+        e = e || event; // to deal with IE
+        g_keyMap[e.keyCode] = e.type === 'keydown';
+        
+        // we these listeners active only on shopping cart page
+        if($.mobile.activePage.attr('id') === 'shoppingCartpage' && g_keyMap[17] && g_keyMap[83]){ // CTRL+S
+            g_keyMap = [];
+            // avoid calling checkout more than once
+            if (g_keyMatchCount++ === 0) {
+                setTimeout(function () {
+                   $('#saveShoppingCart').click(); 
+                },500); 
+                return false;
+            }
+        }
+    };
+    
+    onkeyup = onkeydown;
+    
 }
 
 function shoppingCartChangeView() {
@@ -231,7 +262,7 @@ function shoppingCartChangeView() {
            
            Summary: 'Detail',
            Detail: 'Summary'           
-       }
+       };
        
        $buttonCaption = $('#summaryButton').find('.ui-btn-text');
        
@@ -247,7 +278,7 @@ function shoppingCartChangeView() {
 
 function shoppingCartConfirmScanInit() {
 	
-    var mustScan = (DaoOptions.getValue(sessionStorage.getItem('currentordertype') + 'ConfirmCartWithScan') == 'true');
+    var mustScan = (DaoOptions.getValue(sessionStorage.getItem('currentordertype') + 'ConfirmCartWithScan') === 'true');
 
     $('#saveShoppingCart').toggleClass('ui-disabled', mustScan);
     $('#startScanning').toggle(mustScan);
@@ -268,7 +299,7 @@ function shoppingCartConfirmScanOnScanSuccess(product) {
     dao.cursor('BasketInfo', undefined, undefined,
     	      function (basketInfo) {
 
-    	          if (basketInfo.ProductID == product.id) {
+    	          if (basketInfo.ProductID === product.id) {
     	        	  
                     isItemFound = true;
                     $('#scanResult').html('Scanned OK');
@@ -276,7 +307,7 @@ function shoppingCartConfirmScanOnScanSuccess(product) {
                     shoppingCartConfirmScanResetBarcode();
     	          };
     	          
-    	          if ($('.unconfirmed').length == 0) {
+    	          if ($('.unconfirmed').length === 0) {
     	        	  
                     $('#scanPopup').popup('close');
                     $('#saveShoppingCart').removeClass('ui-disabled');
@@ -318,8 +349,8 @@ function shoppingCartRemoveAllItems() {
         var dao = new Dao();
         dao.cursor('BasketInfo', undefined, undefined,
          function (basketInfo) {
-             if ((basketInfo.AccountID == g_currentCompany().AccountID) /*&& (basketInfo.Type == sessionStorage.getItem("currentordertype"))*/)
-                 shoppingCartDeleteItem(basketInfo.key, DaoOptions.getValue('LostSaleActivityID') != undefined);
+             if ((basketInfo.AccountID === g_currentCompany().AccountID) /*&& (basketInfo.Type == sessionStorage.getItem("currentordertype"))*/)
+                 shoppingCartDeleteItem(basketInfo.key, DaoOptions.getValue('LostSaleActivityID') !== undefined);
          },
          undefined,
          function (event) {
@@ -339,7 +370,7 @@ function shoppingCartRemovePODsItems() {
     var dao = new Dao();
     dao.cursor('BasketInfo', undefined, undefined,
      function (basketInfo) {
-         if ((basketInfo.AccountID == g_currentCompany().AccountID) /*&& (basketInfo.Type == sessionStorage.getItem("currentordertype"))*/)
+         if ((basketInfo.AccountID === g_currentCompany().AccountID) /*&& (basketInfo.Type == sessionStorage.getItem("currentordertype"))*/)
              shoppingCartDeleteItem(basketInfo.key, DaoOptions.getValue('LostSaleActivityID') != undefined);
      },
      undefined,
@@ -359,7 +390,7 @@ function shoppingCartOnBack() {
     $.mobile.showPageLoadingMsg();
     var page = sessionStorage.getItem('ShoppingCartReturnPage');
 
-    if ('pricelist' == page) {
+    if ('pricelist' === page) {
 
         sessionStorage.setItem('lastPanelId', 'pricelistPanel');
         page = 'company.html';
@@ -373,18 +404,18 @@ function shoppingCartOnBack() {
 
 function shoppingCartInit() {
 
-    if (sessionStorage.getItem("currentordertype") == "grv") {
+    if (sessionStorage.getItem("currentordertype") === "grv") {
         $('#shoppingCartLabel').html('GRV Cart');
-    } else if (sessionStorage.getItem("currentordertype") == "repl") {
+    } else if (sessionStorage.getItem("currentordertype") === "repl") {
         $('#shoppingCartLabel').html('Replenishment Cart');
-    } else if (sessionStorage.getItem("currentordertype") == "stock") {
+    } else if (sessionStorage.getItem("currentordertype") === "stock") {
         $('#shoppingCartLabel').html('Stocktake Cart');
-    } else if (sessionStorage.getItem("currentordertype") == "POD") {
+    } else if (sessionStorage.getItem("currentordertype") === "POD") {
         $('#shoppingCartLabel').html('Proof of Delivery');
         if (DaoOptions.getValue('ShowInvNumOnShopcart', 'false') === 'true' && localStorage.getItem('PODsInvNumber')) {
             $('#shopcartPODsInvNumber').text(localStorage.getItem('PODsInvNumber'));
         }
-    } else if (sessionStorage.getItem('currentordertype').indexOf('Invoice') != -1) {
+    } else if (sessionStorage.getItem('currentordertype').indexOf('Invoice') !== -1) {
         
         $('#shoppingCartLabel').html(sessionStorage.getItem('currentordertype').replace('Invoice', g_shoppingCartPageTranslation.translateText('Invoice')));   
     }    
@@ -404,11 +435,11 @@ function shoppingCartInit() {
 }
 
 function shoppingCartIsGRV() {
-	return sessionStorage.getItem("currentordertype") == "grv" /*|| sessionStorage.getItem("currentordertype") == "pod"*/;
+	return sessionStorage.getItem("currentordertype") === "grv" /*|| sessionStorage.getItem("currentordertype") == "pod"*/;
 }
 
 function shoppingCartIsPOD() {
-	return sessionStorage.getItem("currentordertype") == "POD";
+	return sessionStorage.getItem("currentordertype") === "POD";
 }
 
 function shoppingCartAllowToChangeQty(item) {
@@ -526,7 +557,7 @@ function shoppingCartAddItem(item, checkSummary) {
         return;
     }
     
-    qty = shoppingCartIsGRV() && g_currentUser().SupplierID == 'DS' ? parseInt(item.UserField01, 10) : item.Quantity;   	
+    qty = shoppingCartIsGRV() && g_currentUser().SupplierID === 'DS' ? parseInt(item.UserField01, 10) : item.Quantity;   	
     nett = g_addCommas(parseFloat(shoppingCartItemNett(item)).toFixed(2));
     // deal with over 1,000
     if (isNaN(shoppingCartItemNett(item))) {
@@ -537,7 +568,7 @@ function shoppingCartAddItem(item, checkSummary) {
     var formattedValue = g_addCommas(parseFloat(value).toFixed(2));
 	var maxValue = '';
 	if (shoppingCartIsGRV()) maxValue = 'max="' + qty + '"';
-	if (sessionStorage.getItem("currentordertype") == "Credit") maxValue = 'max="' +  item.UserField02 + '"';
+	if (sessionStorage.getItem("currentordertype") === "Credit") maxValue = 'max="' +  item.UserField02 + '"';
 	
         var itemIndex = g_shoppingCartItemKeys.length;
         g_shoppingCartItemKeys.push(item.key);
@@ -594,7 +625,7 @@ function shoppingCartAddItem(item, checkSummary) {
         '       <td rowspan="2" align="right" class="quantity">' +
         '              <input ' + quantityReadOnly + ' id="' + itemIndex + '" style="width: 60px;" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset qtybox" type="number" ' + step +
         		     	' min="0" ' + maxValue + 
-        '        		class="quantity" onchange ="shoppingCartOnQuantityChanged(\'' + itemIndex + '\', value' + (shoppingCartIsGRV() || (sessionStorage.getItem('currentordertype') == 'Credit') ? ', ' + qty  + ', \'' + item.Description + '\'': '') + ')"  value="' + qty + '" />' +
+        '        		class="quantity" onchange ="shoppingCartOnQuantityChanged(\'' + itemIndex + '\', value' + (shoppingCartIsGRV() || (sessionStorage.getItem('currentordertype') === 'Credit') ? ', ' + qty  + ', \'' + item.Description + '\'': '') + ')"  value="' + qty + '" />' +
         '       </td>' +
         '       <td rowspan="2" align="right" class="nett" id="' + itemIndex + 'nett">' + nett + '</td>' +
         '       <td rowspan="2" align="right" class="total" id="' + itemIndex + 'total">' + formattedValue + '</td>' +
@@ -605,7 +636,7 @@ function shoppingCartAddItem(item, checkSummary) {
         '  </table>' +
         '</a>' +
         (shoppingCartIsGRV() || shoppingCartIsPOD() || (shoppingCartCanNotDelSingleBask() && quantityReadOnly !== '') ? '' :
-             ' <a href="#" onclick="shoppingCartDeleteItem(\'' + item.key + '\', ' +  (DaoOptions.getValue('LostSaleActivityID') != undefined) + ', true)" class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
+             ' <a href="#" onclick="shoppingCartDeleteItem(\'' + item.key + '\', ' +  (DaoOptions.getValue('LostSaleActivityID') !== undefined) + ', true)" class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
              '<span class="ui-btn-inner ui-btn-corner-all">' +
              '<span class="ui-icon ui-icon-delete ui-icon-shadow">delete</span>' +
              '</span>' +
@@ -614,10 +645,10 @@ function shoppingCartAddItem(item, checkSummary) {
 	
     if (!isPromotionItem) {    
         g_shoppingCartTotalExcl = g_shoppingCartTotalExcl + value;
-        if (DaoOptions.getValue('DoubleTax') == 'true')
+        if (DaoOptions.getValue('DoubleTax') === 'true')
             g_shoppingCartVAT += value * item.VAT / 100;
         else
-            g_shoppingCartVAT += value * (DaoOptions.getValue('CalcTaxPerProduct') == 'true' ? (item.VAT || 0) / 100 : g_vat());
+            g_shoppingCartVAT += value * (DaoOptions.getValue('CalcTaxPerProduct') === 'true' ? (item.VAT || 0) / 100 : g_vat());
         g_shoppingCartTotalIncl = g_shoppingCartTotalExcl + g_shoppingCartVAT;
     }
 }
@@ -627,14 +658,14 @@ function shoppingCartOnAllItemsAdded() {
     if (sessionStorage.getItem('shoppingCartViewType') === 'Summary')
         shoppingCartAddSummaryItems();
     
-    var totalItemsShown = ($('#divvat p').length != 0);
+    var totalItemsShown = ($('#divvat p').length !== 0);
     if (!totalItemsShown) {
         $('#divvat').append('<p class="ui-li-aside" id="vat"></p>');
         $('#divtotalExcl').append('<p class="ui-li-aside" id="totalExcl"></p>');
         $('#divtotalIncl').append('<p class="ui-li-aside" id="totalIncl"></p>');
     }
     
-    if (DaoOptions.getValue('DoubleTax') == 'true') {   	
+    if (DaoOptions.getValue('DoubleTax') === 'true') {   	
     	var formattedVAT = g_addCommas(g_roundToTwoDecimals(g_shoppingCartVAT));
     	totalItemsShown ? $('#divTotalWET p').text(formattedVAT) : $('#divTotalWET').append('<p class="ui-li-aside">' + formattedVAT + '</p>');    		
     	g_shoppingCartVAT = (g_shoppingCartTotalExcl + g_shoppingCartVAT) * g_vat();
@@ -842,7 +873,7 @@ function shoppingCartIsTotalQuantityValid() {
 
 function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) {        
 	
-    if (sessionStorage.getItem('ShoppingCartNoChangeAllowed') == 'true') {
+    if (sessionStorage.getItem('ShoppingCartNoChangeAllowed') === 'true') {
     	g_alert("You are not allowed to change the quantity");
     	$('#' + itemIndex).attr('value', maxValue);
     	return;
@@ -857,7 +888,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
     if (!quantity) {
     	
 //    	if (confirm('Are you sure you want to remove the item from basket?')) {
-    		shoppingCartDeleteItem(g_shoppingCartItemKeys[itemIndex], DaoOptions.getValue('LostSaleActivityID') != undefined, true);
+    		shoppingCartDeleteItem(g_shoppingCartItemKeys[itemIndex], DaoOptions.getValue('LostSaleActivityID') !== undefined, true);
                 if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
                     shoppingCartRecalcMultilineDiscounts();
                 }
@@ -876,7 +907,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
     	return;
     }
     
-    if ((sessionStorage.getItem('ShoppingCartLessThan') == 'true') && (quantity > maxValue)) {
+    if ((sessionStorage.getItem('ShoppingCartLessThan') === 'true') && (quantity > maxValue)) {
     	
     	g_alert("The quantity cannot be greater than " + maxValue);
     	$('#' + itemIndex).attr('value', maxValue);
@@ -920,7 +951,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
         basket.saveItem(basketInfo, quantity);
         
         $('#' + itemIndex + 'nett').text('' + g_roundToTwoDecimals(shoppingCartItemNett(basketInfo))); //$('#' + itemIndex + 'nett').text('' + basketInfo.Nett);
-        $('#' + itemIndex + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  == 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * quantity));
+        $('#' + itemIndex + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  === 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * quantity));
         g_shoppingCartTotalExcl = 0;
         $.each($(".total") ,function() {
             var value = $(this).text().replace(',','');
@@ -949,13 +980,13 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
  */
 function shoppingCartRecalcTotals(basketInfo, quantity){
     $("#totalExcl").text(g_addCommas(g_roundToTwoDecimals(g_shoppingCartTotalExcl)));
-    if (DaoOptions.getValue('DoubleTax') == 'true') {
+    if (DaoOptions.getValue('DoubleTax') === 'true') {
     	var currentTotalWET = parseFloat($('#divTotalWET p').text());
     	var difference = (quantity - basketInfo.Quantity) * basketInfo.VAT / 100 * (basketInfo.RepNett ?  basketInfo.RepNett :  basketInfo.Nett);
     	var newTotalWET = currentTotalWET + difference;        	
     	$('#divTotalWET p').text(g_addCommas(g_roundToTwoDecimals(newTotalWET)));
     	g_shoppingCartVAT = (g_shoppingCartTotalExcl + newTotalWET) * g_vat();   
-    } else if (DaoOptions.getValue('CalcTaxPerProduct') == 'true') {
+    } else if (DaoOptions.getValue('CalcTaxPerProduct') === 'true') {
     	currentTotalVAT = parseFloat($("#vat").text());
     	difference = (quantity - basketInfo.Quantity) * basketInfo.VAT / 100 * (basketInfo.RepNett ?  basketInfo.RepNett :  basketInfo.Nett);
     	g_shoppingCartVAT = currentTotalVAT + difference;
@@ -964,7 +995,7 @@ function shoppingCartRecalcTotals(basketInfo, quantity){
     }
     $("#vat").text(g_addCommas(g_roundToTwoDecimals(g_shoppingCartVAT)));
     g_shoppingCartTotalIncl = g_shoppingCartTotalExcl + g_shoppingCartVAT;
-    if (DaoOptions.getValue('DoubleTax') == 'true') g_shoppingCartTotalIncl += parseFloat($('#divTotalWET p').text());
+    if (DaoOptions.getValue('DoubleTax') === 'true') g_shoppingCartTotalIncl += parseFloat($('#divTotalWET p').text());
     $("#totalIncl").text(g_addCommas(g_roundToTwoDecimals(g_shoppingCartTotalIncl)));
 }
 
@@ -1038,7 +1069,7 @@ function shoppingCartRecalcMultilineDiscounts(changedItemIndex) {
                         basket.saveItem(basketInfo, quantity);
 
                         $('#' + itemIndex + 'nett').text('' + g_roundToTwoDecimals(shoppingCartItemNett(basketInfo))); //$('#' + itemIndex + 'nett').text('' + basketInfo.Nett);
-                        $('#' + itemIndex + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  == 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * quantity));
+                        $('#' + itemIndex + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  === 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * quantity));
                         g_shoppingCartTotalExcl = 0;
                         $.each($(".total") ,function() {
                             var value = $(this).text().replace(',','');
@@ -1117,7 +1148,7 @@ function shoppingCartRecalcMultilineDiscounts(changedItemIndex) {
                             basket.saveItem(basketInfo, quantity);
 
                             $('#' + itemIndex + 'nett').text('' + g_roundToTwoDecimals(shoppingCartItemNett(basketInfo))); //$('#' + itemIndex + 'nett').text('' + basketInfo.Nett);
-                            $('#' + itemIndex + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  == 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * quantity));
+                            $('#' + itemIndex + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  === 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * quantity));
                             g_shoppingCartTotalExcl = 0;
                             $.each($(".total") ,function() {
                                 var value = $(this).text().replace(',','');
