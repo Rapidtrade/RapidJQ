@@ -79,9 +79,9 @@ function productdetailInit() {
         
         sessionStorage.removeItem('maxdiscount');
         var changeid = '.pricelistvalue';
-        if (DaoOptions.getValue('changediscountonly','false') == 'true') changeid = '.changediscountonly'; //check if can only change discount
+        if (DaoOptions.getValue('changediscountonly','false') == 'true' || productdetailsAdminCanAddPromo()) changeid = '.changediscountonly'; //check if can only change discount
 
-        $(changeid).append('<a data-role="button"  data-transition="pop" data-rel="popup"  data-position-to="window" data-inline="true" href="#valuePopup"><img class="pricelistChangePriceImg" src="img/Money-Dollar-32.png"/></a>');
+        $(changeid).append('<a data-role="button"  data-transition="pop" data-rel="popup"  data-inline="true" href="#valuePopup"><img class="pricelistChangePriceImg" src="img/Money-Dollar-32.png"/></a>');
         $(changeid).each(function() {			
                 $(this).click(function() {
                         var valueType = $(this).attr('id').replace('div', '').replace('value', '');
@@ -128,7 +128,7 @@ function productdetailInit() {
 
     var dao = new Dao();
     dao.get('BasketInfo',
-            (g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID).trim() + sessionStorage.getItem('currentordertype'),
+            (g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID).trim() + (g_pricelistSelectedProduct.Type || sessionStorage.getItem('currentordertype')),
             function(basketInfo) {
 
                     g_productdetailIsPriceChanged = basketInfo.RepChangedPrice ? basketInfo.RepChangedPrice : false;
@@ -1157,7 +1157,7 @@ function productdetailDeleteItem() {
             pricelistOnBackButtonClick();
     };
 
-    shoppingCartDeleteItem(g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID + sessionStorage.getItem('currentordertype'), 
+    shoppingCartDeleteItem(g_pricelistSelectedProduct.ProductID + g_currentUser().SupplierID + g_currentUser().UserID + g_currentCompany().AccountID + (g_pricelistSelectedProduct.Type || sessionStorage.getItem('currentordertype')), 
                             DaoOptions.getValue('LostSaleActivityID') != undefined, 
                             undefined, 
                             deleteItemOnSuccess, '', pricelistOnBackButtonClick);		
@@ -1354,7 +1354,9 @@ function productdetailOkClicked(checkStock) {
                 g_pricelistSelectedProduct.RepDiscount = discount;
                 var rNetStr = $('#divnettvalue input').val() || productdetailValue('nett'); 
                 g_pricelistSelectedProduct.RepNett = parseFloat(rNetStr.replace(/,/g,''));
-                $('#li' + g_pricelistSelectedProduct.ItemIndex + ' .price').text(g_addCommas(parseFloat(g_pricelistSelectedProduct.RepNett).toFixed(2)));
+                if (!productdetailsAdminCanAddPromo() || g_pricelistSelectedProduct.RepDiscount !== 100) {
+                    $('#li' + g_pricelistSelectedProduct.ItemIndex + ' .price').text(g_addCommas(parseFloat(g_pricelistSelectedProduct.RepNett).toFixed(2)));
+                }
                     
             }
             
@@ -1362,6 +1364,12 @@ function productdetailOkClicked(checkStock) {
                 g_pricelistSelectedProduct.RepChangedPrice = true;
                 g_pricelistSelectedProduct.RepNett = g_pricelistSelectedProduct.Nett;
                 g_pricelistSelectedProduct.RepDiscount = g_pricelistSelectedProduct.Discount;
+            }
+            
+            if (productdetailsAdminCanAddPromo() && g_pricelistSelectedProduct.RepDiscount === 100) {
+                type = 'PROMOADMIN';
+                g_pricelistSelectedProduct.PromoID = 'PROMOADMIN';
+                g_pricelistSelectedProduct.Type = type;
             }
                         
             productdetailSave(qty, type, g_pricelistSelectedProduct);
@@ -1461,4 +1469,8 @@ function productdetailsUserCanChangeDiscount() {
     }
     
     return false;
+}
+
+function productdetailsAdminCanAddPromo() {
+    return g_currentUser().IsAdmin && DaoOptions.getValue('localTPM') === 'true';
 }

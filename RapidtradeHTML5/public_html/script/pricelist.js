@@ -96,7 +96,9 @@ function pricelistOnPageShow() {
     g_productDetailInitialized = false;
 
     if (g_currentUser().Role && (g_currentUser().Role.toUpperCase().indexOf('CUST') != -1)) {
-        g_pricelistCanChangeDiscount = false;	
+        g_pricelistCanChangeDiscount = false;
+    } else if (g_currentUser().IsAdmin && DaoOptions.getValue('localTPM') === 'true') {
+        g_pricelistCanChangeDiscount = true;
     } else {
         g_pricelistCanChangeDiscount = (DaoOptions.getValue('CanChangeDiscount', '').toLowerCase() === 'true');
     }
@@ -224,6 +226,10 @@ function pricelistOnBackButtonClick() {
         
         if (!g_deviceVersion) {
             $('#search').focus();
+        }
+        
+        if (productdetailsAdminCanAddPromo() && g_pricelistSelectedProduct.Type === 'PROMOADMIN') {
+            pricelistDoSearch(); // pricelistFetchPricelist();
         }
         
     } else if (sessionStorage.getItem('fromCategory') == 'true') {
@@ -1731,7 +1737,11 @@ function pricelistStoreItemData(itemIndex) {
     g_pricelistSelectedProduct.UserField10 = g_pricelistItems[itemIndex].u10;
 
     g_pricelistSelectedProduct.Stock = g_pricelistItems[itemIndex].Stock;
-    g_pricelistSelectedProduct.Basket = g_pricelistItems[itemIndex].Basket;		
+    g_pricelistSelectedProduct.Basket = g_pricelistItems[itemIndex].Basket;
+    
+    if (!$.isEmptyObject(g_pricelistItems[itemIndex].BasketInfo)) {
+        g_pricelistSelectedProduct.Type = g_pricelistItems[itemIndex].BasketInfo.Type;
+    }
     
     g_pricelistSelectedProduct.ItemIndex = itemIndex;
 }
