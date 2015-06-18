@@ -245,7 +245,13 @@ function myterritoryOnComplete() {
         
         // *** if we have only one customer after search, auto go to pricelist screen
         if (g_myterritoryItems.length === 1) {
-            myterritoryOnCompanyClicked(g_myterritoryItems[0].key, 'companyPanel');
+            if ( DaoOptions.getValue('GoDirectlyPricelistOnSingle', 'false') === 'true' ) {
+                var ordType = DaoOptions.getValue('MobileOrderTypes','').split(',')[0];
+                sessionStorage.setItem('currentordertype', (ordType || 'Order'));
+                myterritoryOnCompanyClicked(g_myterritoryItems[0].key, 'pricelistPanel');
+            } else {
+                myterritoryOnCompanyClicked(g_myterritoryItems[0].key, 'companyPanel');
+            }
         }
 }
 
