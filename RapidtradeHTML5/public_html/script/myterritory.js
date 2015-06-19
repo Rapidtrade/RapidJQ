@@ -248,6 +248,8 @@ function myterritoryOnComplete() {
             if ( DaoOptions.getValue('GoDirectlyPricelistOnSingle', 'false') === 'true' ) {
                 var ordType = DaoOptions.getValue('MobileOrderTypes','').split(',')[0];
                 sessionStorage.setItem('currentordertype', (ordType || 'Order'));
+                sessionStorage.setItem('lastPanelId', 'pricelistPanel');
+                sessionStorage.setItem('lastMenuItemId', 'pricelist' + (ordType || 'Order') + 'Item');
                 myterritoryOnCompanyClicked(g_myterritoryItems[0].key, 'pricelistPanel');
             } else {
                 myterritoryOnCompanyClicked(g_myterritoryItems[0].key, 'companyPanel');

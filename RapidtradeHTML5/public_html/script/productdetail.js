@@ -1374,8 +1374,10 @@ function productdetailOkClicked(checkStock) {
                         
             productdetailSave(qty, type, g_pricelistSelectedProduct);
             g_clearCacheDependantOnBasket(false);
-            pricelistCheckBasket();
-            $('#' + g_pricelistSelectedProduct.ItemIndex).html(qty);
+            pricelistCheckBasket();            
+            if (!productdetailsAdminCanAddPromo() || g_pricelistSelectedProduct.RepDiscount !== 100) {
+                $('#' + g_pricelistSelectedProduct.ItemIndex).html(qty);
+            }
             if (!g_vanSales && !g_pricelistIsAnyItemAdded) {
             	sessionStorage.setItem('ordertypecaption', $('#menu').val());
             	g_pricelistIsAnyItemAdded = true;

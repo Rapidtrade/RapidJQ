@@ -240,14 +240,26 @@ function shoppingCartBind() {
         g_keyMap[e.keyCode] = e.type === 'keydown';
         
         // we these listeners active only on shopping cart page
-        if($.mobile.activePage.attr('id') === 'shoppingCartpage' && g_keyMap[17] && g_keyMap[83]){ // CTRL+S
-            g_keyMap = [];
-            // avoid calling checkout more than once
-            if (g_keyMatchCount++ === 0) {
-                setTimeout(function () {
-                   $('#saveShoppingCart').click(); 
-                },500); 
-                return false;
+        if($.mobile.activePage.attr('id') === 'shoppingCartpage' && g_keyMap[17]) { 
+            if (g_keyMap[66]){ // CTRL+B
+               g_keyMap = [];
+                // avoid calling checkout more than once
+                if (g_keyMatchCount++ === 0) {
+                    setTimeout(function () {
+                        sessionStorage.removeItem('shoppingCartViewType');
+                        shoppingCartOnBack(); 
+                    },500); 
+                    return false;
+                } 
+            } else if (g_keyMap[83]){ // CTRL+S
+                g_keyMap = [];
+                // avoid calling checkout more than once
+                if (g_keyMatchCount++ === 0) {
+                    setTimeout(function () {
+                       $('#saveShoppingCart').click(); 
+                    },500); 
+                    return false;
+                }
             }
         }
     };

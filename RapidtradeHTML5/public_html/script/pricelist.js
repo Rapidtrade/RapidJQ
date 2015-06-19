@@ -151,6 +151,7 @@ function pricelistOnPageShow() {
         $('#advancedSearchPanel .ui-block-a').css('width', '100%');
         $('#advancedSearchImageButton').hide();
     }
+    $('#search').focus();
 }
 
 function pricelistOnPageShowSmall() {
@@ -228,9 +229,9 @@ function pricelistOnBackButtonClick() {
             $('#search').focus();
         }
         
-        if (productdetailsAdminCanAddPromo() && g_pricelistSelectedProduct.Type === 'PROMOADMIN') {
-            pricelistDoSearch(); // pricelistFetchPricelist();
-        }
+//        if (productdetailsAdminCanAddPromo() && g_pricelistSelectedProduct.Type === 'PROMOADMIN') {
+//            pricelistDoSearch(); // pricelistFetchPricelist();
+//        }
         
     } else if (sessionStorage.getItem('fromCategory') == 'true') {
     	
@@ -979,8 +980,8 @@ function pricelistFetchPricelistJob() {
     	
     } else {
     	
-    	if (DaoOptions.getValue('MustSearch','true') == 'true') {
-            if (g_pricelistSearchPricelistText == '') {
+    	if (DaoOptions.getValue('MustSearch','true') === 'true') {
+            if (g_pricelistSearchPricelistText === '') {
                     $.mobile.hidePageLoadingMsg();
                     return;
             }
@@ -1193,6 +1194,9 @@ function pricelistOnComplete(event) {
             var infoText = sessionStorage.getItem('fromCategory') == 'true' || sessionStorage.getItem('fromAdvanced') == 'true' || $.trim($('#search').val()) != '' ?  'No products found.' : 'Enter in search criteria to list products.';			
             $('.infoPanelText').text(infoText);
             $.mobile.hidePageLoadingMsg();
+            $('#search').val('');
+            $('#search').attr('placeholder', g_companyPageTranslation.translateText('Search for products'));
+            $('#search').focus();
 
             return;
         }
