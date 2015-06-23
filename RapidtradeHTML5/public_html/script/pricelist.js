@@ -501,7 +501,44 @@ function pricelistBind() {
                                      if (isEnterPressed)
                                      $('#savequantity').click();
                                      });
-    }        
+    }
+    
+    /***
+     * on each initialization of the page we want our variables reset
+     */
+    g_keyMap = [];
+    g_keyMatchCount = 0;
+    onkeydown = function(e) {
+        e = e || event; // to deal with IE
+        g_keyMap[e.keyCode] = e.type === 'keydown';
+        
+        // we these listeners active only on shopping cart page
+        if($.mobile.activePage.attr('id') === 'companypage'  && g_pricelistView === 'pricelist' && g_keyMap[17]) { 
+            /*if (g_keyMap[66]){ // CTRL+B
+               g_keyMap = [];
+                // avoid calling checkout more than once
+                if (g_keyMatchCount++ === 0) {
+                    setTimeout(function () {
+                        sessionStorage.removeItem('shoppingCartViewType');
+                        shoppingCartOnBack(); 
+                    },500); 
+                    return false;
+                } 
+            } else */
+            if (g_keyMap[83]){ // CTRL+S
+                g_keyMap = [];
+                // avoid calling checkout more than once
+                if (g_keyMatchCount++ === 0) {
+                    setTimeout(function () {
+                       $('#companyNextButton').click(); 
+                    },500); 
+                    return false;
+                }
+            }
+        }
+    };
+    
+    onkeyup = onkeydown;
 }
 
 function pricelistInit() {

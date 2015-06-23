@@ -127,9 +127,9 @@ function orderHeaderBind() {
     	g_orderHeaderOrder.Status = 'Validated';
     	
     	orderHeaderCaptureGPSAndSave();
-    });    
+    });
+    
 }
-
 function orderHeaderOnSignatureButtonClick() {
     
     if (!g_orderHeaderJsonForm.isValid())
@@ -265,6 +265,9 @@ function orderHeaderInit() {
                     }
                 }
             });
+            try {
+               $($('input:first')).focus(); 
+            } catch (ex) {}
         }, 2000);  
     };
     
@@ -366,6 +369,7 @@ function orderHeaderSaveOrder() {
         if (g_orderHeaderOrder.Reference.length==0 && !shoppingCartIsGroupingEnabled()){      	
             g_alert(g_orderHeaderPageTranslation.translateText(NO_REFERENCE_MESSAGE));
             $('#infoPopup').popup('close');
+            $($('input:first')).focus(); 
             return;	
         }
         
