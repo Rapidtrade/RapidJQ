@@ -532,7 +532,9 @@ function orderHeaderRemovedFromCartSuccess() {
     	g_loadMenu();
     	
     } else if (orderHeaderIsPOD() && sessionStorage.getItem('orderheaderNext') === 'podsPanel') {
-            g_removeDeliveryFromLocalSQL();
+        g_removeDeliveryFromLocalSQL();
+    } else if (sessionStorage.getItem('orderheaderNext') === 'myterritory') {
+        $.mobile.changePage('myterritory.html');
     } else {
     	
         g_fetchAvailableCredit();

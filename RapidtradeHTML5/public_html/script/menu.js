@@ -157,7 +157,11 @@ function menuOnMyTerritoryClick() {
 	sessionStorage.setItem('ShoppingCartReturnPage', 'pricelist');
 	sessionStorage.setItem('ShoppingCartNoFooter', false);
 	sessionStorage.setItem('ShoppingCartNoChangeAllowed', false);
-	sessionStorage.setItem('orderheaderNext', 'activity');	
+        if (DaoOptions.getValue('OrderHeaderNextPage')) {
+            sessionStorage.setItem('orderheaderNext', DaoOptions.getValue('OrderHeaderNextPage'));
+        } else {
+            sessionStorage.setItem('orderheaderNext', 'activity');
+        }
 }
 
 function menuOnTodayClick() {
