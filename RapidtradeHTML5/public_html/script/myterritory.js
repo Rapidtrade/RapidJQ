@@ -242,6 +242,7 @@ function myterritoryOnComplete() {
 	
 	myterritoryShowNextPrev();
 	$.mobile.hidePageLoadingMsg();	
+        $('#searchTerritory').focus();
         
         // *** if we have only one customer after search, auto go to pricelist screen
         if (g_myterritoryItems.length === 1) {

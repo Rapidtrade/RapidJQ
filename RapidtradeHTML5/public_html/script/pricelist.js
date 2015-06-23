@@ -97,10 +97,10 @@ function pricelistOnPageShow() {
 
     if (g_currentUser().Role && (g_currentUser().Role.toUpperCase().indexOf('CUST') != -1)) {
         g_pricelistCanChangeDiscount = false;
-    } else if (g_currentUser().IsAdmin && DaoOptions.getValue('localTPM') === 'true') {
-        g_pricelistCanChangeDiscount = true;
+//    } else if (g_currentUser().IsAdmin && DaoOptions.getValue('localTPM') === 'true') {
+//        g_pricelistCanChangeDiscount = true;
     } else {
-        g_pricelistCanChangeDiscount = (DaoOptions.getValue('CanChangeDiscount', '').toLowerCase() === 'true');
+        g_pricelistCanChangeDiscount = (DaoOptions.getValue('CanChangeDiscount', '').toLowerCase() === 'true') || productdetailsUserCanChangeDiscount();
     }
     
     $('#scanbarcodetd').toggleClass('invisible', !g_scandit);

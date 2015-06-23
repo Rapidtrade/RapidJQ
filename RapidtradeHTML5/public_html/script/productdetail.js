@@ -1480,7 +1480,7 @@ function productdetailsShowDiscOverwritePasswordPopup() {
 
 function productdetailsUserCanChangeDiscount() {
     var tmpRole = g_currentUser().Role;
-    if (tmpRole && tmpRole.indexOf('CanChangeDiscount=true') !== -1) {
+    if (tmpRole && tmpRole.indexOf('changediscount') !== -1) {
         return true;
     }
     
