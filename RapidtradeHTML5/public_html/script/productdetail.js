@@ -94,6 +94,20 @@ function productdetailInit() {
         $('p').css('margin-right', '10px');
         $('img').attr('title', 'Change');
         
+        $( "#valuePopup" ).on(
+            'popupafteropen', function(e) {
+                //$('.ui-mobile-viewport-transitioning, .ui-mobile-viewport-transitioning .ui-page').css('overflow','hidden');
+            }).on(
+            'popupafterclose', function(e) {
+                if ($('body').hasClass('viewport-fade')) {
+                    $('body').removeClass('viewport-fade');
+                }
+                if ($('body').hasClass('ui-mobile-viewport-transitioning')) {
+                    $('body').removeClass('ui-mobile-viewport-transitioning');
+                }
+            }
+        );
+        
     } else {
         
         $('.pricelistChangePriceImg').hide();
