@@ -32,20 +32,20 @@ var promo = (function(){
             var today = new Date();
             
             var dao= new Dao();            
-            dao.cursor('TPM', '', '', function(item) {
+            dao.cursor('Tpm', '', '', function(item) {
                 
-                if ((new Date(item.FromDate)) <= today && today <= (new Date(item.ToDate))) {
+                if (moment(item.FromDate).toDate() <= today && today <= moment(item.ToDate).toDate()) {
                     item.json = JSON.parse(item.json);
                     $this.tpms.push(item);                    
                 } else {
-                    dao.deleteItem('TPM', item.key);
+                    dao.deleteItem('Tpm', item.key);
                 }
                 
             }, onComplete, function() {
                 
                $this.fetchTPM(0, $this); 
             });             
-        } 
+        }; 
 
        this.fetchTPM = function(tpmcount, $this) { 
             if (tpmcount === $this.tpms.length) { 
