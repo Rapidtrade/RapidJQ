@@ -896,7 +896,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
     
     var step = parseInt($('#' + itemIndex).attr('step'), 10);
 	
-    var quantity = parseInt(value, 10);
+    var quantity = Number(value);
     if (!quantity) {
     	
 //    	if (confirm('Are you sure you want to remove the item from basket?')) {

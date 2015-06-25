@@ -1400,16 +1400,20 @@ function pricelistBindCaptureQuantity() {
                
                 var itemIndex = Number(this.id.replace('quantity', ''));
                 pricelistAddItemToBasket(itemIndex);
-                $(this).siblings('.quantity').text($(this).val());                
+                //$(this).siblings('.quantity').text($(this).val());                
+            });
+            
+            $('.captureQuantity').keydown(function (event) {
+                return g_isValidQuantityCharPressed(event);
             });
             
             $('.captureQuantity').keypress(function (event) {
                 var keycode = (event.keyCode ? event.keyCode : event.which);
 
-                if (keycode == '13') {
+                if (keycode === '13') {
                     var itemIndex = Number(this.id.replace('quantity', ''));
                     pricelistAddItemToBasket(itemIndex);
-                    $(this).siblings('.quantity').text($(this).val()); 
+                    //$(this).siblings('.quantity').text($(this).val()); 
                 }
             });
 	}
@@ -1696,7 +1700,7 @@ function pricelistAddItemToBasket(itemIndex) {
 	
     var getQuantity = function(itemIndex) {
 
-        return DaoOptions.getValue('AllowPriceQuickCapt') == 'true' ? parseInt($('#quantity' + itemIndex).val(), 10) : pricelistGetNewQuantityForItem(itemIndex);
+        return DaoOptions.getValue('AllowPriceQuickCapt') == 'true' ? Number($('#quantity' + itemIndex).val()) : pricelistGetNewQuantityForItem(itemIndex);
     };
 
     var deleteItemOnSuccess = function() {
