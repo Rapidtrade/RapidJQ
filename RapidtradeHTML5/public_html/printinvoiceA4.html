@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8" />
@@ -34,6 +34,7 @@
 	       		</a>
 	        </div>
 		    <div data-role="content" class="printinvoiceContent"> 
+                        <div id="printinvoiceInvHeader" >
                         <div  class="ui-grid-a">
 		            <div class="ui-block-a">
 		            	<h3></h3>
@@ -66,6 +67,7 @@
 		        	<tr><td class="multiLanguage">Reference:</td><td id="comment"></td></tr>
                         </table>
 				</p>
+                        </div>
 				<p>
 				<table class="printinvoiceProductListTable" rules=groups id="productListTable">
 					<thead>	
@@ -87,6 +89,7 @@
 					</tfoot>
 				</table>	
 				</p>
+                                <div id="printinvoiceInvFooter" >
 				<p>
 				<hr noshade="noshade" size="1">
                                 <span class="multiLanguage">
@@ -101,6 +104,7 @@
 					<tr><td><hr class="printinvoiceHorizontalRule"></td><td><hr class="printinvoiceHorizontalRule"></td></tr>
 				</table>
 				</p>
+                                </div>
 		    </div>
 	    </div>	
 	</body>

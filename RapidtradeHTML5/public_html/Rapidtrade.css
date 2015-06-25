@@ -665,6 +665,16 @@
     display: none;
 }
 
+.printinvoiceContent .page:not(:first-child) .printinvoiceInvHeader {
+    
+    display: none;
+}
+
+.printinvoiceContent .page:not(:first-child) .printinvoiceProductListTableHead {
+    
+    display: none;
+}
+
 .printinvoiceContent .page:not(:last-child) .footer {
     
     display: none;
@@ -712,19 +722,19 @@
     display:block;
 }
  
-tbody tr.printinvoiceProductListTableHead {
+/*tbody tr.printinvoiceProductListTableHead {
     page-break-before: always;
     page-break-inside: avoid;
-}
+}*/
 
-@media screen {
+/*@media screen {
     tbody .printinvoiceProductListTableHead{
         display: none;
     }
     .printinvoiceContent .footer {
         display: none;
     }
-}
+}*/
 
 @media print {	
     .printinvoiceHeader, #udsInputsDiv, #udsHeader {
@@ -739,16 +749,16 @@ tbody tr.printinvoiceProductListTableHead {
     .printinvoiceProductListTable tr{
             /*display:block;*/
     }
-    .printinvoiceProductListTable { 
+/*    .printinvoiceProductListTable { 
         font-weight: bolder;
         page-break-inside:auto;
-    }
+    }*/
     
     .printinvoiceProductListTable th {
 	font-weight:bolder;
     }
 
-    .printinvoiceProductListTable thead {
+/*    .printinvoiceProductListTable thead {
         display: table-header-group;
     }
     
@@ -763,27 +773,55 @@ tbody tr.printinvoiceProductListTableHead {
    .printinvoiceProductListTable tr { 
         page-break-inside:avoid; 
         page-break-after:auto 
-    }        
+    }  */
     
+    .printinvoiceContent .page:not(:first-child) .printinvoiceInvHeader {
+    
+        display: block;
+    }
+
+    .printinvoiceContent .page:not(:first-child) .printinvoiceProductListTableHead {
+
+        display: block;
+    }
+    /*
     .printinvoiceContent .page:not(:first-child) .header {
 
         display: block;
     }
-
+*/
     .printinvoiceContent .page:not(:last-child) .footer {
 
         display: block;
         text-align: right;
     } 
     
+    
+    .printinvoiceContent .page {
+        position: relative;
+        overflow: hidden;
+        height: 265mm !important;
+    }
+    
     .printinvoiceContent .footer {
-        font-size: 10px;
+/*        font-size: 10px;
+        height: 20px;
         font-weight: normal;
         display: block;
         text-align: right;
-        /*position: absolute;*/
-        /*bottom: 12px;*/
+        position: absolute;
+        bottom: 50px;*/
+        display: block;
+        height: 30px;
+        text-align: right;
+        position: absolute;
+        bottom: 0px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        margin-top: 0px;
+        margin-bottom: 0px;
     }
+    
     
     .printinvoiceContent .pageNumber {
 
