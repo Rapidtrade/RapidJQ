@@ -408,13 +408,48 @@ function g_firstMondayOfCurrentMonth() {
 function g_currentCallCycleWeek() {
 	if (DaoOptions.getValue('WeeksInCallCycle','')=='2' )
 		return (g_getWeek() % 2) + 1;
-	else
+	else if (DaoOptions.getValue('WeeksInCallCycle','')=='4') {
+		var weekoy;
+		if (DaoOptions.getValue('FirsfWeekOfYear')) {
+			var firstWeekOfYear = g_getWeek(g_yyyyMMddToDate(DaoOptions.getValue('FirsfWeekOfYear')));
+			weekoy = g_getWeek() - g_abs(g_getWeek(g_yyyyMMddToDate((new Date()).getFullYear() + '0101')) - firstWeekOfYear);
+		} else
+			weekoy = g_getWeek();
+
+		var cycle = Math.floor(weekoy / 4);
+		var weekInSycle = weekoy - (cycle * 4);
+
+		return weekInSycle ? weekInSycle : 4;
+	} else
 		return parseInt((g_mondayOfCurrentWeek().getDate() - g_firstMondayOfCurrentMonth().getDate()) / 7, 10) + 1;
 }
 
-function g_getWeek(){
+function g_getWeek(d0){
+    // Create a copy of this date object  
+    var d;
+    if (!d0)
+          d = new Date(); 
+    else
+          d = new Date(+d0); 
+    d.setHours(0,0,0);
+    // Set to nearest Thursday: current date + 4 - current day number
+    // Make Sunday's day number 7
+    d.setDate(d.getDate() + 4 - (d.getDay()||7));
+    // Get first day of year
+    var yearStart = new Date(d.getFullYear(),0,1);
+    // Calculate full weeks to nearest Thursday
+    var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+    // Return array of year and week number
+    return weekNo;    
+}
+
+function g_getWeekOld(d0){
 	  // Create a copy of this date object  
-	  var d  = new Date();  
+	  var d;
+	  if (!d0)
+	  	d = new Date(); 
+	  else
+	  	d = new Date(+d0); 
 	  var target  = new Date();  
 	  // ISO week date weeks start on monday  
 	  // so correct the day number  
@@ -961,4 +996,24 @@ function g_removeDeliveryFromLocalSQL() {
  function g_isVanUser() {
      return g_currentUser().Role && (g_currentUser().Role.indexOf('van=') !== -1);
  }
+ 
+function g_yyyyMMddToDate(value) {
+   if (!value)
+           return new Date();
 
+   if (value.length !== 8)
+           return new Date();
+
+   var yearPart = value.substring(0,4);
+   var monthPart = value.substring(4, 6);
+   var dayPart = value.substring(6,8);
+
+   return moment(yearPart + '-' + monthPart + '-' + dayPart).toDate();
+}
+
+function g_abs(value) {
+    if (!value)
+            return 0;
+
+    return value < 0 ? value * (-1) : value;
+}
