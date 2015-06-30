@@ -1017,3 +1017,12 @@ function g_abs(value) {
 
     return value < 0 ? value * (-1) : value;
 }
+
+function g_isNoPriceUser() {
+    var userRole = g_currentUser().Role;
+    if (userRole && userRole.indexOf('NOPRICE') !== -1) {
+        return true;
+    }
+    
+    return false;
+}

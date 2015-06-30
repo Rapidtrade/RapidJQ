@@ -1426,6 +1426,10 @@ function pricelistBindCaptureQuantity() {
             });
             
         }
+        
+        if (g_isNoPriceUser()) {
+            $('li .price').hide();
+        }
 }
 
 function pricelistAddLine(pricelist) {

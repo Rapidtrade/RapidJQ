@@ -805,8 +805,8 @@ function orderdetailsFetchOrderItems() {
             '   <a>' + ((g_orderdetailsShowThumbNail && orderdetailsAddThumbnailChecker(orderItem, false)) ? '<img src="' + productdetailGetImageUrl(orderItem.ProductID, 80) + '" />' : '') +
             '   <p class="ui-li-heading"><strong>' + (isComplexView ? orderItem[DaoOptions.getValue('MasterChartComplexDesc')] : orderItem.Description) + '</strong></p>' +
             '   <table class="ui-li-desc historyOrderItems"><tr>' + (doNotShowItemID ? '' : '<td class="itemId">' + orderItem.ItemID + '</td>') + '<td class="productId">' + (isComplexView ? complexProductId : orderItem.ProductID) + 
-            '</td><td class="quantity">' + orderItem.Quantity + '</td><td class="value">' + g_roundToTwoDecimals(nettValue) + 
-            '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td><td class="orderedQuantity"></td>' + quantityInputHtml + '</tr></table></a>' +
+            '</td><td class="quantity">' + orderItem.Quantity + '</td>' + 
+            (g_isNoPriceUser() ? '' : '<td class="value">' + g_roundToTwoDecimals(nettValue) + '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td>') + '<td class="orderedQuantity"></td>' + quantityInputHtml + '</tr></table></a>' +
             '	<a onclick="orderdetailsSendOrderItem(' + (isComplexView ? '\'' + complexProductId + '\', true' : g_orderdetailsOrderItems.length) + ')" data-role="button" data-transition="pop" data-rel="popup"  data-position-to="window" data-inline="true"' +
             '	class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
             '	<span class="ui-btn-inner ui-btn-corner-all">' +

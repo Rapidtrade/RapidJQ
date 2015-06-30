@@ -337,6 +337,13 @@ function productdetailBind() {
             }
         });
      }
+     
+     if (g_isNoPriceUser()) {
+         $('#productdetailPriceLabel').hide();
+         $('#gross').hide();
+         $('#discount').hide();
+         $('#productdetailNettVal').hide();
+     }
 }
 
 function productdetailCanChangeNett(productId) {
@@ -1479,8 +1486,8 @@ function productdetailsShowDiscOverwritePasswordPopup() {
 }
 
 function productdetailsUserCanChangeDiscount() {
-    var tmpRole = g_currentUser().Role;
-    if (tmpRole && tmpRole.indexOf('changediscount') !== -1) {
+    var userRole = g_currentUser().Role;
+    if (userRole && userRole.indexOf('changediscount') !== -1) {
         return true;
     }
     

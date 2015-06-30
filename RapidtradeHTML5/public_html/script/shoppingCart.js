@@ -699,7 +699,7 @@ function shoppingCartOnAllItemsAdded() {
     g_basketHTML = '';
     alphaFilter.getInstance().HTML('#alphabet', '#shoppingCartitemlist');
     
-    var hidePrice = (DaoOptions.getValue(sessionStorage.getItem("currentordertype") + 'CartHidePrice', 'false') === 'true');
+    var hidePrice = ((DaoOptions.getValue(sessionStorage.getItem("currentordertype") + 'CartHidePrice', 'false') === 'true') || g_isNoPriceUser());
     if (hidePrice) {
         $('#shoppingCartitemlist .nett').addClass('invisible');
         $('#shoppingCartitemlist .total').addClass('invisible');
