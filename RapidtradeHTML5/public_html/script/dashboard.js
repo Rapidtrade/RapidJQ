@@ -173,7 +173,7 @@ function usersummaryShow(){
 
 function fetchUsers(){
 
-    var url = g_restUrl + 'Dashboard/GetUsers?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&format=json';
+    var url = (DaoOptions.getValue('LiveDashboardURL') || g_restUrl) + 'Dashboard/GetUsers?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&format=json';
     
     //Clear user
     $('#usersummarytable tbody').empty();
@@ -792,7 +792,7 @@ function showImage(number) {
 
 //******************************************************************************** Order Count By User
 function fetchOrderCountByUser() {
-    var url = g_restUrl + 'Dashboard/GetUserOrdering?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&format=json';
+    var url = (DaoOptions.getValue('LiveDashboardURL') || g_restUrl) + 'Dashboard/GetUserOrdering?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&format=json';
     $.mobile.loading("show");
     $.ajax({
         type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback', contentType: "application/json", dataType: 'jsonp',
