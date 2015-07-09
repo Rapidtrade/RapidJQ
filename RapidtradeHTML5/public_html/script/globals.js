@@ -1026,3 +1026,20 @@ function g_isNoPriceUser() {
     
     return false;
 }
+
+function g_userCanChangeDiscount() {
+    var userRole = g_currentUser().Role;
+    if (userRole && userRole.indexOf('changediscount') !== -1) {
+        return true;
+    }
+    
+    return false;
+}
+
+function g_isUserIntSalse() {
+    var userRole = g_currentUser().Role;
+    if (userRole && userRole.indexOf('IntSales') !== -1) {
+        return true;
+    }
+    return false ;
+}

@@ -42,7 +42,7 @@ function productdetailInit() {
 
             $('#divgrossvalue').append('<p class="ui-li-aside" id="grossvalue"></p>');
             
-            if (productdetailsUserCanChangeDiscount()) {
+            if (g_userCanChangeDiscount()) {
                 $('#divdiscountvalue').append('<input id="discount-r" class="ui-li-aside ui-input-text ui-body-c ui-corner-all ui-shadow-inset" style="position:relative;top:-17px;width:90px;height:10px;" type="text" value="" tabindex="2"/>');
                 $('#divnettvalue').append('<p class="ui-li-aside" style="position:relative;top:-18px;" id="nett-r"></p>');
             } else {
@@ -54,7 +54,7 @@ function productdetailInit() {
             if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true' && ($('#mode').val() === 'Online') && g_isOnline(false))
                     $('#whChoiceDiv').append('<p class="ui-li-aside" id="stockvalue" style="position:relative; top:-32px;"></p>');
             else
-                    $('#divstockvalue').append('<p class="ui-li-aside" id="stockvalue" ' + (productdetailsUserCanChangeDiscount() ? 'style="position:relative;top:-18px;"' : '') + '></p>');
+                    $('#divstockvalue').append('<p class="ui-li-aside" id="stockvalue" ' + (g_userCanChangeDiscount() ? 'style="position:relative;top:-18px;"' : '') + '></p>');
 
             g_productDetailInitialized = true;
     }
@@ -64,7 +64,7 @@ function productdetailInit() {
     if (DaoOptions.getValue('MobileSelectWhOnDetail') == 'true' && ($('#mode').val() === 'Online') && g_isOnline(false))
         $('#whChoiceDiv').append('<p class="ui-li-aside" id="stockvalue" style="position:relative; top:-32px;"></p>');
     else
-        $('#divstockvalue').append('<p class="ui-li-aside" id="stockvalue" ' + (productdetailsUserCanChangeDiscount() ? 'style="position:relative;top:-18px;"' : '') + '></p>');
+        $('#divstockvalue').append('<p class="ui-li-aside" id="stockvalue" ' + (g_userCanChangeDiscount() ? 'style="position:relative;top:-18px;"' : '') + '></p>');
 
     if (productdetailCanChangeNett(g_pricelistSelectedProduct.ProductID))
             $('#nett-r').replaceWith('<input class="ui-li-aside ui-input-text ui-body-c ui-corner-all ui-shadow-inset" style="position:relative;top:-17px;width:90px" type="text" value="" onchange="productdetailOnNettChange()"/>');
@@ -88,7 +88,7 @@ function productdetailInit() {
                         productdetailEditValue(valueType);
                 });
         });
-        if (productdetailsUserCanChangeDiscount()) {
+        if (g_userCanChangeDiscount()) {
             $('#divdiscountvalue a img.pricelistChangePriceImg').hide();
         }
         $('p').css('margin-right', '10px');
@@ -328,7 +328,7 @@ function productdetailBind() {
     $('#deleteItemButton').off();
     $('#deleteItemButton').on('click', productdetailDeleteItem);
     
-     if (productdetailsUserCanChangeDiscount()) {
+     if (g_userCanChangeDiscount()) {
         $("#discount-r").keypress(function (event) {
             var keycode = (event.keyCode ? event.keyCode : event.which);
 
@@ -817,7 +817,7 @@ function productdetailValue(valueType, value) {
 	var selector = '#' + valueType + '-r';
 	var method = 'html';
 	
-        if (valueType === 'discount' && productdetailsUserCanChangeDiscount()) {
+        if (valueType === 'discount' && g_userCanChangeDiscount()) {
             method = 'val';
             if (value)
                 value = value.replace('%', '');
@@ -1186,7 +1186,7 @@ function productdetailDeleteItem() {
 
 function productdetailOkClicked(checkStock) {
     
-    if (productdetailsUserCanChangeDiscount()) {
+    if (g_userCanChangeDiscount()) {
         var tmpGross = parseFloat($('#grossvalue').html().replace(/,/g, ''));
         var tmpNett = parseFloat(productdetailValue('nett').replace(/,/g, ''));
         var tmpDiscount = productdetailValue('discount').replace(/,/g, '');
@@ -1485,15 +1485,7 @@ function productdetailsShowDiscOverwritePasswordPopup() {
     });
 }
 
-function productdetailsUserCanChangeDiscount() {
-    var userRole = g_currentUser().Role;
-    if (userRole && userRole.indexOf('changediscount') !== -1) {
-        return true;
-    }
-    
-    return false;
-}
 
 function productdetailsAdminCanAddPromo() {
-    return g_currentUser().IsAdmin && DaoOptions.getValue('localTPM') === 'true';
+    return g_isUserIntSalse() && DaoOptions.getValue('localTPM') === 'true';
 }

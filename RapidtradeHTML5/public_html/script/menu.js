@@ -157,7 +157,7 @@ function menuOnMyTerritoryClick() {
 	sessionStorage.setItem('ShoppingCartReturnPage', 'pricelist');
 	sessionStorage.setItem('ShoppingCartNoFooter', false);
 	sessionStorage.setItem('ShoppingCartNoChangeAllowed', false);
-        if (DaoOptions.getValue('OrderHeaderNextPage')) {
+        if (DaoOptions.getValue('OrderHeaderNextPage') && g_isUserIntSalse()) {
             sessionStorage.setItem('orderheaderNext', DaoOptions.getValue('OrderHeaderNextPage'));
         } else {
             sessionStorage.setItem('orderheaderNext', 'activity');

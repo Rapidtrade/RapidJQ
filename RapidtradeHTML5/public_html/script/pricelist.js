@@ -100,7 +100,7 @@ function pricelistOnPageShow() {
 //    } else if (g_currentUser().IsAdmin && DaoOptions.getValue('localTPM') === 'true') {
 //        g_pricelistCanChangeDiscount = true;
     } else {
-        g_pricelistCanChangeDiscount = (DaoOptions.getValue('CanChangeDiscount', '').toLowerCase() === 'true') || productdetailsUserCanChangeDiscount();
+        g_pricelistCanChangeDiscount = (DaoOptions.getValue('CanChangeDiscount', '').toLowerCase() === 'true') || g_userCanChangeDiscount();
     }
     
     $('#scanbarcodetd').toggleClass('invisible', !g_scandit);
@@ -1266,7 +1266,7 @@ function pricelistOnComplete(event) {
     pricelistShowNextPrev();
     pricelistScrollTo('scrollto');
     
-    if (g_pricelistItems.length === 1) {
+    if (g_pricelistItems.length === 1 && g_isUserIntSalse()) {
         pricelistOnItemClicked(0);
     }
 }

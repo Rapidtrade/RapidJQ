@@ -245,7 +245,7 @@ function myterritoryOnComplete() {
         $('#searchTerritory').focus();
         
         // *** if we have only one customer after search, auto go to pricelist screen
-        if (g_myterritoryItems.length === 1) {
+        if (g_myterritoryItems.length === 1 && g_isUserIntSalse()) {
             if ( DaoOptions.getValue('GoDirectlyPricelistOnSingle', 'false') === 'true' ) {
                 var ordType = DaoOptions.getValue('MobileOrderTypes','').split(',')[0];
                 sessionStorage.setItem('currentordertype', (ordType || 'Order'));
