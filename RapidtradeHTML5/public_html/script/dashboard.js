@@ -127,6 +127,10 @@ function bind() {
     	var dao = new Dao();
     	dao.get('ActivityTypes', g_currentUser().SupplierID + $(this).val(), onSuccess);    	
     });
+    
+    $('.subDBPBackButton').off().on('click', function() {
+        $.mobile.changePage('dashboard.html');
+    });
 }
 
 function showActivityChoice(choiceSelector, options) {
