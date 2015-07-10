@@ -222,8 +222,8 @@ var promo = (function(){
                             itemsHTML += '<tr ' + ((i !== 0 && (j) === 0 )? ' class="firstPromoRow" ' : '') + ' ><td>' + tpm.TPMID + '</td>';
                             itemsHTML += '<td></td>';
                             itemsHTML += '<td>' + tpm.Description + '</td>';
-                            itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Qty" class="promoItemInput' + tpm.TPMID + 'Qty" type="number" min="0" max="0" style="width: 100%;" readonly /></td>';
-                            itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Disc" class="promoItemInput' + tpm.TPMID + 'Disc" type="number" min="0" max="' + tpm.json.Discount + '" + value="' + tpm.json.Discount + '" style="width: 100%;" readonly /></td>'; 
+                            itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Qty" class="promoItemInput' + tpm.TPMID + 'Qty" type="number" min="0" max="0" style="width: 85%;" readonly /></td>';
+                            itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Disc" class="promoItemInput' + tpm.TPMID + 'Disc" type="number" min="0" max="' + tpm.json.Discount + '" + value="' + tpm.json.Discount + '" style="width: 85%;" readonly /></td>'; 
                             itemsHTML += '<td><a id="promoItemSelectBtn' + allFreeItems.length + '" class="promoItemSelector promoItemSelectBtnAccept promoSelect' + tpm.TPMID + '" data-role="button" data-mini="true" href >Accept</a></td></tr>';
 
                             allFreeItems.push(item);
@@ -245,8 +245,8 @@ var promo = (function(){
                                 itemsHTML += '<tr ' + ((i !== 0 && (j+x) === 0 )? ' class="firstPromoRow" ' : '') + ' ><td>' + tpm.TPMID + '</td>';
                                 itemsHTML += '<td>' + tpmcond.Free[x].ID + '</td>';
                                 itemsHTML += '<td>' + tpmcond.Free[x].Description + '</td>';
-                                itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Qty" class="promoItemInput' + tpm.TPMID + 'Qty" type="number" min="0" max="' + maxQty + '" + value="' + maxQtyPerItem+ '" style="width: 100%;"/></td>'; 
-                                itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Disc" class="promoItemInput' + tpm.TPMID + 'Disc" type="number" min="0" max="0" style="width: 100%;" readonly /></td>'; 
+                                itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Qty" class="promoItemInput' + tpm.TPMID + 'Qty" type="number" min="0" max="' + maxQty + '" + placeholder="' + maxQtyPerItem+ '" style="width: 85%;"/></td>'; 
+                                itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Disc" class="promoItemInput' + tpm.TPMID + 'Disc" type="number" min="0" max="0" style="width: 85%;" readonly /></td>'; 
                                 itemsHTML += '<td><a id="promoItemSelectBtn' + allFreeItems.length + '" class="promoItemSelector promoItemSelectBtnAccept promoSelect' + tpm.TPMID + '" data-role="button" data-mini="true" href >Accept</a></td></tr>';
 
                                 allFreeItems.push(item);
@@ -265,7 +265,7 @@ var promo = (function(){
                     var itemIndex = parseInt($(this).attr('id').replace('promoItemSelectBtn',''), 10);
                     var tmoBtnValue = $('#promoItemSelectBtn' + itemIndex + ' .ui-btn-text').text() === 'Remove';
                     if (allFreeItems[itemIndex].PromoType === 'FREE' && tmoBtnValue) {
-                            $('#promoItem' + itemIndex + 'Qty').val('0');
+                            $('#promoItem' + itemIndex + 'Qty').val('');
                         }
                     $this.checkOverlapping(itemIndex, $this, allFreeItems);
                     
@@ -274,10 +274,10 @@ var promo = (function(){
                         $('#promoItemSelectBtn' + itemIndex).addClass('promoItemSelectBtnAccept');
                         $('#promoItemSelectBtn' + itemIndex + ' .ui-btn-text').text('Accept');
                         if (allFreeItems[itemIndex].PromoType === 'FREE') {
-                            $('#promoItem' + itemIndex + 'Qty').val('0');
+                            $('#promoItem' + itemIndex + 'Qty').val('');
                         }
                     } else {
-                        if ((allFreeItems[itemIndex].PromoType === 'FREE' && $('#promoItem' + itemIndex + 'Qty').val() !== '0') ||
+                        if ((allFreeItems[itemIndex].PromoType === 'FREE' && $('#promoItem' + itemIndex + 'Qty').val() !== '0' && $('#promoItem' + itemIndex + 'Qty').val() !== '') ||
                                 (allFreeItems[itemIndex].PromoType === 'DISCOUNT')) {
                             $('#promoItemSelectBtn' + itemIndex).removeClass('promoItemSelectBtnAccept');
                             $('#promoItemSelectBtn' + itemIndex).addClass('promoItemSelectBtnRemove');

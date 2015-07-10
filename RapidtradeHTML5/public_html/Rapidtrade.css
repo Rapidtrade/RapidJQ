@@ -1178,8 +1178,20 @@
 
 a.promoItemSelectBtnAccept {
     color:#00BB00 !important;
+    height: 21px;
 }
 
 a.promoItemSelectBtnRemove {
-    color:#FF0000 !important;
+    color:#FF0000 !important;    
+    height: 21px;
+}
+
+a.promoItemSelectBtnAccept .ui-btn-inner {
+    display:inline-table; 
+    width: 65px;
+}
+
+a.promoItemSelectBtnRemove .ui-btn-inner {
+    display:inline-table; 
+    width: 65px;
 }
