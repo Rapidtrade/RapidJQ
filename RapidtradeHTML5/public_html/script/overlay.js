@@ -265,6 +265,14 @@ function overlayOpenMenu() {
         $('#menuPanel').panel('open');
 }
 
+function overlayIntSalesDisabledItems() {
+    if (!g_isUserIntSalse()) {
+        return DaoOptions.getValue('IncludeIntSalesOrderType','');
+    }
+    
+    return '';
+}
+
 function overlaySetMenuItems() {
     
     $('#companyItem, #historyItem, #activityItem').toggleClass('ui-disabled', g_vanSales && g_currentCompany().AccountID.toUpperCase() == g_currentUser().RepID.toUpperCase());
@@ -286,13 +294,20 @@ function overlaySetMenuItems() {
             }            
         }
         
-        var disabledTypesCSV = (isOnHold ? DaoOptions.getValue('StopOnHoldOrderType','') : (isVan ? DaoOptions.getValue('ExcludeVanOrderType','') : [])); 
-		if (disabledTypesCSV.length > 0) {
-        	$.each(disabledTypesCSV.split(','), function(index, orderType) {
-            	(orderType === 'Invoice') ? $('.invoiceItem').addClass('ui-disabled') : $('#pricelist' + orderType + 'Item').addClass('ui-disabled'); 
-        	})
-		};            
-    }    
+        var disabledTypesCSV = (isOnHold ? DaoOptions.getValue('StopOnHoldOrderType','') : (isVan ? DaoOptions.getValue('ExcludeVanOrderType','') : []));      
+        if (disabledTypesCSV.length > 0) {
+            $.each(disabledTypesCSV.split(','), function(index, orderType) {
+                (orderType === 'Invoice') ? $('.invoiceItem').addClass('ui-disabled') : $('#pricelist' + orderType + 'Item').addClass('ui-disabled'); 
+            });
+        };            
+    } else if (DaoOptions.getValue('IncludeIntSalesOrderType','') !== '') {
+        var intSalesDisableTypes = overlayIntSalesDisabledItems();
+        if (intSalesDisableTypes.length > 0) {
+            $.each(intSalesDisableTypes.split(','), function(index, orderType) {
+                (orderType === 'Invoice') ? $('.invoiceItem').addClass('ui-disabled') : $('#pricelist' + orderType + 'Item').addClass('ui-disabled'); 
+            });
+        };  
+    }
     
     overlayHighlightMenuItem(document.getElementById(sessionStorage.getItem('lastMenuItemId') || 'companyItem'));
     
