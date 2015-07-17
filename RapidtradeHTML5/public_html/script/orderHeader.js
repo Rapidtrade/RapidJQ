@@ -119,13 +119,14 @@ function orderHeaderBind() {
     
     $('#confirmButton').unbind();
     $('#confirmButton').click(function() {
-    	
+    	$('#confirmButton').addClass('justConfirmed');
     	for (var i = 0; i < g_orderHeaderInvalidItemKeys.length; ++i)
             shoppingCartDeleteItem(g_orderHeaderInvalidItemKeys[i], DaoOptions.getValue('LostSaleActivityID') !== undefined);
     	
     	g_orderHeaderOrder.orderItems = g_orderHeaderValidItems;
     	g_orderHeaderOrder.Status = 'Validated';
     	
+        $('#infoPopup').popup('open');
     	orderHeaderCaptureGPSAndSave();
     });
     
@@ -916,7 +917,9 @@ function orderHeaderOnOrderExistsSuccess(json) {
 }
 
 function orderHeaderConfirmOrderItems(orderItems) {
-	
+	if ($('#confirmButton').hasClass('justConfirmed')) {
+            $('#confirmButton').removeClass('justConfirmed');
+        }
 	g_orderHeaderValidItems = [];
 	g_orderHeaderInvalidItemKeys = [];
 	
@@ -944,6 +947,15 @@ function orderHeaderConfirmOrderItems(orderItems) {
 	$('#confirmButton').toggleClass('ui-disabled', !g_orderHeaderValidItems.length);
 	
 	$('#infoPopup').popup('close');
+        $('#orderConfirmPopup').on({
+            popupafterclose: function() {
+                setTimeout( function(){ 
+                    if ($('#confirmButton').hasClass('justConfirmed')) {
+                        $('#infoPopup').popup('open');
+                    }    
+                }, 100 );
+            }
+        });
 	$('#orderConfirmPopup').popup('open');
 }
 
