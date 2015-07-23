@@ -114,7 +114,7 @@ var promo = (function(){
                                     //NB. For below to work, you may need to add product.categoryname to shopping cart fields. 
                                     
                                     // TEST
-                                    if (/*json.Type !== 'PROMO'*/ $.inArray(json[tpmcond.ObjectProperty], tpmval) > -1) {
+                                    if (/*json.Type !== 'PROMO'*/ !json.DiscountApplied && $.inArray(json[tpmcond.ObjectProperty], tpmval) > -1) {
                                         $this.currentBasket.push(json);
                                         triggerItems.push(json.ProductID);
                                         qty += json.Quantity; 

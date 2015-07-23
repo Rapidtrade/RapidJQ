@@ -39,6 +39,7 @@ function shoppingCartOnPageShow() {
     g_shoppingCartMultilineDiscItems = {};
     g_shoppingCartMultilineDiscQty = {};
     g_shoppingCartMultilineItemPromoID = [];
+    g_shoppingCartDetailItems = [];
     
     g_shoppingCartPageTranslation.safeExecute(function() {
         
@@ -706,6 +707,10 @@ function shoppingCartOnAllItemsAdded() {
         $('#totallist').addClass('invisible');
     }
     
+    if (DaoOptions.getValue('RecalcShoppingCart','false') === 'true') {
+        shoppingCartRecalcShoppingCart();
+    }
+    
     if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
         shoppingCartRecalcMultilineDiscounts();
     }
@@ -1183,5 +1188,12 @@ function shoppingCartRecalcMultilineDiscounts(changedItemIndex) {
                 });
             }
         });
+    }
+}
+
+function shoppingCartRecalcShoppingCart() {
+    if (DaoOptions.getValue('LocalDiscounts') === 'true') {
+        g_busy(true);
+        discountRecalcShoppingCart();
     }
 }
