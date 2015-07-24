@@ -1110,8 +1110,9 @@ function productdetailPriceOnSuccess (json) {
             }
         } 
     }
-    
-    $.mobile.hidePageLoadingMsg();
+    if (DaoOptions.getValue('LocalDiscounts') !== 'true') {
+        $.mobile.hidePageLoadingMsg();
+    }
     $('.pricelistBusyImg').hide();
     $('#quantity').removeClass('ui-disabled');
 } 
@@ -1421,7 +1422,7 @@ function productdetailSave(qty, type, product) {
     if (productdetailCanChangeNett(product.ProductID))
         product.Description = $('.hdescription').val();
     
-    product.Gross = $('#grossvalue').html();
+    product.Gross = Number($('#grossvalue').html().replace(/,/g, ''));
     
     if (product.RepChangedPrice) {
         

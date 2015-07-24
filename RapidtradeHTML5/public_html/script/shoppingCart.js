@@ -709,9 +709,7 @@ function shoppingCartOnAllItemsAdded() {
     
     if (DaoOptions.getValue('RecalcShoppingCart','false') === 'true') {
         shoppingCartRecalcShoppingCart();
-    }
-    
-    if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
+    } else if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
         shoppingCartRecalcMultilineDiscounts();
     }
 }
@@ -1195,5 +1193,107 @@ function shoppingCartRecalcShoppingCart() {
     if (DaoOptions.getValue('LocalDiscounts') === 'true') {
         g_busy(true);
         discountRecalcShoppingCart();
+    } else if ((DaoOptions.getValue('MobileLiveStockDiscount') === 'true') && g_isOnline(false)) {
+        g_busy(true);
+        shoppingCartRecalcLivePricing(0);
     }
+}
+
+function shoppingCartRecalcLivePricing(itemIndex) {
+    
+    if (itemIndex === g_shoppingCartItemKeys.length) {
+        g_busy(false);
+        if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
+            shoppingCartRecalcMultilineDiscounts();
+        }
+        return;
+    }
+    
+    var livePriceUrl = DaoOptions.getValue('LivePriceURL') ? DaoOptions.getValue('LivePriceURL') : g_restUrl + 'prices/getprice3';
+	 
+    var currentItem = g_shoppingCartDetailItems[itemIndex];
+         
+    var url = livePriceUrl + '?supplierID=' + g_currentUser().SupplierID + '&productID=' + currentItem.ProductID + '&accountid=' + g_currentCompany().AccountID.replace(/&/g, '%26') + '&branchid=' + g_currentCompany().BranchID + '&quantity=1&gross=' + currentItem.Gross + '&nett=' + currentItem.Nett +
+            '&checkStock=false&checkPrice=' + ((DaoOptions.getValue('LocalDiscounts') != 'true') ? 'true' : 'false') + '&format=json';
+
+    console.log(url);
+    
+    var shoppingCartLivePriceOnSuccess = function(json) {
+        if (json.volumePrice && json.volumePrice[0]) {		    	
+            shoppingCartCalculateDiscount(json.volumePrice, itemIndex);
+            g_pricelistVolumePrices[currentItem.ProductID] = json.volumePrice[json.volumePrice.length - 1];
+        } else {
+            shoppingCartRecalcLivePricing(++itemIndex);
+        }
+    };
+    
+    g_ajaxget(url, 
+    		shoppingCartLivePriceOnSuccess, 
+    		function (e) {
+    			shoppingCartRecalcLivePricing(++itemIndex);
+    		});
+}
+
+function shoppingCartCalculateDiscount(volumePrice, itemIndex) {
+    
+    var gross = 0;
+    var nett = 0;
+    var discount = 0;
+    var type;
+
+    var qty = parseInt($('#quantity').attr('value')) || 0;
+ 
+    //shaun - added loop for multipe 
+    for (var i = 0; i< volumePrice.length; i++) {
+    	
+    	var j = 1;
+    	
+	    // increase index according to quantity
+    	
+    	while (j < 5) {
+    		
+            if (qty < volumePrice[i]['Qty' + j]) 
+                    break;    			
+
+            j++;
+    	}
+	    
+        gross = parseFloat(volumePrice[i].Gross);
+        nett  = parseFloat(volumePrice[i]['Nett' + j]);
+        discount = parseFloat(volumePrice[i]['Discount' + j]);	
+        
+        type = volumePrice[i]['Type'];
+    }
+    
+    if (nett > gross)
+        gross = nett;
+    
+    var dao = new Dao();
+    dao.get("BasketInfo", g_shoppingCartItemKeys[itemIndex], function(basketInfo) {
+        
+        basketInfo.Discount = discount;
+        basketInfo.Nett = nett;
+        basketInfo.Gross = gross;
+        basketInfo.UserField15 = type;
+        basketInfo.DiscountApplied = true;
+        
+        basket.saveItem(basketInfo, basketInfo.Quantity);
+        
+        $('#' + itemIndex + 'nett').text('' + g_roundToTwoDecimals(shoppingCartItemNett(basketInfo))); //$('#' + itemIndex + 'nett').text('' + basketInfo.Nett);
+        $('#' + itemIndex + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  === 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * basketInfo.Quantity));
+        
+        g_shoppingCartTotalExcl = 0;
+        $.each($(".total") ,function() {
+            var value = $(this).text().replace(',','');
+            g_shoppingCartTotalExcl += parseFloat(value);
+        });
+        shoppingCartRecalcTotals(basketInfo, basketInfo.Quantity);  
+        
+        shoppingCartRecalcLivePricing(++itemIndex);
+    },undefined, undefined);
+    
+    
+
+    
+
 }

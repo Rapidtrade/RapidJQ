@@ -1460,7 +1460,7 @@ function pricelistAddLine(pricelist) {
             quantityText = basketInfo.Quantity;
             pricelist.d = basketInfo.Discount;
             pricelist.n = basketInfo.Nett;        
-            nett = '' + (basketInfo.RepChangedPrice ? basketInfo.RepNett : pricelist.n);
+            nett = '' + g_addCommas(parseFloat((basketInfo.RepChangedPrice ? basketInfo.RepNett : pricelist.n)).toFixed(2));
         }        
     	
     	if (productdetailCanChangeNett(pricelist.id))
