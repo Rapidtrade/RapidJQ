@@ -1889,11 +1889,11 @@ function pricelistCheckSelectedMultiWarehouse(productID, warehouse) {
 }
 
 function pricelistDoExtraCoplexSearch() {
-    var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_pricelist_ListPromo&params=(%27' + g_currentUser().SupplierID + '%27)';
+    var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_pricelist_ListPromo&params=(%27' + g_currentUser().SupplierID + '%27|%27' + g_currentCompany().AccountID + '%27)';
     $.mobile.showPageLoadingMsg();
     var onSuccess = function(json) {
         console.log(JSON.stringify(json));
-        if (!json.length) {
+        if (!(json && json.length)) {
             $.mobile.hidePageLoadingMsg();
             return;
         }
@@ -1922,6 +1922,7 @@ function pricelistDoExtraCoplexSearch() {
         console.log(JSON.stringify(json));
     };
     
+    console.log(url);
     g_ajaxget(url, onSuccess, onError);
 }
 
@@ -1931,7 +1932,7 @@ function pricelistFetshExtrasearchItems(promoID) {
     
     var onSuccess = function(json) {
         console.log(JSON.stringify(json));
-        if (!json.length) {
+        if (!(json && json.length)) {
             $.mobile.hidePageLoadingMsg();
             return;
         }
@@ -1977,7 +1978,8 @@ function pricelistFetshExtrasearchItems(promoID) {
                 g_pricelistCurrentBasket[i++] = basketinfo;
             }
         }, undefined,
-        function (event)  {
+        function (event)  {            
+            console.log(url);
             g_ajaxget(url, onSuccess, onError);
         }
         );
