@@ -234,7 +234,7 @@ function productdetailInit() {
 
     } else {
 
-        if ((DaoOptions.getValue('LocalDiscounts') === 'true') || ($('#mode').val() === 'Offline') || !g_isOnline(false)) {
+        if (((DaoOptions.getValue('LocalDiscounts') === 'true') || ($('#mode').val() === 'Offline') || !g_isOnline(false)) && productdetailsApplyDiscounts()) {
 
             $('.pricelistBusyImg').hide();
             $.mobile.hidePageLoadingMsg();
@@ -973,7 +973,7 @@ function productdetailFetchLiveStockDiscount(livePriceUrl, checkUrl) {
             livePriceUrl = DaoOptions.getValue('LivePriceURL') ? DaoOptions.getValue('LivePriceURL') : g_restUrl + 'prices/getprice3';
 	 
     var url = livePriceUrl + '?supplierID=' + g_currentUser().SupplierID + '&productID=' + g_pricelistSelectedProduct.ProductID + '&accountid=' + g_currentCompany().AccountID.replace('&', '%26') + '&branchid=' + g_currentCompany().BranchID + '&quantity=1&gross=' + g_pricelistSelectedProduct.Gross + '&nett=' + g_pricelistSelectedProduct.Nett +
-            '&checkStock=true&checkPrice=' + ((DaoOptions.getValue('LocalDiscounts') != 'true') ? 'true' : 'false') + '&format=json';
+            '&checkStock=true&checkPrice=' + ((DaoOptions.getValue('LocalDiscounts', 'false') !== 'true') ? 'true' : 'false') + '&format=json';
 
     console.log(url);
  
@@ -1023,7 +1023,7 @@ function productdetailPriceOnSuccess (json) {
             }
     }
 
-    if (DaoOptions.getValue('LocalDiscounts') !== 'true') {
+    if (DaoOptions.getValue('LocalDiscounts') !== 'true' && productdetailsApplyDiscounts()) {
         
         //show previous changed price
         if (!g_productdetailIsPriceChanged || (DaoOptions.getValue('SetRepBoolDiscountUF') && g_pricelistSelectedProduct[DaoOptions.getValue('SetRepBoolDiscountUF')])) {		
@@ -1038,6 +1038,8 @@ function productdetailPriceOnSuccess (json) {
                 productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
             }
         }
+    } else {
+        sessionStorage.setItem('volumePrice'+ g_currentCompany().AccountID, JSON.stringify(""));
     }
 
     var setStockUnit = function (stockIndex) {
@@ -1489,4 +1491,15 @@ function productdetailsShowDiscOverwritePasswordPopup() {
 
 function productdetailsAdminCanAddPromo() {
     return g_isUserIntSalse() && DaoOptions.getValue('localTPM') === 'true';
+}
+
+function productdetailsApplyDiscounts() {
+    var promoExclAccountGroup = DaoOptions.getValue('PromoExclAccountGroup');
+    if (!promoExclAccountGroup)
+        return true;
+    
+    if ($.inArray(g_currentCompany().AccountGroup, promoExclAccountGroup.split(',')) >= 0) {
+        return false;
+    } else 
+        return true;
 }

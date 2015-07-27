@@ -469,6 +469,7 @@ function myterritoryOnCompanyClicked(key, page){
                             $.mobile.showPageLoadingMsg();
                             sessionStorage.setItem('companyBack',"myterritory.html");
                             if (g_currentCompany() && g_currentCompany().AccountID !== company.AccountID) {
+                                g_pricelistVolumePrices = [];
                                 g_currentExclusiveOrderType = undefined;
                             }
                             sessionStorage.setItem('currentCompany',JSON.stringify(company)); //store for other pages

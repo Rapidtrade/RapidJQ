@@ -588,7 +588,7 @@ function shoppingCartAddItem(item, checkSummary) {
         
         
     
-        if (shoppingCartIsMultilineItem(item)){
+        if (shoppingCartIsMultilineItem(item) && shoppingCartApplyDiscounts()){
             if (!g_shoppingCartMultilineDiscItems.hasOwnProperty(item.UserField05)) 
                 g_shoppingCartMultilineDiscItems[item.UserField05] = [];
             
@@ -707,9 +707,9 @@ function shoppingCartOnAllItemsAdded() {
         $('#totallist').addClass('invisible');
     }
     
-    if (DaoOptions.getValue('RecalcShoppingCart','false') === 'true') {
+    if (DaoOptions.getValue('RecalcShoppingCart','false') === 'true' && shoppingCartApplyDiscounts()) {
         shoppingCartRecalcShoppingCart();
-    } else if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
+    } else if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true' && shoppingCartApplyDiscounts()) {
         shoppingCartRecalcMultilineDiscounts();
     }
 }
@@ -934,7 +934,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
     	
     	var volumePrice = g_pricelistVolumePrices[basketInfo.ProductID];
     	
-    	if (volumePrice) {    
+    	if (volumePrice && shoppingCartApplyDiscounts()) {    
     		
         	var j = 1;
         	
@@ -985,7 +985,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
     );
    
     g_clearCacheDependantOnBasket();
-    if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
+    if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true' && shoppingCartApplyDiscounts()) {
         shoppingCartRecalcMultilineDiscounts(itemIndex);
     }
 }
@@ -1291,9 +1291,16 @@ function shoppingCartCalculateDiscount(volumePrice, itemIndex) {
         
         shoppingCartRecalcLivePricing(++itemIndex);
     },undefined, undefined);
-    
-    
+   
+}
 
+function shoppingCartApplyDiscounts() {
+    var promoExclAccountGroup = DaoOptions.getValue('PromoExclAccountGroup');
+    if (!promoExclAccountGroup)
+        return true;
     
-
+    if ($.inArray(g_currentCompany().AccountGroup, promoExclAccountGroup.split(',')) >= 0) {
+        return false;
+    } else 
+        return true;
 }

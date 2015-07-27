@@ -488,6 +488,8 @@ function orderHeaderRemoveFromCart() {
 }
 
 function orderHeaderRemovedFromCartSuccess() {
+    
+    g_pricelistVolumePrices = [];
 	
     if (!g_vanSales){  
     	
