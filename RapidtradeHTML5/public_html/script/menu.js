@@ -184,7 +184,11 @@ function menuInit(){
 	if (!g_defaultDisplayFields.length) g_createDefaultDisplayFields();
 	
 	if (g_currentUser()) {
-            
+            if (g_forceUserToSyncOnNewMonth() || g_forceUserToSyncOnDate()) {
+                return;
+            } else {
+                sessionStorage.setItem('disableMenuButton', 'false');
+            }
             $('#welcome').text(g_currentUser().Name);		
             menuFetchConfigData();
             menuShowButtons();
@@ -196,7 +200,11 @@ function menuInit(){
 	dao.get('Users', 
                 'user',
                 function(user) {                                        
-                    
+                    if (g_forceUserToSyncOnNewMonth() || g_forceUserToSyncOnDate()) {
+                        return;
+                    } else {
+                        sessionStorage.setItem('disableMenuButton', 'false');
+                    }
                     var mandatorySyncDay = Number(DaoOptions.getValue('ForceWeeklyUpdate'));
                     var isMandatorySyncDayDefined = (mandatorySyncDay > -1 && mandatorySyncDay < 7);                    
                     

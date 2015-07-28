@@ -6,22 +6,22 @@
 //var g_logo = 'img/rapidtrade-logo-small.png';
 //var g_logo = "img/SGlogoSml.png";
 
-//var g_url = "http://www.dedicatedsolutions.co.za:8082/";
-//var g_restUrl = g_url + "rest3/";
-////var g_restUrl = g_url + "testrest/";
-////var g_vanSales = true;
-//var g_vanSales = false;
-//var g_logo = 'img/SGlogoSml.png';
-//var g_menuLogo = 'img/sglogo.png';
-//var g_restPHPUrl = "http://www.super-trade.co.za:8083/rest/index.php/";
-
-
-var g_url = "https://app.rapidtrade.biz/"; 
-var g_restUrl = g_url + "rest/";
+var g_url = "http://www.dedicatedsolutions.co.za:8082/";
+var g_restUrl = g_url + "rest3/";
+//var g_restUrl = g_url + "testrest/";
+//var g_vanSales = true;
 var g_vanSales = false;
-var g_restPHPUrl = "http://107.21.55.154/rest/index.php/";
-var g_logo = 'img/logoSml.png';
-var g_menuLogo = 'img/logo.png';
+var g_logo = 'img/SGlogoSml.png';
+var g_menuLogo = 'img/sglogo.png';
+var g_restPHPUrl = "http://www.super-trade.co.za:8083/rest/index.php/";
+
+
+//var g_url = "https://app.rapidtrade.biz/"; 
+//var g_restUrl = g_url + "rest/";
+//var g_vanSales = false;
+//var g_restPHPUrl = "http://107.21.55.154/rest/index.php/";
+//var g_logo = 'img/logoSml.png';
+//var g_menuLogo = 'img/logo.png';
 
 
 
@@ -506,6 +506,26 @@ function g_today() {
 	var date = new Date;
 	return g_setLeadingZero(date.getDate()) + "/"
 			+ g_setLeadingZero(date.getMonth() + 1) + "/" + date.getFullYear();
+}
+/***
+ * 
+ * @returns String representation of date in format yyyy-MM-dd
+ */
+function g_currentDate() {
+
+	var date = new Date;
+	return date.getFullYear() + "-" + g_setLeadingZero(date.getMonth() + 1) + "-" + g_setLeadingZero(date.getDate());
+}
+
+/***
+ * 
+ * @returns String representation of date and time in format yyyy-MM-dd HH:mm:ss
+ */
+function g_currentDateTime() {
+
+	var date = new Date;
+	return date.getFullYear() + "-" + g_setLeadingZero(date.getMonth() + 1) + "-" + g_setLeadingZero(date.getDate()) + " "
+			+ g_setLeadingZero(date.getHours()) + ":" + date.getMinutes() + ":" + date.getSeconds();
 }
 
 function g_markCustomerAsVisited(customerID) {
@@ -1042,4 +1062,55 @@ function g_isUserIntSalse() {
         return true;
     }
     return false ;
+}
+
+function g_forceUserToSyncOnNewMonth() {
+    if (DaoOptions.getValue('ForceNewMonthSync', 'false') === 'true') {        
+        var fnmsDate = new Date();
+        var lastSyncMonth = localStorage.getItem('lastSyncMonth');
+        var currentMont = '' + fnmsDate.getFullYear() + '-' + g_setLeadingZero(fnmsDate.getMonth() + 1);
+        if (currentMont === lastSyncMonth) {
+            return false;
+        } else {
+            g_alert('You haven`t synchronised this month. You will be redirected to Sync screen.');
+                        
+//            var dao = new Dao();
+//            dao.clear('Orders');
+//            dao.clear('OrderItems'); 
+
+            $.mobile.changePage('sync.html', { transition: "none"});
+            sessionStorage.setItem('disableMenuButton', 'true');
+
+            return true;
+            
+        }
+            
+    } else {
+        return false;
+    }
+}
+
+function g_forceUserToSyncOnDate() {
+    if (!DaoOptions.getValue('ForceSyncDate')) { 
+        return false;
+    } else {
+        var lastSyncDate = new Date(localStorage.getItem('lastSyncDate'));
+        var forceSyncDate = new Date(DaoOptions.getValue('ForceSyncDate'));
+        var currentDate = new Date();
+        
+        if (forceSyncDate > lastSyncDate && currentDate >= forceSyncDate) {
+            g_alert(DaoOptions.getValue('ForceSyncMessage', 'You need to update your pricing information. You will be redirected to Sync screen.'));
+                        
+//            var dao = new Dao();
+//            dao.clear('Orders');
+//            dao.clear('OrderItems'); 
+
+            $.mobile.changePage('sync.html', { transition: "none"});
+            sessionStorage.setItem('disableMenuButton', 'true');
+
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

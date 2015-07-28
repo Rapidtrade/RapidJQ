@@ -457,6 +457,11 @@ function myterritoryFromCache() {
 
 
 function myterritoryOnCompanyClicked(key, page){
+    if (g_forceUserToSyncOnNewMonth() || g_forceUserToSyncOnDate()) {
+        return;
+    } else {
+        sessionStorage.setItem('disableMenuButton', 'false');
+    }
     sessionStorage.removeItem('pricelistsearchtxt');
     sessionStorage.removeItem('cachePricelist');
     sessionStorage.setItem('lastPanelId', page);

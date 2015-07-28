@@ -136,7 +136,7 @@ function syncInit() {
  */
 function syncFetchUser() {
     
-     $('#syncMenu').removeClass('ui-disabled');
+//     $('#syncMenu').removeClass('ui-disabled');
     
     g_syncStopSync = false;
     $.mobile.showPageLoadingMsg();
@@ -152,6 +152,7 @@ function syncFetchUser() {
 	var success = function (json) {
 	    var status = Boolean(json.Status);
 	    if (status) {
+                $('#syncMenu').removeClass('ui-disabled');
 	        g_syncSupplierID = json.UserInfo.SupplierID;
 	        if (json.UserInfo.UserID != g_syncLastUserID) {
 	            syncSaveUser(json.UserInfo);
@@ -355,8 +356,12 @@ function syncPostedOK(index, skip){
  */
 function syncAll() {
 	 
-    localStorage.setItem('lastSyncDate', g_today());
+    localStorage.setItem('lastSyncDate', g_currentDateTime());
     localStorage.setItem('lastSyncDay', new Date().getDay());
+    
+    var fnmsDate = new Date();
+    localStorage.setItem('lastSyncMonth', '' + fnmsDate.getFullYear() + '-' + g_setLeadingZero(fnmsDate.getMonth() + 1));
+    
 
     $('#userid').addClass('ui-disabled');
     $('#message').text(g_syncPageTranslation.translateText('Please wait, downloading latest data'));
@@ -365,7 +370,7 @@ function syncAll() {
     g_syncCount = 0;
     g_syncRetryCount = 0;
     
-    if (localStorage.getItem('lastSyncDate') != g_today()) {
+    if (localStorage.getItem('lastSyncDate') !== g_currentDateTime()) {
         
         g_syncDao.clear('Orders');
         g_syncDao.clear('OrderItems');
