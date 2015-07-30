@@ -310,7 +310,7 @@ function orderHeaderSaveOrder() {
         return;
     }
     
-    var typeStrTemp = (sessionStorage.getItem("currentordertype").indexOf('Invoice') != -1) ? 'invoice' : g_orderHeaderOrder.Type.toLowerCase();
+    var typeStrTemp = (sessionStorage.getItem("currentordertype").indexOf('Invoice') !== -1) ? 'invoice' : ((sessionStorage.getItem("currentordertype").toLowerCase().indexOf('retur') !== -1) ? 'return' : g_orderHeaderOrder.Type.toLowerCase());
     
     $('#infoPopup p').text(g_orderHeaderPageTranslation.translateText('Please wait, processing ' + typeStrTemp));
     $('#infoPopup').popup('open');    
