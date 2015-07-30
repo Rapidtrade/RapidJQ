@@ -303,7 +303,7 @@ function g_currentProduct() {
 }
 
 function g_showCurrentCompanyName() {
-    $('.companyName').text(g_currentCompany().Name);
+    $('.companyName').text(g_currentCompany().Name.replace(/&amp;/g, '&'));
 }
 
 function g_vat() {
