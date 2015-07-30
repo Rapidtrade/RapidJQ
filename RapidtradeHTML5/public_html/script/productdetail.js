@@ -1023,7 +1023,7 @@ function productdetailPriceOnSuccess (json) {
             }
     }
 
-    if (DaoOptions.getValue('LocalDiscounts') !== 'true' && productdetailsApplyDiscounts()) {
+    if (DaoOptions.getValue('LocalDiscounts') !== 'true' && productdetailsApplyDiscounts((json.volumePrice && json.volumePrice[0]) ? json.volumePrice[0] : null)) {
         
         //show previous changed price
         if (!g_productdetailIsPriceChanged || (DaoOptions.getValue('SetRepBoolDiscountUF') && g_pricelistSelectedProduct[DaoOptions.getValue('SetRepBoolDiscountUF')])) {		
@@ -1493,12 +1493,13 @@ function productdetailsAdminCanAddPromo() {
     return g_isUserIntSalse() && DaoOptions.getValue('localTPM') === 'true';
 }
 
-function productdetailsApplyDiscounts() {
+function productdetailsApplyDiscounts(vp) {
     var promoExclAccountGroup = DaoOptions.getValue('PromoExclAccountGroup');
     if (!promoExclAccountGroup)
         return true;
     
-    if ($.inArray(g_currentCompany().AccountGroup, promoExclAccountGroup.split(',')) >= 0) {
+    var promoExclDicounts = DaoOptions.getValue('PromoExclDiscounts') ? DaoOptions.getValue('PromoExclDiscounts').split(',') : [];
+    if ($.inArray(g_currentCompany().AccountGroup, promoExclAccountGroup.split(',')) >= 0 && $.inArray(vp.ID, promoExclDicounts) >= 0) {
         return false;
     } else 
         return true;
