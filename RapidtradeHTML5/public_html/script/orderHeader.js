@@ -310,7 +310,7 @@ function orderHeaderSaveOrder() {
         return;
     }
     
-    var typeStrTemp = (sessionStorage.getItem("currentordertype").indexOf('Invoice') !== -1) ? 'invoice' : ((sessionStorage.getItem("currentordertype").toLowerCase().indexOf('retur') !== -1) ? 'return' : g_orderHeaderOrder.Type.toLowerCase());
+    var typeStrTemp = orderHeaderGetOrderType();//(sessionStorage.getItem("currentordertype").indexOf('Invoice') !== -1) ? 'invoice' : ((sessionStorage.getItem("currentordertype").toLowerCase().indexOf('retur') !== -1) ? 'return' : g_orderHeaderOrder.Type.toLowerCase());
     
     $('#infoPopup p').text(g_orderHeaderPageTranslation.translateText('Please wait, processing ' + typeStrTemp));
     $('#infoPopup').popup('open');    
@@ -1214,6 +1214,22 @@ function orderHeaderInvoiceSequenceNumber() {
 	localStorage.setItem("sequenceNumber", nextSequenceNumber);
 	
 	return nextSequenceNumber; 
+}
+
+function orderHeaderGetOrderType() {
+    var ordTypeStr = sessionStorage.getItem("currentordertype").toLowerCase();
+    
+    if (ordTypeStr.indexOf('order') !== -1) {
+        return 'order';
+    } else if (ordTypeStr.indexOf('invoi') !== -1) {
+        return 'invoice';
+    } else if (ordTypeStr.indexOf('repl') !== -1) {
+        return 'replenishment';
+    } else if (ordTypeStr.indexOf('stock') !== -1) {
+        return 'stock take';
+    } else {
+        return ordTypeStr;
+    }
 }
 
 
