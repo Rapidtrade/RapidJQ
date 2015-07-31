@@ -151,6 +151,11 @@ function historyFetchActivities() {
     var day = g_setLeadingZero(date.getDate() + 1);
     var month = g_setLeadingZero(date.getMonth()+1);
     
+    var dateMom = moment().add('d', 1);
+    date = dateMom.toDate();
+    day = g_setLeadingZero(date.getDate());
+    month = g_setLeadingZero(date.getMonth()+1);
+    
     $.mobile.showPageLoadingMsg();
 
     var toDate = date.getFullYear().toString() + month.toString() + day.toString();
