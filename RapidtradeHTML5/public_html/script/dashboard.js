@@ -653,7 +653,7 @@ function getRangeEndDate(range) {
     if (range == 2) return starttime.weekday(7);    //this week
     if (range == 3) return starttime.add('months', 1).date(1);    //this month
     if (range == 4) return starttime.date(1);         //last month
-    if (range == 5) return starttime.date(0).add('months', 1); //last + this month
+    if (range == 5) return starttime.add('months', 1).date(0); //last + this month
 }
 
 //********************************************************************************  Monthly Calendar Summary
