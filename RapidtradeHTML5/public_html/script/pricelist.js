@@ -731,6 +731,7 @@ function pricelistBasicSearch() {
 
 function pricelistCategorySearch(category) {
 	g_pricelistSearchPricelistText = /*'"' +*/ category /*+ '"'*/;
+        g_pricelistSearchPricelistText = '"' + category + '"';
 	pricelistFetchPricelist(); 
     if (sessionStorage.getItem('fromCategory') == 'true') {
         g_companyPageTranslation.translateButton('#backbtn', 'Categories');
