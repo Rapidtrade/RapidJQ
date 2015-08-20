@@ -661,7 +661,25 @@ function orderdetailsIsSpecialOrder() {
 function orderdetailsFetchOrderItems() {
 
     var orderItems = [];
-    var itemsShown = false; 
+    var itemsShown = false;     
+    
+    var success = function (json) {
+
+        orderdetailsShowOrderItems(json);
+
+        orderdetailsCheckBasket();
+        
+        if ($('#sendToBasketButton').hasClass('ui-disabled'))
+            $('#sendToBasketButton').removeClass('ui-disabled');
+
+        $.mobile.hidePageLoadingMsg();
+    };
+
+    var error = function (e) {
+
+        console.log(e.message);
+        $.mobile.hidePageLoadingMsg();
+    };
 
     var showOrderItems = function() {
         
@@ -703,7 +721,7 @@ function orderdetailsFetchOrderItems() {
 
             orderItems.push(order);
 
-        }, showOrderItems, showOrderItems); 
+        }, undefined, showOrderItems); 
         
         return;
     }
@@ -723,24 +741,6 @@ function orderdetailsFetchOrderItems() {
     
 
     console.log(url);
-
-    var success = function (json) {
-
-        orderdetailsShowOrderItems(json);
-
-        orderdetailsCheckBasket();
-        
-        if ($('#sendToBasketButton').hasClass('ui-disabled'))
-            $('#sendToBasketButton').removeClass('ui-disabled');
-
-        $.mobile.hidePageLoadingMsg();
-    };
-
-    var error = function (e) {
-
-        console.log(e.message);
-        $.mobile.hidePageLoadingMsg();
-    };
 
     g_ajaxget(url, success, error);
  };
