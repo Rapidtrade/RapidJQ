@@ -624,6 +624,9 @@ function shoppingCartAddItem(item, checkSummary) {
         
         var isPromotionItem = (item.Type === 'PROMO');
         var quantityReadOnly = (isPromotionItem || shoppingCartIsPOD() || !shoppingCartAllowToChangeQty(item) ? 'readonly' : '');
+        
+        if (shoppingCartIsPOD() && DaoOptions.getValue('AllowPODQtyChange', 'false') === 'true')
+            quantityReadOnly = '';
 	
         var tableClass = 'shopcartItems' + (isPromotionItem ? ' promoItemTable' : '');
         
