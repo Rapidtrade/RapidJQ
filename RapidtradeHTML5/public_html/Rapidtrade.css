@@ -745,6 +745,10 @@
         font-weight: 800;
         color: black;
     }
+
+    .printinvoiceContent .page:not(:first-child) {
+    	margin-top: 20px;
+    }
     
     .printinvoiceProductListTable tr{
             /*display:block;*/

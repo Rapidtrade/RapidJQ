@@ -1244,7 +1244,7 @@ function shoppingCartCalculateDiscount(volumePrice, itemIndex) {
     var discount = 0;
     var type;
 
-    var qty = parseInt($('#quantity').attr('value')) || 0;
+    var qty = Number($('#' + itemIndex).val() ? $('#' + itemIndex).val() : '0');
  
     //shaun - added loop for multipe 
     for (var i = 0; i< volumePrice.length; i++) {
