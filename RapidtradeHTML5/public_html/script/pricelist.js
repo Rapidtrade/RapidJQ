@@ -1734,8 +1734,8 @@ function pricelistAddItemToBasket(itemIndex) {
     //TODO below should default to '1' or use #quantity with the correct optioninfo for MIDAS
 
     if (g_isQuantityValid(getQuantity(itemIndex), unit)) {
-        if ($('#grossvalue').html())
-            g_pricelistItems[itemIndex].g = $('#grossvalue').html();
+//        if ($('#grossvalue').html())
+//            g_pricelistItems[itemIndex].g = $('#grossvalue').html();
         
         basket.saveItem(pricelistNewInstance(g_pricelistItems[itemIndex]), getQuantity(itemIndex), function() {
             
