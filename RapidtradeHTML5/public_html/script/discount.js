@@ -74,7 +74,7 @@ function onsuccessDiscountValuesRead(allRows) {
         var dvConditions = [];
         
         // get conditions for this row if exists
-        if (conditions.hasOwnProperty(row.DiscountID))
+        if (conditions.hasOwnProperty(row.DiscountID) && discountApplyDiscounts(row.DiscountID))
             dvConditions = conditions[row.DiscountID];
         else
             continue;
@@ -137,10 +137,27 @@ function discountApplyDiscountValues(discountValues) {
         if (a.SortOrder > b.SortOrder)
             return 1;
         
-        if (a.cntVolDisc < b.cntVolDisc)
+        if (a.QtyHigh < b.QtyHigh) {
+            if (a.cntVolDisc > b.cntVolDisc) {
+                var tmp_cntVolDisc = a.cntVolDisc;
+                a.cntVolDisc = b.cntVolDisc;
+                b.cntVolDisc = tmp_cntVolDisc;
+            }
             return -1;
-        if (a.cntVolDisc > b.cntVolDisc)
+        }
+        if (a.QtyHigh > b.QtyHigh) {
+            if (a.cntVolDisc < b.cntVolDisc) {
+                var tmp_cntVolDisc = a.cntVolDisc;
+                a.cntVolDisc = b.cntVolDisc;
+                b.cntVolDisc = tmp_cntVolDisc;
+            }
             return 1;
+        }
+        
+//        if (a.cntVolDisc < b.cntVolDisc)
+//            return -1;
+//        if (a.cntVolDisc > b.cntVolDisc)
+//            return 1;
         
         return 0;
     };
@@ -258,7 +275,7 @@ function onsuccessDiscountValuesRead1(allRows) {
             var dvConditions = [];
 
             // get conditions for this row if exists
-            if (conditions.hasOwnProperty(row.DiscountID))
+            if (conditions.hasOwnProperty(row.DiscountID) && discountApplyDiscounts(row.DiscountID))
                 dvConditions = conditions[row.DiscountID];
             else
                 continue;
@@ -501,4 +518,16 @@ function discountDiscountValueToVolumePrice(dv, item) {
         
         g_pricelistVolumePrices[item.ProductID] = vp;
     }
+}
+
+function discountApplyDiscounts(discountID) {
+    var promoExclAccountGroup = DaoOptions.getValue('PromoExclAccountGroup');
+    if (!promoExclAccountGroup)
+        return true;
+        
+    var promoExclDicounts = DaoOptions.getValue('PromoExclDiscounts') ? DaoOptions.getValue('PromoExclDiscounts').split(',') : [];
+    if ($.inArray(g_currentCompany().AccountGroup, promoExclAccountGroup.split(',')) >= 0 && $.inArray(discountID, promoExclDicounts) >= 0) {
+        return false;
+    } else 
+        return true;
 }

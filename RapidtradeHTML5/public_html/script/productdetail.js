@@ -1498,6 +1498,9 @@ function productdetailsApplyDiscounts(vp) {
     if (!promoExclAccountGroup)
         return true;
     
+    if (!vp)
+        return true;
+    
     var promoExclDicounts = DaoOptions.getValue('PromoExclDiscounts') ? DaoOptions.getValue('PromoExclDiscounts').split(',') : [];
     if ($.inArray(g_currentCompany().AccountGroup, promoExclAccountGroup.split(',')) >= 0 && $.inArray(vp.ID, promoExclDicounts) >= 0) {
         return false;
