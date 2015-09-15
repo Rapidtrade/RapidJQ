@@ -1194,6 +1194,9 @@ function shoppingCartRecalcMultilineDiscounts(changedItemIndex) {
 
 function shoppingCartRecalcShoppingCart() {
     if (DaoOptions.getValue('LocalDiscounts') === 'true') {
+        g_shoppingCartMultilineDiscItems = {};
+        g_shoppingCartMultilineDiscQty = {};
+        g_shoppingCartMultilineItemPromoID = [];
         g_busy(true);
         discountRecalcShoppingCart();
     } else if ((DaoOptions.getValue('MobileLiveStockDiscount') === 'true') && g_isOnline(false)) {

@@ -274,13 +274,13 @@ function onsuccessDiscountValuesRead1(allRows) {
                     var arrayToCheck = dvConditions[i].Value.split(',');
                     var isInArray = false;
                     for (var c = 0; c < arrayToCheck.length; ++c) {
-                        if (arrayToCheck[c].replace(/'/g, '') == row[dvConditions[i].DiscountField]) {
+                        if (arrayToCheck[c].replace(/'/g, '') === row[dvConditions[i].DiscountField]) {
                             isInArray = true;
                         }                    
                     }
                     thisIsOurValue = thisIsOurValue && isInArray;
                 } else {
-                    thisIsOurValue = thisIsOurValue && dvConditions[i].Value == row[dvConditions[i].DiscountField];
+                    thisIsOurValue = thisIsOurValue && dvConditions[i].Value === row[dvConditions[i].DiscountField];
 
                 }
                 //yes, we want to use this condition
@@ -325,10 +325,27 @@ function discountApplyDiscountValues1(discountValues, index) {
         if (a.SortOrder > b.SortOrder)
             return 1;
         
-        if (a.cntVolDisc < b.cntVolDisc)
+        if (a.QtyHigh < b.QtyHigh) {
+            if (a.cntVolDisc > b.cntVolDisc) {
+                var tmp_cntVolDisc = a.cntVolDisc;
+                a.cntVolDisc = b.cntVolDisc;
+                b.cntVolDisc = tmp_cntVolDisc;
+            }
             return -1;
-        if (a.cntVolDisc > b.cntVolDisc)
+        }
+        if (a.QtyHigh > b.QtyHigh) {
+            if (a.cntVolDisc < b.cntVolDisc) {
+                var tmp_cntVolDisc = a.cntVolDisc;
+                a.cntVolDisc = b.cntVolDisc;
+                b.cntVolDisc = tmp_cntVolDisc;
+            }
             return 1;
+        }
+        
+//        if (a.cntVolDisc < b.cntVolDisc)
+//            return -1;
+//        if (a.cntVolDisc > b.cntVolDisc)
+//            return 1;
         
         return 0;
     };
@@ -348,13 +365,27 @@ function discountApplyDiscountValues1(discountValues, index) {
             if (i > 0 && discIDFlag !== discountValues[i].DiscountID && previousSaidSkipRest) {
                 break;
             } else if (i > 0 && discIDFlag === discountValues[i].DiscountID) {
-                if (g_pricelistVolumePrices[g_pricelistSelectedProduct.ProductID]) {
-                    var vp = g_pricelistVolumePrices[g_pricelistSelectedProduct.ProductID];
+                if (g_pricelistVolumePrices[g_shoppingCartDetailItems[index].ProductID]) {
+                    var vp = g_pricelistVolumePrices[g_shoppingCartDetailItems[index].ProductID];
                     if (basketInfo.Quantity < vp['Qty' + (discountValues[i].cntVolDisc - 1)]) {
                         discountDiscountValueToVolumePrice(discountValues[i], basketInfo);
                         continue;
                     }
                 }
+            }
+            
+            if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true' && 
+                    discountValues[i].DiscountID === DaoOptions.getValue('MultiLineDiscountID')) {
+                    if (!g_shoppingCartMultilineDiscItems.hasOwnProperty(basketInfo.UserField05)) 
+                        g_shoppingCartMultilineDiscItems[basketInfo.UserField05] = [];
+
+                    if (!g_shoppingCartMultilineDiscQty.hasOwnProperty(basketInfo.UserField05)) 
+                        g_shoppingCartMultilineDiscQty[basketInfo.UserField05] = 0;
+
+                    g_shoppingCartMultilineDiscItems[basketInfo.UserField05][index] = basketInfo;
+                    g_shoppingCartMultilineDiscQty[basketInfo.UserField05] += basketInfo.Quantity;
+
+                    g_shoppingCartMultilineItemPromoID[index] = basketInfo.UserField05;
             }
             
             //If we here then this row's discount or price must be applied
