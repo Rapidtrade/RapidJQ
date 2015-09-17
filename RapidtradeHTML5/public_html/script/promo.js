@@ -42,8 +42,9 @@ var promo = (function(){
                 }
                 
             }, onComplete, function() {
-                
-               $this.fetchTPM(0, $this); 
+                setTimeout(function() {
+                    $this.fetchTPM(0, $this); 
+                }, 5);
             });             
         }; 
 
@@ -69,7 +70,8 @@ var promo = (function(){
 //                 }  
                 
                     //var val = cond.Values[z]; 
-                    if (cond.ObjectProperty === 'All' || $.inArray($this.account[cond.ObjectProperty], cond.Values) > -1) useTPM  = true; 
+                    //if (cond.ObjectProperty === 'All' || $.inArray($this.account[cond.ObjectProperty], cond.Values) > -1) useTPM  = true; 
+                    if ($this.checkAccountCondition(cond, $this)) useTPM = true;
                 
              } 
              
@@ -114,7 +116,8 @@ var promo = (function(){
                                     //NB. For below to work, you may need to add product.categoryname to shopping cart fields. 
                                     
                                     // TEST
-                                    if (/*json.Type !== 'PROMO'*/ !json.DiscountApplied && $.inArray(json[tpmcond.ObjectProperty], tpmval) > -1) {
+//                                    if (/*json.Type !== 'PROMO'*/ !json.DiscountApplied && $.inArray(json[tpmcond.ObjectProperty], tpmval) > -1) {
+                                    if (!json.DiscountApplied && $this.checkProductCondition(tpmval, json)) {
                                         $this.currentBasket.push(json);
                                         triggerItems.push(json.ProductID);
                                         qty += json.Quantity; 
@@ -217,7 +220,7 @@ var promo = (function(){
                             item.noOtherDiscounts = tpm.json.noOtherDiscounts;
                             item.mandatory = tpm.json.mandatory;
                             item.triggerItems = tpmcond.triggerItems;
-                            item.priority = tpm.Priority;
+                            item.priority = (i + 1); //tpm.Priority || tpm.priority || (i + 1);
                             
                             itemsHTML += '<tr ' + ((i !== 0 && (j) === 0 )? ' class="firstPromoRow" ' : '') + ' ><td>' + tpm.TPMID + '</td>';
                             itemsHTML += '<td></td>';
@@ -234,17 +237,17 @@ var promo = (function(){
                                 var item = {};
                                 item.TPMID = tpm.TPMID;
                                 item.ProductID = tpmcond.Free[x].ID;
-                                item.Description = tpmcond.Free[x].Description;
+                                item.Description = tpmcond.Free[x].Label; //tpmcond.Free[x].Description;
                                 item.MaxQty = maxQty;
                                 item.PromoType = 'FREE';
                                 item.noOtherDiscounts = tpm.json.noOtherDiscounts;
                                 item.mandatory = tpm.json.mandatory;
                                 item.triggerItems = tpmcond.triggerItems;
-                                item.priority = tpm.Priority;
+                                item.priority = (i + 1); //tpm.Priority || tpm.priority || (i + 1);
 
                                 itemsHTML += '<tr ' + ((i !== 0 && (j+x) === 0 )? ' class="firstPromoRow" ' : '') + ' ><td>' + tpm.TPMID + '</td>';
                                 itemsHTML += '<td>' + tpmcond.Free[x].ID + '</td>';
-                                itemsHTML += '<td>' + tpmcond.Free[x].Description + '</td>';
+                                itemsHTML += '<td>' + tpmcond.Free[x].Label + '</td>';
                                 itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Qty" class="promoItemInput' + tpm.TPMID + 'Qty" type="number" min="0" max="' + maxQty + '" + placeholder="' + maxQtyPerItem+ '" style="width: 85%;"/></td>'; 
                                 itemsHTML += '<td><input id="promoItem' + allFreeItems.length + 'Disc" class="promoItemInput' + tpm.TPMID + 'Disc" type="number" min="0" max="0" style="width: 85%;" readonly /></td>'; 
                                 itemsHTML += '<td><a id="promoItemSelectBtn' + allFreeItems.length + '" class="promoItemSelector promoItemSelectBtnAccept promoSelect' + tpm.TPMID + '" data-role="button" data-mini="true" href >Accept</a></td></tr>';
@@ -263,13 +266,13 @@ var promo = (function(){
                 $('#localTPMItemsTable .promoItemSelector').button().off().on('click', function() {
 //                    g_alert('clicked on Select button');
                     var itemIndex = parseInt($(this).attr('id').replace('promoItemSelectBtn',''), 10);
-                    var tmoBtnValue = $('#promoItemSelectBtn' + itemIndex + ' .ui-btn-text').text() === 'Remove';
-                    if (allFreeItems[itemIndex].PromoType === 'FREE' && tmoBtnValue) {
+                    var tpmBtnValue = $('#promoItemSelectBtn' + itemIndex + ' .ui-btn-text').text() === 'Remove';
+                    if (allFreeItems[itemIndex].PromoType === 'FREE' && tpmBtnValue) {
                             $('#promoItem' + itemIndex + 'Qty').val('');
                         }
                     $this.checkOverlapping(itemIndex, $this, allFreeItems);
                     
-                    if (tmoBtnValue) {
+                    if (tpmBtnValue) {
                         $('#promoItemSelectBtn' + itemIndex).removeClass('promoItemSelectBtnRemove');
                         $('#promoItemSelectBtn' + itemIndex).addClass('promoItemSelectBtnAccept');
                         $('#promoItemSelectBtn' + itemIndex + ' .ui-btn-text').text('Accept');
@@ -503,22 +506,71 @@ var promo = (function(){
                         if (i === j) continue;
                         var intersectionArray = getIntersectionOfTriggerItems(promoObjects[i].triggerItems, promoObjects[j].triggerItems);
                         if (intersectionArray.length > 0) {
-                            if (promoObjects[i].selected && promoObjects[i].Priority < promoObjects[j].Priority) {
+//                            if (promoObjects[i].selected && promoObjects[i].Priority !== promoObjects[j].Priority && !promosPreviousState[j]) {
+//                                $('#localTPMItemsTable tbody:eq(' + j + ')').addClass('ui-disabled');
+//                                
+////                                $('#localTPMItemsTable tbody:eq(' + i + ') .promoItemSelector').addClass('promoItemSelectBtnRemove');
+////                                $('#localTPMItemsTable tbody:eq(' + i + ') .promoItemSelector .ui-btn-text').text('Remove');
+//                            } else if (promoObjects[j].selected && !promoObjects[i].selected && !promosPreviousState[i]) {
+//                                $('#localTPMItemsTable tbody:eq(' + i + ')').addClass('ui-disabled');
+//                                
+////                                $('#localTPMItemsTable tbody:eq(' + j + ') .promoItemSelector').addClass('promoItemSelectBtnRemove');
+////                                $('#localTPMItemsTable tbody:eq(' + j + ') .promoItemSelector .ui-btn-text').text('Remove');
+//                                //break;
+//                            }
+                            if (promoObjects[i].promoType === 'DISCOUNT' && !!promoObjects[i].selected && !promosPreviousState[j]/* && !promoObjects[j].selected && !promosPreviousState[j]*/) {
                                 $('#localTPMItemsTable tbody:eq(' + j + ')').addClass('ui-disabled');
                                 
 //                                $('#localTPMItemsTable tbody:eq(' + i + ') .promoItemSelector').addClass('promoItemSelectBtnRemove');
 //                                $('#localTPMItemsTable tbody:eq(' + i + ') .promoItemSelector .ui-btn-text').text('Remove');
-                            } else if (promoObjects[j].selected && !promoObjects[i].selected && !promosPreviousState[i]) {
+                            } else if (promoObjects[j].promoType === 'DISCOUNT' && !!promoObjects[j].selected && !promosPreviousState[i]/* && !promoObjects[i].selected /* && !promosPreviousState[i]*/) {
                                 $('#localTPMItemsTable tbody:eq(' + i + ')').addClass('ui-disabled');
                                 
 //                                $('#localTPMItemsTable tbody:eq(' + j + ') .promoItemSelector').addClass('promoItemSelectBtnRemove');
 //                                $('#localTPMItemsTable tbody:eq(' + j + ') .promoItemSelector .ui-btn-text').text('Remove');
-                                break;
+                                //break;
+                            } else if (promoObjects[i].promoType === 'FREE' && !!promoObjects[i].selected) {
+                                $('#localTPMItemsTable tbody:eq(' + j + ')').addClass('ui-disabled');
+                            } else if (promoObjects[j].promoType === 'FREE' && !!promoObjects[j].selected) {
+                                $('#localTPMItemsTable tbody:eq(' + i + ')').addClass('ui-disabled');
                             }
                         }
                     }
                 }
 //            }
+        };
+        
+        this.checkAccountCondition = function(accCondition, $this) {
+//            cond.ObjectProperty === 'All' || $.inArray($this.account[cond.ObjectProperty], cond.Values) > -1
+            var result = false;
+            if (accCondition.ObjectProperty.toLowerCase() === 'all') {
+                result = true;
+                if (accCondition.Exclusions && accCondition.Exclusions.length) {
+                    for(var i = 0; i < accCondition.Exclusions.length; ++i) {
+                        result = result && ($this.account[accCondition.Exclusions[i].Attribute] !== accCondition.Exclusions[i].ID.toString());
+                    }
+                }
+            } else {
+                if (accCondition.Values && accCondition.Values.length) {
+                    for(var i = 0; i < accCondition.Values.length; ++i) {
+                        result = result || ($this.account[accCondition.Values[i].Attribute] === accCondition.Values[i].ID.toString());
+                    }
+                }
+            }
+            
+            return result;
+        };
+        
+        this.checkProductCondition = function(productCondition, basketInfo) {
+//            $.inArray(json[tpmcond.ObjectProperty], tpmval) > -1
+            var result = false;
+            if (productCondition && productCondition.length) {
+                for(var i = 0; i < productCondition.length; ++i) {
+                    result = result || (basketInfo[productCondition[i].Attribute] === productCondition[i].ID.toString());
+                }
+            }
+            
+            return result;
         };
     };
     
