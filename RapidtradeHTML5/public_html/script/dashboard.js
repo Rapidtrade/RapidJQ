@@ -397,7 +397,7 @@ function fetchDailySummary() {
                 //    duedate = new Date(parseInt(item.DueDate.substr(6, 13)) + offset * 60000);
                 //} else {
                     duedate = mom.toDate(); 
-                    duedate.setHours(duedate.getHours() + parseInt(dateFromSrv[1].substr(0,2)));
+                    //duedate.setHours(duedate.getHours() + parseInt(dateFromSrv[1].substr(0,2)));
                 //}
                 
                 

@@ -324,17 +324,23 @@ function activityFormSave() {
                 var now = moment();
                 var now1 = now.toDate();
                 //now1.setHours(now1.getHours() - now1.getTimezoneOffset() / 60);
-                g_activityFormNewActivity.DueDate = now1; // now.toDate();
+                g_activityFormNewActivity.DueDate = now1.getFullYear() + "-" + g_setLeadingZero((now1.getMonth() + 1)) + "-" + g_setLeadingZero(now1.getDate()) + "T" +
+									g_setLeadingZero(now1.getHours()) + ":"  + g_setLeadingZero(now1.getMinutes()) + ":00"; //now1; // now.toDate();
                 var newNow = new moment(now1).add('h',1); //now.clone().add('h',1);
-                g_activityFormNewActivity.EndDate = newNow.toDate();
+                var newNowDate = newNow.toDate();
+                g_activityFormNewActivity.EndDate = newNowDate.getFullYear() + "-" + g_setLeadingZero((newNowDate.getMonth() + 1)) + "-" + g_setLeadingZero(newNowDate.getDate()) + "T" +
+									g_setLeadingZero(newNowDate.getHours()) + ":"  + g_setLeadingZero(newNowDate.getMinutes()) + ":00"; //newNow.toDate();
         } else {
                 var mom = new moment($(g_activityFormParentDivSelector + ' #duedate').val() + $(g_activityFormParentDivSelector + ' #time').val(), "YYYY-MM-DD HH:mm");
                 var now = mom.toDate();
                 //now.setHours(now.getHours() - now.getTimezoneOffset() / 60);
-                g_activityFormNewActivity.DueDate = now;
+                g_activityFormNewActivity.DueDate = now.getFullYear() + "-" + g_setLeadingZero((now.getMonth() + 1)) + "-" + g_setLeadingZero(now.getDate()) + "T" +
+									g_setLeadingZero(now.getHours()) + ":"  + g_setLeadingZero(now.getMinutes()) + ":00"; //now;
                 var mom2 = new moment(now);
                 mom2.add('hours', 1); //$("#duration").val());
-                g_activityFormNewActivity.EndDate = mom2.toDate(); //new Date(g_activityFormNewActivity.DueDate.getTime() + $("#duration").val() * 60 * 1000); 				
+                var mom2Date = mom2.toDate();
+                g_activityFormNewActivity.EndDate = mom2Date.getFullYear() + "-" + g_setLeadingZero((mom2Date.getMonth() + 1)) + "-" + g_setLeadingZero(mom2Date.getDate()) + "T" +
+									g_setLeadingZero(mom2Date.getHours()) + ":"  + g_setLeadingZero(mom2Date.getMinutes()) + ":00"; // mom2.toDate(); //new Date(g_activityFormNewActivity.DueDate.getTime() + $("#duration").val() * 60 * 1000); 				
         }
 
         g_activityFormNewActivity.EventID = g_activityFormNewActivity.EventID || createId();

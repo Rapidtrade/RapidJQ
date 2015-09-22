@@ -223,7 +223,7 @@ function historyActivitiesListView(activities){
         var dateFromSrv = (activity.DueDate ? activity.DueDate.replace('/Date(','').replace(')/','').split('+') : new Array(0,1));
         var mom = new moment(parseInt(dateFromSrv[0])); //new moment(activity.DueDate);
         var duedate = mom.toDate(); //new Date(parsedIntDate);
-        duedate.setHours(duedate.getHours() + parseInt(dateFromSrv[1].substr(0,2))/*- duedate.getTimezoneOffset() / 60*/);
+        //duedate.setHours(duedate.getHours() + parseInt(dateFromSrv[1].substr(0,2))/*- duedate.getTimezoneOffset() / 60*/);
         var month = duedate.getMonth() + 1;
         var day = duedate.getDate();
         var year = duedate.getFullYear();
