@@ -35,7 +35,19 @@ var basket = (function() {
             checkItemFields(item);                          
             
             var dao = new Dao();
-            dao.put(item, 'BasketInfo', item.key, onItemSaved);
+            // as the old logic dao.put does not update an existing item within BasketInfo,
+            // but deletes it and insert as a new, we need to check if the item is already in basket
+            // and just update is to keep the order of items as they were added
+            //dao.put(item, 'BasketInfo', item.key, onItemSaved);
+            dao.get('BasketInfo', item.key, function(basketinfo) {
+                // item exists, so we are going to update it
+                var innerDao = new Dao();
+                innerDao.update(item, 'BasketInfo', item.key, onItemSaved);
+            }, function() {
+                // item does not exist, so we can use the old call
+                var innerDao = new Dao();
+                innerDao.put(item, 'BasketInfo', item.key, onItemSaved);
+            });
         },
         
         saveItems: function(itemArray, onComplete) {            

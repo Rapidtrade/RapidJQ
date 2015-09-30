@@ -40,6 +40,20 @@ function Dao() {
             this.sqlputMany(items, table, ponsuccesswrite, ponerror, poncomplete);
     };
     
+    this.update = function (json, table, key, ponsuccesswrite, ponerror, poncomplete) {
+    	
+//    	console.log('Inserting ' + key + ' into table ' + table);
+    	
+    	if ((table == 'ProductCategories2') && (!json.p))
+    		json.p = 'PC';
+    	
+        if (g_indexedDB) {
+            this.idbput(json, table, key, ponsuccesswrite, ponerror, poncomplete);
+            //if (ponerror) { ponerror('Unimplemented function!'); }
+        } else {
+            this.sqlupdate(json, table, key, ponsuccesswrite, ponerror, poncomplete);
+        }
+    };
     
     this.index = function (table, key, idx, ponsuccessread, ponerror, poncomplete) {
     	
@@ -948,6 +962,29 @@ function Dao() {
                 console.log(tx);
         });
        
+    };
+    
+    this.sqlupdate = function(item, table, keyf, ponsuccesswrite, ponerror, poncomplete) {
+        db.transaction(function (tx) {
+            var sql = 'UPDATE ' + table + ' SET json=?, index1=?, index2=?, index3=?, index4=? WHERE keyf=? ';
+            
+            tx.executeSql(sql,
+                    [JSON.stringify(item), getsqlIndex1(table, item), getsqlIndex2(table, item), getsqlIndex3(table, item), getsqlIndex4(table, item), keyf],
+                    function (tx, results) {
+                        if (ponsuccesswrite !== undefined) 
+                            ponsuccesswrite();
+                        
+                        if (poncomplete)
+                            poncomplete();                            
+                    },
+                    function (tx, e) {
+                        if (ponerror !== undefined) 
+                            ponerror(tx, e);
+                        
+                        if (poncomplete)
+                            poncomplete();                            
+                    });
+        });
     };
     
     //todo - turn these into proper functions 

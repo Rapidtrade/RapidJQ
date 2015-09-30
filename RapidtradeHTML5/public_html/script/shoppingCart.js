@@ -509,8 +509,8 @@ function shoppingCartFetchBasket() {
         shoppingCartOnAllItemsAdded();
         
     } else {
-        
-        alphaFilter.getInstance().init('#alphabet');
+        if (DaoOptions.getValue('DoNotSortBasket', 'false') !== 'true')
+            alphaFilter.getInstance().init('#alphabet');
         
         g_shoppingCartItemKeys = [];
         
@@ -518,7 +518,10 @@ function shoppingCartFetchBasket() {
             g_shoppingCartDetailItems = [];
         
         var dao = new Dao();
-        dao.indexsorted('BasketInfo',g_currentCompany().AccountID, 'index1', 'index4', shoppingCartAddItem, shoppingCartNoItems, shoppingCartOnAllItemsAdded);
+        if (DaoOptions.getValue('DoNotSortBasket', 'false') !== 'true')
+            dao.indexsorted('BasketInfo',g_currentCompany().AccountID, 'index1', 'index4', shoppingCartAddItem, shoppingCartNoItems, shoppingCartOnAllItemsAdded);
+        else
+            dao.index('BasketInfo',g_currentCompany().AccountID, 'index1', shoppingCartAddItem, shoppingCartNoItems, shoppingCartOnAllItemsAdded);
     }
 }
 
@@ -633,7 +636,7 @@ function shoppingCartAddItem(item, checkSummary) {
         if (!qty) return;
         
 	g_basketHTML +=
-        '<li id="LI' + itemIndex + '"' + alphaFilter.getInstance().addClass(item.Description) + '>' +
+        '<li id="LI' + itemIndex + '"' + ((DaoOptions.getValue('DoNotSortBasket', 'false') !== 'true') ? alphaFilter.getInstance().addClass(item.Description) : '') + '>' +
         '<a href="#" onclick="pricelistOnItemClicked(\'' + g_pricelistItems.length + '\')">' +
         '  <table class="' + tableClass + '" >' +
         '    <tr>' +
@@ -701,7 +704,8 @@ function shoppingCartOnAllItemsAdded() {
     $('#shoppingCartitemlist').listview('refresh');
     shoppingCartCheckItemsCount();
     g_basketHTML = '';
-    alphaFilter.getInstance().HTML('#alphabet', '#shoppingCartitemlist');
+    if (DaoOptions.getValue('DoNotSortBasket', 'false') !== 'true')
+        alphaFilter.getInstance().HTML('#alphabet', '#shoppingCartitemlist');
     
     var hidePrice = ((DaoOptions.getValue(sessionStorage.getItem("currentordertype") + 'CartHidePrice', 'false') === 'true') || g_isNoPriceUser());
     if (hidePrice) {
