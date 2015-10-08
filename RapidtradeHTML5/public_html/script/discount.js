@@ -1,4 +1,6 @@
-var conditions = {};
+var conditions = {}; 
+var g_promoExclAccountGroup; 
+var g_promoExclDicounts;
 
 /**
  * First pick which conditions apply to this customer/product combination
@@ -10,6 +12,8 @@ var conditions = {};
 function productdetailFetchLocalDiscount() {
     g_busy(true);
     conditions = {};
+    g_promoExclAccountGroup = DaoOptions.getValue('PromoExclAccountGroup');
+    g_promoExclDicounts = DaoOptions.getValue('PromoExclDiscounts') ? DaoOptions.getValue('PromoExclDiscounts').split(',') : [];
     //loop through discounts
     for (var x = 0; x < g_discounts.length  ; x++) {
         //Now loop through field conditions
@@ -219,6 +223,8 @@ function discountApplyDiscountValues(discountValues) {
 }
 
 function discountRecalcShoppingCart() {
+    g_promoExclAccountGroup = DaoOptions.getValue('PromoExclAccountGroup');
+    g_promoExclDicounts = DaoOptions.getValue('PromoExclDiscounts') ? DaoOptions.getValue('PromoExclDiscounts').split(',') : [];
     var dao = new Dao();
     dao.cursor1('DiscountValues', undefined, undefined, onsuccessDiscountValuesRead1);
 }
@@ -521,13 +527,21 @@ function discountDiscountValueToVolumePrice(dv, item) {
 }
 
 function discountApplyDiscounts(discountID) {
-    var promoExclAccountGroup = DaoOptions.getValue('PromoExclAccountGroup');
-    if (!promoExclAccountGroup)
+    if (!g_promoExclAccountGroup)
         return true;
         
-    var promoExclDicounts = DaoOptions.getValue('PromoExclDiscounts') ? DaoOptions.getValue('PromoExclDiscounts').split(',') : [];
-    if ($.inArray(g_currentCompany().AccountGroup, promoExclAccountGroup.split(',')) >= 0 && $.inArray(discountID, promoExclDicounts) >= 0) {
+    if ($.inArray(g_currentCompany().AccountGroup, g_promoExclAccountGroup.split(',')) >= 0 && $.inArray(discountID, g_promoExclDicounts) >= 0) {
         return false;
     } else 
         return true;
+    
+//    var promoExclAccountGroup = DaoOptions.getValue('PromoExclAccountGroup');
+//    if (!promoExclAccountGroup)
+//        return true;
+//        
+//    var promoExclDicounts = DaoOptions.getValue('PromoExclDiscounts') ? DaoOptions.getValue('PromoExclDiscounts').split(',') : [];
+//    if ($.inArray(g_currentCompany().AccountGroup, promoExclAccountGroup.split(',')) >= 0 && $.inArray(discountID, promoExclDicounts) >= 0) {
+//        return false;
+//    } else 
+//        return true;
 }
