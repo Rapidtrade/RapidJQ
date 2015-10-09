@@ -231,8 +231,16 @@ function discountRecalcShoppingCart() {
 
 function onsuccessDiscountValuesRead1(allRows) {
     for (var cartItemIndex = 0; cartItemIndex < g_shoppingCartItemKeys.length; ++cartItemIndex) {
-        if (g_shoppingCartDetailItems[cartItemIndex].Type === 'PROMOADMIN') 
+        if (g_shoppingCartDetailItems[cartItemIndex].Type === 'PROMOADMIN') {
+            if (g_shoppingCartItemKeys.length === (cartItemIndex + 1)) {
+                g_busy(false);
+                if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
+                    shoppingCartRecalcMultilineDiscounts();
+                }
+            } 
+            
             continue;
+        }
         
         conditions = {};
         //loop through discounts
@@ -324,7 +332,7 @@ function onsuccessDiscountValuesRead1(allRows) {
             // after we find all matching values        
         }
 
-        console.log(possibleValues);
+        //console.log(possibleValues);
         discountApplyDiscountValues1(possibleValues, cartItemIndex);
         
     }
