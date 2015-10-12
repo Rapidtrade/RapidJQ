@@ -238,7 +238,34 @@ function productdetailInit() {
 
             $('.pricelistBusyImg').hide();
             $.mobile.hidePageLoadingMsg();
-            productdetailFetchLocalDiscount();
+            Discounts.GetPrice(g_pricelistSelectedProduct,function (vp) {
+                if (!g_productdetailIsPriceChanged || (DaoOptions.getValue('SetRepBoolDiscountUF') && g_pricelistSelectedProduct[DaoOptions.getValue('SetRepBoolDiscountUF')])) {		
+                    if (vp.volumePrice && vp.volumePrice[0]) {		    	
+                        productdetailCalculateDiscount(vp.volumePrice);
+                        sessionStorage.setItem('volumePrice' + g_currentCompany().AccountID, JSON.stringify(vp.volumePrice));
+                        g_pricelistVolumePrices[g_pricelistSelectedProduct.ProductID] = vp.volumePrice[vp.volumePrice.length - 1];
+                    } else {	    	
+                        sessionStorage.setItem('volumePrice'+ g_currentCompany().AccountID, JSON.stringify(""));
+                        productdetailValue('discount', '0.00%');
+                        $('#grossvalue').html(g_addCommas(parseFloat(g_pricelistSelectedProduct.Gross).toFixed(2)));
+                        productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
+                    }
+                }
+            }, function (vp) {
+                if (!g_productdetailIsPriceChanged || (DaoOptions.getValue('SetRepBoolDiscountUF') && g_pricelistSelectedProduct[DaoOptions.getValue('SetRepBoolDiscountUF')])) {		
+                    if (vp.volumePrice && vp.volumePrice[0]) {		    	
+                        productdetailCalculateDiscount(vp.volumePrice);
+                        sessionStorage.setItem('volumePrice' + g_currentCompany().AccountID, JSON.stringify(vp.volumePrice));
+                        g_pricelistVolumePrices[g_pricelistSelectedProduct.ProductID] = vp.volumePrice[vp.volumePrice.length - 1];
+                    } else {	    	
+                        sessionStorage.setItem('volumePrice'+ g_currentCompany().AccountID, JSON.stringify(""));
+                        productdetailValue('discount', '0.00%');
+                        $('#grossvalue').html(g_addCommas(parseFloat(g_pricelistSelectedProduct.Gross).toFixed(2)));
+                        productdetailValue('nett', g_addCommas(parseFloat(g_pricelistSelectedProduct.Nett).toFixed(2)));
+                    }
+                }
+            });
+//            productdetailFetchLocalDiscount();
         }
 
         if (g_pricelistMobileLiveStockDiscount && ($('#mode').val() === 'Online') && g_isOnline(false)) {

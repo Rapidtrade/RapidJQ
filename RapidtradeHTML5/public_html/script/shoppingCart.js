@@ -41,6 +41,11 @@ function shoppingCartOnPageShow() {
     g_shoppingCartMultilineItemPromoID = [];
     g_shoppingCartDetailItems = [];
     
+    g_enableMultiLineDiscount = DaoOptions.getValue('EnableMultiLineDiscount','false');
+    g_multiLineDiscountID = DaoOptions.getValue('MultiLineDiscountID');
+    g_promoExclAccountGroup = DaoOptions.getValue('PromoExclAccountGroup');
+    g_promoExclDicounts = DaoOptions.getValue('PromoExclDiscounts') ? DaoOptions.getValue('PromoExclDiscounts').split(',') : [];
+    
     g_shoppingCartPageTranslation.safeExecute(function() {
         
         g_shoppingCartPageTranslation.translateButton('#shoppingCartBackButton', 'Pricelist');
@@ -1197,16 +1202,130 @@ function shoppingCartRecalcMultilineDiscounts(changedItemIndex) {
 }
 
 function shoppingCartRecalcShoppingCart() {
-    if (DaoOptions.getValue('LocalDiscounts') === 'true') {
+    
+    if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
         g_shoppingCartMultilineDiscItems = {};
         g_shoppingCartMultilineDiscQty = {};
         g_shoppingCartMultilineItemPromoID = [];
+    }
+    
+    if (DaoOptions.getValue('LocalDiscounts') === 'true') {        
         g_busy(true);
-        discountRecalcShoppingCart();
+        if (g_indexedDB) {
+            discountRecalcShoppingCart();
+        } else {
+            shoppingCartRecalcLocalPricing(0);
+        }
     } else if ((DaoOptions.getValue('MobileLiveStockDiscount') === 'true') && g_isOnline(false)) {
         g_busy(true);
         shoppingCartRecalcLivePricing(0);
     }
+}
+
+function shoppingCartRecalcLocalPricing(itemIndex) {
+    //console.log('RECALCULATE SHOPPING CART LOCAL SQL - itemIndex: ' + itemIndex);
+    
+    if (itemIndex === g_shoppingCartItemKeys.length) {
+        g_busy(false);
+        if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
+            shoppingCartRecalcMultilineDiscounts();
+        }
+        return;
+    }
+    
+    var shoppingCartLocalPriceOnSuccess = function(json) {
+        if (json.volumePrice && json.volumePrice[0] && json.volumePrice[0].ID && discountApplyDiscounts(json.volumePrice[0].ID)) {
+            g_pricelistVolumePrices[currentItem.ProductID] = json.volumePrice[json.volumePrice.length - 1];
+            shoppingCartCalculateLocalDiscount(json.volumePrice, itemIndex);
+        } else {
+            shoppingCartRecalcLocalPricing(++itemIndex);
+        }
+    };
+    
+    var currentItem = g_shoppingCartDetailItems[itemIndex];
+    Discounts.GetPrice(currentItem, 
+    		shoppingCartLocalPriceOnSuccess, 
+    		function (e) {
+    			shoppingCartRecalcLocalPricing(++itemIndex);
+    		});
+    
+    
+}
+
+function shoppingCartCalculateLocalDiscount(volumePrice, itemIndex) {
+    
+    var gross = 0;
+    var nett = 0;
+    var discount = 0;
+    var type;
+
+    var qty = Number($('#' + itemIndex).val() ? $('#' + itemIndex).val() : '0');
+ 
+    //shaun - added loop for multipe 
+    for (var i = 0; i< volumePrice.length; i++) {
+    	
+    	var j = 1;
+    	
+	    // increase index according to quantity
+    	
+    	while (j < 5) {
+    		
+            if (qty < volumePrice[i]['Qty' + j]) 
+                    break;    			
+
+            j++;
+    	}
+	    
+        gross = parseFloat(volumePrice[i].Gross);
+        nett  = parseFloat(volumePrice[i]['Nett' + j]);
+        discount = parseFloat(volumePrice[i]['Discount' + j]);	
+        
+        type = volumePrice[i]['Type'];
+    }
+    
+    if (nett > gross)
+        gross = nett;
+    
+    var dao = new Dao();
+    dao.get("BasketInfo", g_shoppingCartItemKeys[itemIndex], function(basketInfo) {
+        
+        basketInfo.Discount = discount;
+        basketInfo.Nett = nett;
+        basketInfo.Gross = gross;
+        basketInfo.UserField15 = type;
+        basketInfo.DiscountApplied = true;
+        
+        if (g_enableMultiLineDiscount === 'true' && 
+                volumePrice[volumePrice.length - 1].ID === g_multiLineDiscountID) {
+            if (!g_shoppingCartMultilineDiscItems.hasOwnProperty(basketInfo.UserField05)) 
+                g_shoppingCartMultilineDiscItems[basketInfo.UserField05] = [];
+
+            if (!g_shoppingCartMultilineDiscQty.hasOwnProperty(basketInfo.UserField05)) 
+                g_shoppingCartMultilineDiscQty[basketInfo.UserField05] = 0;
+
+            g_shoppingCartMultilineDiscItems[basketInfo.UserField05][itemIndex] = basketInfo;
+            g_shoppingCartMultilineDiscQty[basketInfo.UserField05] += basketInfo.Quantity;
+
+            g_shoppingCartMultilineItemPromoID[itemIndex] = basketInfo.UserField05;
+        }
+        
+        basket.saveItem(basketInfo, basketInfo.Quantity);
+        
+        $('#' + itemIndex + 'nett').text('' + g_roundToTwoDecimals(shoppingCartItemNett(basketInfo))); //$('#' + itemIndex + 'nett').text('' + basketInfo.Nett);
+        $('#' + itemIndex + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  === 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * basketInfo.Quantity));
+        
+        //if (itemIndex === g_shoppingCartItemKeys.length - 1) {
+            g_shoppingCartTotalExcl = 0;
+            $.each($(".total") ,function() {
+                var value = $(this).text().replace(',','');
+                g_shoppingCartTotalExcl += parseFloat(value);
+            });
+            shoppingCartRecalcTotals(basketInfo, basketInfo.Quantity);  
+        //}
+        
+        shoppingCartRecalcLocalPricing(++itemIndex);
+    },undefined, undefined);
+   
 }
 
 function shoppingCartRecalcLivePricing(itemIndex) {
@@ -1229,9 +1348,9 @@ function shoppingCartRecalcLivePricing(itemIndex) {
     console.log(url);
     
     var shoppingCartLivePriceOnSuccess = function(json) {
-        if (json.volumePrice && json.volumePrice[0]) {		    	
-            shoppingCartCalculateDiscount(json.volumePrice, itemIndex);
+        if (json.volumePrice && json.volumePrice[0]) {
             g_pricelistVolumePrices[currentItem.ProductID] = json.volumePrice[json.volumePrice.length - 1];
+            shoppingCartCalculateDiscount(json.volumePrice, itemIndex);
         } else {
             shoppingCartRecalcLivePricing(++itemIndex);
         }
@@ -1286,6 +1405,20 @@ function shoppingCartCalculateDiscount(volumePrice, itemIndex) {
         basketInfo.Gross = gross;
         basketInfo.UserField15 = type;
         basketInfo.DiscountApplied = true;
+        
+        if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true' && 
+                volumePrice[volumePrice.length - 1].ID === DaoOptions.getValue('MultiLineDiscountID')) {
+            if (!g_shoppingCartMultilineDiscItems.hasOwnProperty(basketInfo.UserField05)) 
+                g_shoppingCartMultilineDiscItems[basketInfo.UserField05] = [];
+
+            if (!g_shoppingCartMultilineDiscQty.hasOwnProperty(basketInfo.UserField05)) 
+                g_shoppingCartMultilineDiscQty[basketInfo.UserField05] = 0;
+
+            g_shoppingCartMultilineDiscItems[basketInfo.UserField05][itemIndex] = basketInfo;
+            g_shoppingCartMultilineDiscQty[basketInfo.UserField05] += basketInfo.Quantity;
+
+            g_shoppingCartMultilineItemPromoID[itemIndex] = basketInfo.UserField05;
+        }
         
         basket.saveItem(basketInfo, basketInfo.Quantity);
         

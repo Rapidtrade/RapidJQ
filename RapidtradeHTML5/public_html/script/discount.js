@@ -1,6 +1,8 @@
 var conditions = {}; 
 var g_promoExclAccountGroup; 
 var g_promoExclDicounts;
+var g_enableMultiLineDiscount;
+var g_multiLineDiscountID;
 
 /**
  * First pick which conditions apply to this customer/product combination
@@ -14,6 +16,8 @@ function productdetailFetchLocalDiscount() {
     conditions = {};
     g_promoExclAccountGroup = DaoOptions.getValue('PromoExclAccountGroup');
     g_promoExclDicounts = DaoOptions.getValue('PromoExclDiscounts') ? DaoOptions.getValue('PromoExclDiscounts').split(',') : [];
+    g_enableMultiLineDiscount = DaoOptions.getValue('EnableMultiLineDiscount','false');
+    g_multiLineDiscountID = DaoOptions.getValue('MultiLineDiscountID');
     //loop through discounts
     for (var x = 0; x < g_discounts.length  ; x++) {
         //Now loop through field conditions
@@ -225,6 +229,8 @@ function discountApplyDiscountValues(discountValues) {
 function discountRecalcShoppingCart() {
     g_promoExclAccountGroup = DaoOptions.getValue('PromoExclAccountGroup');
     g_promoExclDicounts = DaoOptions.getValue('PromoExclDiscounts') ? DaoOptions.getValue('PromoExclDiscounts').split(',') : [];
+    g_enableMultiLineDiscount = DaoOptions.getValue('EnableMultiLineDiscount','false');
+    g_multiLineDiscountID = DaoOptions.getValue('MultiLineDiscountID');
     var dao = new Dao();
     dao.cursor1('DiscountValues', undefined, undefined, onsuccessDiscountValuesRead1);
 }
@@ -405,8 +411,8 @@ function discountApplyDiscountValues1(discountValues, index) {
                 }
             }
             
-            if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true' && 
-                    discountValues[i].DiscountID === DaoOptions.getValue('MultiLineDiscountID')) {
+            if (g_enableMultiLineDiscount === 'true' && 
+                    discountValues[i].DiscountID === g_multiLineDiscountID) {
                     if (!g_shoppingCartMultilineDiscItems.hasOwnProperty(basketInfo.UserField05)) 
                         g_shoppingCartMultilineDiscItems[basketInfo.UserField05] = [];
 

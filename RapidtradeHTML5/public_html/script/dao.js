@@ -1012,6 +1012,12 @@ function Dao() {
                 return $.trim(item.AccountID) + $.trim(item.ProductID);
             } else if (table == 'Route') {
                 return $.trim(item.routeID);
+            } else if (table == 'Discount') {
+                return $.trim(item.DiscountID);
+            } else if (table == 'DiscountCondition') {
+                return $.trim(item.DiscountID);
+            } else if (table == 'DiscountValues') {
+                return $.trim(item.DiscountID);
             }             
 
             return '';
@@ -1039,6 +1045,8 @@ function Dao() {
                 return item.OrderID;
             } else if (table == 'OrderItems') {
                 return item.OrderID;
+            } else if (table == 'Discount') {
+                return $.trim(item.SortOrder);
             };
             
             return '';
@@ -1063,6 +1071,9 @@ function Dao() {
                 return item.UserField01;
             } else if (table == 'OrderItems') {
                 return $.trim(item.ProductID);
+            } else if (table == 'DiscountValues') {
+                var fromDate = moment(parseInt(item.FromDate.substr(6)));
+                return fromDate.format('YYYY-MM-DD');
             };
             return '';
         } catch (error) {
@@ -1079,7 +1090,10 @@ function Dao() {
             } else if (table == 'Orders') {
                 /* we need UserID in Orders table for Routes logic*/
             	return item.UserID;
-            }	
+            } else if (table == 'DiscountValues') {
+                var toDate = moment(parseInt(item.ToDate.substr(6)));
+                return toDate.format('YYYY-MM-DD');
+            }
             return '';
         } catch (error) {
             return '';
@@ -1769,5 +1783,40 @@ function Dao() {
             
         };
     };
+    
+    this.execSQL = function (sql, onsuccess, onerror) {
+        
+        db.transaction(function (tx) {
+        
+            tx.executeSql(sql,[], 
+                function (tx, results) {
+                    try {
+                        var res = [];
+                        //if (ponsuccessread) {
+                        if (results.rows.length > 0) {
+                            for (var i = 0; i < results.rows.length; ++i) {
+
+                                var item = results.rows.item(i);                                                                                                            
+                                var jsonObj = JSON.parse(item.json);                                                    
+                                
+                                res.push(jsonObj);
+                                //ponsuccessread(route);
+                            }
+                        }
+
+                        if (!results.rows.length && onerror) 
+                            onerror("No record found");
+
+                        if (results.rows.length && onsuccess) 
+                            onsuccess(res);
+
+                    } catch (error) {
+
+                        if (onerror) 
+                            onerror("No record found: error");
+                    };
+                });    
+            });
+    }
 }
         

@@ -368,6 +368,7 @@ function menuFetchDiscounts() {
          function (discount) {
              
                  g_discounts[i] = discount;
+                 g_discountsDictionary[discount.DiscountID] = discount;
                  i++;
              
          }

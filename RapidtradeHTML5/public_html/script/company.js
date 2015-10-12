@@ -41,6 +41,10 @@ function companyOnPageShow() {
     } else {
         g_checkThumbnailMode(); 
     }
+    
+    if (DaoOptions.getValue('AllowDeleteContact', 'false') === 'false') {
+        $('#deletecontact').hide();
+    }
 
     if (sessionStorage.getItem('companyBack') == 'today.html')
         $('#companyBackButton .ui-btn-text').text('Today');
@@ -269,6 +273,15 @@ function companyBind(){
 		
 		DaoOptions.getValue('LiveContactAddURL') ? companySaveLiveContact() : companySaveContact();
 	});
+        
+        $('#deletecontact').button()
+	.click(function (event) {
+		
+		//DaoOptions.getValue('LiveContactAddURL') ? companyDeleteLiveContact() : companyDeleteContact();
+                if ('AllowDeleteContact') {
+                    companyDeleteLiveContact();
+                }
+	});
  	
  	$('#cancelcontact').click(function() {
  		companyShowContact(true);
@@ -470,6 +483,42 @@ function companySaveContact(counter) {
     
     companyShowContact(true);
 }
+
+function companyDeleteLiveContact() {
+    var contactInfo = {};
+    var contactObj = JSON.parse(sessionStorage.getItem('jsonContact'));
+    contactObj.Deleted = true;
+    
+    contactInfo.json = JSON.stringify(contactObj);	
+    contactInfo.Table = 'Contacts';
+    contactInfo.Method = 'Modify';
+
+    $.mobile.showPageLoadingMsg();
+
+    g_ajaxpost(contactInfo, DaoOptions.getValue('LiveContactDeleteURL') ? DaoOptions.getValue('LiveContactDeleteURL') :
+            g_restUrl + 'POST/post.aspx', companyDeleteLiveContactOnSuccess, companyDeleteLiveContactOnError);
+}
+
+function companyDeleteLiveContactOnSuccess(json) {
+    
+    var contactObj = JSON.parse(sessionStorage.getItem('jsonContact'));
+    var dao = new Dao();
+    dao.deleteItem("Contacts", syncGetKeyField(contactObj, "Contacts"),
+    		undefined, undefined, undefined,
+    		function (event) {
+                    $.mobile.hidePageLoadingMsg();
+                    g_alert('Contact has been deleted.');
+                    companyFetchContacts();
+    		});
+    companyShowContact(true);
+}
+
+function companyDeleteLiveContactOnError(json) {
+    $.mobile.hidePageLoadingMsg();
+    g_alert('Error in retrieving operation result.');
+}
+
+
 
 /*
  * fetch contact for a company and add to list. Onclick, show popup

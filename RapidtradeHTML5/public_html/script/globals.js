@@ -67,6 +67,7 @@ var g_pricelistSortField = 'des';
  */
 
 var g_discounts = [];
+var g_discountsDictionary = {};
 var g_discountConditions = [];
 
 /*
