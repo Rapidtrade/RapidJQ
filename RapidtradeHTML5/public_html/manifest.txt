@@ -150,6 +150,7 @@ script/sync.js
 script/today.js
 script/tpm.js
 script/utility.js
+script/Discounts.js
 translations/translations.js
 
 # my json translation files
