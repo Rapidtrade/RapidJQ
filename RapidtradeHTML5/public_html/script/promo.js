@@ -400,14 +400,53 @@ var promo = (function(){
                     }
                 }
                 
-                if (nonPromoItemsNeedToBeChanged.length) {
-                    selectedPromoItems = nonPromoItemsNeedToBeChanged.concat(freePromoItemsToBeAdded);
+                var insertItemsToTheBasket = function() {
+                    if (nonPromoItemsNeedToBeChanged.length) {
+                        selectedPromoItems = nonPromoItemsNeedToBeChanged.concat(freePromoItemsToBeAdded);
+                    }
+
+                    basket.saveItems(selectedPromoItems, function () {
+                        $this.onComplete();
+                        $('#shoppingCartLocalTPMPopup').popup('close');
+                    });
                 }
                 
-                basket.saveItems(selectedPromoItems, function () {
-                    $this.onComplete();
-                    $('#shoppingCartLocalTPMPopup').popup('close');
-                });
+                if (freePromoItemsToBeAdded.length) {
+                    $.each(freePromoItemsToBeAdded, function(index, item) {
+                        var pricelistPriceSQL = "SELECT * FROM Pricelists WHERE index1='" + g_currentCompany().Pricelist + "' and index3='" + item.ProductID.trim() + "' ";
+                        var dao1 = new Dao();
+                        dao1.execSQL(pricelistPriceSQL, function(trItem) {
+                            freePromoItemsToBeAdded[index].Gross = trItem[0].g;
+                            freePromoItemsToBeAdded[index].Discount = 100;
+                            freePromoItemsToBeAdded[index].RepNett = 0;
+                            freePromoItemsToBeAdded[index].RepDiscount = 100;
+                            freePromoItemsToBeAdded[index].RepChangedPrice = true;
+                            
+                            if (index === freePromoItemsToBeAdded.length - 1) {
+                                insertItemsToTheBasket();
+                            }
+                        }, function() {
+                            console.log('Could not find price for product: ' + item.ProductID);
+                            if (index === freePromoItemsToBeAdded.length - 1) {
+                                insertItemsToTheBasket();
+                            }
+                        });
+                    });
+                    
+                } else {
+                    insertItemsToTheBasket();
+                }
+                
+                
+                
+//                if (nonPromoItemsNeedToBeChanged.length) {
+//                    selectedPromoItems = nonPromoItemsNeedToBeChanged.concat(freePromoItemsToBeAdded);
+//                }
+//                
+//                basket.saveItems(selectedPromoItems, function () {
+//                    $this.onComplete();
+//                    $('#shoppingCartLocalTPMPopup').popup('close');
+//                });
                 
             };
             
