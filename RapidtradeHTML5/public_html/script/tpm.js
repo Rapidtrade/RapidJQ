@@ -580,7 +580,7 @@ function tpmMapId(id) {
 //        '+' : 'plus'
 //    };
     
-    return id.replace(/\+/g, 'plus');
+    return id.replace(/\+/g, 'plus').replace(/ /g, '');
 }
 
 function tpmFetchPromotionsOnSuccess(json) {	
