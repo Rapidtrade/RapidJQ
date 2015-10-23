@@ -1422,18 +1422,22 @@ function productdetailOkClicked(checkStock) {
                 g_pricelistSelectedProduct.PromoID = 'PROMOADMIN';
                 g_pricelistSelectedProduct.Type = type;
             }
-                        
-            productdetailSave(qty, type, g_pricelistSelectedProduct);
-            g_clearCacheDependantOnBasket(false);
-            pricelistCheckBasket();            
-            if (!productdetailsAdminCanAddPromo() || g_pricelistSelectedProduct.RepDiscount !== 100) {
-                $('#' + g_pricelistSelectedProduct.ItemIndex).html(qty);
-            }
-            if (!g_vanSales && !g_pricelistIsAnyItemAdded) {
-            	sessionStorage.setItem('ordertypecaption', $('#menu').val());
-            	g_pricelistIsAnyItemAdded = true;
-            }
-            pricelistOnBackButtonClick();
+            
+            var onSave = function() {
+                g_clearCacheDependantOnBasket(false);
+                pricelistCheckBasket();            
+                if (!productdetailsAdminCanAddPromo() || g_pricelistSelectedProduct.RepDiscount !== 100) {
+                    $('#' + g_pricelistSelectedProduct.ItemIndex).html(qty);
+                }
+                if (!g_vanSales && !g_pricelistIsAnyItemAdded) {
+                    sessionStorage.setItem('ordertypecaption', $('#menu').val());
+                    g_pricelistIsAnyItemAdded = true;
+                }
+                pricelistOnBackButtonClick();  
+            };
+            
+            productdetailSave(qty, type, g_pricelistSelectedProduct, onSave);
+            
         }
     } else if (!productdetailIsPackPrice()) {
     	$('#quantity').val('');
@@ -1446,7 +1450,7 @@ function productdetailIsPackPrice() {
     return g_isPackSizeUnitValid(g_pricelistSelectedProduct.Unit);
 }
 
-function productdetailSave(qty, type, product) {
+function productdetailSave(qty, type, product, onSave) {
     
     if (productdetailCanChangeNett(product.ProductID))
         product.Description = $('.hdescription').val();
@@ -1471,7 +1475,7 @@ function productdetailSave(qty, type, product) {
     if (type === 'Credit') 
         product.UserField01 = $('#reason').attr('value');
     
-    basket.saveItem(product, qty);	
+    basket.saveItem(product, qty, onSave);	
 }
 
 function productdetailToggleViews() {
