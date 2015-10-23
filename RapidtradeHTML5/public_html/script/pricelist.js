@@ -226,7 +226,7 @@ function pricelistOnBackButtonClick() {
         }
         
         if (!g_deviceVersion) {
-            $('#search').focus();
+            //$('#search').focus();
         }
         
 //        if (productdetailsAdminCanAddPromo() && g_pricelistSelectedProduct.Type === 'PROMOADMIN') {
