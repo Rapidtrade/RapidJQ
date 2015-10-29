@@ -129,7 +129,7 @@ function myterritoryBind() {
     $('#savecustomer, #cancelcustomer').click(function () {
     	
     	if ($(this).attr('id') == 'savecustomer') 
-    		DaoOptions.getValue('LiveCompanyAddURL') ? myterritorySaveLiveCompany() : myterritorySaveCompany();
+    		DaoOptions.getValue('LiveCompanyAddURL') ? myterritorySaveLiveCompany() : myterritorySaveDB2Company();
     	else
     		myTerritoryShowCustomerForm(false);
     });
@@ -311,6 +311,45 @@ function myterritorySaveCompany(accountId) {
     
 	myTerritoryShowCustomerForm(false);
     
+}
+
+function myterritorySaveDB2Company() {
+    if (!g_isOnline(true)) {
+        return;
+    }
+    var customerObj = JSON.parse(sessionStorage.getItem('jsonCompany'));
+    customerObj.Deleted = false;
+    customerObj.PostedToErp = false;
+    sessionStorage.setItem('jsonCompany', JSON.stringify(customerObj));
+    
+    var url = companyCreateSaveCompanyURL(customerObj);
+    $.mobile.showPageLoadingMsg();
+    g_ajaxget(url, myterritorySaveDB2CompanyOnResponse, myterritorySaveDB2CompanyOnResponse);
+}
+
+
+
+function myterritorySaveDB2CompanyOnResponse(response) {
+    $.mobile.hidePageLoadingMsg();
+	
+	var message = '';
+	
+	if (response && response.length) {
+           if (response[0].Status) {
+		message = 'Company created OK.';
+                myterritorySaveCompany(JSON.parse(sessionStorage.getItem('jsonCompany')).AccountID);
+                
+		
+            } else {
+
+                    message = 'ERROR: ' + response.ErrorMessage;
+            }         
+        } else {
+            message = 'ERROR: An error occurred while saving customer\'s data.';
+        }
+		
+	
+	g_alert(message);
 }
 
 function myterritorySaveLiveCompany() {

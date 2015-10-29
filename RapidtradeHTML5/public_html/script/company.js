@@ -253,6 +253,9 @@ function companyBind(){
 	//bind save company
  	$('#savecompany' ).button()
         		.click(function (event) {
+                            if (!g_isOnline(true)) {
+                                return;
+                            }
         		    var dao = new Dao();
         			var companyObj = JSON.parse(sessionStorage.getItem('jsonCompany'));
         			companyObj.key = companyObj.SupplierID + companyObj.AccountID + companyObj.BranchID;
@@ -263,15 +266,40 @@ function companyBind(){
         			    		jsonForm.show(g_currentUser().SupplierID, '#companyform', companyObj, 'Company');
         					},
         					undefined, undefined);
-        			
-        			g_saveObjectForSync(companyObj, companyObj.key, "Companies", "Modify", undefined);
+                                $.mobile.showPageLoadingMsg();
+        			var url = companyCreateSaveCompanyURL(companyObj);
+                                g_ajaxget(url, function(response) {
+                                    $.mobile.hidePageLoadingMsg();	
+                                    var message = '';
+                                    if (response && response.length) {
+                                        if (response[0].Status) {
+                                            message = 'Company data saved OK.';
+                                        } else {
+                                            g_saveObjectForSync(companyObj, companyObj.key, "Companies", "Modify", undefined);
+                                            message = 'ERROR: ' + response[0].ErrorMessage;
+                                        }
+                                    }
+
+                                    g_alert(message);
+                                }, function(response) {
+                                    $.mobile.hidePageLoadingMsg();	
+                                    var message = '';
+                                    
+                                        g_saveObjectForSync(companyObj, companyObj.key, "Companies", "Modify", undefined);
+                                        message = 'ERROR occurred while saving company data.';
+                                    
+
+                                    g_alert(message);
+                                });
+                                
+        			//g_saveObjectForSync(companyObj, companyObj.key, "Companies", "Modify", undefined);
         		}); 	
  	
  	//bind save a contact
  	$('#savecontact').button()
 	.click(function (event) {
 		
-		DaoOptions.getValue('LiveContactAddURL') ? companySaveLiveContact() : companySaveContact();
+		DaoOptions.getValue('LiveContactAddURL') ? companySaveLiveContact() : companySaveDB2Contact();
 	});
         
         $('#deletecontact').button()
@@ -415,11 +443,50 @@ function companySyncHistory() {
     });    
 }
 
+function companySaveDB2Contact() {
+    if (!g_isOnline(true)) {
+        return;
+    }
+    var contactObj = JSON.parse(sessionStorage.getItem('jsonContact'));
+    contactObj.Deleted = false;
+    contactObj.PostedToErp = false;
+    var url = companyCreateSaveContactURL(contactObj);
+    $.mobile.showPageLoadingMsg();
+    g_ajaxget(url, companySaveDB2ContactOnResponse, companySaveDB2ContactOnResponse);
+}
+
+function companySaveDB2ContactOnResponse(response) {
+    $.mobile.hidePageLoadingMsg();
+	
+	var message = '';
+	
+	if (response && response.length) {
+           if (response[0].Status) {
+		message = 'Contact created OK.';
+		companySaveContact(JSON.parse(sessionStorage.getItem('jsonContact')).Counter);
+                
+		
+            } else {
+
+                    message = 'ERROR: ' + response.ErrorMessage;
+            }         
+        } else {
+            message = 'ERROR: An error occurred while saving contact\'s data.';
+        }
+		
+	
+	g_alert(message);
+}
+
 function companySaveLiveContact() {
 	
 	var contactInfo = {};
+        
+        var contactObj = JSON.parse(sessionStorage.getItem('jsonContact'));
+        contactObj.PostedToErp = false;
+        
 	
-	contactInfo.json = sessionStorage.getItem('jsonContact');	
+	contactInfo.json = JSON.stringify(contactObj); //sessionStorage.getItem('jsonContact');	
 	contactInfo.Table = 'Contacts';
 	contactInfo.Method = 'Modify';
 	
@@ -485,39 +552,53 @@ function companySaveContact(counter) {
 }
 
 function companyDeleteLiveContact() {
-    var contactInfo = {};
+    if (!g_isOnline(true)) {
+        return;
+    }
     var contactObj = JSON.parse(sessionStorage.getItem('jsonContact'));
     contactObj.Deleted = true;
+    contactObj.PostedToErp = false;
+    var url = companyCreateSaveContactURL(contactObj);
     
-    contactInfo.json = JSON.stringify(contactObj);	
-    contactInfo.Table = 'Contacts';
-    contactInfo.Method = 'Modify';
-
     $.mobile.showPageLoadingMsg();
-
-    g_ajaxpost(contactInfo, DaoOptions.getValue('LiveContactDeleteURL') ? DaoOptions.getValue('LiveContactDeleteURL') :
-            g_restUrl + 'POST/post.aspx', companyDeleteLiveContactOnSuccess, companyDeleteLiveContactOnError);
-}
-
-function companyDeleteLiveContactOnSuccess(json) {
     
-    var contactObj = JSON.parse(sessionStorage.getItem('jsonContact'));
-    var dao = new Dao();
-    dao.deleteItem("Contacts", syncGetKeyField(contactObj, "Contacts"),
-    		undefined, undefined, undefined,
-    		function (event) {
-                    $.mobile.hidePageLoadingMsg();
-                    g_alert('Contact has been deleted.');
-                    companyFetchContacts();
-    		});
-    companyShowContact(true);
+    g_ajaxget(url, companyDeleteLiveContactOnResponse, companyDeleteLiveContactOnResponse);
+
+    
 }
 
-function companyDeleteLiveContactOnError(json) {
+function companyDeleteLiveContactOnResponse(response) {
+    
     $.mobile.hidePageLoadingMsg();
-    g_alert('Error in retrieving operation result.');
-}
+	
+    var message = '';
 
+    if (response && response.length) {
+       if (response[0].Status) {
+            message = 'Contact\'s data deleted OK.';
+            var contactObj = JSON.parse(sessionStorage.getItem('jsonContact'));
+            var dao = new Dao();
+            dao.deleteItem("Contacts", syncGetKeyField(contactObj, "Contacts"),
+            undefined, undefined, undefined,
+            function (event) {
+                $.mobile.hidePageLoadingMsg();
+                g_alert('Contact has been deleted.');
+                companyFetchContacts();
+            });
+            companyShowContact(true);
+        } else {
+            message = 'ERROR: ' + response.ErrorMessage;
+            g_alert(message);
+        }         
+    } else {
+        message = 'ERROR: An error occurred while deliting contact\'s data.';
+        g_alert(message);
+    }
+
+
+    
+        
+}
 
 
 /*
@@ -562,6 +643,7 @@ function companyCreateContact() {
      newContact.Position = "";
      newContact.TEL = "";
      newContact.Deleted = false;
+     newContact.PostedToErp = false;
      var jsonForm = new JsonForm();
      $('#popupContent').empty();
      jsonForm.show(g_currentUser().SupplierID, '#contactdetailsContent', newContact, 'Contact');  
@@ -627,8 +709,53 @@ function companyShowLocation(company) {
 	$('#gps').hide();
 }
 
-
-
-
-
+function companyCreateSaveCompanyURL(company) {
+    var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_account_modifyFromApp&params=(%27' + 
+            (company.SupplierID ? company.SupplierID : '') + '%27|%27' +
+            (company.AccountID ? company.AccountID : '') + '%27|%27' +
+            (company.BranchID ? company.BranchID : '') + '%27|%27' +
+            (company.Name ? company.Name : '')+ '%27|' +
+            ((company.VAT || company.VAT === 0) ? company.VAT : '') + '|%27' +
+            (company.Pricelist ? company.Pricelist : '') + '%27|%27' +
+            (company.AccountGroup ? company.AccountGroup : '') + '%27|%27' +
+            (company.UserField01 ? company.UserField01 : '') + '%27|%27' +
+            (company.UserField02 ? company.UserField02 : '') + '%27|%27' +
+            (company.UserField03 ? company.UserField03 : '') + '%27|%27' +
+            (company.UserField04 ? company.UserField04 : '') + '%27|%27' +
+            (company.UserField05 ? company.UserField05 : '') + '%27|%27' +
+            (company.UserField06 ? company.UserField06 : '') + '%27|%27' +
+            (company.UserField07 ? company.UserField07 : '') + '%27|%27' +
+            (company.UserField08 ? company.UserField08 : '') + '%27|%27' +
+            (company.UserField09 ? company.UserField09 : '') + '%27|%27' +
+            (company.UserField10 ? company.UserField10 : '') + '%27|%27' +
+            (company.AccountType ? company.AccountType : '') + '%27|' +
+            (company.SharedCompany ? '1' : '0') + '|' +
+            (company.Deleted ? '1' : '0') + '|%27' +
+            (company.Latitude ? company.Latitude : '') + '%27|%27' +
+            (company.Longitude ? company.Longitude : '') + '%27|%27' +
+            (company.NextVisitDate ? ((company.NextVisitDate.indexOf('Date') !== -1) ? '1900-01-01' : company.NextVisitDate) : '1900-01-01') + '%27|' +
+            (company.PostedToErp ? '1' : '0') + ')';
     
+    return url;
+}
+
+function companyCreateSaveContactURL(contact) {
+    var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_contacts_modifyFromApp&params=(%27' + 
+            (contact.SupplierID ? contact.SupplierID : '') + '%27|%27' +
+            (contact.AccountID ? contact.AccountID : '') + '%27|%27' +
+            (contact.Counter ? contact.Counter : '') + '%27|%27' +
+            (contact.Name ? contact.Name : '') + '%27|%27' +
+            (contact.Position ? contact.Position : '') + '%27|%27' +
+            (contact.TEL ? contact.TEL : '') + '%27|%27' +
+            (contact.Mobile ? contact.Mobile : '') + '%27|%27' +
+            (contact.Email ? contact.Email : '') + '%27|%27' +
+            (contact.UserField1 ? contact.UserField1 : '') + '%27|%27' +
+            (contact.UserField2 ? contact.UserField2 : '') + '%27|%27' +
+            (contact.UserField3 ? contact.UserField3 : '') + '%27|%27' +
+            (contact.UserField4 ? contact.UserField4 : '') + '%27|%27' +
+            (contact.UserField5 ? contact.UserField5 : '') + '%27|' +
+            (contact.Deleted ? '1' : '0') + '|' + 
+            (contact.PostedToErp ? '1' : '0') + ')';
+    
+    return url;
+}
