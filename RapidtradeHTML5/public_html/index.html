@@ -37,7 +37,7 @@
         <script type="application/javascript" src="jquery/barcode-2.0.3/jquery-barcode.min.js"></script>  
         
         <!-- PhoneGap -->
-        <!--<script type="text/javascript" src="cordova.js"></script> -->
+        <script type="text/javascript" src="cordova.js"></script> 
    
 	<!-- We must include all JS files here else jquerymobile wont see them -->
         <script src="translations/translations.js"></script>
@@ -88,7 +88,7 @@
 	
     <script>
         //<!-- uncomment below for PhoneGap -->
-        /*
+        
         $('#menupage').bind('pagebeforecreate', menuOnPageBeforeCreate);
         $(document).on("pageshow", "#menupage", menuOnPageShow);
     
@@ -99,12 +99,12 @@
                                                             //menuOnPageShow();
                                                         }), 1000); 
                                     }, false);  
-        */                            
+                                    
         // <!-- uncomment below for Non phonegap-->
-        
+        /*
         $('#menupage').bind('pagebeforecreate', menuOnPageBeforeCreate);                
         $('#menupage').live("pageshow", menuOnPageShow);
-        
+        */
     </script>
 	
     <div data-role="content">
@@ -220,14 +220,15 @@
                                 </div>
                             </a>
                         </div>	 
-                        
-<!--                        <div class="ui-block-a menuIconPanel">
+                        <!--
+                       <div class="ui-block-a menuIconPanel">
                             <a id="connectprinter" data-role="button" onclick="window.plugins.printer.showBtConnect('Connect Bt', function(a){console.log('toast success: ' + a)}, function(b){alert('Error: ' + b)})">
                                 <div class="menuIconLabel">
                                     <img id="connect" src="img/printer128.png"><br/><span class="multiLanguage">Connect Printer</span>
                                 </div>
                             </a>
-                        </div>	  -->
+                        </div>
+                        -->
                     </div>
 	        </div>
 	    </div>  
@@ -240,7 +241,7 @@
 	   	</div>
 	      
         <div style="text-align:center;color:#555555;">
-        Version 10.0.0
+        Version 10.1
         </div>
         <div id="status" style="text-align:center;color:#555555;">
         </div>
