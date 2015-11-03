@@ -110,6 +110,13 @@ function orderdetailsBind() {
     }
     $('#sendToBasketButton').click(function () {        
         
+        var canDecideToEdit = DaoOptions.getValue('CanDecideToEditCart', false);
+        var canDecideToEditType = DaoOptions.getValue('CanDecideToEditCartType');
+        
+        if (canDecideToEdit === 'true' && canDecideToEditType && $.inArray(g_orderdetailsCurrentOrder.Type, canDecideToEditType.split(',')) >= 0) {
+            orderdetailsDecideOnEditOrder();
+            return;
+        }
         basket.saveItems(orderdetailsIsComplexView() ? g_orderdetailsComplexItems : g_orderdetailsOrderItems, onItemsSaved);
         
         function onItemsSaved() {
@@ -991,5 +998,49 @@ function orderdetailsCanDeleteOrder() {
     var optionValues = options.split(',');
     
     return ($.inArray(g_orderdetailsCurrentOrder.Type, optionValues) > -1);
+}
+
+function orderdetailsDecideOnEditOrder() {
+    $('#orderdetailsCanEditOrderPopup').popup('open');
+    $('#canEditYes').unbind();
+    $('#canEditNo').unbind();
+    
+    $('#canEditYes').on('click', function(e) {
+        sessionStorage.setItem('currentordertype', g_orderdetailsCurrentOrder.Type);
+        basket.saveItems(orderdetailsIsComplexView() ? g_orderdetailsComplexItems : g_orderdetailsOrderItems, onItemsSaved);
+        
+        function onItemsSaved() {
+            
+            g_clearCacheDependantOnBasket();
+            orderdetailsCheckBasket();
+
+            //if (confirm(g_orderdetailsPageTranslation.translateText('Items have been sent to your shopping cart. Would you like to go to the shopping cart now?'))) {
+                sessionStorage.setItem('lastPanelId', 'pricelistPanel');
+                sessionStorage.setItem('lastMenuItemId', 'pricelist' + (g_orderdetailsCurrentOrder.Type || 'Order') + 'Item');
+                sessionStorage.removeItem('pricelistsearchtxt');
+                sessionStorage.removeItem('cachePricelist');
+                sessionStorage.setItem('clearSearch', true);
+                try {
+                    localStorage.removeItem('overwriteDiscountCheckedOK');
+                } catch (ex) {}
+                $.mobile.changePage("company.html");
+            //}               
+        }
+    });
+    
+    $('#canEditNo').on('click', function(e) {
+        basket.saveItems(orderdetailsIsComplexView() ? g_orderdetailsComplexItems : g_orderdetailsOrderItems, onItemsSaved);
+        
+        function onItemsSaved() {
+            
+            g_clearCacheDependantOnBasket();
+            orderdetailsCheckBasket();
+
+            //if (confirm(g_orderdetailsPageTranslation.translateText('Items have been sent to your shopping cart. Would you like to go to the shopping cart now?'))) {    		
+                sessionStorage.setItem('ShoppingCartReturnPage', 'orderdetails.html');
+                $.mobile.changePage("shoppingCart.html");
+            //}               
+        }
+    });
 }
 
