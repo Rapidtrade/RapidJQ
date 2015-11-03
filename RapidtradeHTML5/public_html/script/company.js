@@ -718,16 +718,16 @@ function companyCreateSaveCompanyURL(company) {
             ((company.VAT || company.VAT === 0) ? company.VAT : '') + '|%27' +
             (company.Pricelist ? company.Pricelist : '') + '%27|%27' +
             (company.AccountGroup ? company.AccountGroup : '') + '%27|%27' +
-            (company.UserField01 ? company.UserField01 : '') + '%27|%27' +
-            (company.UserField02 ? company.UserField02 : '') + '%27|%27' +
-            (company.UserField03 ? company.UserField03 : '') + '%27|%27' +
-            (company.UserField04 ? company.UserField04 : '') + '%27|%27' +
-            (company.UserField05 ? company.UserField05 : '') + '%27|%27' +
-            (company.UserField06 ? company.UserField06 : '') + '%27|%27' +
-            (company.UserField07 ? company.UserField07 : '') + '%27|%27' +
-            (company.UserField08 ? company.UserField08 : '') + '%27|%27' +
-            (company.UserField09 ? company.UserField09 : '') + '%27|%27' +
-            (company.UserField10 ? company.UserField10 : '') + '%27|%27' +
+            (company.Userfield01 ? company.Userfield01 : '') + '%27|%27' +
+            (company.Userfield02 ? company.Userfield02 : '') + '%27|%27' +
+            (company.Userfield03 ? company.Userfield03 : '') + '%27|%27' +
+            (company.Userfield04 ? company.Userfield04 : '') + '%27|%27' +
+            (company.Userfield05 ? company.Userfield05 : '') + '%27|%27' +
+            (company.Userfield06 ? company.Userfield06 : '') + '%27|%27' +
+            (company.Userfield07 ? company.Userfield07 : '') + '%27|%27' +
+            (company.Userfield08 ? company.Userfield08 : '') + '%27|%27' +
+            (company.Userfield09 ? company.Userfield09 : '') + '%27|%27' +
+            (company.Userfield10 ? company.Userfield10 : '') + '%27|%27' +
             (company.AccountType ? company.AccountType : '') + '%27|' +
             (company.SharedCompany ? '1' : '0') + '|' +
             (company.Deleted ? '1' : '0') + '|%27' +
