@@ -1117,6 +1117,7 @@ function orderHeaderCreateLineItems() {
                                     lineItem[property] = basketInfo[property];
                             
                             lineItem.ItemID = itemIndex;
+                            lineItem.OrderID = g_orderHeaderOrder.OrderID;
                             var nettValue = lineItem.RepNett ? lineItem.RepNett : lineItem.Nett;
 
                             lineItem.Value = g_roundToTwoDecimals(nettValue / ((DaoOptions.getValue('DividePriceByUnit')  === 'true') && g_isPackSizeUnitValid(lineItem.Unit) ? lineItem.Unit : 1) * lineItem.Quantity);
