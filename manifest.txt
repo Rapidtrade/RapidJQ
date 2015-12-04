@@ -1,7 +1,7 @@
 ﻿CACHE MANIFEST
 # Explicitly cached 'master entries'...........................................
 
-# Version 10.1.3
+# Version 10.1.7
 
 CACHE:
 
@@ -144,6 +144,7 @@ script/overlay.js
 script/pricelist.js
 script/productdetail.js
 script/printinvoice.js
+script/printout.js
 script/route.js
 script/shoppingCart.js
 script/sync.js
@@ -163,6 +164,7 @@ translations/monthlysummary.json
 translations/myterritorypage.json
 translations/orderHeaderpage.json
 translations/orderdetailspage.json
+translations/printoutpage.json
 translations/printinvoicepage.json
 translations/shoppingCartpage.json
 translations/syncpage.json
@@ -187,6 +189,7 @@ orderprint.html
 Rapidtrade.css
 printinvoiceA4.html
 printinvoicesmall.html
+printout.html
 route.html
 shoppingCart.html
 sync.html

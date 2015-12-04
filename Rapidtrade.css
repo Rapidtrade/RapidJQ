@@ -4,7 +4,7 @@
     background: url(img/bg.jpg);
     background-repeat:repeat;
     background-position:center center;
-    background-size:cover;  
+    background-size:cover;
 }
 */
 
@@ -15,19 +15,19 @@
     /*margin-top: 20px; */
 }
 
-#testDiv .ui-slider-switch { 
-    width: 9em 
-} 
+#testDiv .ui-slider-switch {
+    width: 9em
+}
 
 .greypanel {
 	margin-left:auto; margin-right:auto;
 	-webkit-border-radius: 12px; /* Safari 3-4, iOS 1-3.2, Android ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤1.6 */
           	border-radius: 12px; /* Opera 10.5, IE9+, Safari 5, Chrome, Firefox 4+, iOS 4, Android 2.1+ */
     -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
-         
+
   	-webkit-box-shadow: 2px 2px 4px 0px #9f9f9f;
           box-shadow: 2px 2px 4px 0px #9f9f9f;
-       	
+
    	background-color: #eeeeee;
    	padding: 10px;
 }
@@ -47,7 +47,7 @@
 	background: linear-gradient(to bottom,  #fefcea 0%,#f1da36 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefcea', endColorstr='#f1da36',GradientType=0 ); /* IE6-9 */
    	padding: 5px;
-       
+
 }
 
 .redpanel {
@@ -64,29 +64,29 @@
 	background: -o-linear-gradient(top,  #feeaec 0%,#FF0000   100%); /* Opera 11.10+ */
 	background: -ms-linear-gradient(top,  #feeaec 0%,#FF0000   100%); /* IE10+ */
 	background: linear-gradient(to bottom,  #feeaec 0%,#FF0000   100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#feeaec', endColorstr='#FF0000  ',GradientType=0 );  /*IE6-9*/ 
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#feeaec', endColorstr='#FF0000  ',GradientType=0 );  /*IE6-9*/
    	padding: 5px;
 
 }
 .panel-grey-rounded {
-    -moz-border-radius: 8px; 
-    -webkit-border-radius: 8px; 
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
 	padding: 5px 10px 5px 20px;
 	border: thin solid #e7e7e7;
 	background-color: #f5f5f5;
-   
+
 }
 
 .panel-white-rounded {
 	border: thin solid #e7e7e7;
 	padding: 15px;
-    -moz-border-radius: 8px; 
-    -webkit-border-radius: 8px; 
-    border-radius: 8px; 
-    
-	-moz-box-shadow: 0px 0px 4px #ffffff; 
-	-webkit-box-shadow: 0px 0px 4px #ffffff; 
-	box-shadow: 0px 0px 4px #ffffff; 
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+
+	-moz-box-shadow: 0px 0px 4px #ffffff;
+	-webkit-box-shadow: 0px 0px 4px #ffffff;
+	box-shadow: 0px 0px 4px #ffffff;
 	background-color: #ffffff;
 }
 
@@ -117,11 +117,11 @@
 	font-size:14px;
 	/* color:f6ad36; */
 	width: 400px;
-	vertical-align:middle;   
+	vertical-align:middle;
 }
 
 .syncInfoPanel{
-	height: 50px;	 
+	height: 50px;
 }
 
 .syncInfoText {
@@ -129,7 +129,7 @@
 	/* color:f6ad36; */
 	position:relative;
 	left:60px;
-	top: -33px;  
+	top: -33px;
 }
 
 
@@ -166,7 +166,7 @@
   	-moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
 	padding: 10px;
 	border: thin solid #e7e7e7;
-	
+
 	background-color: white;
 	*/
         width: 200px;
@@ -178,7 +178,7 @@
 	font-size:14px;
 	color:ee260b;
 	width: 400px;
-	vertical-align:middle;  
+	vertical-align:middle;
 	height: 50px;
     margin-bottom: 5px;
 }
@@ -190,14 +190,14 @@
 	color:white;
 	position:relative;
 	left:60px;
-	top: -45px; 
+	top: -45px;
     text-shadow:none;
-    
+
 }
 
 .maintable {
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-	font-size: 12px;	
+	font-size: 12px;
 	width: 480px;
 	text-align: left;
 	border-collapse: collapse;
@@ -219,7 +219,7 @@
 .maintable td {
 	vertical-align:top;
 	padding: 4px;
-	background: #eaf4fd; 
+	background: #eaf4fd;
 	border-bottom: 1px solid #fff;
 	color: #4897c8;
 	border-top: 1px solid transparent;
@@ -284,7 +284,7 @@
 }
 
 .historyOrderItems td {
-	
+
     width: 87px;
     overflow: hidden;
     display: inline-block;
@@ -292,7 +292,7 @@
 }
 
 .historyOrderItems td.productId {
-	
+
     width: 200px;
 }
 
@@ -325,8 +325,8 @@
 	font-size:14px;
 	color:f6ad36;
 	width: 400px;
-	vertical-align:middle;  
-	height: 50px;	 
+	vertical-align:middle;
+	height: 50px;
 }
 
 .historyInfoText {
@@ -334,7 +334,7 @@
 	color:f6ad36;
 	position:relative;
 	left:60px;
-	top: -40px;  
+	top: -40px;
 }
 
 .infoPanel{
@@ -342,18 +342,18 @@
 	font-size:14px;
 	color:f6ad36;
 	width: 400px;
-	vertical-align:middle;  
-	height: 50px;	 
+	vertical-align:middle;
+	height: 50px;
 }
 .infoText {
 	font-size:14px;
 	color:f6ad36;
 	position:relative;
 	left:60px;
-	top: -35px;  
+	top: -35px;
 }
 .shopcartLabel {
-	height: 120px; 
+	height: 120px;
 }
 .shopcartLabelImg {
 
@@ -366,14 +366,14 @@
 .shopcartLabelText {
 	position:relative;
 	left: 80px;
-	top: -70px; 
+	top: -70px;
 }
 .shopcartButtoms {
 	position:relative;
-	top: -55px; 
+	top: -55px;
 }
 .shopcartHeader {
-	height: 160px; 
+	height: 160px;
 }
 .shopcartItems {
 	width: 100%;
@@ -388,7 +388,7 @@
 	width: 10%;
 	text-align: right;
 	padding-right: 14px;
-} 
+}
 .shopcartItems td.total {
 	width: 80px;
 	text-align: right;
@@ -415,13 +415,13 @@
 }
 
 .promoItemTable {
-    background: url('img/gray-promo-tag.png') no-repeat 300px/95px; 
+    background: url('img/gray-promo-tag.png') no-repeat 300px/95px;
 }
 
 .rtlabel {
 	padding-top: 5px;
 	padding-bottom: 5px;
-	height: 68px; 
+	height: 68px;
 }
 
 .rtlabelimg {
@@ -435,9 +435,9 @@
 }
 .rtlabeloptions {
 	position:relative;
-	top: -145px; 
+	top: -145px;
 	float:right;
-	height: 68px; 
+	height: 68px;
 }
 
 .rtTableLabel {
@@ -518,7 +518,7 @@
 	height:20px;
 	font-size:15px;
 	font-family: Arial, Helvetica, sans-serif;
-	text-align: center;	
+	text-align: center;
 }
 
 .mykpis td {
@@ -566,7 +566,7 @@
 
 .pricelistSearchImg {
 	position:relative;
-	top: 10px; 
+	top: 10px;
 }
 
 .pricelistInput {
@@ -634,8 +634,8 @@
         border-bottom: 1px solid;
 }
 
-.printinvoiceProductListTable tr { 
-	line-height: 20px; 
+.printinvoiceProductListTable tr {
+	line-height: 20px;
 }
 
 .printinvoiceTotalLabel {
@@ -656,64 +656,64 @@
     float: right;
 }
 
-.page-break { 
-    page-break-after: always; 
+.page-break {
+    page-break-after: always;
 }
 
 .printinvoiceContent .page:not(:first-child) .header {
-    
+
     display: none;
 }
 
 .printinvoiceContent .page:not(:first-child) .printinvoiceInvHeader {
-    
+
     display: none;
 }
 
 .printinvoiceContent .page:not(:first-child) .printinvoiceProductListTableHead {
-    
+
     display: none;
 }
 
 .printinvoiceContent .page:not(:last-child) .footer {
-    
+
     display: none;
 }
 
 .printinvoiceContent .pageNumber {
-    
+
     display: none;
 }
 
 .catalogueContent .page:not(:first-child) .header {
-    
+
     display: none;
 }
 
 .catalogueContent .page:not(:last-child) .footer {
-    
+
     display: none;
 }
 
 .catalogueContent .pageNumber {
-    
+
     display: none;
 }
 #complexProductTable {
-    
+
     border-collapse: collapse;
-    margin: 20px 0;    
+    margin: 20px 0;
 }
 
 #complexProductTable th, #complexProductTable td {
-    
+
     border: 1px solid black;
     padding: 5px;
     line-height: 25px;
 }
 
 #complexProductTable input {
-    
+
     height: 20px;
     font-size: 15px;
 }
@@ -721,7 +721,7 @@
 .printinvoiceProductListTable tr{
     display:block;
 }
- 
+
 /*tbody tr.printinvoiceProductListTableHead {
     page-break-before: always;
     page-break-inside: avoid;
@@ -736,11 +736,17 @@
     }
 }*/
 
-@media print {	
-    .printinvoiceHeader, #udsInputsDiv, #udsHeader {
+#printoutItems tbody tr:nth-child(even) {background: #EEEEEE}
+#printoutItems tbody tr:nth-child(odd) {background: #DDDDDD}
+
+@media print {
+    .printinvoiceHeader, .printoutHeader, #udsInputsDiv, #udsHeader {
         display: none;
     }
-    
+
+    #printoutItems tbody tr:nth-child(even) {background: #EEEEEE}
+    #printoutItems tbody tr:nth-child(odd) {background: #DDDDDD}
+
     .printinvoiceContent, .printinvoicesmlContent {
         font-weight: 800;
         color: black;
@@ -749,15 +755,15 @@
     .printinvoiceContent .page:not(:first-child) {
     	margin-top: 20px;
     }
-    
+
     .printinvoiceProductListTable tr{
             /*display:block;*/
     }
-/*    .printinvoiceProductListTable { 
+/*    .printinvoiceProductListTable {
         font-weight: bolder;
         page-break-inside:auto;
     }*/
-    
+
     .printinvoiceProductListTable th {
 	font-weight:bolder;
     }
@@ -765,22 +771,22 @@
 /*    .printinvoiceProductListTable thead {
         display: table-header-group;
     }
-    
+
     .printinvoiceProductListTable tfoot {
         display: table-footer-group;
-    } 
-    
+    }
+
     .printinvoiceProductListTable tbody {
         display: table-row-group;
-    }     
-   
-   .printinvoiceProductListTable tr { 
-        page-break-inside:avoid; 
-        page-break-after:auto 
+    }
+
+   .printinvoiceProductListTable tr {
+        page-break-inside:avoid;
+        page-break-after:auto
     }  */
-    
+
     .printinvoiceContent .page:not(:first-child) .printinvoiceInvHeader {
-    
+
         display: block;
     }
 
@@ -798,15 +804,15 @@
 
         display: block;
         text-align: right;
-    } 
-    
-    
+    }
+
+
     .printinvoiceContent .page {
         position: relative;
         overflow: hidden;
         height: 265mm !important;
     }
-    
+
     .printinvoiceContent .footer {
 /*        font-size: 10px;
         height: 20px;
@@ -825,8 +831,8 @@
         margin-top: 0px;
         margin-bottom: 0px;
     }
-    
-    
+
+
     .printinvoiceContent .pageNumber {
 
         display: block;
@@ -836,23 +842,23 @@
         width:95%;
         text-align: right;
     }
-    
+
     .catalogueContent {
         font-weight: 600;
         color: black;
     }
-    
+
     .catalogueContent .page:not(:first-child) .header {
 
         display: block;
     }
-    
+
     .catalogueContent .page {
         position: relative;
         overflow: hidden;
         height: 296mm !important;
     }
-    
+
     .catalogueContent .page:not(:last-child) .footer {
 
         display: block;
@@ -860,7 +866,7 @@
         position: absolute;
         bottom: 12px;
     }
-    
+
     .catalogueContent .page:last-child .footer {
 
         display: block;
@@ -868,12 +874,12 @@
         position: absolute;
         bottom: 12px;
     }
-    
+
     /*.footer {
         position: absolute;
         bottom: 12px;
     }*/
-    
+
     .catalogueContent .pageNumber {
         display: block;
         height: auto !important;
@@ -886,7 +892,7 @@
         text-align: right;
         color: red;
     }
-    
+
 }
 
 @page {margin: 0;}
@@ -899,8 +905,8 @@
 	float:right;
 }
 
-.pricelistChangePriceImg { 
-	
+.pricelistChangePriceImg {
+
 	width: 22px;
 	height: 22px;
 	position: absolute;
@@ -909,7 +915,7 @@
 }
 
 .pricelistBusyImg {
-	
+
 	width: 17px;
 	height: 17px;
 	position: absolute;
@@ -919,14 +925,14 @@
 
 .pricelistLoadImageText {
     position:absolute;
-    top:50%; 
+    top:50%;
      left:50%;
  }
- 
+
  .productdetailValueDescription {
  	white-space: nowrap;
  }
- 
+
  .usersummary td.name {
 	width: 250px;
 }
@@ -956,26 +962,26 @@
 	right:0;
 	bottom:0;
 	left:0;
-}  
+}
 
 
-.menuLabel { 
+.menuLabel {
     color: #f4eded;
-	font-size: 22px; 
-	font-weight: normal; 
+	font-size: 22px;
+	font-weight: normal;
 	text-shadow: 0px 0px 15px #000000;
 	position: relative;
 	top: -30px;
 }
 
-.menuLogo { 
+.menuLogo {
  	position: relative;
 	top: -15px;
 }
 
-.menuIconLabel { 
+.menuIconLabel {
     color: #555555;
-	font-size: 19px; 
+	font-size: 19px;
 	font-family: "Helvetica Neue",sans-serif;
 	font-weight: 300;
 	text-shadow: 0px 0px 15px #000000;
@@ -983,9 +989,9 @@
 	text-decoration: none;
 }
 
-.menuIconLabelSmall { 
+.menuIconLabelSmall {
     color: #555555;
-	font-size: 11.5px !important; 
+	font-size: 11.5px !important;
 	font-family: "Helvetica Neue",sans-serif;
 	font-weight: normal !important;
 	/*text-shadow: 0px 0px 5px #000000;*/
@@ -1002,34 +1008,34 @@
 	position:absolute; top:15px; right:20px
 }
 
-.overlayMenu li:hover {	
+.overlayMenu li:hover {
 
 	cursor: pointer;
 }
 
 .overlayMenu h3 {
-	
+
 	background-color: #CCC;
 	padding: 10px;
 }
 
 .printinvoicesmlProducts {
-	width: 350px;	
+	width: 350px;
 	margin: 5px;
 }
 
 .printinvoicesmlProducts th.right {
-	text-align: right;	
+	text-align: right;
 }
 
 .printinvoicesmlProducts td.right {
-	text-align: right;	
+	text-align: right;
 }
 
 .printinvoicesmlProducts td.descr {
 	text-align: left;
-	margin-bottom: 10px;	
-	margin-top: 10px;		
+	margin-bottom: 10px;
+	margin-top: 10px;
 }
 
 .printinvoicesmlContent {
@@ -1053,29 +1059,29 @@
 }
 
 .scroll-to-top {
-	position: fixed; 
-	background:url(img/scroll-to-top.png) no-repeat; 
-	cursor: pointer; 
-	width:55px; 
-	height: 55px; 
-	bottom: 1em; 
-	padding-right: 1em; 
-	display: none; 
-	z-index: 999; 
+	position: fixed;
+	background:url(img/scroll-to-top.png) no-repeat;
+	cursor: pointer;
+	width:55px;
+	height: 55px;
+	bottom: 1em;
+	padding-right: 1em;
+	display: none;
+	z-index: 999;
 }
 
 .companyPagePanel {
-	
+
     min-height: 1224px;
 }
 
 .jsonFormDiv .ui-select {
-    
+
     width: 50%;
 }
 
 #userDailySalesDetailTable .total {
-    
+
     text-align: right;
     font-weight: bolder;
     padding-right: 20px;
@@ -1152,7 +1158,7 @@
     font-size:14px;
     color:f6ad36;
     /* width: 100%; */
-    vertical-align:middle;  
+    vertical-align:middle;
 }
 
 .podInfoText {
@@ -1163,12 +1169,12 @@
     top: -33px;
 }
 
-#localTPMItemsTable tbody td {    
+#localTPMItemsTable tbody td {
     padding-left: 5px;
     padding-right: 5px;
 }
 
-#localTPMItemsTable {    
+#localTPMItemsTable {
     border-collapse: collapse;
 }
 
@@ -1176,7 +1182,7 @@
     border-top: 1px solid black;
 }
 
-#localTPMItemsTable tr.firstPromoRow > td {    
+#localTPMItemsTable tr.firstPromoRow > td {
     padding-top: 20px;
 }
 
@@ -1186,16 +1192,16 @@ a.promoItemSelectBtnAccept {
 }
 
 a.promoItemSelectBtnRemove {
-    color:#FF0000 !important;    
+    color:#FF0000 !important;
     height: 21px;
 }
 
 a.promoItemSelectBtnAccept .ui-btn-inner {
-    display:inline-table; 
+    display:inline-table;
     width: 65px;
 }
 
 a.promoItemSelectBtnRemove .ui-btn-inner {
-    display:inline-table; 
+    display:inline-table;
     width: 65px;
 }

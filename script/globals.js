@@ -16,7 +16,7 @@
 //var g_restPHPUrl = "http://www.super-trade.co.za:8083/rest/index.php/";
 
 
-var g_url = "https://app.rapidtrade.biz/"; 
+var g_url = "https://app.rapidtrade.biz/";
 var g_restUrl = g_url + "rest/";
 var g_vanSales = false;
 var g_restPHPUrl = "http://107.21.55.154/rest/index.php/";
@@ -93,7 +93,7 @@ var g_orderheaderCallReduceStock = false;
 var g_grv_replorderid;
 var g_grvCachedBasketItems = [];
 /*
- * 
+ *
  */
 var g_callcycleedit_custcount = 0;
 
@@ -136,7 +136,7 @@ function g_phonegapon(onComplete){
         //} else {
         //    g_smpon(onComplete);
         //}
-        
+
     } catch (err){
             $('#status').text(err.message);
     }
@@ -150,14 +150,14 @@ function g_smpon(onComplete){
                     function(msg) { $('#smpstatus').text(msg);},
                     function(smpUser) {
                         g_smpUser = smpUser;
-                        $('#smpstatus').text('Logged in to SMP'); 
+                        $('#smpstatus').text('Logged in to SMP');
                         onComplete();
                     }
                 );
 }
 
 function g_isiPad() {
-	
+
 	var userAgent = navigator.userAgent;
 	return /iPad/i.test(userAgent) || /iPhone OS 3_1_2/i.test(userAgent)
 			|| /iPhone OS 3_2_2/i.test(userAgent);
@@ -191,41 +191,41 @@ function g_iPadBar(panel){
 
 function g_checkUsageMode() {
 
-    $("#mode option").filter(function() {        	
+    $("#mode option").filter(function() {
         return $(this).attr('value') === localStorage.getItem('usageMode');
     }).attr('selected', true);
 
     $('#mode').selectmenu('refresh');
-    
+
     $('#mode').off().on('change', function() {
-       
+
         localStorage.setItem('usageMode', $(this).val());
         $('#mode').selectmenu('refresh');
-    });    
+    });
 }
 
 function g_checkThumbnailMode() {
 
-//    $("#thumbnailMode input").filter(function() {        	
+//    $("#thumbnailMode input").filter(function() {
 //        return $(this).attr('value') === localStorage.getItem('thumbnailMode');
 //    }).attr('selected', true);
 //
 //    $('#thumbnailMode').controlgroup('refresh');
-//    
+//
 //    $('#thumbnailMode').off().on('change', function() {
-//       
+//
 //        localStorage.setItem('thumbnailMode', $(this).val());
 //        $('#thumbnailMode').controlgroup('refresh');
-//    }); 
+//    });
 
     $('#thumbnailMode').off().on('change', function() {
-       
+
         localStorage.setItem('thumbnailMode', $(this).find('input:checked').val());
         $('#thumbnailMode').controlgroup('refresh');
     });
 
     if (localStorage.getItem('thumbnailMode') === undefined || localStorage.getItem('thumbnailMode') === null || localStorage.getItem('thumbnailMode')=='On_Thumbs') {
-		
+
         $("#On_Thumbs").attr("checked", true).checkboxradio("refresh");
         $("#Off_Thumbs").attr("checked", false).checkboxradio("refresh");
 
@@ -239,15 +239,15 @@ function g_checkThumbnailMode() {
 function g_loadMenu() {
 
     $.mobile.changePage('index.html');
-    
-    //commented out because it doesn't work well when translations are used 
-  
+
+    //commented out because it doesn't work well when translations are used
+
 //	if (g_isiPad() || window.MSApp) {
-//		
+//
 //		$.mobile.changePage('index.html');
-//		
+//
 //	} else {
-//		
+//
 //		var menuPageUrl = navigator.userAgent.match(/Android/i) ? 'index.html'
 //				: location.href
 //						.substring(0, location.href.lastIndexOf('/') + 1);
@@ -256,11 +256,11 @@ function g_loadMenu() {
 }
 
 function g_menuBind() {
-	
+
 	$('#menuButton').unbind();
 	$('#menuButton').click(function() {
-		
-            if (g_currentUser().Role && g_currentUser().Role.toUpperCase().indexOf('CUST') !== -1 && $.mobile.activePage.attr('id') === 'companypage')    
+
+            if (g_currentUser().Role && g_currentUser().Role.toUpperCase().indexOf('CUST') !== -1 && $.mobile.activePage.attr('id') === 'companypage')
 		g_loadMenu();
 	});
 }
@@ -281,13 +281,13 @@ function g_currentCompany() {
  * If we force a user to a particular branch/warehouse
  */
 function g_currentBranch(){
-    
+
     if (DaoOptions.getValue('VanandWareOrder', 'false') == 'true')
-        return (g_pricelistInvoiceWarehouse ? g_pricelistInvoiceWarehouse : g_currentCompany().BranchID).toUpperCase(); 
-       
+        return (g_pricelistInvoiceWarehouse ? g_pricelistInvoiceWarehouse : g_currentCompany().BranchID).toUpperCase();
+
     if (!g_currentUser().Role) return g_currentCompany().BranchID.toUpperCase();
 
-    var role = g_currentUser().Role.toLowerCase(); 
+    var role = g_currentUser().Role.toLowerCase();
     if (role.indexOf('wh=') != -1){
             var wh = role.substring(role.indexOf('wh=')+3);
             wh = (wh.indexOf(',') != -1 ) ? wh.substring(0,wh.indexOf(',')) : wh;
@@ -295,7 +295,7 @@ function g_currentBranch(){
     } else {
             return g_currentCompany().BranchID.toUpperCase();
     }
-	
+
 }
 
 
@@ -308,14 +308,14 @@ function g_showCurrentCompanyName() {
 }
 
 function g_vat() {
-		
+
     return (DaoOptions.getValue('taxpercent') || 14) / 100;
 }
 
 function g_isOnline(showAlert) {
 
     showAlert = (showAlert !== undefined) ? showAlert : true;
-    
+
     if (g_deviceVersion !== undefined) {
         var networkState = navigator.network.connection.type;
 
@@ -328,10 +328,10 @@ function g_isOnline(showAlert) {
         states[Connection.CELL_4G]  = true;  //'Cell 4G connection';
         states[Connection.CELL]     = true;  //'Cell generic connection';
         states[Connection.NONE]     = false; //'No network connection';
-        
+
         if (!states[networkState] && showAlert)
             g_alert('This feature is disabled in the offline mode.');
-        
+
         return states[networkState];
     } else {
         if (!navigator.onLine && showAlert)
@@ -339,8 +339,8 @@ function g_isOnline(showAlert) {
 
         return navigator.onLine;
     }
-    
-    
+
+
 }
 
 function g_setLeadingZero(number) {
@@ -349,7 +349,7 @@ function g_setLeadingZero(number) {
 
 function g_isPackSizeUnitValid(unit) {
     var checkForOrderTypes = DaoOptions.getValue('OrderTypePackSize');
-    
+
     if (checkForOrderTypes === undefined) {
         return (orderdetailsIsComplexView() || (DaoOptions.getValue('ForcePackSize')  == 'true')) && !isNaN(unit);
     } else {
@@ -365,43 +365,43 @@ function g_isPackSizeUnitValid(unit) {
  * get current week of the year
  */
 Date.prototype.getWeekOfYear = function() {
-	
+
 	var onejan = new Date(this.getFullYear(), 0, 1);
 	return Math.ceil((((this - onejan) / 86400000) + onejan.getDay() + 1) / 7);
 };
 
 function g_dayOfYear() {
-	
+
     var date = new Date();
     var onejan = new Date(date.getFullYear(), 0, 1);
-	
+
     var JJJ = (Math.ceil((date - onejan) / 86400000)).toString();
-    
+
     while (JJJ.length < 3)
         JJJ = '0' + JJJ;
-    
+
     return JJJ;
 };
 
 
 function g_mondayOfCurrentWeek() {
-	
-	var date = new Date();	
+
+	var date = new Date();
 	var day = date.getDay();
 	var diff = date.getDate() - day + (0 == day ? -6 : 1);
-    return new Date(date.setDate(diff)); // adjust when day is Sunday	
+    return new Date(date.setDate(diff)); // adjust when day is Sunday
 }
 
 function g_firstMondayOfCurrentMonth() {
-	
+
 	var month = g_mondayOfCurrentWeek().getMonth();
-	
+
 	var date = new Date();
 	date.setMonth(month, 1);
-	
+
 	while (date.getDay() != 1)
 		date.setDate(date.getDate() + 1);
-	
+
 	return date;
 }
 
@@ -426,12 +426,12 @@ function g_currentCallCycleWeek() {
 }
 
 function g_getWeek(d0){
-    // Create a copy of this date object  
+    // Create a copy of this date object
     var d;
     if (!d0)
-          d = new Date(); 
+          d = new Date();
     else
-          d = new Date(+d0); 
+          d = new Date(+d0);
     d.setHours(0,0,0);
     // Set to nearest Thursday: current date + 4 - current day number
     // Make Sunday's day number 7
@@ -441,33 +441,33 @@ function g_getWeek(d0){
     // Calculate full weeks to nearest Thursday
     var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
     // Return array of year and week number
-    return weekNo;    
+    return weekNo;
 }
 
 function g_getWeekOld(d0){
-	  // Create a copy of this date object  
+	  // Create a copy of this date object
 	  var d;
 	  if (!d0)
-	  	d = new Date(); 
+	  	d = new Date();
 	  else
-	  	d = new Date(+d0); 
-	  var target  = new Date();  
-	  // ISO week date weeks start on monday  
-	  // so correct the day number  
-	  var dayNr   = (d.getDay() + 6) % 7;  
-	  // Set the target to the thursday of this week so the  
-	  // target date is in the right year  
-	  target.setDate(target.getDate() - dayNr + 3);  
-	  // ISO 8601 states that week 1 is the week  
-	  // with january 4th in it  
-	  var jan4    = new Date(target.getFullYear(), 0, 4);  
-	  // Number of days between target date and january 4th  
-	  var dayDiff = (target - jan4) / 86400000;    
-	  // Calculate week number: Week 1 (january 4th) plus the    
-	  // number of weeks between target date and january 4th    
-	  var weekNr = 1 + Math.ceil(dayDiff / 7);    
-	 
-	  return weekNr;    
+	  	d = new Date(+d0);
+	  var target  = new Date();
+	  // ISO week date weeks start on monday
+	  // so correct the day number
+	  var dayNr   = (d.getDay() + 6) % 7;
+	  // Set the target to the thursday of this week so the
+	  // target date is in the right year
+	  target.setDate(target.getDate() - dayNr + 3);
+	  // ISO 8601 states that week 1 is the week
+	  // with january 4th in it
+	  var jan4    = new Date(target.getFullYear(), 0, 4);
+	  // Number of days between target date and january 4th
+	  var dayDiff = (target - jan4) / 86400000;
+	  // Calculate week number: Week 1 (january 4th) plus the
+	  // number of weeks between target date and january 4th
+	  var weekNr = 1 + Math.ceil(dayDiff / 7);
+
+	  return weekNr;
 }
 
 function g_saveObjectForSync(object, key, table, method, poncomplete) {
@@ -487,19 +487,19 @@ function g_saveObjectForSync(object, key, table, method, poncomplete) {
     if (table === 'Orders') {
 
         $.each(object.orderItems, function(index, item) {
-            
-            var key = syncGetKeyField(item, 'Stock');         
+
+            var key = syncGetKeyField(item, 'Stock');
 
             dao.get('Stock', key, function(stockItem) {
-                                
+
                 stockItem.Stock -= item.Quantity;
                 dao.put(stockItem, 'Stock', key, function() {
-                    
+
                     console.log('Stock ' + key + ' reduced to ' + stockItem.Stock + '.');
                 })
             });
         });
-    }            
+    }
 }
 
 function g_today() {
@@ -509,7 +509,7 @@ function g_today() {
 			+ g_setLeadingZero(date.getMonth() + 1) + "/" + date.getFullYear();
 }
 /***
- * 
+ *
  * @returns String representation of date in format yyyy-MM-dd
  */
 function g_currentDate() {
@@ -519,7 +519,7 @@ function g_currentDate() {
 }
 
 /***
- * 
+ *
  * @returns String representation of date and time in format yyyy-MM-dd HH:mm:ss
  */
 function g_currentDateTime() {
@@ -579,12 +579,12 @@ function g_roundToTwoDecimals(number) {
 // and we cached html that is related to basket. As basket becomes invalid such
 // cache also becomes invalid.
 function g_clearCacheDependantOnBasket(resetCounter) {
-	
+
 	if (resetCounter == undefined)
 		resetCounter = true;
-	
+
 	sessionStorage.setItem('cachePricelist', null);
-	
+
 	if (resetCounter)
             g_pricelistItemsOnPage = 0;
 }
@@ -592,16 +592,16 @@ function g_clearCacheDependantOnBasket(resetCounter) {
 function g_isValidQuantityCharPressed(event, allowDecimals) {
 
 	var keyCode = (event.keyCode ? event.keyCode : event.which);
-        
+
         // decimal point
         if ((190 == keyCode) && ((DaoOptions.getValue('AllPartfullUnit') == 'true') || allowDecimals))
             return true;
-	
+
 	// Numeric keypad
 	if ((keyCode > 95) && (keyCode < 106))
             return true;
-	
-	
+
+
 	if (isNaN(String.fromCharCode(event.which)) || event.which == 32
 			|| (event.keyCode >= 186 && event.keyCode <= 222))
 		if (event.which != 8 && event.which != 9)
@@ -668,7 +668,7 @@ function g_getDefaultDisplayFieldsById(id) {
 }
 
 function g_append(element, text) {
-    
+
     if (window.MSApp) {
         MSApp.execUnsafeLocalFunction(function() {
                 $(element).append(text);
@@ -710,7 +710,7 @@ function g_ajaxget(url, success, error) {
 
                     error(err);
             });
-    } else {  
+    } else {
 
         $.ajax({
                 type : 'GET',
@@ -721,7 +721,7 @@ function g_ajaxget(url, success, error) {
                 dataType : 'json',
                 success:success,
                 error:error,
-                timeout: DaoOptions.getValue('AjaxTimeout', 30000)                  
+                timeout: DaoOptions.getValue('AjaxTimeout', 30000)
         });
 
         /*
@@ -823,33 +823,38 @@ function g_print(selector) {
         }
     } else {
         print();
-    }    
+    }
 }
 
 function g_isQuantityValid(quantity, unit) {
-	
+
         quantity = Number(quantity);
-        
+
 	var isValid = (quantity > 0) /*&& (quantity < 10000)*/;
-	
+
 	if (isValid && g_isPackSizeUnitValid(unit)) {
-		
+
 		var remainder = quantity % unit;
-		
+
 		if (remainder) {
-			
+
 			alert('You are ordering in incorrect units. The pack size requires you to order in units of ' + unit);
 			isValid = false;
 		}
 	}
-	
-	return isValid;	
+
+	return isValid;
 }
 
 function g_showInvoice(popupId) {
-	
+
+    if (DaoOptions.getValue('CustomAppOrderPrintout', '')) {
+        $.mobile.changePage('printout.html');
+        return;
+    }
+
     var printer = localStorage.getItem('printer');
-    
+
     var isSmallBtnHidden = $('#smallPrinterButton').hasClass('hidden');
     if (DaoOptions.getValue('HideSmallPrint') === 'true') {
         if (!isSmallBtnHidden)
@@ -865,9 +870,9 @@ function g_showInvoice(popupId) {
 }
 
 function g_saveLostSale(productId, quantity, stock) {
-	
+
     var activity = {};
-	
+
     activity.EventID = createId();
     activity.Deleted = false;
     activity.EventTypeID = DaoOptions.getValue('LostSaleActivityID');
@@ -875,7 +880,7 @@ function g_saveLostSale(productId, quantity, stock) {
     activity.SupplierID = g_currentCompany().SupplierID;
     activity.UserID = g_currentUser().UserID;
     activity.Data = productId + ';' + quantity + ';' + stock;
-    activity.DueDate = moment().toDate(); 
+    activity.DueDate = moment().toDate();
 
     activity.key = g_currentCompany().SupplierID + g_currentCompany().AccountID + activity.EventID;
 
@@ -883,29 +888,29 @@ function g_saveLostSale(productId, quantity, stock) {
 }
 
 function g_fetchAvailableCredit() {
-	
+
 	var onSuccess = function(json) {
-		
+
 		if (json)
                     sessionStorage.setItem(g_currentCompany().AccountID + 'AvailableCredit', json._AvailableCredit);
 		else
                     console.log('No available credit fetched.');
 	};
-	
+
 	var onError = function() {
-		
+
 		console.log('Error in fetching available credit');
 	};
 	var creditcheck = DaoOptions.getValue('LiveCreditCheckURL');
 	if (creditcheck === undefined) return;
-	
+
 	var url = DaoOptions.getValue('LiveCreditCheckURL') + '?supplierID=' + g_currentUser().SupplierID + '&accountID=' + g_currentCompany().AccountID + '&branchID=' + g_currentCompany().BranchID;
 
 	g_ajaxget(url, onSuccess, onError);
 }
 
 function g_getDefaults(){
-    
+
 }
 
 function g_busy(show) {
@@ -921,33 +926,33 @@ function g_busy(show) {
 }
 
 var g_popup = (function() {
-    
+
     var onClose;
     var clickedButtonId;
-    
+
     return function(popupSelector) {
-        
-        return {            
-      
+
+        return {
+
             show: function(miliseconds, callback, validate) {
-                
+
                 var that = this;
-                               
-                onClose = callback;                
+
+                onClose = callback;
 
                 $(popupSelector).popup('open');
                 $(popupSelector).off().on('click', 'a', function() {
-                    
+
                     clickedButtonId = this.id;
-                    
+
                     if (!validate || validate())
                         that.hide();
                 });
-                
+
                 $(popupSelector).bind({
-                    
-                    popupafterclose: function() { 
-                        
+
+                    popupafterclose: function() {
+
                         if (onClose)
                             onClose();
                     }
@@ -959,27 +964,27 @@ var g_popup = (function() {
 
             hide: function() {
 
-                $(popupSelector).popup('close');                
+                $(popupSelector).popup('close');
             },
-            
+
             clickedButton: function() {
-                
+
                 return clickedButtonId;
             }
         };
     };
 })();
- 
+
 function g_removeDeliveryFromLocalSQL() {
     var deliveryID = localStorage.getItem('routesLastDeliverySentToBasket');
     if (!deliveryID || deliveryID==='') {
         console.log('Issue with deliveryID to be deleted');
     } else {
         deliveryID = g_currentUser().SupplierID + deliveryID;
-         
+
         var onDeleteSuccess = function() {
             console.log('Delivery with ID ' + deliveryID  + ' has been deleted.');
-             
+
             var routesDate = localStorage.getItem('routesLastSelectedDate');
             if (!routesDate || routesDate==='') {
                 return;
@@ -998,26 +1003,26 @@ function g_removeDeliveryFromLocalSQL() {
 
 
                 localStorage.setItem('Route' + routesDate, JSON.stringify(cachedRoutes));
-                
+
                 /* go back to route page */
                 $.mobile.changePage('route.html', {transition:'none'});
             }
         };
-         
-         
+
+
          var dao = new Dao();
          dao.deleteItem('Orders', deliveryID, undefined, undefined, undefined, onDeleteSuccess);
      }
-     
-     
-     
+
+
+
      localStorage.removeItem('routesLastDeliverySentToBasket');
  }
- 
+
  function g_isVanUser() {
      return g_currentUser().Role && (g_currentUser().Role.indexOf('van=') !== -1);
  }
- 
+
 function g_yyyyMMddToDate(value) {
    if (!value)
            return new Date();
@@ -1044,7 +1049,7 @@ function g_isNoPriceUser() {
     if (userRole && userRole.indexOf('NOPRICE') !== -1) {
         return true;
     }
-    
+
     return false;
 }
 
@@ -1053,7 +1058,7 @@ function g_userCanChangeDiscount() {
     if (userRole && userRole.indexOf('changediscount') !== -1) {
         return true;
     }
-    
+
     return false;
 }
 
@@ -1066,7 +1071,7 @@ function g_isUserIntSalse() {
 }
 
 function g_forceUserToSyncOnNewMonth() {
-    if (DaoOptions.getValue('ForceNewMonthSync', 'false') === 'true') {        
+    if (DaoOptions.getValue('ForceNewMonthSync', 'false') === 'true') {
         var fnmsDate = new Date();
         var lastSyncMonth = localStorage.getItem('lastSyncMonth');
         var currentMont = '' + fnmsDate.getFullYear() + '-' + g_setLeadingZero(fnmsDate.getMonth() + 1);
@@ -1074,37 +1079,37 @@ function g_forceUserToSyncOnNewMonth() {
             return false;
         } else {
             g_alert('You haven`t synchronised this month. You will be redirected to Sync screen.');
-                        
+
 //            var dao = new Dao();
 //            dao.clear('Orders');
-//            dao.clear('OrderItems'); 
+//            dao.clear('OrderItems');
 
             $.mobile.changePage('sync.html', { transition: "none"});
             sessionStorage.setItem('disableMenuButton', 'true');
 
             return true;
-            
+
         }
-            
+
     } else {
         return false;
     }
 }
 
 function g_forceUserToSyncOnDate() {
-    if (!DaoOptions.getValue('ForceSyncDate')) { 
+    if (!DaoOptions.getValue('ForceSyncDate')) {
         return false;
     } else {
         var lastSyncDate = new Date(localStorage.getItem('lastSyncDate'));
         var forceSyncDate = new Date(DaoOptions.getValue('ForceSyncDate'));
         var currentDate = new Date();
-        
+
         if (forceSyncDate > lastSyncDate && currentDate >= forceSyncDate) {
             g_alert(DaoOptions.getValue('ForceSyncMessage', 'You need to update your pricing information. You will be redirected to Sync screen.'));
-                        
+
 //            var dao = new Dao();
 //            dao.clear('Orders');
-//            dao.clear('OrderItems'); 
+//            dao.clear('OrderItems');
 
             $.mobile.changePage('sync.html', { transition: "none"});
             sessionStorage.setItem('disableMenuButton', 'true');
