@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="jquery/jquery.mobile-1.2.0.min.css" />
         <link rel="stylesheet" href="Rapidtrade.css" />
 
-        <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>	
+        <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>
 
         <script type="application/javascript"  src="jquery/jquery.mobile-1.2.0.min.js"></script>
         <script type="application/javascript" src="script/globals.js"></script>
@@ -23,7 +23,7 @@
                 <script>
                     $('#companypage').bind("pagebeforecreate", companyOnPageBeforeCreate);
                     $('#companypage').bind("pageshow", companyOnPageShow);
-                </script>			
+                </script>
         	<div data-role="header">
                 <table style="margin-left:auto; margin-right:auto; height:50px;">
             	<tr><td class="companyName"></td><td>&nbsp;</td></tr>
@@ -32,7 +32,7 @@
                		<a id="menuButton" data-role="button" data-icon="home" data-iconpos="left">Menu</a>
                		<a class="invisible" id="backbtn" data-role="button" href="#" data-icon="arrow-l" data-iconpos="left" data-direction="reverse" data-transition="none">Back</a>
                	</div>
-                <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right" style="vertical-align: middle;"> 
+                <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right" style="vertical-align: middle;">
                     <div id="thumbnailModeDiv" style="float:left; vertical-align: top;">
                     <fieldset data-role="controlgroup" data-type="horizontal" id="thumbnailMode" data-mini="true" style="height: 30px; margin: 0px;">
                                 <input type="radio" data-icon="bullets" data-iconpos="right" name="thumbnailMode" id="On_Thumbs" value="On_Thumbs"  />
@@ -42,19 +42,19 @@
                     </fieldset>    </div>
                     <a  class="invisible" id="companyHistoryRefresh" data-role="button" href="#" data-icon="refresh" data-iconpos="left" data-direction="reverse" data-transition="none">Refresh</a>
                         <!--<span id="thumbnailModeDiv"><select id="thumbnailMode" data-mini="true" data-native-menu="true" data-inline="true">
-                            <option value="On Thumbs">On Thumbs</option>                                
+                            <option value="On Thumbs">On Thumbs</option>
                             <option value="Off Thumbs">Off Thumbs</option>
-                        </select></span>-->                        
+                        </select></span>-->
                         <select id="mode" data-mini="true">
                             <option value="Online" class="multiLanguage">
                                 Online
-                            </option>                                
+                            </option>
                             <option value="Offline" class="multiLanguage">
                                 Offline
                             </option>
-                        </select>                        
+                        </select>
                         <a id="companyNextButton" data-role="button" data-icon="arrow-r" data-iconpos="right">History</a>
-                </div> 
+                </div>
             </div>
             <div class="scroll-to-top">
 			</div>
@@ -65,8 +65,8 @@
             		</td>
             		<td class="hideonphone"><h2 class="multiLanguage">Details</h2></td>
                         <!--<td id="syncMasterChart"><a data-role="button" data-inline="true">Sync Master Chart</a></td>-->
-            		<td>
-                            <div style="width:480px; float:right;" id="show" data-role="fieldcontain">
+            		<td align="right">
+                            <div style="width:500px; float:right;" id="show" data-role="fieldcontain">
                                 <fieldset id="companyTabs" data-role="controlgroup" data-type="horizontal">
                                     <input id="radio1" name="" value="details" type="radio" checked="checked">
                                     <label for="radio1" id="radio1Label">
@@ -100,10 +100,10 @@
                                 <a data-role="button" data-inline="true" data-icon="refresh" id="syncHistoryButton" class="invisible">History</a>
 		            </div>
 		            <div id="contacts" class="hidden" >
-	                    <div data-role="content">                    
+	                    <div data-role="content">
 	                         <ul id="contactlist" data-role="listview" data-filter="false" data-inset="true">
-	
-	                             <!--<li><a href="#" data-transition="pop" data-rel="popup" data-position-to="window">Button</a>--> 
+
+	                             <!--<li><a href="#" data-transition="pop" data-rel="popup" data-position-to="window">Button</a>-->
 	                            <!-- </li>-->
 	                         </ul>
 	                    </div>
@@ -168,7 +168,7 @@
                             </fieldset>
                         </td>
                     </tr>
-                </table>                
+                </table>
                <div style="margin: 5px;">
                     <div id="activities">
                         <ul id="activityUL" data-inset="true" data-divider-theme="d" data-role="listview" data-split-icon="star" data-split-theme="c"></ul>
@@ -189,27 +189,27 @@
                     <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
                     <img class="popphoto" src="img/busy.png" style="max-height:512px;" alt="Busy">
 		</div>
-				<!--  
+				<!--
                 <div data-role="popup" data-history="false" id="imagePopup">
 		           <p>
 		           	<img src="">
-		           </p> 
+		           </p>
 		           <a data-role="button" data-inline="false" style="margin-top:20px" href="#historypage">
 		            	Close
-		        	</a>           
-        		</div> 
+		        	</a>
+        		</div>
         		-->
-        		<div data-role="popup" data-history="false" id="activityPopup" style="min-width:400px">         
-        		</div> 
+        		<div data-role="popup" data-history="false" id="activityPopup" style="min-width:400px">
+        		</div>
             </div>
             <div data-role="content" id="orderDetailsPanel" class="invisible companyPagePanel">
             	<h2>Order Details</h2>
             	<div id="orderDetailspopup"></div>
 		        <h2>Order Items</h2>
 	            <div id ="orderItemspopup" class="historyOrderPopupPanel">
-	             	<ul id="orderitemlist" data-inset="true"  data-role="listview" data-theme="b" data-divider-theme="b" class="ui-listview ui-corner-all ui-shadow"></ul>                   	 	
+	             	<ul id="orderitemlist" data-inset="true"  data-role="listview" data-theme="b" data-divider-theme="b" class="ui-listview ui-corner-all ui-shadow"></ul>
 	            </div>
-		    </div> 
+		    </div>
 			<div id="searchBarPanel" data-role="content" class="invisible">
 		    	<table class="rtTableLabel">
 		           	<tr>
@@ -242,13 +242,13 @@
 					            <option value="on">Incl</option>
 					        </select>
 			            </td>
-		            	
-		               <!--  
+
+		               <!--
 		               <td class="categorySearchWidget"><a id="categoriesButton" data-role="button" data-icon="arrow-l" data-iconpos="left" data-inline="true">Categories</a></td>
 		           		-->
 		           	</tr>
 		        </table>
-		 
+
 		         <table style="width:97%; margin-left:10px;" class="options basicSearchWidget"  id="searchDiv">
                             <tr>
 		          	<td><input  type="search" name="search" id="search" value="" placeholder="Search for products" /></td>
@@ -258,13 +258,13 @@
                                         <a id="chooseTemplate" href="#" data-role="button" data-iconpos="notext" data-icon="arrow-d" data-theme="c">My Range</a>
                                         <a id="expandcategory" class="ui-disabled" href="#" data-role="button" data-iconpos="notext" data-icon="arrow-r" data-theme="c">Expand</a>
                                     </div>
-                                    
+
                                 </td>
 <!--                                <td id="orderTypeTD" align="right" style="width:170px;" class="invisible">
                                     <div style="float:right;">
                                         <select id="orderTypeChoice" data-mini="false" data-native-menu="true" data-inline="false">
                                         </select>
-                                    </div>                                    
+                                    </div>
                                 </td>-->
                                 <!--
                                 <td align="right" style="width:32px;">
@@ -273,12 +273,12 @@
                                     <a id="expandcategory" href="#" data-role="button" data-icon="arrow-r" data-iconpos="notext" data-theme="c" data-inline="true">Delete</a>
                                 </td>
                                 <td id="scanbarcodetd" align="right" style="width:32px;" class="invisible">
-                                    <a id="scanbarcode" href="#"  data-role="button" data-inline="true"><img src="img/Barcode-Scanner-32.png"/></a>     
+                                    <a id="scanbarcode" href="#"  data-role="button" data-inline="true"><img src="img/Barcode-Scanner-32.png"/></a>
                                 </td>
                                 -->
                             </tr>
-		         </table> 	                  
-		    </div> 
+		         </table>
+		    </div>
             <div id="advancedSearchPanel" data-role="content" class="invisible companyPagePanel" data-display="push">
 	          <a id="advancedSearchBackButton" data-icon="arrow-l"  data-role="button" data-inline="true">Basic Search</a>
 	          <a id="advancedSearchButton" data-icon="search"  data-role="button" data-inline="true" style="float:right;">Search</a>
@@ -306,15 +306,15 @@
 	          </div>
 	          	<div id="advancedSearchInfoDiv" class="yellowpanel infoPanel invisible"><img src="img/info-48.png">
 					<div class="infoPanelText">No results found.</div>
-				</div>  
+				</div>
 		         <div data-role="popup" id="imagePopup" data-history="false" data-theme="b" data-overlay-theme="a" class="ui-content">
                             <img src="" alt="Image not available" title="Close"/>
-		      	</div>	        
-	    	</div>   		
+		      	</div>
+	    	</div>
 		    <div id="pricelistPanel" data-role="content" class="invisible companyPagePanel">
 		    	<div id="pricelistInfoDiv" class="yellowpanel infoPanel invisible"><img src="img/info-48.png">
 					<div class="infoPanelText">Enter in search criteria to list products.</div>
-				</div>  
+				</div>
 		         <div class="hidden greypanel" id="barcodescanned">
 		        	Product added to shopping cart
 		        </div>
@@ -332,11 +332,11 @@
 			         <td>Page</td><td><label class="pageNumber"></label></td>
 			         <td><a class="next" data-role="button" data-icon="arrow-r" data-mini="true" data-iconpos="right" data-inline="true" href="#">Next 50</a></td>
 		        </tr></table>
-		        
+
 		        <div data-role="popup" id="popupCategory" data-history="false" data-theme="d" data-overlay-theme="a">
                             <ul id="ulCategories" data-role="listview" data-inset="true" style="min-width:210px;" data-theme="d"></ul>
                         </div>
-		        
+
 		        <!-- Quantity popup -->
 		        <div data-role="popup" id="quantityPopup" data-history="false" data-theme="b" data-overlay-theme="a" class="ui-content">
 		            <div id ="quantityPopupContent">
@@ -350,30 +350,30 @@
 		            </a>
 		        </div>
 		        <!-- End of quantity popup -->
-                        
+
                         <!-- Extra complex search popup -->
 		        <div data-role="popup" id="extrasearchComplexPopup" data-history="false" data-theme="b" data-overlay-theme="a" class="ui-content">
                             <div id="extrasearchComplexHeading"></div>
                             <div id="extrasearchComplexList"><ul data-role="listview" data-inset="true" data-divider-theme="d" style="min-width:210px;"></ul></div>
 		        </div>
 		        <!-- End of extra complex search popup -->
-                        
-                        
-		        
+
+
+
 		    </div>
-		    
-		    <div id="productDetailPanel" data-role="content" class="invisible companyPagePanel">    	
+
+		    <div id="productDetailPanel" data-role="content" class="invisible companyPagePanel">
 		    	<table style="width: 100%; max-width:680px; margin-left: 35px;">
 		    		<tr>
-		    		<!-- 
+		    		<!--
 		    		<td class="productDetailsMenuButton" style="width:20px;">
 		    			<a href="#productDetailsMenuPanel" data-role="button" data-icon="bars" data-inline="true" data-iconpos="notext">Menu</a>
 		    		</td>
 		    		 -->
-			    	<td><h5 class="hproductId"></h5><h3 class="hdescription"></h3></td>                   	
-			    	<td>  
+			    	<td><h5 class="hproductId"></h5><h3 class="hdescription"></h3></td>
+			    	<td>
 			    		<a id="zoomOutButton" class="productImageZoomButton" data-role="button" data-inline="true" data-theme="b" data-icon="search" data-iconpos="right">Zoom Out</a>
-			    		<a id="zoomInButton" class="productImageZoomButton hideonphone" data-role="button" data-inline="true" data-theme="b" data-icon="search" data-iconpos="right">Zoom In</a>	
+			    		<a id="zoomInButton" class="productImageZoomButton hideonphone" data-role="button" data-inline="true" data-theme="b" data-icon="search" data-iconpos="right">Zoom In</a>
 			    	</td>
 		        </tr></table>
 		    	<div class="panel-white-rounded" style="; max-width:680px;">
@@ -382,14 +382,14 @@
 		               	<a id="nextProductButton" class="pricelistNextProd hidden"  data-role="button" data-icon="arrow-r" data-iconpos="right" data-transition="none" data-theme="c" class="ui-btn-right" >Next</a>
 		               	<img id="productimagebig" alt="" src="" style="display:block; margin-left:auto; margin-right:auto;"/>
 		                <div id="loadImage" class="hidden ">
-		                   <label class="pricelistLoadImageText" ><strong>Loading Image ...</strong></label>      
-		                </div>     	
+		                   <label class="pricelistLoadImageText" ><strong>Loading Image ...</strong></label>
+		                </div>
 		            </div>
 			        <div id="zoomedout" class="ui-grid-a" style="max-width:780px">
 			            <div id="pricePanel" class="ui-block-a"  style="width: 300px; margin-left: 5px;" >
 			                <div  data-role="content" class="panel-grey-rounded">
 		                      <div  data-role="fieldcontain"  >
-                                            <label for="quantity"><strong>Qty</strong></label> 
+                                            <label for="quantity"><strong>Qty</strong></label>
                                             <input data-inline="true" placeholder="Quantity" type="number" name="quantity" id="quantity" value="" class="numbersOnly ui-disabled" min="0" onchange="productdetailFetchPrice()" style="width:230px;" tabindex="1"/>
 		                      </div>
 		                      <div  data-role="fieldcontain"  >
@@ -411,7 +411,7 @@
 			                                    <label class="multiLanguage">Discount</label>
 			                                    <img src="img/busy.png" class="pricelistBusyImg"/>
 			                                </div>
-			                                <!--  
+			                                <!--
 			                                <div  data-role="fieldcontain" class="writable">
 												<label for="discountvalue"><strong>Discount</strong></label>
 					                        	<input type="text" id="discount-w" style="width:100px;float:right;"/>
@@ -442,13 +442,13 @@
 			                            </li>
 			                        </ul>
 			                    </div>
-			                     
+
 				                <div data-role="popup" id="valuePopup" data-history="false" data-theme="b" data-overlay-theme="a" class="ui-content">
 					               <div id ="popupContent">
 			                           <div data-role="fieldcontain" id="discountedit">
 											<label for="discount-w" class="productdetailValueDescription"><strong>Discount</strong></label>
 			                     			<input type="number" id="discount-w" class="pricelistInput"/>
-			                   			</div> 
+			                   			</div>
 			                            <div data-role="fieldcontain" id="nettedit">
 											<label for="nett-w" class="productdetailValueDescription"><strong>Nett</strong></label>
 			                       			<input type="number" id="nett-w" class="pricelistInput"/>
@@ -468,8 +468,8 @@
 							                <option value="on">
 							                    Margin
 							                </option>
-							            </select>  
-							            <span id="marginValue" style="font-size:20px; margin-left:20px; position:relative; top:-7px;"></span>          
+							            </select>
+							            <span id="marginValue" style="font-size:20px; margin-left:20px; position:relative; top:-7px;"></span>
 						        	</div>
 			        			</div>
 			                </div>
@@ -480,7 +480,7 @@
 		                    </div>
                                         <div style="display:inline;text-align: left; margin-left: 10px"><a data-role="button" id="prevImage" data-inline="true" class="ui-disabled invisible">Previous</a></div>
                                         <div style="display:inline;text-align: right; margin-right: 10px"><a data-role="button" id="nextImage" data-inline="true" class="invisible">Next</button></a></div>
-		                    <div>  	
+		                    <div>
 		        			</div>
 			            </div>
 			            <div id="reasonDiv" style="clear: both; width:340px; padding-top: 10px" class="invisible">
@@ -490,20 +490,20 @@
 			                	</label>
 			                	<input name="" id="reason" value="" type="text">
 		          		  	</fieldset>
-		        		</div> 
+		        		</div>
 			        </div>
 			        <div id="productInfoMsgDiv" class="yellowpanel hidden">
-			        	
+
 			        </div>
 			        <div data-role="popup" id="productMessagePopup" data-history="false" data-theme="e" style="padding:10px;">
-			            <p></p>  
+			            <p></p>
                                     <br />
 			            <a id="okButton" href="company.html" data-role="button" data-inline="false" >
 			            	   OK
 			        	</a>
 			            <a id="cancelButton" href="company.html" data-role="button" data-inline="false">
 			                   Cancel
-			            </a>  
+			            </a>
 		      		</div>
                                 <div data-role="popup" id="discOverwritePassPopup" data-history="false" data-theme="b" data-overlay-theme="a" class="ui-content">
                                     <div >
@@ -520,21 +520,21 @@
                                         OK
                                     </a>
                                 </div>
-                            </div>        
+                            </div>
 		    </div>
 		    <div id="productInfoPanel" data-role="content" class="invisible companyPagePanel">
 		        <table style="width: 100%"><tr>
 		    		<td class="productDetailsMenuButton" style="width:20px;">
 		    			<a href="#productDetailsMenuPanel" data-role="button" data-icon="bars" data-inline="true" data-iconpos="notext">Menu</a>
 		    		</td>
-			    	<td><h5 class="hproductId"></h5><h3 class="hdescription"></h3></td>                   	
-			    	<td>  
+			    	<td><h5 class="hproductId"></h5><h3 class="hdescription"></h3></td>
+			    	<td>
 			    	</td>
 		        </tr></table>
-		        <div class="panel-white-rounded" id="productInfoDiv">   
+		        <div class="panel-white-rounded" id="productInfoDiv">
 		        	<form id="productInfoForm">
-		        		
-		          	</form> 		
+
+		          	</form>
 		    	</div>
 		    </div>
 		    <div id="componentsPanel" data-role="content" class="invisible companyPagePanel">
@@ -542,8 +542,8 @@
 		    		<td class="productDetailsMenuButton" style="width:20px;">
 		    			<a href="#productDetailsMenuPanel" data-role="button" data-icon="bars" data-inline="true" data-iconpos="notext">Menu</a>
 		    		</td>
-			    	<td><h5 class="hproductId"></h5><h3 class="hdescription"></h3></td>                   	
-			    	<td>  
+			    	<td><h5 class="hproductId"></h5><h3 class="hdescription"></h3></td>
+			    	<td>
 			    	</td>
 		        </tr></table>
 		    	<div class="panel-white-rounded">
@@ -569,18 +569,18 @@
 							</table>
 				       </div>
 				       <div class="ui-block-b">
-				       <!--  
+				       <!--
 				              <div style="margin-left:10px; height:338px" class="panel-white-rounded" style="margin-left 10px; height:336px; width:336px; vertical-align: middle; display: table-cell; ">
-				              	<img class="productimage" alt="" src="" style="display:block; margin-left:auto; margin-right:auto;" />                    	
+				              	<img class="productimage" alt="" src="" style="display:block; margin-left:auto; margin-right:auto;" />
 				              </div>
-				              <div>  	
+				              <div>
 				  			</div>
 				  		-->
 				       </div>
 		    		</div>
-                            
+
 		    	</div>
-		    	
+
 		    	<div data-role="popup" id="componentQuantityPopup" data-history="false" data-theme="b" data-overlay-theme="a" class="ui-content">
 			        <div id="componentDataDiv">
 			        </div>
@@ -593,18 +593,18 @@
 			        <a id="componentQuantityOKButton" href="#pricelistpage" data-role="button" data-inline="false">
 			            OK
 			        </a>
-		       	</div>   
+		       	</div>
 		    </div>
 		    <div id="technicalInfoPanel" data-role="content" class="invisible companyPagePanel">
 		        <table style="width: 100%"><tr>
 		    		<td class="productDetailsMenuButton" style="width:20px;">
 		    			<a href="#productDetailsMenuPanel" data-role="button" data-icon="bars" data-inline="true" data-iconpos="notext">Menu</a>
 		    		</td>
-			    	<td><h5 class="hproductId"></h5><h3 class="hdescription"></h3></td>                   	
-			    	<td>  
+			    	<td><h5 class="hproductId"></h5><h3 class="hdescription"></h3></td>
+			    	<td>
 			    	</td>
 		        </tr></table>
-		        <div class="panel-white-rounded" id="technicalInfoDiv">    		
+		        <div class="panel-white-rounded" id="technicalInfoDiv">
 		    	</div>
 		    </div>
 		    <div id="largeImagePanel" data-role="content" class="invisible companyPagePanel">
@@ -612,20 +612,20 @@
 		    		<td class="productDetailsMenuButton" style="width:20px;">
 		    			<a href="#productDetailsMenuPanel" data-role="button" data-icon="bars" data-inline="true" data-iconpos="notext">Menu</a>
 		    		</td>
-			    	<td><h5 class="hproductId"></h5><h3 class="hdescription"></h3></td>                   	
-			    	<td>  
+			    	<td><h5 class="hproductId"></h5><h3 class="hdescription"></h3></td>
+			    	<td>
 			    	</td>
 		        </tr></table>
 		        <div class="panel-white-rounded">
 		    		<img id="largeImage" alt="" src="" style="display:block; margin-left:auto; margin-right:auto;"/>
 		    	</div>
-		    </div>   
+		    </div>
 	        <div id="activityPanel"  data-role="content" class="invisible companyPagePanel">
                     <div class="rtlabel hideonphone">
                             <img class="rtlabelimg" src="img/Monitor_64.png"/>
                             <h2 class="rtlabeltext multiLanguage">Add Activity</h2>
                     </div>
-                    <div class="ui-grid-a">	
+                    <div class="ui-grid-a">
                             <div class="ui-block-a" id="activitylist">
                                     <ul id="activitytypelist"  data-role="listview" data-divider-theme="b" data-inset="true"></ul>
                             </div>
@@ -635,8 +635,8 @@
                 <div data-role="popup" data-history="false" id="activityErrorMessagePopup" data-theme="e">
                     <p style="margin: 20px">You must take a photo.</p>
                     <a data-role="button" href="#activityPanel">OK</a>
-                </div>                    
-         </div>        
-     	</div>    
+                </div>
+         </div>
+     	</div>
   	</body>
 </html>

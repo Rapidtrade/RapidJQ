@@ -14,34 +14,50 @@ var isMapShown = false;
 var g_dashboardPageTranslation = {};
 var g_userDailySalesDetailTranslation = {};
 var g_monthlySummaryTranslation = {};
+var g_dashboardExtraReports = [];
 
 function dashboardOnPageBeforeCreate() {
-    
-    g_dashboardPageTranslation = translation('dashboardpage');      
+
+    g_dashboardPageTranslation = translation('dashboardpage');
 }
 
 //********************************************************************************** Load Page
 $(document).ready(function () {
-	
-    if (!g_currentUser()) 
-            return;  
-        
+
+    if (!g_currentUser())
+            return;
+
     g_dashboardPageTranslation.safeExecute(function(){
-        
+
         fetchUsers();
-        fetchActivityTypes();        
+        fetchActivityTypes();
     });
     //fetchMonthySummary()
-    
+
     var dao = new Dao();
-    dao.openDB(function () { bind(); DaoOptions.fetchOptions();});
+    dao.openDB(function () { bind(); DaoOptions.fetchOptions(init);});
 });
 
 //********************************************************************************** Bind Events
+function init() {
+    if (DaoOptions.getValue('DashBoardReports','')) {
+        g_dashboardExtraReports = JSON.parse(DaoOptions.getValue('DashBoardReports',''));
+        for (var i = 0; i < g_dashboardExtraReports.length; ++i) {
+            $('#dashboardReports').append('<li data-theme="c">' +
+                '<a href="#customreport" data-transition="slide" onclick="dashboardOnExtraItemClick(' + i + ')">' +
+                    '<span class="multiLanguage">' + g_dashboardExtraReports[i].name + '</span>' +
+                '</a>' +
+            '</li>');
+        }
+        $('#dashboardReports').listview('refresh');
+    }
+}
+
+//********************************************************************************** Bind Events
 function bind() {
-    
+
     $('.headerLogo').attr('src', g_logo);
-	
+
     $("#msName").change(function () {
         $("#msActivity")[0].selectedIndex = 0;
         $("#msActivity").selectmenu("refresh");
@@ -62,11 +78,11 @@ function bind() {
     	selectedDate = moment($("#duedate2").val());
         //fetchCallCycle();
     });
-    
+
     $('#dsSubmit').click(function() {
         fetchDailySummary();
     });
-    
+
 
     $("#alSubmit").click(function () {
         fetchActivityList();
@@ -95,55 +111,55 @@ function bind() {
     $("#alCancel").click(function () {
         cancelComment("al");
     });
-    
+
     $('input[type="radio"]').change(function() {
-    	
+
         isMapViewActive = $(this).attr('value') == 'map';
-    	
+
     	$('#dailyMap').toggleClass('invisible', !isMapViewActive);
 		$('#dailyList').toggleClass('invisible', isMapViewActive);
-		
-    	if (isMapViewActive)    		
+
+    	if (isMapViewActive)
     		showMap();
     });
-    
+
     $('#alActivity, #mcsActivity').change(function() {
-    	
+
     	var that = this;
-    	
+
     	var onSuccess = function(activityType) {
-    		
+
     		var defaultDataArray = activityType.DefaultData && activityType.DefaultData.split(',') || [];
-    		
-    		var summaryType = that.id.replace('Activity', ''); 
-    	
+
+    		var summaryType = that.id.replace('Activity', '');
+
     		$('#' + summaryType + 'ChoiceDiv').toggle(defaultDataArray.length > 0);
-    		
+
     		if (defaultDataArray.length)
     			showActivityChoice('#' + summaryType + 'Choice', defaultDataArray);
-    		
-    	};    	
-    	
+
+    	};
+
     	var dao = new Dao();
-    	dao.get('ActivityTypes', g_currentUser().SupplierID + $(this).val(), onSuccess);    	
+    	dao.get('ActivityTypes', g_currentUser().SupplierID + $(this).val(), onSuccess);
     });
-    
+
     $('.subDBPBackButton').off().on('click', function() {
         $.mobile.changePage('dashboard.html');
     });
 }
 
 function showActivityChoice(choiceSelector, options) {
-	
-	$(choiceSelector).empty(); 
-	
+
+	$(choiceSelector).empty();
+
 	$(choiceSelector).append('<option value="ALL" selected>All</option>');
-	
+
 	for (var i = 0; i < options.length; ++i) {
-		
+
 		$(choiceSelector).append('<option value="' + options[i] + '">' + options[i] + '</option>');
 	}
-	
+
     $(choiceSelector).selectmenu('refresh');
 }
 
@@ -172,13 +188,13 @@ function filterActivity(activityname) {
 
 //***************************************************************************** User Summary
 function usersummaryShow(){
-    fetchUsers();	
+    fetchUsers();
 }
 
 function fetchUsers(){
 
     var url = (DaoOptions.getValue('LiveDashboardURL') || g_restUrl) + 'Dashboard/GetUsers?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&format=json';
-    
+
     //Clear user
     $('#usersummarytable tbody').empty();
 
@@ -204,7 +220,7 @@ function fetchUsers(){
                     '<td class="name">' + item.Name + '</td>' +
                     '<td class="activ">' + getTrafficLights(logindate) + '</td>' +
                     '<td class="date">' + logindate.format("ddd, MMM DD YY, h:mm a") + '</td>' +
-                    '<td class="num">' + item.ActivitiesThisMonth + '</td>' + 
+                    '<td class="num">' + item.ActivitiesThisMonth + '</td>' +
                     '<td class="num">' + item.OrdersThisMonth + '</td>' +
                     '</tr>';
 
@@ -250,9 +266,9 @@ function getTrafficLights(logindate) {
 
 //**************************************************************************** Activity Types
 function fetchActivityTypes() {
-    
+
     $('#msActivity').append("<option>" + g_dashboardPageTranslation.translateText('Show All...') + "</option>");
-    
+
     var url = g_restUrl + 'ActivityTypes/GetCollection?supplierID=' + g_currentUser().SupplierID + '&skip=0&top=100&format=json';
     $.mobile.loading("show");
     $.ajax({
@@ -275,17 +291,17 @@ function fetchActivityTypes() {
 }
 
 function monthlySummaryOnPageBeforeCreate() {
-    
+
     g_monthlySummaryTranslation = translation('monthlysummary');
 }
 
 function monthlySummaryOnPageShow() {
-    
+
     g_monthlySummaryTranslation.safeExecute(function() {
-        
+
         g_monthlySummaryTranslation.translateButton('#msBack', 'Dashboard');
-    });    
-    
+    });
+
     fetchMonthySummary();
 }
 
@@ -346,17 +362,17 @@ function fetchMonthySummary() {
 
 //**************************************************************************** Daily Summary
 function fetchDailySummary() {
-	
+
 	locationArray = [];
 	locationTitleArray = [];
-	
+
 	isMapShown = false;
 
 	var username = $("#dsName").val();
-	
+
 	$('#viewChoiceDiv').toggleClass('invisible', username == selectUserText);
 	selectedDate = moment($("#duedate").val());
-	
+
     $("#loading").fadeIn();
     var start = selectedDate.format("YYYYMMDD");
 	var end = selectedDate.add('days',1).format("YYYYMMDD");
@@ -365,9 +381,9 @@ function fetchDailySummary() {
 	var input = '';
 //	gmapurl = '';
 	$.mobile.loading("show");
-    
+
     console.log(url);
-    
+
     $.ajax({
         type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'jsonp',
         success: function (json) {
@@ -387,20 +403,20 @@ function fetchDailySummary() {
             var n = arr.length - 1;
             for (i = n; i >= 0; i--) {
                 var item = arr[i];
-                
+
                 var dateFromSrv = (item.DueDate ? item.DueDate.replace('/Date(','').replace(')/','').split('+') : new Array(0,1));
                 var mom = new moment(parseInt(dateFromSrv[0]));
                 var duedate;
-                
+
                 //if (item.EventTypeID === 'ORDERS') {
                 //    var offset = new Date().getTimezoneOffset();
                 //    duedate = new Date(parseInt(item.DueDate.substr(6, 13)) + offset * 60000);
                 //} else {
-                    duedate = mom.toDate(); 
+                    duedate = mom.toDate();
                     //duedate.setHours(duedate.getHours() + parseInt(dateFromSrv[1].substr(0,2)));
                 //}
-                
-                
+
+
                 //var offset = new Date().getTimezoneOffset();
                 //var duedate = new Date(parseInt(item.DueDate.substr(6, 13)) + offset * 60000);
 
@@ -427,14 +443,14 @@ function fetchDailySummary() {
                 input = input.replace("&", "and");
 
                 var markerTitle = '(' + time + ') ' + item.Name;
-                
+
                 var isItemMarked = (locationTitleArray.indexOf(markerTitle) != -1);
-                
+
                 if (item.Longitude && item.Latitude && !isItemMarked ) {
-                	
+
                 	var newLocation = new google.maps.LatLng(item.Latitude, item.Longitude);
                 	locationArray.push(newLocation);
-                	locationTitleArray.push(markerTitle);                             	
+                	locationTitleArray.push(markerTitle);
                 }
 
             }
@@ -442,8 +458,8 @@ function fetchDailySummary() {
             hideRepeatingValues('#dailySummaryTable tbody tr');
             //$("#loading").fadeOut();
             $.mobile.loading("hide");
-            
-        	if (isMapViewActive)    		
+
+        	if (isMapViewActive)
         		showMap();
         },
         error: function (e) {
@@ -519,13 +535,13 @@ GallPetersProjection.prototype.fromPointToLatLng = function(point, noWrap) {
 };
 
 function _newGoogleMapsMarker(param) {
-	
+
     var r = new google.maps.Marker({
         map: param._map,
         position: param._position/*new google.maps.LatLng(param._lat, param._lng)*/,
         title: param._title
     });
-    
+
     if (g_isiPad() && param._data) {
         google.maps.event.addListener(r, 'click', function() {
             // this -> the marker on which the onclick event is being attached
@@ -544,39 +560,39 @@ function showMap() {
 
 	if (isMapShown)
 		return;
-	
+
 	var mapCenter = new google.maps.LatLng(0,0);
-	
+
 	if (locationArray.length)
 		mapCenter = locationArray[0];
-	
+
 	  var mapOptions = {
-			  
+
 	    zoom: 12,
 	    center: mapCenter,
 	    mapTypeId: google.maps.MapTypeId.ROADMAP
 	  };
-	  
+
 	  var dailyMap = new google.maps.Map(document.getElementById('dailyMap'),
 	      mapOptions);
 
 	  for (var markerIndex in locationArray) {
-		  
+
 		    var marker = _newGoogleMapsMarker({
 		        _map: dailyMap,
 		        _position: locationArray[markerIndex],
 		        _title: locationTitleArray[markerIndex],
 		        _data:  locationTitleArray[markerIndex]
 		    });
-	    
+
 	  }
-	  
+
 	  isMapShown = true;
 }
 
 //******************************************************************************** Activity List
 function fetchActivityList() {
-	
+
     $("#loading").fadeIn();
     var name = $("#alName").val();
     var includeReps = false;
@@ -593,7 +609,7 @@ function fetchActivityList() {
     var url = g_restUrl + "Activities2/GetCollection2?supplierID=" + g_currentUser().SupplierID + "&userID=" + name + "&includeReps=" + includeReps + "&activityTypes=" + activity + "&fromDate=" + start + "&toDate=" + end + "&skip=0&top=300&format=json";
 
     var activityChoice = $('#alChoice').is(':visible') ? $('#alChoice option:selected').val() : '';
-    
+
 	$.mobile.loading("show");
     $.ajax({
         type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'jsonp',
@@ -603,14 +619,14 @@ function fetchActivityList() {
             var rowIndex = 0;
 
             $.each(json, function (i, item) {
-            	
+
             	if (activityChoice && (activityChoice != 'ALL') && item.Data.indexOf(activityChoice) == -1)
             		return true;
-            	
+
                 //make sure its only this rep
-                if (includeReps == false && item.UserID != name) 
+                if (includeReps == false && item.UserID != name)
                 	return true;
-            	
+
                 var mduedate = new moment(parseInt(item.DueDate.substr(6)));
                 var img = "<img onClick=\"showPopup('al','" + item.Name + "','" + item.EventID + "','" + item.UserID + "','" + item.EventTypeID + "','" + (rowIndex++) + "')\" src='img/comment.png'/>";
                 $("#activityListTable tbody").append("<tr>" +
@@ -637,7 +653,7 @@ function fetchActivityList() {
 }
 
 function getRangeStartDate(range) {
-    var starttime = moment(); 
+    var starttime = moment();
     if (range==0) return starttime;                                 //today
     if (range == 1) return starttime.subtract('days', 1);           //yesterday
     if (range == 2) return starttime.day(0);                        //this week
@@ -658,12 +674,12 @@ function getRangeEndDate(range) {
 
 //********************************************************************************  Monthly Calendar Summary
 function fetchMonthlyCalendarSummary() {
-	
+
 	var name = $("#mcsName").val();
-	
+
 	if (name == "SELECT")
 		return;
-	
+
 	var includeReps = false;
 
 	var activity = $("#mcsActivity").val();
@@ -676,29 +692,29 @@ function fetchMonthlyCalendarSummary() {
 
 	$.mobile.loading("show");
 	$('#calendar').empty();
-	
+
     var activityChoice = $('#mcsChoice').is(':visible') ? $('#mcsChoice option:selected').val() : '';
 
 	var fetchedActivities = {};
-	
+
 	$.ajax({
 		type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'jsonp',
 		success: function (json) {
-			
+
 			$.each(json, function (i, item) {
 
             	if (activityChoice && (activityChoice != 'ALL') && item.Data.indexOf(activityChoice) == -1)
             		return true;
-				
+
 				//make sure its only this rep
-				if (includeReps == false && item.UserID != name) 
+				if (includeReps == false && item.UserID != name)
 					return true;
-				
+
 				var startdate = new Date(parseInt(item.DueDate.substr(6)));
 				var enddate = new Date(parseInt(item.EndDate.substr(6)));
-				
+
 				fetchedActivities[item.EventID] = item;
-				
+
 				arr.push({
 					id:item.EventID,
 					title: item.Description,
@@ -716,17 +732,17 @@ function fetchMonthlyCalendarSummary() {
 
 	var maxLoop = 10; //Max wait 10s
 	var myInterval = setInterval(function () {
-		
+
 		if (0 < arr.length || maxLoop == 0) {
 			$('#calendar').fullCalendar({
 				/*editable: true,*/
 				events: arr,
 			    eventClick: function(event) {
-			    	
+
 			    	activityFormShowInPopup(fetchedActivities[event.id], '#dashboardActivityPopup');
 			    },
 			    eventMouseover: function(event) {
-			    	
+
 			    	$(this).css('cursor', 'hand');
 			    }
 			});
@@ -826,20 +842,20 @@ function fetchOrderCountByUser() {
 //******************************************************************************** User Daily Sales Detail
 
 function userDailySalesDetailOnPageBeforeCreate() {
-    
+
     g_userDailySalesDetailTranslation = translation('userDailySalesDetail');
 }
 
 function userDailySalesDetailOnPageShow() {
-    
+
     g_userDailySalesDetailTranslation.safeExecute(function() {
-        
+
         g_userDailySalesDetailTranslation.translateButton('#udsBackButton', 'Dashboard');
         g_userDailySalesDetailTranslation.translateButton('#printButton', 'Print');
-        g_userDailySalesDetailTranslation.translateButton('#udsSubmit', 'Submit'); 
+        g_userDailySalesDetailTranslation.translateButton('#udsSubmit', 'Submit');
     });
-    
-      
+
+
     $('#udsSubmit').off().on('click', fetchUserDailySalesDetail);
     if (g_isVanUser()) {
         $('#printButton').off().on('click', function() {
@@ -852,19 +868,19 @@ function userDailySalesDetailOnPageShow() {
     }
 }
 
-function fetchUserDailySalesDetail() {   
-    
-    var url = g_restPHPUrl + 'GetView?view=vSalesOrderDetailRpt&params=where%20SupplierID=%27' + g_currentUser().SupplierID + 
+function fetchUserDailySalesDetail() {
+
+    var url = g_restPHPUrl + 'GetView?view=vSalesOrderDetailRpt&params=where%20SupplierID=%27' + g_currentUser().SupplierID +
             '%27%20and%20UserID=%27' + $("#udsName").val() + '%27%20and%20OrderDate=%27' + moment($("#udsduedate").val()).format("YYYY-MM-DD") +'%27';
-    
+
     console.log(url);
-    
+
     $.mobile.showPageLoadingMsg();
-    
+
     g_ajaxget(url, onSuccess, onFailure);
-    
+
     function onSuccess(json) {
-        
+
         $('#userDailySalesDetailTable tbody').empty();
         $.each(json, function (i, item) {
             $('#userDailySalesDetailTable tbody').append('<tr><td style="color:black; font-weight: bolder;">' +
@@ -877,52 +893,52 @@ function fetchUserDailySalesDetail() {
                     item.DailyAmount +
             '</td></tr>');
         });
-        
-        hideRepeatingValues('#userDailySalesDetailTable tbody tr');          
-        
-        if (json.length) {            
-            
-            url = g_restPHPUrl + 'GetView?view=vSalesOrderDetailRptTot&params=where%20SupplierID=%27' + g_currentUser().SupplierID + 
+
+        hideRepeatingValues('#userDailySalesDetailTable tbody tr');
+
+        if (json.length) {
+
+            url = g_restPHPUrl + 'GetView?view=vSalesOrderDetailRptTot&params=where%20SupplierID=%27' + g_currentUser().SupplierID +
                     '%27%20and%20UserID=%27' + $("#udsName").val() + '%27%20and%20OrderDate=%27' + moment($("#udsduedate").val()).format("YYYY-MM-DD") +'%27';
-            
+
             console.log(url);
-            
+
             g_ajaxget(url, onSuccess2, onFailure);
-            
+
         } else {
-            
+
             $('#userDailySalesDetailTable tfoot tr:not(:first-child)').addClass('invisible');
-            $.mobile.hidePageLoadingMsg(); 
-        }               
+            $.mobile.hidePageLoadingMsg();
+        }
     }
-    
+
     function onSuccess2(json) {
 
         showTotals(json[0]);
-        $.mobile.hidePageLoadingMsg(); 
+        $.mobile.hidePageLoadingMsg();
     }
-    
+
     function onFailure() {
-        
+
         $.mobile.hidePageLoadingMsg();
         g_alert('ERROR: Data are not available.');
     }
-    
-    function showTotals(json) {        
-        
+
+    function showTotals(json) {
+
         $('#totalSalesAmountExcl').text(json.TotalSalesAmountExcl);
         $('#totalSalesAmountIncl').text(json.TotalSalesAmountIncl);
-        
+
         $('#totalSalesAmountExcl, #totalSalesAmountIncl').closest('tr').removeClass('invisible');
 
         var isVan = g_currentUser().Role && (g_currentUser().Role.indexOf('canInv') !== -1);
-        
+
         if ((DaoOptions.getValue('CalcChange') === 'true') && isVan) {
 
             $('#totalGiven').text(json.ChangeGiven);
             $('#totalTaken').text(json.TotalAmount);
             $('#totalTaken, #totalGiven').closest('tr').removeClass('invisible');
-        }                         
+        }
     }
 }
 
@@ -958,7 +974,7 @@ function showPopupDetail(name, account) {
                     headDate = mduedate.format("DD/MM/YYYY");
                     temp = temp + "<li style='background-color: #CCC;' width='500'>" + mduedate.format("DD/MM/YYYY") + "</li>";
                 }
-                    
+
                 temp = temp + "<li><table>"
                     + "<tr><td class='nowrap' width='400'><strong>" + item.Name + "</strong></td><td class='nowrap' width='100' align='right'>" + mduedate.format("HH:mm") + "</td></tr>"
                     + "<tr><td colspan='2'>" + item.Notes + "</td></tr>"
@@ -1104,4 +1120,20 @@ function hideRepeatingValues(table) {
         prevcol1 = thiscol1;
         prevcol2 = thiscol2;
     });
+}
+
+//************************************************************************************ Custom Reports
+function dashboardOnExtraItemClick(index) {
+    sessionStorage.setItem('dashboardExtraReportIndex', index);
+}
+
+function fetchCustomData() {
+    var dashboardExtraReportIndex = parseInt(sessionStorage.getItem('dashboardExtraReportIndex'), 10);
+    var dashboardExtraReport = g_dashboardExtraReports[dashboardExtraReportIndex];
+
+    $('#customreport .customreportHeader h1').text(dashboardExtraReport.name);
+    var customreportURL = dashboardExtraReport.url.replace('@UserID', g_currentUser().UserID).replace('@RepID', g_currentUser().RepID);
+
+    $('#customreportFrame').attr('src', customreportURL);
+    $('#customreportContent').hide().fadeIn('fast');
 }

@@ -1,39 +1,39 @@
 <!DOCTYPE html>
-<html>   
+<html>
 	<head>
             <title>Dashboard</title>
 	    <meta charset="utf-8" />
-	    <meta name="viewport" content="width=device-width, initial-scale=1" />   
+	    <meta name="viewport" content="width=device-width, initial-scale=1" />
 	    <meta name="apple-mobile-web-app-capable" content="yes"/>
 	    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 	    <meta rel="apple-touch-startup-image" href="img/Splash-P.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px)"/>
 	    <meta rel="apple-touch-startup-image" href="img/splash-l.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)"/>
-	    
+
 	    <link rel="icon" href="img/57x57-icon.png"/>
 	    <link rel="shortcut icon" href="img/57x57-icon.png"/>
 	    <link rel="apple-touch-icon" href="img/57x57-icon.png" sizes="57x57"/>
 	    <link rel="apple-touch-icon" href="img/114x114-icon.png" sizes="114x114"/>
 	    <link rel="apple-touch-icon" href="img/72x72-icon.png" sizes="72x72"/>
 	    <link rel="apple-touch-icon-precomposed" href="img/57x57-icon.png" sizes="android-only"/>
-	
+
             <script src="jquery/jquery-1.8.3.min.js"></script>
 	    <link rel="stylesheet" href="jquery/jquery.mobile-1.2.0.min.css" />
 	    <link rel="stylesheet" href="jquery/jqm-datebox-1.1.0.css" />
 	    <link rel="stylesheet" href="jquery/tables.css" />
 	    <link rel="stylesheet" href="Rapidtrade.css" />
 	    <link href='jquery/fullcalendar/fullcalendar.css' rel='stylesheet' />
-		<link href='jquery/fullcalendar/fullcalendar.print.css' rel='stylesheet' media='print' />        
-      
-	    <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>	
-	
+		<link href='jquery/fullcalendar/fullcalendar.print.css' rel='stylesheet' media='print' />
+
+	    <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>
+
 	    <script type="application/javascript"  src="jquery/jquery.mobile-1.2.0.min.js"></script>
 	    <script type="application/javascript"  src="jquery/jqm-datebox.core.min.js"></script>
 	    <script type="application/javascript"  src="jquery/jqm-datebox.mode.calbox.min.js"></script>
 	    <script type="application/javascript"  src="jquery/jqm-datebox.mode.flipbox.min.js"></script>
 	    <script type="application/javascript"  src="jquery/moment.min.js"></script>
 	    <script type="application/javascript"  src='jquery/fullcalendar/fullcalendar.min.js'></script>
-            
-        
+
+
             <script type="application/javascript"  src="script/globals.js"></script>
             <script type="application/javascript"  src="script/dao.js"></script>
             <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
@@ -42,17 +42,17 @@
             <script type="application/javascript"  src="script/activityform.js"></script>
             <script type="application/javascript"  src="translations/translations.js"></script>
 	</head>
-    <body> 
+    <body>
 
         <!-- Home -->
-        <div data-role="page" id="dashboardpage" class="ipadStatusBar">	
+        <div data-role="page" id="dashboardpage" class="ipadStatusBar">
             <script>
                 $('#dashboardpage').bind('pagebeforecreate', dashboardOnPageBeforeCreate);
-            </script>            
+            </script>
             <div  data-theme="a" data-role="header">
     	        <table style="margin-left:auto; margin-right:auto;">
        			<!-- <tr><td><img class="logoSml headerLogo" src="img/SGlogoSml.png" /> </td><td>&nbsp;</td></tr> -->
-                        <tr><td><img class="logoSml headerLogo" src="img/logoSml.png" /> </td><td>&nbsp;</td></tr> 
+                        <tr><td><img class="logoSml headerLogo" src="img/logoSml.png" /> </td><td>&nbsp;</td></tr>
        			</table>
        			<a id="dashboardMenu" data-role="button" rel="external" href="index.html" data-icon="arrow-l" data-iconpos="left" class="ui-btn-left">
             		Menu
@@ -62,7 +62,7 @@
                 <tr><td><img class="logoSml" style="width:64px; height: 64px;" src="img/Bar_Graph_128x128.png"/> </td><td><h2 class="multiLanguage">Dashboard</h2></td></tr>
        		</table>
             <div data-role="content">
-                <ul data-role="listview" data-divider-theme="b" data-inset="true">
+                <ul id="dashboardReports" data-role="listview" data-divider-theme="b" data-inset="true">
                     <li data-theme="c">
                         <a href="#usersummary" data-transition="slide">
                             <span class="multiLanguage">User Summary</span>
@@ -102,20 +102,20 @@
                         <a href="#userDailySalesDetail" data-transition="slide">
                             <span class="multiLanguage">User Daily Sales Detail</span>
                         </a>
-                    </li>                    
+                    </li>
                 </ul>
             </div>
         </div>
 
         <!-- User Summary -->
-        <div data-role="page" id="usersummary" class="ipadStatusBar">	
+        <div data-role="page" id="usersummary" class="ipadStatusBar">
 	        <script>
 	            $('#usersummary').bind("pageshow", function() {
 	    	        usersummaryShow();
 	            });
             </script>
 	        <div data-role="header" >
-     	        <h1>User Summary</h1>    
+     	        <h1>User Summary</h1>
                  <a data-role="button" href data-icon="arrow-l" data-direction="reverse" data-transition="slide" data-iconpos="left" class="ui-btn-left subDBPBackButton">
                      Dashboard
                  </a>
@@ -135,18 +135,18 @@
                     </thead>
                     <tbody></tbody>
                     </table>
-     	        </div>                
+     	        </div>
              </div>
         </div>
 
         <!-- Monthly Summary -->
-        <div data-role="page" id="monthlysummary" class="ipadStatusBar">	
+        <div data-role="page" id="monthlysummary" class="ipadStatusBar">
 	        <script>
                 $('#monthlysummary').bind("pagebeforecreate", monthlySummaryOnPageBeforeCreate);
-                $('#monthlysummary').bind("pageshow", monthlySummaryOnPageShow);                   
+                $('#monthlysummary').bind("pageshow", monthlySummaryOnPageShow);
             </script>
 	        <div data-role="header" >
-     	        <h1 class="multiLanguage">Monthly Summary</h1>    
+     	        <h1 class="multiLanguage">Monthly Summary</h1>
                  <a id="msBack" data-role="button" href data-icon="arrow-l" data-direction="reverse" data-transition="slide" data-iconpos="left" class="ui-btn-left subDBPBackButton">
                      Dashboard
                  </a>
@@ -196,17 +196,17 @@
 			        </table>
      	        </div>
              </div>
-        </div>   
+        </div>
 
         <!-- Daily Summary -->
-        <div data-role="page" id="dailysummary" class="ipadStatusBar">	
+        <div data-role="page" id="dailysummary" class="ipadStatusBar">
 	        <script>
 	            $('#dailysummary').bind("pageshow", function() {
                     fetchDailySummary();
 	            });
             </script>
-	        <div data-role="header">  	        
-                <h1>Daily Summary</h1>    
+	        <div data-role="header">
+                <h1>Daily Summary</h1>
                  <a data-role="button" href data-icon="arrow-l" data-direction="reverse" data-transition="slide" data-iconpos="left" class="ui-btn-left subDBPBackButton">
                      Dashboard
                  </a>
@@ -231,13 +231,13 @@
                             <div class="ui-block-b">
                                 <input style="width:100%" name="mydate" id="duedate" type="date" data-role="datebox" data-options='{"mode": "calbox", "useImmediate":true,"useButton": false, "useFocus": true, "useInlineBlind": true}' />
                             </div>
-                        </fieldset>	
+                        </fieldset>
                     </div>
                     <a data-role="button" id="dsSubmit">
                         Submit
                     </a>
                 </div>
-				
+
 				<div id="viewChoiceDiv" data-role="fieldcontain" class="invisible" style="width:230px;position:absolute; top:0; right:0">
 		            <fieldset data-role="controlgroup" data-type="horizontal" data-mini="false">
 		                <input id="radio1" name="" value="list" type="radio" checked>
@@ -249,10 +249,10 @@
 		                    Map
 		                </label>
 		            </fieldset>
-       			 </div>				
-       			 
+       			 </div>
+
 				<div id="dailyMap" style="width:100%; height:800px;" class="invisible"></div>
-                
+
                 <div id="dailyList" class="panel-grey-rounded">
 		            <table data-role="table" class="box-table-a" id="dailySummaryTable" style="width: 100%;">
 				        <thead>
@@ -263,13 +263,13 @@
 					            <th scope="col">Details</th>
 					            <th scope="col">Notes</th>
                                 <th scope="col">Comment</th>
-                            </tr> 
+                            </tr>
 				        </thead>
 				        <tbody></tbody>
 			         </table>
                   </div>
                 <br/>
-                
+
                 <iframe id="iframeMap" width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src=""></iframe>
 
                 <div data-role="popup" id="dsPopup" data-history="false" title="Leave a comment" data-theme="c" data-overlay-theme="a" class="ui-content" data-position-to="#position-header">
@@ -281,14 +281,14 @@
                     </fieldset>
                 </div>
 
- 
+
              </div>
-        </div> 
+        </div>
 
         <!-- Activity List -->
         <div data-role="page" id="activitylist" class="ipadStatusBar">
 	        <div data-role="header" >
-     	        <h1>Activity List</h1>    
+     	        <h1>Activity List</h1>
                  <a data-role="button" href data-icon="arrow-l" data-direction="reverse" data-transition="slide" data-iconpos="left" class="ui-btn-left subDBPBackButton">
                      Dashboard
                  </a>
@@ -332,7 +332,7 @@
                             <option value="4">Last Month</option>
 			            </select>
                     </div>
-        
+
                     <div data-role="fieldcontain">
                         <button id="alSubmit" data-theme="c" name="alSubmit">Submit</button>
                     </div>
@@ -349,7 +349,7 @@
                                 <th scope="col">Notes</th>
                                 <th scope="col">Comment</th>
                                 <th scope="col">Event ID</th>
-                                <th scope="col">Data</th>                                
+                                <th scope="col">Data</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -375,7 +375,7 @@
 			    });
 			</script>
 			<div data-role="header" >
-     	        <h1>Monthly Calendar Summary</h1>    
+     	        <h1>Monthly Calendar Summary</h1>
                  <a data-role="button" href data-icon="arrow-l" data-direction="reverse" data-transition="slide" data-iconpos="left" class="ui-btn-left subDBPBackButton">
                      Dashboard
                  </a>
@@ -389,7 +389,7 @@
                         <select id="mcsActivity" name="mcsActivity">
 				            <option value="">Select one...</option>
 			            </select>
-                    </div>    
+                    </div>
 	                <div data-role="fieldcontain" id="mcsChoiceDiv" style="display:none">
 	                    <label for="mcsChoice">
 	                        Choice:
@@ -406,21 +406,21 @@
 				            <option value="SELECT">Select a user...</option>
 			            </select>
                     </div>
-       
+
                     <div data-role="fieldcontain">
                         <button id="mcsSubmit" data-theme="c" name="mcsSubmit">Submit</button>
                     </div>
                 </div>
 				 <div id='calendar'></div>
              </div>
-             <div data-role="popup" data-history="false" id="dashboardActivityPopup" style="min-width:400px">         
-        	 </div> 
+             <div data-role="popup" data-history="false" id="dashboardActivityPopup" style="min-width:400px">
+        	 </div>
         </div>
 
         <!-- Call Cycle -->
         <div data-role="page" id="callcycle" class="ipadStatusBar">
 	        <div data-role="header" >
-     	        <h1>Call Cycle</h1>    
+     	        <h1>Call Cycle</h1>
                  <a data-role="button" href data-icon="arrow-l" data-direction="reverse" data-transition="slide" data-iconpos="left" class="ui-btn-left subDBPBackButton">
                      Dashboard
                  </a>
@@ -436,7 +436,7 @@
 				            <option value="ALL">Select one...</option>
 			            </select>
                      </div>
-                
+
                     <div id="divDuedate" data-role="fieldcontain">
            	            <fieldset data-role="controlgroup" class="ui-grid-b" >
                	            <div class="ui-block-a">
@@ -447,14 +447,14 @@
 				            <div class="ui-block-b">
                                 <input style="width:100%" name="mydate" id="duedate2" type="date" data-role="datebox" data-options='{"mode": "calbox", "useImmediate":true,"useButton": false, "useFocus": true, "useInlineBlind": true}' />
                             </div>
-			            </fieldset>				            
+			            </fieldset>
 	                </div>
 
                     <div data-role="fieldcontain">
                         <button id="ccSubmit" name="ccSubmit">Submit</button>
                     </div>
                  </div>
-                
+
                 <div class="panel-grey-rounded">
                     <table data-role="table" class="box-table-a" id="callcycleTable"  style="width: 100%;">
 	                    <thead>
@@ -481,16 +481,16 @@
 
              </div>
         </div>
-       
+
         <!-- Order Count by User -->
-        <div data-role="page" id="orderCountByUser" class="ipadStatusBar">	
+        <div data-role="page" id="orderCountByUser" class="ipadStatusBar">
 	        <script>
 	            $('#orderCountByUser').bind("pageshow", function () {
 	                fetchOrderCountByUser();
 	            });
             </script>
 	        <div data-role="header" >
-     	        <h1>Order Count by User</h1>    
+     	        <h1>Order Count by User</h1>
                  <a data-role="button" href data-icon="arrow-l" data-direction="reverse" data-transition="slide" data-iconpos="left" class="ui-btn-left subDBPBackButton">
                      Dashboard
                  </a>
@@ -510,22 +510,22 @@
 			        </table>
      	        </div>
              </div>
-        </div>   
+        </div>
 
         <!-- User Daily Sales Detail -->
-        <div data-role="page" id="userDailySalesDetail" class="ipadStatusBar">	
+        <div data-role="page" id="userDailySalesDetail" class="ipadStatusBar">
             <script>
                 $('#userDailySalesDetail').bind("pagebeforecreate", userDailySalesDetailOnPageBeforeCreate);
                 $('#userDailySalesDetail').bind("pageshow", userDailySalesDetailOnPageShow);
             </script>
             <div data-role="header" id="udsHeader">
-                <h1 class="multiLanguage">User Daily Sales Detail</h1>    
+                <h1 class="multiLanguage">User Daily Sales Detail</h1>
                  <a id="udsBackButton" data-role="button" href data-icon="arrow-l" data-direction="reverse" data-transition="slide" data-iconpos="left" class="ui-btn-left subDBPBackButton">
                      Dashboard
                  </a>
                 <a data-role="button" id="printButton" data-transition="none"  class="ui-btn-right">
                     Print
-                </a>  
+                </a>
             </div>
             <div data-role="content">
              	<div class="panel-white-rounded panel-Filter" id="udsInputsDiv">
@@ -547,12 +547,12 @@
                             <div class="ui-block-b">
                                 <input style="width:100%" name="mydate" id="udsduedate" type="date" data-role="datebox" data-options='{"mode": "calbox", "useImmediate":true,"useButton": false, "useFocus": true, "useInlineBlind": true}' />
                             </div>
-                        </fieldset>	
+                        </fieldset>
                     </div>
                     <a data-role="button" id="udsSubmit">
                         Submit
                     </a>
-                </div>                
+                </div>
              	<div class="panel-grey-rounded">
                     <table class="box-table-a" style="width: 100%;" id="userDailySalesDetailTable" >
                         <thead>
@@ -574,7 +574,23 @@
                     </table>
      	        </div>
              </div>
-        </div>        
-        
+        </div>
+		<!-- Custom Report -->
+		<div data-role="page" id="customreport" class="ipadStatusBar">
+			<script>
+				$('#customreport').bind("pagebeforecreate", function() { fetchCustomData();	});
+			</script>
+			<div data-role="header" class="customreportHeader" >
+     	        <h1></h1>
+                 <a data-role="button" href data-icon="arrow-l" data-direction="reverse" data-transition="slide" data-iconpos="left" class="ui-btn-left subDBPBackButton">
+                     Dashboard
+                 </a>
+             </div>
+            <!-- <div data-role="content" >
+             	<div id="customreportContentRefresh" style="width: 100% !important; height: 94% !important; padding: 0px !important; overflow-x: visible !important;"> -->
+					<iframe id="customreportFrame" src="" width="100%" height="700px" seamless></iframe>
+				<!--</div>
+             </div> -->
+		</div>
     </body>
 </html>
