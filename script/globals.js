@@ -16,10 +16,10 @@
 //var g_restPHPUrl = "http://www.super-trade.co.za:8083/rest/index.php/";
 
 
-var g_url = "https://app.rapidtrade.biz/";
+var g_url = "http://api.rapidtrade.biz/";
 var g_restUrl = g_url + "rest/";
 var g_vanSales = false;
-var g_restPHPUrl = "http://107.21.55.154/rest/index.php/";
+var g_restPHPUrl = "http://api.rapidtrade.biz/rest/";
 var g_logo = 'img/logoSml.png';
 var g_menuLogo = 'img/logo.png';
 

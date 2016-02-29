@@ -448,7 +448,7 @@ function syncFetchTable(supplierid, userid, table, method, skip, onSuccess, newR
     var baseURLInfo = {
       
         Orders: (g_syncDownloadOrderURL || DaoOptions.getValue('DownloadOrderURL')) ? (g_syncDownloadOrderURL || DaoOptions.getValue('DownloadOrderURL')) + '/rest/' : g_restUrl,
-        Tpm: 'http://www.super-trade.co.za:8083/rest/index.php/',
+        Tpm:  g_restPHPUrl, //'http://www.super-trade.co.za:8083/rest/index.php/',
         Default: g_restUrl
     }; 
     
