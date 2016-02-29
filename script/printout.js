@@ -68,12 +68,21 @@ function printoutFetchOrder() {
 
     //set the address1
 
+    if (order.CreateDate.indexOf('/Date(') > -1) {
+        var substringedDate = order.CreateDate.substring(6);
+        var parsedIntDate = parseInt(substringedDate);
+        var createDate = new Date(parsedIntDate);
+
+        order.CreateDate = createDate.getFullYear() + "-" + g_setLeadingZero((createDate.getMonth() + 1)) + "-" + g_setLeadingZero(createDate.getDate()) + " " +
+    									g_setLeadingZero(createDate.getHours()) + ":"  + g_setLeadingZero(createDate.getMinutes()) + ":00";
+    }
+
     $('#printoutEmail').text(order.Email);
-    $('#printoutUserField01').text(order.UserField01);
+    $('#printoutUserField01').text(order.UserField01 ? order.UserField01 : '');
     $('#printoutOrderID').text(order.OrderID);
     $('#printoutCreateDate').text(order.CreateDate);
     $('#printoutReference').text(order.Reference);
-    $('#printoutUserField02').text(order.UserField02);
+    $('#printoutUserField02').text(order.UserField02 ? order.UserField02 : '');
     $('#printoutComments').text(order.Comments);
 
 
