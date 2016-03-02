@@ -16,7 +16,7 @@
 //var g_restPHPUrl = "http://www.super-trade.co.za:8083/rest/index.php/";
 
 
-var g_url = "http://api.rapidtrade.biz/";
+var g_url = "http://app.rapidtrade.biz/";
 var g_restUrl = g_url + "rest/";
 var g_vanSales = false;
 var g_restPHPUrl = "http://api.rapidtrade.biz/rest/";
