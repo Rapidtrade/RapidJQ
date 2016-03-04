@@ -534,7 +534,7 @@ function orderHeaderRemovedFromCartSuccess() {
                 sessionStorage.setItem("currentOrder", JSON.stringify(g_orderHeaderOrder));
                 sessionStorage.setItem('invoiceContinue', 'activity');
                 setTimeout(function() {
-                    g_showInvoice('orderHeaderInvoicePopup');                    
+                    g_showInvoice('orderHeaderInvoicePopup');
                 }, 50);
                 $('#orderPrintConfirmation').popup('close');
 //                g_showInvoice('orderHeaderInvoicePopup');
@@ -1149,7 +1149,7 @@ function orderHeaderCreateLineItems() {
 
                             lineItem.ItemID = itemIndex;
                             lineItem.OrderID = g_orderHeaderOrder.OrderID;
-                            var nettValue = lineItem.RepNett ? lineItem.RepNett : lineItem.Nett;
+                            var nettValue = lineItem.RepChangedPrice ? lineItem.RepNett : lineItem.Nett;
 
                             lineItem.Value = g_roundToTwoDecimals(nettValue / ((DaoOptions.getValue('DividePriceByUnit')  === 'true') && g_isPackSizeUnitValid(lineItem.Unit) ? lineItem.Unit : 1) * lineItem.Quantity);
                             lineItem.SupplierID = g_currentUser().SupplierID;
