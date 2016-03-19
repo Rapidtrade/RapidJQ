@@ -876,7 +876,7 @@ function productdetailSaveValue() {
 	var valueId = valueType + '-w';
         
 	//check for max disocunt
-	if (sessionStorage.getItem('maxdiscount')) {
+	if (sessionStorage.getItem('maxdiscount') && valueType === 'discount') {
             
             var value = parseFloat($('#' + valueId).val());
             var gross = parseFloat($('#grossvalue').text().replace(/,/g,''));
@@ -896,7 +896,11 @@ function productdetailSaveValue() {
 	
 	//process
 	productdetailValue(valueType, g_addCommas(parseFloat($('#' + valueId).val()).toFixed(2)) + ('discount' == valueType ? '%' : ''));
-	productdetailOnValueChanged(valueId);
+	if (valueType === 'discount')
+		productdetailOnValueChanged(valueId);
+	else
+		productdetailValue('discount', g_addCommas(parseFloat(0).toFixed(2)) + '%');
+	g_productdetailIsPriceChanged = true;
 }
 
 function productdetailOnValueChanged(changedValueId) {
@@ -963,7 +967,7 @@ function productdetailFetchPrice() {
     var qty = parseInt($('#quantity').attr('value'));
     volumePrice = JSON.parse(sessionStorage.getItem('volumePrice' + g_currentCompany().AccountID));
     sessionStorage.setItem('CachePricelistQty',JSON.stringify(qty));
-
+	if (g_pricelistSelectedProduct.Discount !== parseFloat($('#discount-r').val().replace('%','').replace(/,/g,''))) return;
     if ((!g_productdetailIsPriceChanged || (DaoOptions.getValue('SetRepBoolDiscountUF') && g_pricelistSelectedProduct[DaoOptions.getValue('SetRepBoolDiscountUF')])) && 
             qty && volumePrice && volumePrice !="" && productdetailIsVolumePriceCorrect(volumePrice)) {
         productdetailCalculateDiscount(volumePrice);
@@ -1216,7 +1220,7 @@ function productdetailDeleteItem() {
 
 function productdetailOkClicked(checkStock) {
     
-    if (g_userCanChangeDiscount()) {
+    if (g_userCanChangeDiscount() && !g_productdetailIsPriceChanged) {
         var tmpGross = parseFloat($('#grossvalue').html().replace(/,/g, ''));
         var tmpNett = parseFloat(productdetailValue('nett').replace(/,/g, ''));
         var tmpDiscount = productdetailValue('discount').replace(/,/g, '');

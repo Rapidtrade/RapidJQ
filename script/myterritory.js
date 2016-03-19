@@ -8,7 +8,7 @@ var g_myterritoryItems = [];
 var g_myterritoryPageTranslation = {};
 
 function myterritoryOnPageBeforeCreate() {
-    
+
     $('.headerLogo').attr('src', g_logo);
     g_myterritoryPageTranslation = translation('myterritorypage');
 }
@@ -19,27 +19,27 @@ function myterritoryOnPageBeforeCreate() {
  */
 
 function myterritoryOnPageShow() {
-    
+
     g_myterritoryPageTranslation.safeExecute(function() {
-        
+
         g_myterritoryPageTranslation.translateButton('#addcustomer', 'Add Customer');
         g_myterritoryPageTranslation.translateButton('#savecustomer', 'Save');
         g_myterritoryPageTranslation.translateButton('#cancelcustomer', 'Cancel');
     });
-    
+
     myterritoryOnPageShowSmall();
 
     sessionStorage.removeItem('lastRangeType');
     g_myterritorySearchMyTerritoryText = '';
     $("#searchTerritory").val('');
-    
+
 //    if (!myterritoryFromCache()) {
-        
+
         var dao = new Dao();
         dao.openDB(function () { myterritoryInit(); });
 //    }
-    
-    
+
+
     myterritoryBind();
 }
 
@@ -54,7 +54,7 @@ function myterritoryOnPageShowSmall() {
  * All binding to buttons etc. should happen in this <yyy>Bind function() method
  */
 function myterritoryBind() {
- 	
+
     //bind add customer
     $('#addcustomer').click(function () {
         myterritoryCreateCompanyObject();
@@ -119,16 +119,16 @@ function myterritoryBind() {
     });
 
     $('#myTerritorytoMenu').click(function () {
-    	
+
     if ($('#myTerritorytoMenu .ui-btn-text').text() == 'Back')
     	myTerritoryShowCustomerForm(false);
-    else	
+    else
     	g_loadMenu();
    });
-    
+
     $('#savecustomer, #cancelcustomer').click(function () {
-    	
-    	if ($(this).attr('id') == 'savecustomer') 
+
+    	if ($(this).attr('id') == 'savecustomer')
     		DaoOptions.getValue('LiveCompanyAddURL') ? myterritorySaveLiveCompany() : myterritorySaveDB2Company();
     	else
     		myTerritoryShowCustomerForm(false);
@@ -140,7 +140,7 @@ function myterritoryBind() {
  * Look for our user, if it doesn't exist, call sync screen
  */
 function myterritoryInit() {
-	
+
     g_myterritoryCurrentMyterritoryPage = 1;
     g_myterritoryNumerOfIteminMyterritory = 0;
     g_myterritoryItemsHtml = '';
@@ -153,8 +153,8 @@ function myterritoryInit() {
 	} else {
 		$("#SGforBranch").hide();
 		$("#addcustomer").show();
-	}	
-	
+	}
+
 	//--------------
 	$('.hidden').removeClass('hidden');
 	g_myterritoryCustomerList = '';
@@ -162,29 +162,29 @@ function myterritoryInit() {
 }
 
 /*
- * fetch companies for a myterritory and add to list. Onclick, go to company 
+ * fetch companies for a myterritory and add to list. Onclick, go to company
  */
 function myterritoryFetchCompanies(){
-	
+
 	$.mobile.showPageLoadingMsg();
 	$('#g_myterritoryCustomerList').empty();
-	
+
         g_myterritoryItems = [];
     var dao = new Dao();
     dao.fetchCompanies(g_myterritorySearchMyTerritoryText, myterritoryOnSuccessRead, undefined, myterritoryOnComplete);
 }
- 
+
 function myterritoryOnSuccessRead(company) {
 
     var companyKey = new String(company.key).toLowerCase();
     var companyDescription = new String(company.Name).toLowerCase();
     var companyBranchID = new String(company.BranchID).toLowerCase();
-    
+
     try {
     	companyKey = companyKey + company.Userfield01 + + company.Userfield02 + company.Userfield03 + company.Userfield04 + company.Userfield05 + company.Userfield06 + company.Userfield07 + company.Userfield08;
     	companyKey = companyKey.toLowerCase();
     } catch (err){
-    	
+
     }
 
     if (!g_myterritorySearchMyTerritoryText || g_myterritorySearchMyTerritoryText == "" || companyKey.indexOf(g_myterritorySearchMyTerritoryText) != -1 || companyDescription.indexOf(g_myterritorySearchMyTerritoryText) != -1 ||
@@ -220,8 +220,8 @@ function myterritoryOnSuccessRead(company) {
             }
         } else {
             if (g_myterritoryItemsOnPage >= currentItem && g_myterritoryItemsOnPage < maxItemOnpage) {
-                g_myterritoryCustomerList = g_myterritoryCustomerList + 
-                							'<li data-theme="c"><a onclick="myterritoryOnCompanyClicked(\'' + company.key + '\',\'companyPanel\')">' + company.Name + '</a>' + 
+                g_myterritoryCustomerList = g_myterritoryCustomerList +
+                							'<li data-theme="c"><a onclick="myterritoryOnCompanyClicked(\'' + company.key + '\',\'companyPanel\')">' + company.Name + '</a>' +
                 							'<a onclick="myterritoryOnCompanyClicked(\'' + company.key + '\',\'pricelistPanel\')">Pricelist</a>' +
                 							'</li>';
                 g_myterritoryItems.push(company);
@@ -229,21 +229,21 @@ function myterritoryOnSuccessRead(company) {
             g_myterritoryItemsOnPage++;
             g_myterritoryNumerOfIteminMyterritory++;
         }
-    }    
+    }
 }
 
 function myterritoryOnComplete() {
-	
+
     g_append('#g_myterritoryCustomerList', g_myterritoryCustomerList);
 	//$('#g_myterritoryCustomerList').append(g_myterritoryCustomerList);
 	$('#g_myterritoryCustomerList').listview('refresh');
 	myterritoryToCache();
 	g_myterritoryCustomerList = '';
-	
+
 	myterritoryShowNextPrev();
-	$.mobile.hidePageLoadingMsg();	
+	$.mobile.hidePageLoadingMsg();
         $('#searchTerritory').focus();
-        
+
         // *** if we have only one customer after search, auto go to pricelist screen
         if (g_myterritoryItems.length === 1 && g_isUserIntSalse()) {
             if ( DaoOptions.getValue('GoDirectlyPricelistOnSingle', 'false') === 'true' ) {
@@ -260,57 +260,57 @@ function myterritoryOnComplete() {
 
 
 function myterritorySaveCompany(accountId) {
-	
+
     var dao = new Dao();
     var companyObj = JSON.parse(sessionStorage.getItem('jsonCompany'));
-    
+
     if (accountId)
     	companyObj.AccountID = accountId;
-    
+
     companyObj.key = companyObj.SupplierID + companyObj.AccountID + companyObj.BranchID;
 
-    dao.put(companyObj, 
-    		"Companies", 
+    dao.put(companyObj,
+    		"Companies",
     		companyObj.key,
-    		function (event) { 
-    	
+    		function (event) {
+
     			var sessionState = JSON.parse(sessionStorage.getItem('cacheMyTerritory'));
-    			
+
     			g_myterritoryItems = sessionState.Items;
     			g_myterritoryCustomerList = sessionState.ItemsHtml;
-    			
+
     			myterritoryOnSuccessRead(companyObj);
-    			
+
     			g_html('#g_myterritoryCustomerList', g_myterritoryCustomerList);
 				$('#g_myterritoryCustomerList').listview('refresh');
-				
+
 				myterritoryToCache();
 				g_myterritoryCustomerList = '';
-				
+
 				myterritoryShowNextPrev();
-    			
+
     			myterritoryOnCompanyClicked(companyObj.key);
     		},
     		undefined,
     		undefined);
-    
+
     if (!accountId) {
-    
+
 	    g_saveObjectForSync(companyObj, companyObj.key, "Companies", "Modify", undefined);
-	    
+
 	    var userAccount = new Object();
-	    
+
 	    userAccount.UserID = g_currentUser().UserID;
 	    userAccount.AccountID = companyObj.AccountID;
 	    userAccount.BranchID = companyObj.BranchID;
 	    userAccount.SupplierID = companyObj.SupplierID;
 	    userAccount.Deleted = false;
-	    
+
 	    g_saveObjectForSync(userAccount, "UC" + userAccount.SupplierID + userAccount.AccountID + userAccount.BranchID, "UserCompany", "Modify", undefined);
 	}
-    
+
 	myTerritoryShowCustomerForm(false);
-    
+
 }
 
 function myterritorySaveDB2Company() {
@@ -321,7 +321,7 @@ function myterritorySaveDB2Company() {
     customerObj.Deleted = false;
     customerObj.PostedToErp = false;
     sessionStorage.setItem('jsonCompany', JSON.stringify(customerObj));
-    
+
     var url = companyCreateSaveCompanyURL(customerObj);
     $.mobile.showPageLoadingMsg();
     g_ajaxget(url, myterritorySaveDB2CompanyOnResponse, myterritorySaveDB2CompanyOnResponse);
@@ -331,80 +331,82 @@ function myterritorySaveDB2Company() {
 
 function myterritorySaveDB2CompanyOnResponse(response) {
     $.mobile.hidePageLoadingMsg();
-	
+
 	var message = '';
-	
+
 	if (response && response.length) {
            if (response[0].Status) {
 		message = 'Company created OK.';
                 myterritorySaveCompany(JSON.parse(sessionStorage.getItem('jsonCompany')).AccountID);
-                
-		
+
+
             } else {
 
                     message = 'ERROR: ' + response.ErrorMessage;
-            }         
+            }
         } else {
             message = 'ERROR: An error occurred while saving customer\'s data.';
         }
-		
-	
+
+
 	g_alert(message);
 }
 
 function myterritorySaveLiveCompany() {
-	
+
 	var companyInfo = {};
-	
-	companyInfo.json = sessionStorage.getItem('jsonCompany');	
+
+	companyInfo.json = sessionStorage.getItem('jsonCompany');
 	companyInfo.Table = 'Companies';
 	companyInfo.Method = 'Modify';
-	
+
 	$.mobile.showPageLoadingMsg();
-	
+
 	g_ajaxpost(companyInfo, DaoOptions.getValue('LiveCompanyAddURL'), myterritorySaveLiveCompanyOnResponse, myterritorySaveLiveCompanyOnResponse);
 }
 
 function myterritorySaveLiveCompanyOnResponse() {
-	
-	g_ajaxget(DaoOptions.getValue('LiveGetResultsURL'), myterritoryOnGetResultsSuccess, myterritoryOnGetResultsError);
+    var newcompany = JSON.parse(sessionStorage.getItem('jsonCompany'));
+    var url = DaoOptions.getValue('LiveGetResultsURL') + '?supplierID=' + newcompany.SupplierID + '&orderID=' + newcompany.AccountID + '&format=json';
+    console.log(url);
+	g_ajaxget(url, myterritoryOnGetResultsSuccess, myterritoryOnGetResultsError);
 }
 
 function myterritoryOnGetResultsSuccess(result) {
-	
+
 	$.mobile.hidePageLoadingMsg();
-	
+
 	var message = '';
-	
+
 	if (result._getErrorMsg) {
-		
+
 		message = 'ERROR:' + result._getErrorMsg;
-		
+
 	} else if (result._getGuID == JSON.parse(sessionStorage.getItem('jsonCompany')).AccountID) {
-		
+
 		message = 'Customer created OK.';
 		myterritorySaveCompany(result._getReturnID);
-	
+
 	} else {
-		
+
 		message = 'ERROR: Customer not created.';
 	}
-	
+
 	g_alert(message);
 }
 
 function myterritoryOnGetResultsError() {
-	
+
 	$.mobile.hidePageLoadingMsg();
 	g_alert('Error in retrieving operation result.');
 }
 
 function myTerritoryShowCustomerForm(show) {
-	
+
 	$('#newCustomerDiv').toggle(show);
 	$('#customerListDiv').toggle(!show);
 	$('#addcustomer').toggle(!show);
-	
+
 	if (show)
 		$('#myTerritorytoMenu .ui-btn-text').text('Back');
 	else
@@ -463,7 +465,7 @@ function myterritoryFromCache() {
             $("#sgradio2").attr("checked", true).checkboxradio("refresh");
         } else {
         	gotoPoint = 'h';
-        	if (sessionStorage.getItem('cacheMyTerritory') != null) 
+        	if (sessionStorage.getItem('cacheMyTerritory') != null)
         		sessionState = JSON.parse(sessionStorage.getItem('cacheMyTerritory'));
             $("#addcustomer").show();
             $("#SGforBranch").hide();
@@ -491,7 +493,7 @@ function myterritoryFromCache() {
 	} catch (err) {
 		alert (gotoPoint + err.message);
 		return false;
-	}    
+	}
 }
 
 
@@ -506,7 +508,7 @@ function myterritoryOnCompanyClicked(key, page){
     sessionStorage.setItem('lastPanelId', page);
     advancedSearchResetStorage();
 
-    var dao = new Dao();	
+    var dao = new Dao();
     dao.get('Companies',
                     key,
                     function(company) {
@@ -528,7 +530,7 @@ function myterritoryOnCompanyClicked(key, page){
                             $.mobile.changePage("company.html");
 
                     },
-                    undefined,undefined);	
+                    undefined,undefined);
 }
 function myterritoryShowNextPrev() {
 
@@ -552,7 +554,7 @@ function myterritoryShowNextPrev() {
         $('#mtprev').show();
         $('#mtnext').show();
     }
-    
+
     $.mobile.hidePageLoadingMsg();
 }
 
@@ -575,8 +577,8 @@ function myterritoryCreateCompanyObject() {
     newCompany.RepID = g_currentUser().RepID;
     newCompany.UserID = g_currentUser().UserID;
     newCompany.VAT = 0;
-   
+
     var jsonForm = new JsonForm();
     $('#popupContent').empty();
-    jsonForm.show(g_currentUser().SupplierID, '#newCustomerFields', newCompany, 'Company');  
+    jsonForm.show(g_currentUser().SupplierID, '#newCustomerFields', newCompany, 'Company');
 }

@@ -6,14 +6,14 @@
 //var g_logo = 'img/rapidtrade-logo-small.png';
 //var g_logo = "img/SGlogoSml.png";
 
-//var g_url = "http://www.dedicatedsolutions.co.za:8082/";
-//var g_restUrl = g_url + "rest3/";
-////var g_restUrl = g_url + "testrest/";
-////var g_vanSales = true;
-//var g_vanSales = false;
-//var g_logo = 'img/SGlogoSml.png';
-//var g_menuLogo = 'img/sglogo.png';
-//var g_restPHPUrl = "http://www.super-trade.co.za:8083/rest/index.php/";
+// var g_url = "http://www.dedicatedsolutions.co.za:8082/";
+// var g_restUrl = g_url + "rest3/";
+// //var g_restUrl = g_url + "testrest/";
+// //var g_vanSales = true;
+// var g_vanSales = false;
+// var g_logo = 'img/SGlogoSml.png';
+// var g_menuLogo = 'img/sglogo.png';
+// var g_restPHPUrl = "http://www.super-trade.co.za:8083/rest/index.php/";
 
 
 var g_url = "http://app.rapidtrade.biz/";
