@@ -775,7 +775,8 @@ function orderdetailsFetchOrderItems() {
     for (var i = 0; i < orderItems.length; i++) {
 
         var orderItem = orderItems[i];
-
+        orderItem.PromoID = undefined;
+        orderItem.PromoType = undefined;
         if (isComplexView) {
 
             var complexProductId = orderItem[DaoOptions.getValue('MasterChartComplexProd')];
