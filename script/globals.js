@@ -432,7 +432,7 @@ function g_getWeek(d0){
           d = new Date();
     else
           d = new Date(+d0);
-    d.setHours(0,0,0);
+    d.setHours(0,0,0,0);
     // Set to nearest Thursday: current date + 4 - current day number
     // Make Sunday's day number 7
     d.setDate(d.getDate() + 4 - (d.getDay()||7));
