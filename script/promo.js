@@ -117,7 +117,7 @@ var promo = (function(){
 
                                     // TEST
 //                                    if (/*json.Type !== 'PROMO'*/ !json.DiscountApplied && $.inArray(json[tpmcond.ObjectProperty], tpmval) > -1) {
-                                    if ((tpm.json.ignoreDealWithPromo || !json.DiscountApplied) && $this.checkProductCondition(tpmval, json)) {
+                                    if (!(tpm.json.notAllowedWithDeal && json.DiscountApplied) && $this.checkProductCondition(tpmval, json)) {
                                         $this.currentBasket.push(json);
                                         triggerItems.push(json.ProductID);
                                         qty += json.Quantity;
