@@ -305,6 +305,8 @@ var promo = (function(){
                     var promID = '';
                     var qtyOK = true;
                     var selectedItems = [];
+                    var hasMandatories = false;
+                    var mandatorySelected = false;
                     for (var i = 0; i < allFreeItems.length; ++i) {
                         var tmpItem = $('#promoItem' + i + 'Qty').parents('tbody').hasClass('ui-disabled');
                         var tmoBtnValue = $('#promoItemSelectBtn' + i + ' .ui-btn-text').text() === 'Remove';
@@ -313,6 +315,10 @@ var promo = (function(){
                         if (promID !== allFreeItems[i].TPMID) {
                             promID = allFreeItems[i].TPMID;
                             qtySum = 0;
+                        }
+                        hasMandatories = hasMandatories || allFreeItems[i].mandatory;
+                        if (allFreeItems[i].mandatory) {
+                            mandatorySelected = mandatorySelected || selectedItems[i]
                         }
                         qtySum += parseInt($('#promoItem' + i + 'Qty').val() === '' ? 0 : $('#promoItem' + i + 'Qty').val(), 10);
 
@@ -323,7 +329,10 @@ var promo = (function(){
                             break;
                         }
                     }
-                    if (!qtyOK) {
+                    if (hasMandatories && !mandatorySelected) {
+                        g_alert('You have to accept mandatory promotions.');
+                        return;
+                    } else if (!qtyOK) {
                         g_alert('Max free quantity has been exceeded');
                         return;
                     } else {
