@@ -117,7 +117,7 @@ var promo = (function(){
 
                                     // TEST
 //                                    if (/*json.Type !== 'PROMO'*/ !json.DiscountApplied && $.inArray(json[tpmcond.ObjectProperty], tpmval) > -1) {
-                                    if (!json.DiscountApplied && $this.checkProductCondition(tpmval, json)) {
+                                    if ((tpm.json.ignoreDealWithPromo || !json.DiscountApplied) && $this.checkProductCondition(tpmval, json)) {
                                         $this.currentBasket.push(json);
                                         triggerItems.push(json.ProductID);
                                         qty += json.Quantity;
@@ -218,6 +218,9 @@ var promo = (function(){
                             item.MaxQty = maxQty;
                             item.PromoType = 'DISCOUNT';
                             item.noOtherDiscounts = tpm.json.noOtherDiscounts;
+                            item.notAllowedWithDeal = tpm.json.notAllowedWithDeal;
+                            item.ignoreDealWithPromo = tpm.json.ignoreDealWithPromo;
+                            item.ignoreContractWhenTakePromo = tpm.json.ignoreContractWhenTakePromo;
                             item.mandatory = tpm.json.mandatory;
                             item.triggerItems = tpmcond.triggerItems;
                             item.priority = (i + 1); //tpm.Priority || tpm.priority || (i + 1);
@@ -241,6 +244,9 @@ var promo = (function(){
                                 item.MaxQty = maxQty;
                                 item.PromoType = 'FREE';
                                 item.noOtherDiscounts = tpm.json.noOtherDiscounts;
+                                item.notAllowedWithDeal = tpm.json.notAllowedWithDeal;
+                                item.ignoreDealWithPromo = tpm.json.ignoreDealWithPromo;
+                                item.ignoreContractWhenTakePromo = tpm.json.ignoreContractWhenTakePromo;
                                 item.mandatory = tpm.json.mandatory;
                                 item.triggerItems = tpmcond.triggerItems;
                                 item.priority = (i + 1); //tpm.Priority || tpm.priority || (i + 1);
@@ -336,6 +342,9 @@ var promo = (function(){
                             item[item.PromoType === 'FREE' ? 'Quantity' : 'PromoDiscount'] = parseFloat($('#promoItem' + x + (item.PromoType === 'FREE' ? 'Qty' : 'Disc')).val() === '' ? 0 : $('#promoItem' + x + (item.PromoType === 'FREE' ? 'Qty' : 'Disc')).val());
 
                             item.noOtherDiscounts = allFreeItems[x].noOtherDiscounts;
+                            item.notAllowedWithDeal = allFreeItems[x].notAllowedWithDeal;
+                            item.ignoreDealWithPromo = allFreeItems[x].ignoreDealWithPromo;
+                            item.ignoreContractWhenTakePromo = allFreeItems[x].ignoreContractWhenTakePromo;
                             item.triggerItems = allFreeItems[x].triggerItems;
 
                             //if (item.Quantity) {
@@ -370,31 +379,52 @@ var promo = (function(){
                     var regularItem = nonPromoItems[i];
                     for (var j = 0; j < selectedPromoItems.length; ++j) {
                         var promoItem = selectedPromoItems[j];
-                        if (promoItem.noOtherDiscounts && $.inArray(regularItem.ProductID, promoItem.triggerItems) > -1) {
-                            if (promoItem.PromoType === 'DISCOUNT') {
-                                regularItem.RepDiscount = promoItem.PromoDiscount;
-                                regularItem.RepNett = parseFloat(regularItem.Gross) - (parseFloat(regularItem.Gross) * (regularItem.RepDiscount / 100));
-                                regularItem.RepChangedPrice = true;
-                                regularItem.UserField03 = promoItem.PromoID;
-                                regularItem.PromoID = promoItem.PromoID;
-                                regularItem.PromoType = promoItem.PromoType;
-                            } else if (promoItem.PromoType === 'FREE') {
-                                regularItem.RepNett = regularItem.Gross;
-                                regularItem.RepDiscount = 0;
-                                regularItem.RepChangedPrice = true;
-//                                regularItem.UserField03 = promoItem.PromoID;
-//                                regularItem.PromoType = promoItem.PromoType;
-//                                if (promoItem.ProductID === regularItem.ProductID) {
-//                                    regularItem.FreeQty = promoItem.Quantity;
-//                                    regularItem.Quantity += regularItem.FreeQty;
-//                                }
+                        if ($.inArray(regularItem.ProductID, promoItem.triggerItems) > -1) {
+                            if (promoItem.ignoreContractWhenTakePromo) {
+                                if (promoItem.PromoType === 'DISCOUNT') {
+                                    regularItem.RepDiscount = promoItem.PromoDiscount;
+                                    regularItem.RepNett = parseFloat(regularItem.Gross) - (parseFloat(regularItem.Gross) * (regularItem.RepDiscount / 100));
+                                    regularItem.RepChangedPrice = true;
+                                    regularItem.UserField03 = promoItem.PromoID;
+                                    regularItem.PromoID = promoItem.PromoID;
+                                    regularItem.PromoType = promoItem.PromoType;
+                                } else if (promoItem.PromoType === 'FREE') {
+                                    regularItem.RepNett = regularItem.Gross;
+                                    regularItem.RepDiscount = 0;
+                                    regularItem.RepChangedPrice = true;
+    //                                regularItem.UserField03 = promoItem.PromoID;
+    //                                regularItem.PromoType = promoItem.PromoType;
+    //                                if (promoItem.ProductID === regularItem.ProductID) {
+    //                                    regularItem.FreeQty = promoItem.Quantity;
+    //                                    regularItem.Quantity += regularItem.FreeQty;
+    //                                }
 
-                                if (promoItem.Quantity /*&& promoItem.ProductID !== regularItem.ProductID*/) {
-                                    freePromoItemsToBeAdded.push(promoItem);
+                                    if (promoItem.Quantity /*&& promoItem.ProductID !== regularItem.ProductID*/) {
+                                        freePromoItemsToBeAdded.push(promoItem);
+                                    }
+                                }
+
+                                nonPromoItemsNeedToBeChanged.push(regularItem);
+                            } else {
+                                if (promoItem.PromoType === 'DISCOUNT') {
+                                    regularItem.RepDiscount = promoItem.PromoDiscount;
+                                    regularItem.RepNett = parseFloat(regularItem.Nett) - (parseFloat(regularItem.Nett) * (regularItem.RepDiscount / 100));
+                                    regularItem.RepChangedPrice = true;
+                                    regularItem.UserField03 = promoItem.PromoID;
+                                    regularItem.PromoID = promoItem.PromoID;
+                                    regularItem.PromoType = promoItem.PromoType;
+                                    regularItem.Value = regularItem.RepNett * regularItem.Quantity
+
+                                    nonPromoItemsNeedToBeChanged.push(regularItem);
+                                } else if (promoItem.PromoType === 'FREE') {
+                                    if (promoItem.Quantity ) {
+                                        freePromoItemsToBeAdded.push(promoItem);
+                                    }
                                 }
                             }
 
-                            nonPromoItemsNeedToBeChanged.push(regularItem);
+
+                            // nonPromoItemsNeedToBeChanged.push(regularItem);
                             //break;
                         }
                     }
