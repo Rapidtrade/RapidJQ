@@ -970,6 +970,8 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
         	basketInfo.Discount = discount;
         	basketInfo.Nett = nett;
         	basketInfo.Gross = gross;
+            basketInfo.DiscountApplied = (volumePrice[0].ID != undefined && volumePrice[0].ID != null && volumePrice[0].ID != '');
+
 
                 if (DaoOptions.getValue('SetRepBoolDiscountUF') && basketInfo[DaoOptions.getValue('SetRepBoolDiscountUF')]) {
                     basketInfo.RepNett = nett;
@@ -1088,6 +1090,7 @@ function shoppingCartRecalcMultilineDiscounts(changedItemIndex) {
                                 basketInfo.Discount = discount;
                                 basketInfo.Nett = nett;
                                 basketInfo.Gross = gross;
+                                basketInfo.DiscountApplied = (volumePrice[0].ID != undefined && volumePrice[0].ID != null && volumePrice[0].ID != '');
 
                                 if (DaoOptions.getValue('SetRepBoolDiscountUF') && basketInfo[DaoOptions.getValue('SetRepBoolDiscountUF')]) {
                                     basketInfo.RepNett = nett;
@@ -1167,6 +1170,7 @@ function shoppingCartRecalcMultilineDiscounts(changedItemIndex) {
                                     basketInfo.Discount = discount;
                                     basketInfo.Nett = nett;
                                     basketInfo.Gross = gross;
+                                    basketInfo.DiscountApplied = (volumePrice[0].ID != undefined && volumePrice[0].ID != null && volumePrice[0].ID != '');
 
                                     if (DaoOptions.getValue('SetRepBoolDiscountUF') && basketInfo[DaoOptions.getValue('SetRepBoolDiscountUF')]) {
                                         basketInfo.RepNett = nett;
@@ -1295,7 +1299,8 @@ function shoppingCartCalculateLocalDiscount(volumePrice, itemIndex) {
         basketInfo.Nett = nett;
         basketInfo.Gross = gross;
         basketInfo.UserField15 = type;
-        basketInfo.DiscountApplied = true;
+        basketInfo.DiscountApplied = (volumePrice[0].ID != undefined && volumePrice[0].ID != null && volumePrice[0].ID != '');
+        // basketInfo.DiscountApplied = true;
 
         if (g_enableMultiLineDiscount === 'true' &&
                 volumePrice[volumePrice.length - 1].ID === g_multiLineDiscountID) {
@@ -1406,7 +1411,8 @@ function shoppingCartCalculateDiscount(volumePrice, itemIndex) {
         basketInfo.Nett = nett;
         basketInfo.Gross = gross;
         basketInfo.UserField15 = type;
-        basketInfo.DiscountApplied = true;
+        // basketInfo.DiscountApplied = true;
+        basketInfo.DiscountApplied = (volumePrice[0].ID != undefined && volumePrice[0].ID != null && volumePrice[0].ID != '');
 
         if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true' &&
                 volumePrice[volumePrice.length - 1].ID === DaoOptions.getValue('MultiLineDiscountID')) {

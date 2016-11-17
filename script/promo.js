@@ -218,6 +218,9 @@ var promo = (function(){
                             item.MaxQty = maxQty;
                             item.PromoType = 'DISCOUNT';
                             item.noOtherDiscounts = tpm.json.noOtherDiscounts;
+                            item.notAllowedWithDeal = tpm.json.notAllowedWithDeal;
+                            item.ignoreDealWithPromo = tpm.json.ignoreDealWithPromo;
+                            item.ignoreContractWhenTakePromo = tpm.json.ignoreContractWhenTakePromo;
                             item.mandatory = tpm.json.mandatory;
                             item.triggerItems = tpmcond.triggerItems;
                             item.priority = (i + 1); //tpm.Priority || tpm.priority || (i + 1);
@@ -241,6 +244,9 @@ var promo = (function(){
                                 item.MaxQty = maxQty;
                                 item.PromoType = 'FREE';
                                 item.noOtherDiscounts = tpm.json.noOtherDiscounts;
+                                item.notAllowedWithDeal = tpm.json.notAllowedWithDeal;
+                                item.ignoreDealWithPromo = tpm.json.ignoreDealWithPromo;
+                                item.ignoreContractWhenTakePromo = tpm.json.ignoreContractWhenTakePromo;
                                 item.mandatory = tpm.json.mandatory;
                                 item.triggerItems = tpmcond.triggerItems;
                                 item.priority = (i + 1); //tpm.Priority || tpm.priority || (i + 1);
@@ -336,6 +342,9 @@ var promo = (function(){
                             item[item.PromoType === 'FREE' ? 'Quantity' : 'PromoDiscount'] = parseFloat($('#promoItem' + x + (item.PromoType === 'FREE' ? 'Qty' : 'Disc')).val() === '' ? 0 : $('#promoItem' + x + (item.PromoType === 'FREE' ? 'Qty' : 'Disc')).val());
 
                             item.noOtherDiscounts = allFreeItems[x].noOtherDiscounts;
+                            item.notAllowedWithDeal = allFreeItems[x].notAllowedWithDeal;
+                            item.ignoreDealWithPromo = allFreeItems[x].ignoreDealWithPromo;
+                            item.ignoreContractWhenTakePromo = allFreeItems[x].ignoreContractWhenTakePromo;
                             item.triggerItems = allFreeItems[x].triggerItems;
 
                             //if (item.Quantity) {
@@ -371,7 +380,7 @@ var promo = (function(){
                     for (var j = 0; j < selectedPromoItems.length; ++j) {
                         var promoItem = selectedPromoItems[j];
                         if ($.inArray(regularItem.ProductID, promoItem.triggerItems) > -1) {
-                            if (promoItem.noOtherDiscounts) {
+                            if (promoItem.ignoreContractWhenTakePromo) {
                                 if (promoItem.PromoType === 'DISCOUNT') {
                                     regularItem.RepDiscount = promoItem.PromoDiscount;
                                     regularItem.RepNett = parseFloat(regularItem.Gross) - (parseFloat(regularItem.Gross) * (regularItem.RepDiscount / 100));
