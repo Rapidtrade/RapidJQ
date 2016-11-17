@@ -399,7 +399,7 @@ var promo = (function(){
                                     regularItem.PromoType = promoItem.PromoType;
                                     regularItem.Value = regularItem.RepNett * regularItem.Quantity
 
-                                    nonPromoItemsNeedToBeChanged.push(regularItem);
+                                    // nonPromoItemsNeedToBeChanged.push(regularItem);
                                 } else if (promoItem.PromoType === 'FREE') {
                                     regularItem.RepNett = regularItem.Gross;
                                     regularItem.RepDiscount = 0;
@@ -414,6 +414,7 @@ var promo = (function(){
                                         freePromoItemsToBeAdded.push(promoItem);
                                     }
                                 }
+                                nonPromoItemsNeedToBeChanged.push(regularItem);
                             } else {
                                 if (promoItem.PromoType === 'DISCOUNT') {
                                     regularItem.RepDiscount = promoItem.PromoDiscount;
