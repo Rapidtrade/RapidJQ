@@ -383,11 +383,14 @@ var promo = (function(){
                             if (promoItem.ignoreContractWhenTakePromo) {
                                 if (promoItem.PromoType === 'DISCOUNT') {
                                     regularItem.RepDiscount = promoItem.PromoDiscount;
-                                    regularItem.RepNett = parseFloat(regularItem.Gross) - (parseFloat(regularItem.Gross) * (regularItem.RepDiscount / 100));
+                                    regularItem.RepNett = parseFloat(regularItem.Nett) - (parseFloat(regularItem.Nett) * (regularItem.RepDiscount / 100));
                                     regularItem.RepChangedPrice = true;
                                     regularItem.UserField03 = promoItem.PromoID;
                                     regularItem.PromoID = promoItem.PromoID;
                                     regularItem.PromoType = promoItem.PromoType;
+                                    regularItem.Value = regularItem.RepNett * regularItem.Quantity
+
+                                    nonPromoItemsNeedToBeChanged.push(regularItem);
                                 } else if (promoItem.PromoType === 'FREE') {
                                     regularItem.RepNett = regularItem.Gross;
                                     regularItem.RepDiscount = 0;
@@ -398,29 +401,25 @@ var promo = (function(){
     //                                    regularItem.FreeQty = promoItem.Quantity;
     //                                    regularItem.Quantity += regularItem.FreeQty;
     //                                }
-
                                     if (promoItem.Quantity /*&& promoItem.ProductID !== regularItem.ProductID*/) {
                                         freePromoItemsToBeAdded.push(promoItem);
                                     }
                                 }
-
-                                nonPromoItemsNeedToBeChanged.push(regularItem);
                             } else {
                                 if (promoItem.PromoType === 'DISCOUNT') {
                                     regularItem.RepDiscount = promoItem.PromoDiscount;
-                                    regularItem.RepNett = parseFloat(regularItem.Nett) - (parseFloat(regularItem.Nett) * (regularItem.RepDiscount / 100));
+                                    regularItem.RepNett = parseFloat(regularItem.Gross) - (parseFloat(regularItem.Gross) * (regularItem.RepDiscount / 100));
                                     regularItem.RepChangedPrice = true;
                                     regularItem.UserField03 = promoItem.PromoID;
                                     regularItem.PromoID = promoItem.PromoID;
                                     regularItem.PromoType = promoItem.PromoType;
-                                    regularItem.Value = regularItem.RepNett * regularItem.Quantity
-
-                                    nonPromoItemsNeedToBeChanged.push(regularItem);
                                 } else if (promoItem.PromoType === 'FREE') {
                                     if (promoItem.Quantity ) {
                                         freePromoItemsToBeAdded.push(promoItem);
                                     }
                                 }
+
+                                nonPromoItemsNeedToBeChanged.push(regularItem);
                             }
 
 
