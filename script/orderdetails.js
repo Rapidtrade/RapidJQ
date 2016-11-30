@@ -117,6 +117,21 @@ function orderdetailsBind() {
             orderdetailsDecideOnEditOrder();
             return;
         }
+
+        function removePromoItems(items) {
+            var res = [];
+            for (var i = 0; i < items.length; ++i) {
+                if (!items[i].PromoID || !items[i].RepChangedPrice || (items[i].RepDiscount < 100)) {
+                    res.push(items[i]);
+                }
+            }
+            return res;
+        }
+
+        if (DaoOptions.getValue('localTPM', 'false') === 'true') {
+            g_orderdetailsOrderItems = removePromoItems(g_orderdetailsOrderItems);
+        }
+
         basket.saveItems(orderdetailsIsComplexView() ? g_orderdetailsComplexItems : g_orderdetailsOrderItems, onItemsSaved);
 
         function onItemsSaved() {
@@ -775,8 +790,8 @@ function orderdetailsFetchOrderItems() {
     for (var i = 0; i < orderItems.length; i++) {
 
         var orderItem = orderItems[i];
-        orderItem.PromoID = undefined;
-        orderItem.PromoType = undefined;
+        // orderItem.PromoID = undefined;
+        // orderItem.PromoType = undefined;
         if (isComplexView) {
 
             var complexProductId = orderItem[DaoOptions.getValue('MasterChartComplexProd')];
