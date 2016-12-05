@@ -35,8 +35,13 @@ var promo = (function(){
             dao.cursor('Tpm', '', '', function(item) {
 
                 if (moment(item.FromDate).toDate() <= today && today <= moment(item.ToDate).toDate()) {
-                    item.json = JSON.parse(item.json);
-                    $this.tpms.push(item);
+                    try {
+                        item.json = JSON.parse(item.json);
+                        $this.tpms.push(item);
+                    } catch (ex) {
+                        console.log('An error occurred while reading local TPM: ');
+                        console.log(item);
+                    }
                 } else {
                     dao.deleteItem('Tpm', item.key);
                 }
