@@ -594,7 +594,7 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip, ne
 			if (item) syncFetchTable(item.supplierid,item.userid,item.table,item.method,syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)), undefined, item.newRest);
 			return;
 		}
-	} else if (newRest || /*('Orders' === table) || */((json._Items.length ) < 100 && (table != 'Pricelists'))) {
+	} else if (newRest || /*('Orders' === table) || */((json._Items.length ) < g_syncNumRows && (table != 'Pricelists'))) {
 
             try {
                 //less than 250 records, so move on to the next sync, except pricelist, dont always get back 250
