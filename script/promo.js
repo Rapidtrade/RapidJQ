@@ -34,7 +34,7 @@ var promo = (function(){
             var dao= new Dao();
             dao.cursor('Tpm', '', '', function(item) {
 
-                if (moment(item.FromDate).toDate() <= today && today <= moment(item.ToDate).toDate()) {
+                if (moment(item.FromDate, 'YYYY-M-D').toDate() <= today && today <= moment(item.ToDate, 'YYYY-M-D').toDate()) {
                     try {
                         item.json = JSON.parse(item.json);
                         $this.tpms.push(item);
