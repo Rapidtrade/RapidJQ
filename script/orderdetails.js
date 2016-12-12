@@ -122,6 +122,12 @@ function orderdetailsBind() {
             var res = [];
             for (var i = 0; i < items.length; ++i) {
                 if (!items[i].PromoID || !items[i].RepChangedPrice || (items[i].RepDiscount < 100)) {
+                    if (items[i].PromoID && items[i].RepChangedPrice && (items[i].RepDiscount < 100)) {
+                        delete items[i].PromoID;
+                        delete items[i].RepChangedPrice;
+                        delete items[i].RepDiscount;
+                        delete items[i].RepNett;
+                    }
                     res.push(items[i]);
                 }
             }
