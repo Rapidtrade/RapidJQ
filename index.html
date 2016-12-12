@@ -93,19 +93,19 @@
         $('#menupage').bind('pagebeforecreate', menuOnPageBeforeCreate);
         $(document).on("pageshow", "#menupage", menuOnPageShow);
 
-        document.addEventListener("deviceready", function() {
-                                    $('#status').text('Starting Cordova');
-                                    window.setTimeout(g_phonegapon(function(){
-                                                            //menuOnPageBeforeCreate();
-                                                            //menuOnPageShow();
-                                                        }), 1000);
-                                    }, false);
+        // document.addEventListener("deviceready", function() {
+        //                             $('#status').text('Starting Cordova');
+        //                             window.setTimeout(g_phonegapon(function(){
+        //                                                     //menuOnPageBeforeCreate();
+        //                                                     //menuOnPageShow();
+        //                                                 }), 1000);
+        //                             }, false);
 
         // <!-- uncomment below for Non phonegap-->
-        /*
+
         $('#menupage').bind('pagebeforecreate', menuOnPageBeforeCreate);
         $('#menupage').live("pageshow", menuOnPageShow);
-        */
+
     </script>
 
     <div data-role="content">
@@ -242,7 +242,7 @@
 	   	</div>
 
         <div style="text-align:center;color:#555555;">
-        Version 10.69
+        Version 10.70
         </div>
         <div id="status" style="text-align:center;color:#555555;">
         </div>
