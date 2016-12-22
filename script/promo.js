@@ -37,9 +37,19 @@ var promo = (function(){
                 if (moment(item.FromDate, 'YYYY-M-D').toDate() <= today && today <= moment(item.ToDate, 'YYYY-M-D').toDate()) {
                     try {
                         item.json = JSON.parse(item.json);
+                        if (['free', 'discount'].includes(item.json.type)) {
+                            item.multiline = (item.json.multiline === undefined || item.json.multiline === null || item.json.multiline === true);
+                        } else {
+                            item.json.multiline = (item.json.type % 2) ? true : false;
+                            if ([1, 2].includes(item.json.type)) {
+                                item.json.type = 'free';
+                            } else {
+                                item.json.type = 'discount';
+                            }
+                        }
                         $this.tpms.push(item);
-                    } catch (ex) {
-                        console.log('An error occurred while reading local TPM: ');
+                    } catch (err) {
+                        console.log('skipping tpm because of error on parsing json: ');
                         console.log(item);
                     }
                 } else {
