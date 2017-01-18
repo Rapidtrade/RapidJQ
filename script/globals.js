@@ -407,9 +407,18 @@ function g_firstMondayOfCurrentMonth() {
 
 
 function g_currentCallCycleWeek() {
-	if (DaoOptions.getValue('WeeksInCallCycle','')=='2' )
-		return (g_getWeek() % 2) + 1;
-	else if (DaoOptions.getValue('WeeksInCallCycle','')=='4') {
+	if (DaoOptions.getValue('WeeksInCallCycle','')=='2' ) {
+        if (DaoOptions.getValue('RollingCallCycle', 'true') === 'true') {
+            var numWeeks = 2
+            var now = moment();
+            var weekoy = g_getWeek();
+            var cycle = Math.floor(weekoy / numWeeks);
+    		var weekInCycle = weekoy - (cycle * numWeeks);
+    		return weekInCycle ? weekInCycle : numWeeks;
+        } else {
+            return (g_getWeek() % 2) + 1;
+        }        
+	} else if (DaoOptions.getValue('WeeksInCallCycle','')=='4') {
 		var weekoy;
 		if (DaoOptions.getValue('FirsfWeekOfYear')) {
 			var firstWeekOfYear = g_getWeek(g_yyyyMMddToDate(DaoOptions.getValue('FirsfWeekOfYear')));
