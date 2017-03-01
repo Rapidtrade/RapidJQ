@@ -38,6 +38,13 @@ function orderdetailsOnPageShow() {
     if (!$('#sendToBasketButton').hasClass('ui-disabled'))
         $('#sendToBasketButton').addClass('ui-disabled');
 
+    if (g_orderdetailsCurrentOrder.ERPOrderNumber === 'Declined' && $('#resendOrderButton').hasClass('invisible')) {
+        $('#resendOrderButton').removeClass('invisible');
+    } else {
+        if (!$('#resendOrderButton').hasClass('invisible'))
+            $('#resendOrderButton').addClass('invisible');
+    }
+
     orderdetailsInit();
     orderdetailsBind();
 }
@@ -149,6 +156,39 @@ function orderdetailsBind() {
                 sessionStorage.setItem('ShoppingCartReturnPage', 'orderdetails.html');
                 $.mobile.changePage("shoppingCart.html");
             }
+        }
+    });
+
+    $('#resendOrderButton').unbind();
+    $('#resendOrderButton').click(function () {
+        var conf = confirm('Are You sure you want to resend this ' + g_orderdetailsCurrentOrder.Type + '?');
+        if (conf) {
+
+            var onSuccess = function(json) {
+                g_busy();
+                if (json && json.length && json[0].status) {
+                    if (!$('#resendOrderButton').hasClass('invisible'))
+                        $('#resendOrderButton').addClass('invisible');
+                    alert('Your ' + g_orderdetailsCurrentOrder.Type + ' has been resent successfully.');
+                    sessionStorage.removeItem('HistoryCacheAccountID');
+                    orderdetailsOnBackClicked();
+                } else {
+                    alert('An error occurred on resending Your order. Please try again later.');
+                    console.log('resendOrderButton - onSuccess:');
+                    console.log(json);
+                }
+            };
+
+            var onFailure = function(err) {
+                g_busy();
+                alert('An error occurred on resending Your order. Please try again later.');
+                console.log('resendOrderButton - onFailure:');
+                console.log(err);
+            };
+            g_busy(true);
+            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orders_resubmit&params=(%27' + g_orderdetailsCurrentOrder.SupplierID + '%27|%27' + g_orderdetailsCurrentOrder.AccountID + '%27|%27' + g_orderdetailsCurrentOrder.OrderID + '%27)';
+            console.log(url);
+            g_ajaxget(url, onSuccess,onFailure);
         }
     });
 
