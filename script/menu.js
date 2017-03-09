@@ -288,6 +288,7 @@ function menuShowButtons() {
 			$('#syncMenuItem, .customerMenuItem').show();
             var manageButtons = function(cnt) {
                 if (cnt > 1) {
+                    sessionStorage.setItem('customerMoreThan1Company', 'true');
                     $('.customerMenuItem:has(#pricelist)').hide();
                     $('#myTerritoryButton .multiLanguage').text('My Accounts');
                     $('#myTerritoryButton.menuIconPanel').show();

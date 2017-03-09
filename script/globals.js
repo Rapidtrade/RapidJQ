@@ -261,7 +261,7 @@ function g_menuBind() {
 	$('#menuButton').click(function() {
 
         if (g_currentUser().Role && g_currentUser().Role.toUpperCase().indexOf('CUST') !== -1 && $.mobile.activePage.attr('id') === 'companypage')
-            if (!g_currentUser().RepID || !g_currentUser().RepID.split(',').length)
+            if (!sessionStorage.getItem('customerMoreThan1Company'))
     		      g_loadMenu();
 	});
 }
