@@ -6,7 +6,7 @@ function overlayInit(pageId) {
 
     var menuPanel = '<div data-role="panel" data-dismissible="false" data-display="push" id="menuPanel" class="overlayMenu invisible" data-theme="b">';
 
-    if (g_currentUser().Role != 'CUST' || (g_currentUser().RepID && g_currentUser().RepID.split(',').length)) {
+    if (g_currentUser().Role != 'CUST' || (sessionStorage.getItem('customerMoreThan1Company') === 'true')) {
 
             menuPanel += '<ul id="mainMenu" data-role="listview" data-inset="true" data-divider-theme="d" >' +
                                                     '<li data-role="list-divider" role="heading">' + g_companyPageTranslation.translateText('Main Menu') + '</li>' +
@@ -141,7 +141,7 @@ function overlayInit(pageId) {
                  '</ul>' +
                  '</div>';
 
-    if (g_currentUser().Role != 'CUST' || (g_currentUser().RepID && g_currentUser().RepID.split(',').length))
+    if (g_currentUser().Role != 'CUST' || (sessionStorage.getItem('customerMoreThan1Company') === 'true'))
         menuPanel += '<a data-role="button" href="myterritory.html" data-icon="search" data-theme="b">' + g_companyPageTranslation.translateText('My Customers') + '</a>';
 
     menuPanel += '<p><a id="home" data-role="button" data-icon="home" data-theme="e">' + g_companyPageTranslation.translateText('Home') + '</a>';

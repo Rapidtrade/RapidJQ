@@ -286,17 +286,28 @@ function menuShowButtons() {
 
 			$('.menuIconPanel').hide();
 			$('#syncMenuItem, .customerMenuItem').show();
-            if (g_currentUser().RepID && g_currentUser().RepID.split(',').length) {
-                $('.customerMenuItem:has(#pricelist)').hide();
-                $('#myTerritoryButton .multiLanguage').text('My Accounts');
-                $('#myTerritoryButton').show();
-            } else {
-                $('#syncMenuItem, .customerMenuItem').show();
-                sessionStorage.setItem('PricelistNoFooter','true');
-    			sessionStorage.setItem('ShoppingCartNoFooter','true');
-    			sessionStorage.setItem('CompanyNoFooter','true');
-    			sessionStorage.setItem('HistoryNoFooter','true');
-            }
+            var manageButtons = function(cnt) {
+                if (cnt > 1) {
+                    sessionStorage.setItem('customerMoreThan1Company', 'true');
+                    $('.customerMenuItem:has(#pricelist)').hide();
+                    $('#myTerritoryButton .multiLanguage').text('My Accounts');
+                    $('#myTerritoryButton.menuIconPanel').show();
+                    $('.customerMenuItem:has(#company)').hide();
+                } else {
+                    $('#syncMenuItem, .customerMenuItem').show();
+                    sessionStorage.setItem('PricelistNoFooter','true');
+                    sessionStorage.setItem('ShoppingCartNoFooter','true');
+                    sessionStorage.setItem('CompanyNoFooter','true');
+                    sessionStorage.setItem('HistoryNoFooter','true');
+                }
+            };
+            var dao = new Dao();
+            dao.count('Companies', '', 'index4',
+                function (cnt) {
+                    manageButtons(cnt);
+                }, function(cnt) {
+                    manageButtons(cnt);
+            });
 
 		} else {
 
