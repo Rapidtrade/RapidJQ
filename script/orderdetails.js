@@ -38,11 +38,18 @@ function orderdetailsOnPageShow() {
     if (!$('#sendToBasketButton').hasClass('ui-disabled'))
         $('#sendToBasketButton').addClass('ui-disabled');
 
-    if (g_orderdetailsCurrentOrder.ERPOrderNumber === 'Declined' && $('#resendOrderButton').hasClass('invisible')) {
-        $('#resendOrderButton').removeClass('invisible');
+    if (g_orderdetailsCurrentOrder.ERPOrderNumber === 'Declined') {
+        if ($('#resendOrderButton').hasClass('invisible'))
+            $('#resendOrderButton').removeClass('invisible');
+
+        if ($('#rejectOrderButton').hasClass('invisible'))
+            $('#rejectOrderButton').removeClass('invisible');
     } else {
         if (!$('#resendOrderButton').hasClass('invisible'))
             $('#resendOrderButton').addClass('invisible');
+
+        if (!$('#rejectOrderButton').hasClass('invisible'))
+            $('#rejectOrderButton').addClass('invisible');
     }
 
     orderdetailsInit();
@@ -187,6 +194,39 @@ function orderdetailsBind() {
             };
             g_busy(true);
             var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orders_resubmit&params=(%27' + g_orderdetailsCurrentOrder.SupplierID + '%27|%27' + g_orderdetailsCurrentOrder.AccountID + '%27|%27' + g_orderdetailsCurrentOrder.OrderID + '%27)';
+            console.log(url);
+            g_ajaxget(url, onSuccess,onFailure);
+        }
+    });
+
+    $('#rejectOrderButton').unbind();
+    $('#rejectOrderButton').click(function () {
+        var msg = prompt('Are You sure you want to reject this ' + g_orderdetailsCurrentOrder.Type + '?');
+        if (msg !== null) {
+
+            var onSuccess = function(json) {
+                g_busy();
+                if (json && json.length && json[0].status) {
+                    if (!$('#rejectOrderButton').hasClass('invisible'))
+                        $('#rejectOrderButton').addClass('invisible');
+                    alert('Your ' + g_orderdetailsCurrentOrder.Type + ' has been rejected successfully.');
+                    sessionStorage.removeItem('HistoryCacheAccountID');
+                    orderdetailsOnBackClicked();
+                } else {
+                    alert('An error occurred on rejecting Your order. Please try again later.');
+                    console.log('rejectOrderButton - onSuccess:');
+                    console.log(json);
+                }
+            };
+
+            var onFailure = function(err) {
+                g_busy();
+                alert('An error occurred on rejecting Your order. Please try again later.');
+                console.log('rejectOrderButton - onFailure:');
+                console.log(err);
+            };
+            g_busy(true);
+            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orders_reject&params=(%27' + g_orderdetailsCurrentOrder.SupplierID + '%27|%27' + g_orderdetailsCurrentOrder.AccountID + '%27|%27' + g_orderdetailsCurrentOrder.OrderID + '%27|%27' + msg + '%27)';
             console.log(url);
             g_ajaxget(url, onSuccess,onFailure);
         }
