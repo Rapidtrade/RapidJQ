@@ -18,8 +18,7 @@ var g_restPHPUrl = "https://supertrade.supergrp.net:9085/rest/";
 // please comment below five lines as well
 $.ajaxSetup({
     beforeSend: function(xhr) {
-        xhr.setRequestHeader("Authorization", "Basic " + btoa("rtRestAuthUser:pass+word1pass+word1"));
-        xhr.setRequestHeader("Host", "supertrade.supergrp.net");
+        xhr.setRequestHeader("Authorization", "Basic " + btoa("rtRestAuthUser:pass@word1pass@word1"));
     }
 });
 
