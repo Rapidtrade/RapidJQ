@@ -139,7 +139,7 @@ var promo = (function(){
                                     if (!(tpm.json.notAllowedWithDeal && json.DiscountApplied) && $this.checkProductCondition(tpm, tpmval, json)) {
                                         $this.currentBasket.push(json);
                                         // triggerItems.push(json.ProductID);
-                                        var trItem = {'ID': json.ProductID, 'Label': json.Description, 'Quantity': json.Quantity};
+                                        var trItem = {'ID': json.ProductID, 'Label': json.Description, 'Quantity': json.Quantity, 'json': json};
                                         triggerItems.push(trItem);
                                         qty += json.Quantity;
                                     }
@@ -168,17 +168,27 @@ var promo = (function(){
                                     } else if (tpm.json.eachProductQty) {
                                         var realTriggerItems = [];
                                         var triggeredAllItems = (triggerItems.length > 0);
-                                        var triggeredQtys = [];
-                                        for (var i = 0; i < triggerItems.length; ++i) {
-                                            if (triggerItems[i].Quantity >= tpm.json.BuyQty) {
-                                                realTriggerItems.push(triggerItems[i]);
-                                                triggeredQtys.push(triggerItems[i].Quantity);
+                                        // var triggeredQtys = [];
+                                        var tpmMaxQtyMultiplier = [];
+                                        for (var j = 0; j < tpmval.length; ++j) {
+                                            var valQty = 0;
+                                            var tempRealTrigItems = [];
+                                            for (var i = 0; i < triggerItems.length; ++i) {
+                                                if (triggerItems[i].json[tpmval[j].Attribute] === tpmval[j].ID.toString()) {
+                                                    valQty += triggerItems[i].Quantity;
+                                                    tempRealTrigItems.push(triggerItems[i]);
+                                                }
+                                            }
+                                            if (valQty >= tpmval[j].BuyQuantity) {
+                                                realTriggerItems = realTriggerItems.concat(tempRealTrigItems);
+                                                var multiplier = Math.floor(valQty / tpmval[j].BuyQuantity);
+                                                tpmMaxQtyMultiplier.push(multiplier);
                                             } else {
                                                 triggeredAllItems = false;
                                             }
                                         }
                                         if (triggeredAllItems) {
-                                            triggeredQtys.sort();
+                                            tpmMaxQtyMultiplier.sort();
                                             if (!tpm.matchingConditions) {
                                                 tpm.matchingConditions = [];
                                                 tpm.matchingQtys = 0;
@@ -186,7 +196,7 @@ var promo = (function(){
                                             }
                                             tpm.json.productConditions[condcount].triggerItems = realTriggerItems;
                                             tpm.matchingConditions.push(condcount);
-                                            tpm.matchingQtys += triggeredQtys[0];
+                                            tpm.matchingQtys += tpmMaxQtyMultiplier[0];
                                         }
                                     } else {
                                         var realTriggerItems = [];
@@ -268,7 +278,11 @@ var promo = (function(){
                             // freeItemsCount += prodCond.Free.length;
                             freeItemsCount += (prodCond.Free && prodCond.Free.length) ? prodCond.Free.length : prodCond.triggerItems.length;
                         }
-                        maxQty = Math.floor((tpm.matchingQtys / tpm.json.BuyQty)) * tpm.json.FreeQty;
+                        if (tpm.json.eachProductQty) {
+                            maxQty = tpm.matchingQtys * tpm.json.FreeQty;
+                        } else {
+                            maxQty = Math.floor((tpm.matchingQtys / tpm.json.BuyQty)) * tpm.json.FreeQty;
+                        }
                         maxQtyPerItem = Math.floor((maxQty / freeItemsCount));
                     }
 
@@ -312,8 +326,8 @@ var promo = (function(){
                                     item.MaxQty = maxQty;
                                     item.MaxQtyPerItem = maxQtyPerItem;
                                 } else if (tpm.json.eachProductQty) {
-                                    item.MaxQty = Math.floor(((tempFreeItems[x].Quantity || tpm.matchingQtys) / tpm.json.BuyQty)) * tpm.json.FreeQty;
-                                    item.MaxQtyPerItem = item.MaxQty;
+                                    item.MaxQty = maxQty;
+                                    item.MaxQtyPerItem = maxQtyPerItem;
                                 } else {
                                     item.MaxQty = Math.floor(((tempFreeItems[x].Quantity || tpm.matchingQtys) / tpm.json.BuyQty)) * tpm.json.FreeQty;
                                     item.MaxQtyPerItem = item.MaxQty;
