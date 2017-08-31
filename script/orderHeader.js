@@ -255,6 +255,26 @@ function orderHeaderInit() {
 
     g_orderHeaderJsonForm.oncomplete = function() {
         setTimeout(function() {
+            // check if there are custom delivery methods defined for the customer
+            var deliveryField = DaoOptions.getValue('DeliverMethodUserField', '');
+            if (deliveryField && g_currentCompany()[deliveryField] && g_currentCompany()[deliveryField].trim()) {
+                // option exists and customer's field is not empty so we need to replace default delivery methods
+                var deliveryMethods = g_currentCompany()[deliveryField].split(',');
+                var deliveryMethodDropDown = $('#' + id + 'DeliveryMethod');
+                // before we replace anythin lets check if drop down is on the screen and there are actual methods for replacing
+                if (deliveryMethods.length && deliveryMethodDropDown.length) {
+                    deliveryMethodDropDown.html('');
+                    var optionsStr = '';
+                    for (var i = 0; i < deliveryMethods.length; ++i) {
+                        optionsStr += '<option value="' + deliveryMethods[i] + '">' + deliveryMethods[i] + '</option>';
+                    }
+                    deliveryMethodDropDown.append(optionsStr);
+                    deliveryMethodDropDown.listview().listview('refresh');
+                }
+            }
+        }, 100);
+
+        setTimeout(function() {
             $('input').keypress(function (event) {
 
                 var keycode = (event.keyCode ? event.keyCode : event.which);
