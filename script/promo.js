@@ -497,7 +497,7 @@ var promo = (function(){
                         if (triggerItemsContain(regularItem.ProductID, promoItem.triggerItems)) {
                             if (promoItem.offerPromoWithDeal) {
                                 if (promoItem.PromoType === 'DISCOUNT') {
-                                    regularItem.RepNett = parseFloat(regularItem.Nett) - (parseFloat(regularItem.Nett) * (promoItem.Discount / 100));
+                                    regularItem.RepNett = parseFloat(regularItem.Nett) - (parseFloat(regularItem.Nett) * (promoItem.PromoDiscount / 100));
                                     regularItem.RepDiscount = 100 * (regularItem.Gross - regularItem.RepNett) / regularItem.Gross;
                                     regularItem.RepChangedPrice = true;
                                     regularItem.UserField03 = promoItem.PromoID;
