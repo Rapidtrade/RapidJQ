@@ -80,6 +80,7 @@ function orderHeaderBind() {
                         item.RepDiscount = 0;
 
                         item.UserField03 = undefined;
+                        item.UserField04 = undefined;
                         item.PromoID = undefined;
                         item.PromoType = undefined;
 
@@ -89,6 +90,7 @@ function orderHeaderBind() {
                         item.RepDiscount = 0;
 
                         item.UserField03 = undefined;
+                        item.UserField04 = undefined;
                         item.PromoID = undefined;
                         item.PromoType = undefined;
 
