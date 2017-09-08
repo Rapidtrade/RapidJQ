@@ -300,6 +300,7 @@ var promo = (function(){
                             item.noOtherDiscounts = tpm.json.noOtherDiscounts;
                             item.notAllowedWithDeal = tpm.json.notAllowedWithDeal;
                             item.ignoreDealWithPromo = tpm.json.ignoreDealWithPromo;
+                            item.offerPromoWithDeal = tpm.json.offerPromoWithDeal;
                             item.ignoreContractWhenTakePromo = tpm.json.ignoreContractWhenTakePromo;
                             item.mandatory = tpm.json.mandatory;
                             item.triggerItems = tpmcond.triggerItems;
@@ -336,6 +337,7 @@ var promo = (function(){
                                 item.noOtherDiscounts = tpm.json.noOtherDiscounts;
                                 item.notAllowedWithDeal = tpm.json.notAllowedWithDeal;
                                 item.ignoreDealWithPromo = tpm.json.ignoreDealWithPromo;
+                                item.offerPromoWithDeal = tpm.json.offerPromoWithDeal;
                                 item.ignoreContractWhenTakePromo = tpm.json.ignoreContractWhenTakePromo;
                                 item.mandatory = tpm.json.mandatory;
                                 item.multiline = tpm.json.multiline;
@@ -445,6 +447,7 @@ var promo = (function(){
                             item.noOtherDiscounts = allFreeItems[x].noOtherDiscounts;
                             item.notAllowedWithDeal = allFreeItems[x].notAllowedWithDeal;
                             item.ignoreDealWithPromo = allFreeItems[x].ignoreDealWithPromo;
+                            item.offerPromoWithDeal = allFreeItems[x].offerPromoWithDeal;
                             item.ignoreContractWhenTakePromo = allFreeItems[x].ignoreContractWhenTakePromo;
                             item.triggerItems = allFreeItems[x].triggerItems;
 
@@ -494,8 +497,8 @@ var promo = (function(){
                         if (triggerItemsContain(regularItem.ProductID, promoItem.triggerItems)) {
                             if (promoItem.offerPromoWithDeal) {
                                 if (promoItem.PromoType === 'DISCOUNT') {
-                                    regularItem.RepDiscount = promoItem.PromoDiscount;
-                                    regularItem.RepNett = parseFloat(regularItem.Nett) - (parseFloat(regularItem.Nett) * (regularItem.RepDiscount / 100));
+                                    regularItem.RepNett = parseFloat(regularItem.Nett) - (parseFloat(regularItem.Nett) * (promoItem.Discount / 100));
+                                    regularItem.RepDiscount = 100 * (regularItem.Gross - regularItem.RepNett) / regularItem.Gross;
                                     regularItem.RepChangedPrice = true;
                                     regularItem.UserField03 = promoItem.PromoID;
                                     regularItem.PromoID = promoItem.PromoID;
@@ -506,13 +509,14 @@ var promo = (function(){
                                 } else if (promoItem.PromoType === 'FREE') {
                                     regularItem.hasTriggeredPromo = true;
                                     regularItem.RepNett = regularItem.Nett;
-                                    regularItem.RepDiscount = 0;
+                                    regularItem.RepDiscount = regularItem.Discount;
                                     regularItem.RepChangedPrice = true;
 
                                     if (promoItem.Quantity ) {
                                         freePromoItemsToBeAdded.push(promoItem);
                                     }
                                 }
+                                regularItem.UserField04 = 'offerPromoWithDeal';
                                 nonPromoItemsNeedToBeChanged.push(regularItem);
                             } else {
                                 if (promoItem.PromoType === 'DISCOUNT') {
@@ -533,8 +537,8 @@ var promo = (function(){
                                     }
                                 }
 
+                                regularItem.UserField04 = 'ignoreDealWithPromo';
                                 nonPromoItemsNeedToBeChanged.push(regularItem);
-
                             }
 
 
