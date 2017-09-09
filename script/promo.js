@@ -497,8 +497,10 @@ var promo = (function(){
                         if (triggerItemsContain(regularItem.ProductID, promoItem.triggerItems)) {
                             if (promoItem.offerPromoWithDeal) {
                                 if (promoItem.PromoType === 'DISCOUNT') {
+									// shaun- when apply deal and tpm discount, then apply nett to gross and the extra tpm discount
+									regularItem.Gross = regularItem.Nett;  // apply nett to gross
                                     regularItem.RepNett = parseFloat(regularItem.Nett) - (parseFloat(regularItem.Nett) * (promoItem.PromoDiscount / 100));
-                                    regularItem.RepDiscount = 100 * (regularItem.Gross - regularItem.RepNett) / regularItem.Gross;
+                                    regularItem.RepDiscount = promoItem.PromoDiscount; //100 * (regularItem.Gross - regularItem.RepNett) / regularItem.Gross;
                                     regularItem.RepChangedPrice = true;
                                     regularItem.UserField03 = promoItem.PromoID;
                                     regularItem.PromoID = promoItem.PromoID;
