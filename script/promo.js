@@ -617,19 +617,27 @@ var promo = (function(){
 
             var getIntersectionOfTriggerItems = function (array1, array2) {
 
+                var triggerItemsComparator = function(a, b) {
+                    if (a.ID < b.ID)
+                        return -1;
+                    if (a.ID > b.ID)
+                        return 1;
+                    return 0;
+                };
+
                 if (!array1.length || !array2.length) return [];
 
-                array1.sort();
-                array2.sort();
+                array1.sort(triggerItemsComparator);
+                array2.sort(triggerItemsComparator);
 
                 var result = [];
                 var i = 0, j = 0;
 
                 while (i < array1.length && j < array2.length)
                 {
-                    if (array1[i] < array2[j])
+                    if (array1[i].ID < array2[j].ID)
                         i++;
-                    else if (array2[j] < array1[i])
+                    else if (array2[j].ID < array1[i].ID)
                         j++;
                     else /* if array1[i] === array2[j] */
                     {
@@ -670,7 +678,7 @@ var promo = (function(){
                 if (allFreeItems[i].PromoType === 'FREE')
                     promoObj.selected = qtySum > 0;
                 else if (allFreeItems[i].PromoType === 'DISCOUNT') {
-                    promoObj.selected = promoObj.clickedSelect;
+                    promoObj.selected = promoObj.clickedSelect || ($('#promoItemSelectBtn' + i + ' .ui-btn-text').text() === 'Remove');
                 }
             }
             promoObjects.push(promoObj);
@@ -707,12 +715,12 @@ var promo = (function(){
 ////                                $('#localTPMItemsTable tbody:eq(' + j + ') .promoItemSelector .ui-btn-text').text('Remove');
 //                                //break;
 //                            }
-                            if (promoObjects[i].promoType === 'DISCOUNT' && !!promoObjects[i].selected && !promosPreviousState[j]/* && !promoObjects[j].selected && !promosPreviousState[j]*/) {
+                            if (promoObjects[i].promoType === 'DISCOUNT' && !!promoObjects[i].selected /* && !promosPreviousState[j]/* && !promoObjects[j].selected && !promosPreviousState[j]*/) {
                                 $('#localTPMItemsTable tbody:eq(' + j + ')').addClass('ui-disabled');
 
 //                                $('#localTPMItemsTable tbody:eq(' + i + ') .promoItemSelector').addClass('promoItemSelectBtnRemove');
 //                                $('#localTPMItemsTable tbody:eq(' + i + ') .promoItemSelector .ui-btn-text').text('Remove');
-                            } else if (promoObjects[j].promoType === 'DISCOUNT' && !!promoObjects[j].selected && !promosPreviousState[i]/* && !promoObjects[i].selected /* && !promosPreviousState[i]*/) {
+                            } else if (promoObjects[j].promoType === 'DISCOUNT' && !!promoObjects[j].selected /* && !promosPreviousState[i]/* && !promoObjects[i].selected /* && !promosPreviousState[i]*/) {
                                 $('#localTPMItemsTable tbody:eq(' + i + ')').addClass('ui-disabled');
 
 //                                $('#localTPMItemsTable tbody:eq(' + j + ') .promoItemSelector').addClass('promoItemSelectBtnRemove');
