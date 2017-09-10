@@ -670,7 +670,7 @@ var promo = (function(){
 
                     qtySum = 0;
                 }
-                if (i === itemIndex) {
+                if ((i === itemIndex) && ($('#promoItemSelectBtn' + i + ' .ui-btn-text').text() != 'Remove')) {
                     promoObj.clickedSelect = true;
                 }
                 qtySum += parseInt($('#promoItem' + i + 'Qty').val() === '' ? 0 : $('#promoItem' + i + 'Qty').val(), 10);
@@ -678,7 +678,7 @@ var promo = (function(){
                 if (allFreeItems[i].PromoType === 'FREE')
                     promoObj.selected = qtySum > 0;
                 else if (allFreeItems[i].PromoType === 'DISCOUNT') {
-                    promoObj.selected = promoObj.clickedSelect || ($('#promoItemSelectBtn' + i + ' .ui-btn-text').text() === 'Remove');
+                    promoObj.selected = promoObj.clickedSelect || ((itemIndex !== i) && ($('#promoItemSelectBtn' + i + ' .ui-btn-text').text() === 'Remove'));
                 }
             }
             promoObjects.push(promoObj);
