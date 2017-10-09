@@ -207,6 +207,7 @@ function syncLoginAD() {
             var tokenExpiration = Date.now() + (json.expires_in * 1000);
             localStorage.setItem('tokenExpiration', tokenExpiration);
             localStorage.setItem('tokenAD', JSON.stringify(json));
+            localStorage.setItem('OldUserName', getUrlData.UserID);
             if (json.UserID != g_syncLastUserID) {
                 syncSaveUser(getUrlData);
                 g_syncLastUserID = getUrlData.UserID;
@@ -981,9 +982,7 @@ function syncSaveUser(json) {
  * save<...> methods are used to save data and they should either call a REST service or dao.modify() method
  */
 function syncDeleteDB() {
-    if (localStorage.getItem('tokenAD')) {
-        localStorage.setItem('OldUserName', g_currentUser().UserID);
-    }
+
     g_syncDao.deleteDB(function() {
 
         g_syncIsFirstSync = true;
