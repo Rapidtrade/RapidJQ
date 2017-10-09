@@ -15,10 +15,14 @@ var g_logo = 'img/SGlogoSml.png';
 var g_menuLogo = 'img/sglogo.png';
 var g_restPHPUrl = "https://supertrade.supergrp.net:9085/rest/";
 // this setup is for SG only, so when you change target urls back to RT
-// please comment below five lines as well
+// please comment below nine lines as well
 $.ajaxSetup({
     beforeSend: function(xhr) {
-        xhr.setRequestHeader("Authorization", "Basic " + btoa("rtRestAuthUser:pass@word1pass@word1"));
+        if (sessionStorage.getItem('isADCall') === 'true') {
+            xhr.setRequestHeader("Authorization", null);
+        } else {
+            xhr.setRequestHeader("Authorization", "Basic " + btoa("rtRestAuthUser:pass@word1pass@word1"));
+        }
     }
 });
 

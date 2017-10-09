@@ -35,7 +35,8 @@ function syncOnPageShow() {
     g_syncPageTranslation.safeExecute(function() {
 
         g_syncPageTranslation.translateButton('#signinagain', 'Log out');
-        g_syncPageTranslation.translateButton('#syncButton', 'Submit');
+        g_syncPageTranslation.translateButton('#syncButton', 'Log in via your supertrade user');
+        g_syncPageTranslation.translateButton('#syncButtonAD', 'Log in via your SG network user');
     });
 	if (sessionStorage.getItem('disableMenuButton') === 'true')
          $('#syncMenu').addClass('ui-disabled');
@@ -53,8 +54,13 @@ function syncBind() {
 
     $('#syncButton').unbind();
     $('#syncButton').click(function( event ) {
-                            syncFetchUser();
-                    });
+        syncFetchUser();
+    });
+
+    $('#syncButtonAD').unbind();
+    $('#syncButtonAD').click(function( event ) {
+        syncLoginAD();
+    });
 
     $('#signinagain').unbind();
     $('#signinagain').click(function(event){
@@ -105,6 +111,10 @@ function syncInit() {
                                 }
 			},
 			function(user) {
+                if (localStorage.getItem('OldUserName')) {
+    				$('#userid').val(localStorage.getItem('OldUserName'));
+                    return;
+                }
 				g_syncIsFirstSync = true;
 				$('#userid').removeClass('ui-disabled');
                                 //if SMP force in user/password
@@ -137,7 +147,7 @@ function syncInit() {
 function syncFetchUser() {
 
 //     $('#syncMenu').removeClass('ui-disabled');
-
+    localStorage.removeItem('OldUserName');
     g_syncStopSync = false;
     $.mobile.showPageLoadingMsg();
 	$.support.core = true;
@@ -174,6 +184,87 @@ function syncFetchUser() {
 	};
 
 	g_ajaxget(url, success, error);
+}
+
+function syncLoginAD() {
+
+    g_syncStopSync = false;
+    $.mobile.showPageLoadingMsg();
+	$.support.core = true;
+	$.mobile.allowCrossDomainPages = true;
+	$.mobile.pushState = false;
+
+	$('#message').text(g_syncPageTranslation.translateText('Please wait, verifying your userid'));
+	$('#syncimg').attr('src','img/Sand-Timer-48.png');
+	g_syncUserID = $('#userid').val();
+    var getUrlData = null;
+    var verifySuccess = function (json) {
+        sessionStorage.removeItem('isADCall');
+        var status = (json && json.access_token && !json.access_token.IsFaulted && json.access_token.IsCompleted && !json.access_token.IsCanceled);
+        if (status) {
+            $('#syncMenu').removeClass('ui-disabled');
+            g_syncSupplierID = getUrlData.SupplierID;
+            var tokenExpiration = Date.now() + (json.expires_in * 1000);
+            localStorage.setItem('tokenExpiration', tokenExpiration);
+            localStorage.setItem('tokenAD', JSON.stringify(json));
+            if (json.UserID != g_syncLastUserID) {
+                syncSaveUser(getUrlData);
+                g_syncLastUserID = getUrlData.UserID;
+            } else {
+                syncTryToPostData();
+            }
+        } else {
+            $.mobile.hidePageLoadingMsg();
+            g_alert(g_syncPageTranslation.translateText('You seem to be offline: ') + g_syncPageTranslation.translateText(a));
+            $('#syncimg').attr('src', 'img/info-48.png');
+            $('#message').text('Enter your password and click OK');
+        }
+    };
+
+    var verifyError = function (e, a) {
+        sessionStorage.removeItem('isADCall');
+        g_alert(g_syncPageTranslation.translateText('This is not a valid active directory username or password. Have you used the correct format eg. supergrp\john.smith') + g_syncPageTranslation.translateText(a));
+        $.mobile.hidePageLoadingMsg();
+        console.log(e.statusText);
+    };
+
+    var onGetURLSuccess = function(data) {
+        if (!data || !data.length) {
+            $.mobile.hidePageLoadingMsg();
+            g_alert(g_syncPageTranslation.translateText('This is not a valid active directory username or password. Have you used the correct format eg. supergrp\john.smith'));
+            $('#syncimg').attr('src', 'img/info-48.png');
+            $('#message').text('Recheck your input data and try again');
+        }
+        getUrlData = data[0];
+    	var userPassword = $('#password').val();
+    	var userVerifyURL = data[0].url;
+        var userInputData = {
+            username: data[0].UserID,
+            password: userPassword
+        };
+        sessionStorage.setItem('isADCall', 'true');
+    	g_ajaxpost(userInputData, userVerifyURL, verifySuccess, verifyError);
+    };
+
+    var onGetURLError = function (e, a) {
+        g_alert(g_syncPageTranslation.translateText('You seem to be offline: ') + g_syncPageTranslation.translateText(a));
+        $.mobile.hidePageLoadingMsg();
+        console.log(e.statusText);
+    };
+
+    var geturlURL = g_restPHPUrl + "Get?method=User_ReadActiveDirectory&InUserID=%27" + g_syncUserID + "%27";
+    // g_ajaxget(geturlURL, onGetURLSuccess, onGetURLError);
+    $.ajax({
+        type :          'GET',
+        url :           geturlURL,
+        cache :         true,
+        crossDomain:    true,
+        dataType :      'json',
+        success:        onGetURLSuccess,
+        error:          onGetURLError,
+        timeout:        DaoOptions.getValue('AjaxTimeout', 30000)
+    });
+
 }
 
 /*
@@ -890,7 +981,9 @@ function syncSaveUser(json) {
  * save<...> methods are used to save data and they should either call a REST service or dao.modify() method
  */
 function syncDeleteDB() {
-
+    if (localStorage.getItem('tokenAD')) {
+        localStorage.setItem('OldUserName', g_currentUser().UserID);
+    }
     g_syncDao.deleteDB(function() {
 
         g_syncIsFirstSync = true;
@@ -904,6 +997,9 @@ function syncDeleteDB() {
             $('#userid').removeClass('ui-disabled');
             $('#syncimg').attr('src', 'img/info-48.png');
             $('#message').text('Enter your password and click OK');
+            if (localStorage.getItem('OldUserName')) {
+                $('#userid').val(localStorage.getItem('OldUserName'));
+            }
         });
     });
 }
