@@ -208,7 +208,7 @@ function syncLoginAD() {
             localStorage.setItem('tokenExpiration', tokenExpiration);
             localStorage.setItem('tokenAD', JSON.stringify(json));
             localStorage.setItem('OldUserName', getUrlData.UserID);
-            if (json.UserID != g_syncLastUserID) {
+            if (getUrlData.UserID != g_syncLastUserID) {
                 syncSaveUser(getUrlData);
                 g_syncLastUserID = getUrlData.UserID;
             } else {
@@ -982,7 +982,7 @@ function syncSaveUser(json) {
  * save<...> methods are used to save data and they should either call a REST service or dao.modify() method
  */
 function syncDeleteDB() {
-
+    var oldUserName = localStorage.getItem('OldUserName') ? localStorage.getItem('OldUserName') : '';
     g_syncDao.deleteDB(function() {
 
         g_syncIsFirstSync = true;
@@ -996,8 +996,8 @@ function syncDeleteDB() {
             $('#userid').removeClass('ui-disabled');
             $('#syncimg').attr('src', 'img/info-48.png');
             $('#message').text('Enter your password and click OK');
-            if (localStorage.getItem('OldUserName')) {
-                $('#userid').val(localStorage.getItem('OldUserName'));
+            if (oldUserName) {
+                $('#userid').val(oldUserName);
             }
         });
     });
