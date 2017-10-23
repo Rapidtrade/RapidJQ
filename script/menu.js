@@ -215,6 +215,18 @@ function menuInit(){
                             sessionStorage.setItem('disableMenuButton', 'true');
 
                             return;
+                        } else {
+                            sessionStorage.setItem('currentUser', JSON.stringify(user));
+                            g_callCycleCurrentUserID = user.UserID;
+                            g_syncIsFirstSync = false;
+
+                            $('#welcome').text(user.Name);
+                            menuFetchConfigData();
+
+                            $('#grvTitle').text('Deliveries');
+
+                            menuShowButtons();
+                            menuFetchDefaultCustomer();
                         }
 
                     } else {
