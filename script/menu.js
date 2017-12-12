@@ -200,44 +200,75 @@ function menuInit(){
 	dao.get('Users',
                 'user',
                 function(user) {
-                    if (g_forceUserToSyncOnNewMonth() || g_forceUserToSyncOnDate()) {
-                        return;
-                    } else {
-                        sessionStorage.setItem('disableMenuButton', 'false');
-                    }
-                    var mandatorySyncDay = Number(DaoOptions.getValue('ForceWeeklyUpdate'));
-                    var isMandatorySyncDayDefined = (mandatorySyncDay > -1 && mandatorySyncDay < 7);
-
-                    var todaysDay = (new Date()).getDay();
-                    var lastSyncDay = Number(localStorage.getItem('lastSyncDay'));
-
-                    if ((todaysDay !== lastSyncDay) && (!isMandatorySyncDayDefined || (todaysDay === mandatorySyncDay))) {
-
-                        g_alert(g_menuPageTranslation.translateText('You haven`t synchronised today. You should do so now to keep up to date.'));
-
-                        if (isMandatorySyncDayDefined) {
-
-                            dao.clear('Orders');
-                            dao.clear('OrderItems');
+                    if (localStorage.getItem('tokenAD')) {
+                        var now = Date.now();
+                        var tokenExpiration = $.isNumeric(localStorage.getItem('tokenExpiration')) ? parseInt(localStorage.getItem('tokenExpiration'), 10) : Date.now();
+                        if (now > tokenExpiration) {
+                            g_alert(g_menuPageTranslation.translateText('You haven`t synchronised today. You should do so now to keep up to date.'));
+                            var tablesToClear = DaoOptions.getValue('ADSyncClearTables', 'Companies,Pricelists,DiscountValues').split(',');
+                            for(var i = 0; i < tablesToClear.length; ++i) {
+                                localStorage.setItem('lastversion' + tablesToClear[i], 0);
+                                dao.clear(tablesToClear[i]);
+                            }
 
                             $.mobile.changePage('sync.html', { transition: "none"});
                             sessionStorage.setItem('disableMenuButton', 'true');
 
                             return;
+                        } else {
+                            sessionStorage.setItem('currentUser', JSON.stringify(user));
+                            g_callCycleCurrentUserID = user.UserID;
+                            g_syncIsFirstSync = false;
+
+                            $('#welcome').text(user.Name);
+                            menuFetchConfigData();
+
+                            $('#grvTitle').text('Deliveries');
+
+                            menuShowButtons();
+                            menuFetchDefaultCustomer();
                         }
+
+                    } else {
+                        if (g_forceUserToSyncOnNewMonth() || g_forceUserToSyncOnDate()) {
+                            return;
+                        } else {
+                            sessionStorage.setItem('disableMenuButton', 'false');
+                        }
+                        var mandatorySyncDay = Number(DaoOptions.getValue('ForceWeeklyUpdate'));
+                        var isMandatorySyncDayDefined = (mandatorySyncDay > -1 && mandatorySyncDay < 7);
+
+                        var todaysDay = (new Date()).getDay();
+                        var lastSyncDay = Number(localStorage.getItem('lastSyncDay'));
+
+                        if ((todaysDay !== lastSyncDay) && (!isMandatorySyncDayDefined || (todaysDay === mandatorySyncDay))) {
+
+                            g_alert(g_menuPageTranslation.translateText('You haven`t synchronised today. You should do so now to keep up to date.'));
+
+                            if (isMandatorySyncDayDefined) {
+
+                                dao.clear('Orders');
+                                dao.clear('OrderItems');
+
+                                $.mobile.changePage('sync.html', { transition: "none"});
+                                sessionStorage.setItem('disableMenuButton', 'true');
+
+                                return;
+                            }
+                        }
+
+                        sessionStorage.setItem('currentUser', JSON.stringify(user));
+                        g_callCycleCurrentUserID = user.UserID;
+                        g_syncIsFirstSync = false;
+
+                        $('#welcome').text(user.Name);
+                        menuFetchConfigData();
+
+                        $('#grvTitle').text('Deliveries');
+
+                        menuShowButtons();
+                        menuFetchDefaultCustomer();
                     }
-
-                    sessionStorage.setItem('currentUser', JSON.stringify(user));
-                    g_callCycleCurrentUserID = user.UserID;
-                    g_syncIsFirstSync = false;
-
-                    $('#welcome').text(user.Name);
-                    menuFetchConfigData();
-
-                    $('#grvTitle').text('Deliveries');
-
-                    menuShowButtons();
-                    menuFetchDefaultCustomer();
                 },
                 function(user) {
 
