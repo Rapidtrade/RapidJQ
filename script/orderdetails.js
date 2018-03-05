@@ -395,7 +395,7 @@ function orderdetailsExportCSV() {
                    ',Email: info@mnb.com.au,,,,,',
                    ',,,,,,',
                    'Product,Description,Pack Size,Price,Bar Code,Quantity,*SOH*',
-                   '-------,-----------,---------,-----,--------,--------,'].join('\n');
+                   '-------,-----------,---------,-----,--------,--------,-------'].join('\n');
 
     $.each(g_orderdetailsOrderItems, function(index, item) {
 
