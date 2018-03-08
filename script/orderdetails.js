@@ -395,11 +395,11 @@ function orderdetailsExportCSV() {
                    ',Email: info@mnb.com.au,,,,,',
                    ',,,,,,',
                    'Product,Description,Pack Size,Price,Bar Code,Quantity,*SOH*',
-                   '-------,-----------,---------,-----,--------,--------,'].join('\n');
+                   '-------,-----------,---------,-----,--------,--------,-------'].join('\n');
 
     $.each(g_orderdetailsOrderItems, function(index, item) {
 
-        csvData += '\n' + [item.ProductID, item.Description, (item.UserField03 || '-')  + '/' + (item.UserField04 || '-'), item.Nett, item.Barcode || 'N/A', item.Quantity, g_orderdetailsSOHInfo[item.ItemID]].join(',');
+        csvData += '\n' + [item.ProductID, item.Description, (item.UserField03 || '-')  + '/' + (item.UserField04 || '-'), item.Nett, item.Barcode || 'N/A', item.Quantity, item.ItemID].join(',');
     });
 
     var csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csvData);
