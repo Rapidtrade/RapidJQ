@@ -686,7 +686,27 @@ function syncSaveToDB(json, supplierid, userid, version, table, method, skip, ne
 			if (item) syncFetchTable(item.supplierid,item.userid,item.table,item.method,syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)), undefined, item.newRest);
 			return;
 		}
-	} else if (newRest || /*('Orders' === table) || */((json._Items.length ) < g_syncNumRows && (table != 'Pricelists'))) {
+	} else if (table.toLowerCase() === 'tpm') {
+        $('#results tbody tr:last td').text(g_syncPageTranslation.translateText(syncGetLocalTableName(table, method)) + ' (' + (skip + json._Items.length) + ') ' + g_syncPageTranslation.translateText('downloaded'));
+        if ((g_syncTables.length == (g_syncCount + 1))) {
+
+    		console.log('===== Sync completed OK =====');
+                    $('#syncimg').attr('src', 'img/Tick-48.png');
+                    $('#message').text(g_syncPageTranslation.translateText(SYNC_OK_MESSAGE));
+                    $.mobile.hidePageLoadingMsg();
+
+	    } else {
+	        //do the next table
+	        var item = syncNextItem();
+	        try {
+                    g_append('#results tbody', '<tr><td>' + g_syncPageTranslation.translateText('Fetching') + ' ' + g_syncPageTranslation.translateText(syncGetLocalTableName(item.table, item.method)) + '...</td></tr>');
+                    //$('#results tbody').append('<tr><td> Fetching new ' + item.table + '...</td></tr>');
+                    syncFetchTable(item.supplierid, item.userid, item.table, item.method, syncFetchLastTableSkip(syncGetLocalTableName(item.table, item.method)), undefined, item.newRest);
+	        } catch(err) {
+                    console.log('Skipping');
+	        }
+	    }
+    } else if (newRest || /*('Orders' === table) || */((json._Items.length ) < g_syncNumRows && (table != 'Pricelists'))) {
 
             try {
                 //less than 250 records, so move on to the next sync, except pricelist, dont always get back 250
