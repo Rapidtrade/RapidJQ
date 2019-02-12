@@ -571,6 +571,9 @@ var promo = (function(){
                             freePromoItemsToBeAdded[index].RepNett = 0;
                             freePromoItemsToBeAdded[index].RepDiscount = 100;
                             freePromoItemsToBeAdded[index].RepChangedPrice = true;
+                            if (freePromoItemsToBeAdded[index].Description && (freePromoItemsToBeAdded[index].Description.indexOf('FREE:') !== 0)) {
+                                freePromoItemsToBeAdded[index].Description = 'FREE: ' + freePromoItemsToBeAdded[index].Description;
+                            }
 
                             if (index === freePromoItemsToBeAdded.length - 1) {
                                 insertItemsToTheBasket();
