@@ -303,6 +303,7 @@ var promo = (function(){
                             item.offerPromoWithDeal = tpm.json.offerPromoWithDeal;
                             item.ignoreContractWhenTakePromo = tpm.json.ignoreContractWhenTakePromo;
                             item.mandatory = tpm.json.mandatory;
+                            item.Rebate = tpm.Rebate;
                             item.triggerItems = tpmcond.triggerItems;
                             item.priority = (i + 1); //tpm.Priority || tpm.priority || (i + 1);
 
@@ -340,6 +341,7 @@ var promo = (function(){
                                 item.offerPromoWithDeal = tpm.json.offerPromoWithDeal;
                                 item.ignoreContractWhenTakePromo = tpm.json.ignoreContractWhenTakePromo;
                                 item.mandatory = tpm.json.mandatory;
+                                item.Rebate = tpm.Rebate;
                                 item.multiline = tpm.json.multiline;
                                 item.eachProductQty = tpm.json.eachProductQty;
                                 item.triggerItems = tpmcond.triggerItems;
@@ -449,6 +451,7 @@ var promo = (function(){
                             item.ignoreDealWithPromo = allFreeItems[x].ignoreDealWithPromo;
                             item.offerPromoWithDeal = allFreeItems[x].offerPromoWithDeal;
                             item.ignoreContractWhenTakePromo = allFreeItems[x].ignoreContractWhenTakePromo;
+                            item.Rebate = allFreeItems[x].Rebate;
                             item.triggerItems = allFreeItems[x].triggerItems;
 
                             //if (item.Quantity) {
@@ -506,15 +509,19 @@ var promo = (function(){
                                     regularItem.PromoID = promoItem.PromoID;
                                     regularItem.PromoType = promoItem.PromoType;
                                     regularItem.Value = regularItem.RepNett * regularItem.Quantity;
+                                    regularItem.UserField03 = promoItem.Rebate ? 'Rebate' : '';
 
                                     // nonPromoItemsNeedToBeChanged.push(regularItem);
                                 } else if (promoItem.PromoType === 'FREE') {
                                     regularItem.hasTriggeredPromo = true;
                                     regularItem.RepNett = regularItem.Nett;
                                     regularItem.RepDiscount = regularItem.Discount;
+                                    regularItem.PromoID = promoItem.PromoID;
                                     regularItem.RepChangedPrice = true;
+                                    regularItem.UserField03 = promoItem.Rebate ? 'Rebate' : '';
 
                                     if (promoItem.Quantity ) {
+                                        promoItem.UserField03 = promoItem.Rebate ? 'Rebate' : '';
                                         freePromoItemsToBeAdded.push(promoItem);
                                     }
                                 }
@@ -529,12 +536,16 @@ var promo = (function(){
                                     regularItem.PromoID = promoItem.PromoID;
                                     regularItem.PromoType = promoItem.PromoType;
                                     regularItem.Value = regularItem.RepNett * regularItem.Quantity;
+                                    regularItem.UserField03 = promoItem.Rebate ? 'Rebate' : '';
                                 } else if (promoItem.PromoType === 'FREE') {
                                     regularItem.hasTriggeredPromo = true;
                                     regularItem.RepNett = regularItem.Gross;
                                     regularItem.RepDiscount = 0;
                                     regularItem.RepChangedPrice = true;
+                                    regularItem.PromoID = promoItem.PromoID;
+                                    regularItem.UserField03 = promoItem.Rebate ? 'Rebate' : '';
                                     if (promoItem.Quantity ) {
+                                        promoItem.UserField03 = promoItem.Rebate ? 'Rebate' : '';
                                         freePromoItemsToBeAdded.push(promoItem);
                                     }
                                 }

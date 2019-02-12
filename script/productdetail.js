@@ -1156,6 +1156,8 @@ function productdetailCalculateDiscount(volumePrice) {
     var nett = 0;
     var discount = 0;
     var type;
+    var deal = '';
+    var discID = '';
 
     var qty = parseInt($('#quantity').attr('value')) || 0;
 
@@ -1177,6 +1179,8 @@ function productdetailCalculateDiscount(volumePrice) {
         gross = parseFloat(volumePrice[i].Gross);
         nett  = parseFloat(volumePrice[i]['Nett' + j]);
         discount = parseFloat(volumePrice[i]['Discount' + j]);
+        deal = volumePrice[i].Deal;
+        discID = volumePrice[i].ID;
 
         type = volumePrice[i]['Type'];
     }
@@ -1189,6 +1193,8 @@ function productdetailCalculateDiscount(volumePrice) {
     g_pricelistSelectedProduct.Gross = gross;
     g_pricelistSelectedProduct.UserField15 = type;
     g_pricelistSelectedProduct.DiscountApplied = (volumePrice[0].ID != undefined && volumePrice[0].ID != null && volumePrice[0].ID != '');
+    g_pricelistSelectedProduct.Deal = deal;
+    g_pricelistSelectedProduct.DiscountID = discID;
 
     productdetailValue('discount', g_addCommas(discount.toFixed(2)) + '%');
     $('#grossvalue').html(g_addCommas(gross.toFixed(2)));

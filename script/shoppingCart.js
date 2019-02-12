@@ -1264,6 +1264,8 @@ function shoppingCartCalculateLocalDiscount(volumePrice, itemIndex) {
     var nett = 0;
     var discount = 0;
     var type;
+    var deal = '';
+    var discID = '';
 
     var qty = Number($('#' + itemIndex).val() ? $('#' + itemIndex).val() : '0');
 
@@ -1285,6 +1287,8 @@ function shoppingCartCalculateLocalDiscount(volumePrice, itemIndex) {
         gross = parseFloat(volumePrice[i].Gross);
         nett  = parseFloat(volumePrice[i]['Nett' + j]);
         discount = parseFloat(volumePrice[i]['Discount' + j]);
+        deal = volumePrice[i].Deal;
+        discID = volumePrice[i].ID;
 
         type = volumePrice[i]['Type'];
     }
@@ -1300,6 +1304,8 @@ function shoppingCartCalculateLocalDiscount(volumePrice, itemIndex) {
         basketInfo.Gross = gross;
         basketInfo.UserField15 = type;
         basketInfo.DiscountApplied = (volumePrice[0].ID != undefined && volumePrice[0].ID != null && volumePrice[0].ID != '');
+        basketInfo.Deal = deal;
+        basketInfo.DiscountID = discID;
         // basketInfo.DiscountApplied = true;
 
         if (g_enableMultiLineDiscount === 'true' &&
