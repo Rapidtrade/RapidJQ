@@ -756,16 +756,17 @@ var promo = (function(){
             var result = false;
             if (accCondition.ObjectProperty.toLowerCase() === 'all') {
                 result = true;
-                if (accCondition.Exclusions && accCondition.Exclusions.length) {
-                    for(var i = 0; i < accCondition.Exclusions.length; ++i) {
-                        result = result && ($this.account[accCondition.Exclusions[i].Attribute] !== accCondition.Exclusions[i].ID.toString());
-                    }
-                }
             } else {
                 if (accCondition.Values && accCondition.Values.length) {
                     for(var i = 0; i < accCondition.Values.length; ++i) {
                         result = result || ($this.account[accCondition.Values[i].Attribute] === accCondition.Values[i].ID.toString());
                     }
+                }
+            }
+
+            if (accCondition.Exclusions && accCondition.Exclusions.length) {
+                for(var i = 0; i < accCondition.Exclusions.length; ++i) {
+                    result = result && ($this.account[accCondition.Exclusions[i].Attribute] !== accCondition.Exclusions[i].ID.toString());
                 }
             }
 
