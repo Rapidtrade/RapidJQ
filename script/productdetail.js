@@ -43,7 +43,8 @@ function productdetailInit() {
             $('#divgrossvalue').append('<p class="ui-li-aside" id="grossvalue"></p>');
 
             if (g_userCanChangeDiscount()) {
-                $('#divdiscountvalue').append('<input id="discount-r" class="ui-li-aside ui-input-text ui-body-c ui-corner-all ui-shadow-inset" style="position:relative;top:-17px;width:90px;height:10px;" type="text" value="" tabindex="2"/>');
+                if (!$('#discount-r').length)
+                    $('#divdiscountvalue').append('<input id="discount-r" class="ui-li-aside ui-input-text ui-body-c ui-corner-all ui-shadow-inset" style="position:relative;top:-17px;width:90px;height:10px;" type="text" value="" tabindex="2"/>');
                 $('#divnettvalue').append('<p class="ui-li-aside" style="position:relative;top:-18px;" id="nett-r"></p>');
             } else {
                 $('#divdiscountvalue').append('<p class="ui-li-aside" id="discount-r"></p>');

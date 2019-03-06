@@ -93,7 +93,7 @@ function pricelistOnPageShow() {
     $('#NextPrevButtons').hide();
     $('#NextPrevButtonsTop').toggle(DaoOptions.getValue('mobileplnexttop') == 'true');
     $('#barcodescanned').hide();
-    // g_productDetailInitialized = false;
+    g_productDetailInitialized = false;
 
     if (g_currentUser().Role && (g_currentUser().Role.toUpperCase().indexOf('CUST') != -1)) {
         g_pricelistCanChangeDiscount = false;
