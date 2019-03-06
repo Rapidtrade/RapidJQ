@@ -1242,7 +1242,7 @@ function productdetailOkClicked(checkStock) {
         productdetailValue('nett', g_addCommas(g_roundToTwoDecimals(tmpNett)));
     }
 
-    // productdetailFetchPrice();
+    productdetailFetchPrice();
 
     if ($('#quantity').hasClass('ui-disabled')) {
         return;
