@@ -1228,7 +1228,7 @@ function productdetailDeleteItem() {
 
 function productdetailOkClicked(checkStock) {
 
-    if (g_userCanChangeDiscount() && !g_productdetailIsPriceChanged) {
+    if (g_userCanChangeDiscount()) {
         var tmpGross = parseFloat($('#grossvalue').html().replace(/,/g, ''));
         var tmpNett = parseFloat(productdetailValue('nett').replace(/,/g, ''));
         var tmpDiscount = productdetailValue('discount').replace(/,/g, '');
