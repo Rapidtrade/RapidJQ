@@ -970,7 +970,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
         	basketInfo.Discount = discount;
         	basketInfo.Nett = nett;
         	basketInfo.Gross = gross;
-            basketInfo.DiscountApplied = (volumePrice[0].ID != undefined && volumePrice[0].ID != null && volumePrice[0].ID != '');
+            basketInfo.DiscountApplied = (volumePrice.ID != undefined && volumePrice.ID != null && volumePrice.ID != '');
 
 
                 if (DaoOptions.getValue('SetRepBoolDiscountUF') && basketInfo[DaoOptions.getValue('SetRepBoolDiscountUF')]) {
