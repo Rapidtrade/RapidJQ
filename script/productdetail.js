@@ -43,7 +43,8 @@ function productdetailInit() {
             $('#divgrossvalue').append('<p class="ui-li-aside" id="grossvalue"></p>');
 
             if (g_userCanChangeDiscount()) {
-                $('#divdiscountvalue').append('<input id="discount-r" class="ui-li-aside ui-input-text ui-body-c ui-corner-all ui-shadow-inset" style="position:relative;top:-17px;width:90px;height:10px;" type="text" value="" tabindex="2"/>');
+                if (!$('#discount-r').length)
+                    $('#divdiscountvalue').append('<input id="discount-r" class="ui-li-aside ui-input-text ui-body-c ui-corner-all ui-shadow-inset" style="position:relative;top:-17px;width:90px;height:10px;" type="text" value="" tabindex="2"/>');
                 $('#divnettvalue').append('<p class="ui-li-aside" style="position:relative;top:-18px;" id="nett-r"></p>');
             } else {
                 $('#divdiscountvalue').append('<p class="ui-li-aside" id="discount-r"></p>');
@@ -1156,6 +1157,8 @@ function productdetailCalculateDiscount(volumePrice) {
     var nett = 0;
     var discount = 0;
     var type;
+    var deal = '';
+    var discID = '';
 
     var qty = parseInt($('#quantity').attr('value')) || 0;
 
@@ -1177,6 +1180,8 @@ function productdetailCalculateDiscount(volumePrice) {
         gross = parseFloat(volumePrice[i].Gross);
         nett  = parseFloat(volumePrice[i]['Nett' + j]);
         discount = parseFloat(volumePrice[i]['Discount' + j]);
+        deal = volumePrice[i].Deal;
+        discID = volumePrice[i].ID;
 
         type = volumePrice[i]['Type'];
     }
@@ -1189,6 +1194,8 @@ function productdetailCalculateDiscount(volumePrice) {
     g_pricelistSelectedProduct.Gross = gross;
     g_pricelistSelectedProduct.UserField15 = type;
     g_pricelistSelectedProduct.DiscountApplied = (volumePrice[0].ID != undefined && volumePrice[0].ID != null && volumePrice[0].ID != '');
+    g_pricelistSelectedProduct.Deal = deal;
+    g_pricelistSelectedProduct.DiscountID = discID;
 
     productdetailValue('discount', g_addCommas(discount.toFixed(2)) + '%');
     $('#grossvalue').html(g_addCommas(gross.toFixed(2)));
@@ -1221,7 +1228,7 @@ function productdetailDeleteItem() {
 
 function productdetailOkClicked(checkStock) {
 
-    if (g_userCanChangeDiscount() && !g_productdetailIsPriceChanged) {
+    if (g_userCanChangeDiscount()) {
         var tmpGross = parseFloat($('#grossvalue').html().replace(/,/g, ''));
         var tmpNett = parseFloat(productdetailValue('nett').replace(/,/g, ''));
         var tmpDiscount = productdetailValue('discount').replace(/,/g, '');
@@ -1235,7 +1242,7 @@ function productdetailOkClicked(checkStock) {
         productdetailValue('nett', g_addCommas(g_roundToTwoDecimals(tmpNett)));
     }
 
-    // productdetailFetchPrice();
+    productdetailFetchPrice();
 
     if ($('#quantity').hasClass('ui-disabled')) {
         return;
