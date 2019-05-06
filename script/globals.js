@@ -614,9 +614,11 @@ function g_isValidQuantityCharPressed(event, allowDecimals) {
 
 	var keyCode = (event.keyCode ? event.keyCode : event.which);
 
-        // decimal point
-        if ((190 == keyCode) && ((DaoOptions.getValue('AllPartfullUnit') == 'true') || allowDecimals))
-            return true;
+    if (!allowDecimals && ((keyCode === 46) || (keyCode === 190))) return false;
+
+    // decimal point
+    if ((190 == keyCode) && ((DaoOptions.getValue('AllPartfullUnit') == 'true') || allowDecimals))
+        return true;
 
 	// Numeric keypad
 	if ((keyCode > 95) && (keyCode < 106))
@@ -625,7 +627,7 @@ function g_isValidQuantityCharPressed(event, allowDecimals) {
 
 	if (isNaN(String.fromCharCode(event.which)) || event.which == 32
 			|| (event.keyCode >= 186 && event.keyCode <= 222))
-		if (event.which != 8 && event.which != 9)
+		if (event.which != 8 && event.which != 9 && event.which != 46)
 			return false;
 
 	return true;

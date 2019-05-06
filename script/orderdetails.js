@@ -272,6 +272,11 @@ function orderdetailsBind() {
     		$('#quantityEdit').focus();
     	}
     });
+
+    $('#quantityEdit').keypress(function(event) {
+        var allowDecimals = (DaoOptions.getValue('AllowDecimalQuantity', 'true') === 'true') && (DaoOptions.getValue('AllowDecimalQuantityForBranch' + g_currentCompany().BranchID, 'true') === 'true');
+        return g_isValidQuantityCharPressed(event, allowDecimals);
+    });
 }
 
 /*

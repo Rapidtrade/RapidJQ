@@ -362,11 +362,10 @@ function pricelistBind() {
 
         if (keycode == '13') {
             $('#okbtn').click();
+        } else {
+            var allowDecimals = (DaoOptions.getValue('AllowDecimalQuantity', 'true') === 'true') && (DaoOptions.getValue('AllowDecimalQuantityForBranch' + g_currentCompany().BranchID, 'true') === 'true');
+        	return g_isValidQuantityCharPressed(event, allowDecimals);
         }
-    });
-
-    $('#quantity').keydown(function (event) {
-    	return g_isValidQuantityCharPressed(event);
     });
 
     $('.productImageZoomButton').unbind();
@@ -1405,7 +1404,8 @@ function pricelistBindCaptureQuantity() {
             });
 
             $('.captureQuantity').keydown(function (event) {
-                return g_isValidQuantityCharPressed(event);
+                var allowDecimals = (DaoOptions.getValue('AllowDecimalQuantity', 'true') === 'true') && (DaoOptions.getValue('AllowDecimalQuantityForBranch' + g_currentCompany().BranchID, 'true') === 'true');
+                return g_isValidQuantityCharPressed(event, allowDecimals);
             });
 
             $('.captureQuantity').keypress(function (event) {
