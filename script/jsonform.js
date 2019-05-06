@@ -195,7 +195,7 @@ function JsonForm() {
 
                             $('#' + fieldId).keydown(function(event) {
 
-								var allowDecimals = (DaoOptions.getValue('AllowDecimalQuantity', 'true') === 'true') && (DaoOptions.getValue('AllowDecimalQuantityForBranch' + g_currentCompany().BranchID, 'true') === 'true');
+								var allowDecimals = (DaoOptions.getValue('AllowDecimalQuantity', 'true') === 'true') && (DaoOptions.getValue('AllowDecimalQuantityForBranches', '').length ? ($.inArray(g_currentCompany().BranchID, DaoOptions.getValue('AllowDecimalQuantityForBranches', '').split(',')) > -1) : true);
 
                                 return isChangeCalculationSet(this) ? g_isValidQuantityCharPressed(event, allowDecimals) : true;
                             });
