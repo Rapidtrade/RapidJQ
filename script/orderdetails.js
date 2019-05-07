@@ -152,6 +152,12 @@ function orderdetailsBind() {
             g_orderdetailsOrderItems = removePromoItems(g_orderdetailsOrderItems);
         }
 
+        if ((DaoOptions.getValue('AllowDecimalQuantity', 'true') !== 'true') || !(DaoOptions.getValue('AllowDecimalQuantityForBranches', '').length ? ($.inArray(g_currentCompany().BranchID, DaoOptions.getValue('AllowDecimalQuantityForBranches', '').split(',')) > -1) : true)) {
+            for (var i = 0; i < g_orderdetailsOrderItems.length; ++i) {
+                g_orderdetailsOrderItems[i].Quantity = Math.round(g_orderdetailsOrderItems[i].Quantity);
+            }
+        }
+
         basket.saveItems(orderdetailsIsComplexView() ? g_orderdetailsComplexItems : g_orderdetailsOrderItems, onItemsSaved);
 
         function onItemsSaved() {
