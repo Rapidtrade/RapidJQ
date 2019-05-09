@@ -214,6 +214,7 @@ function shoppingCartBind() {
             }
         }
     });
+    $('#saveShoppingCart').toggleClass('ui-disabled', true);
 
     $('#deleteShoppingCart').unbind();
     $('#deleteShoppingCart').click(function() {
@@ -698,9 +699,10 @@ function shoppingCartOnAllItemsAdded() {
     	g_shoppingCartTotalIncl += g_shoppingCartVAT;
     }
 
-    $('.quantity').keydown(function(event) {
-        return g_isValidQuantityCharPressed(event);
-    });
+    // $('.quantity').keydown(function(event) {
+    //     var allowDecimals = (DaoOptions.getValue('AllowDecimalQuantity', 'true') === 'true') && (DaoOptions.getValue('AllowDecimalQuantityForBranches', '').length ? ($.inArray(g_currentCompany().BranchID, DaoOptions.getValue('AllowDecimalQuantityForBranches', '').split(',')) > -1) : true);
+    //     return g_isValidQuantityCharPressed(event, allowDecimals);
+    // });
 
     $('#vat').html(g_addCommas(g_roundToTwoDecimals(g_shoppingCartVAT)));
     $('#totalExcl').html(g_addCommas(g_roundToTwoDecimals(g_shoppingCartTotalExcl)));
@@ -713,6 +715,11 @@ function shoppingCartOnAllItemsAdded() {
     g_basketHTML = '';
     if (DaoOptions.getValue('DoNotSortBasket', 'false') !== 'true')
         alphaFilter.getInstance().HTML('#alphabet', '#shoppingCartitemlist');
+
+    $('.qtybox').keypress(function(event) {
+        var allowDecimals = (DaoOptions.getValue('AllowDecimalQuantity', 'true') === 'true') && (DaoOptions.getValue('AllowDecimalQuantityForBranches', '').length ? ($.inArray(g_currentCompany().BranchID, DaoOptions.getValue('AllowDecimalQuantityForBranches', '').split(',')) > -1) : true);
+        return g_isValidQuantityCharPressed(event, allowDecimals);
+    });
 
     var hidePrice = ((DaoOptions.getValue(sessionStorage.getItem("currentordertype") + 'CartHidePrice', 'false') === 'true') || g_isNoPriceUser());
     if (hidePrice) {
@@ -1200,7 +1207,7 @@ function shoppingCartRecalcMultilineDiscounts(changedItemIndex) {
                         );
 
                         g_clearCacheDependantOnBasket();
-                            }
+                    }
                 });
             }
         });
@@ -1236,6 +1243,7 @@ function shoppingCartRecalcLocalPricing(itemIndex) {
         if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
             shoppingCartRecalcMultilineDiscounts();
         }
+        $('#saveShoppingCart').toggleClass('ui-disabled', false);
         return;
     }
 
@@ -1348,6 +1356,7 @@ function shoppingCartRecalcLivePricing(itemIndex) {
         if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
             shoppingCartRecalcMultilineDiscounts();
         }
+        $('#saveShoppingCart').toggleClass('ui-disabled', true);
         return;
     }
 

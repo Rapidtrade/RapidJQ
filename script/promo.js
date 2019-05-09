@@ -392,7 +392,8 @@ var promo = (function(){
                 });
 
                 $('#localTPMItemsTable tbody input').keydown(function(event) {
-                    return g_isValidQuantityCharPressed(event);
+                    var allowDecimals = (DaoOptions.getValue('AllowDecimalQuantity', 'true') === 'true') && (DaoOptions.getValue('AllowDecimalQuantityForBranches', '').length ? ($.inArray(g_currentCompany().BranchID, DaoOptions.getValue('AllowDecimalQuantityForBranches', '').split(',')) > -1) : true);
+                    return g_isValidQuantityCharPressed(event, allowDecimals);
                 });
 
                 $('#shoppingCartLocalTPMOK').off().on('click', function() {
