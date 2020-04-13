@@ -6,14 +6,14 @@
 //var g_logo = 'img/rapidtrade-logo-small.png';
 //var g_logo = "img/SGlogoSml.png";
 
-var g_url = "https://supertrade.supergrp.net:9082/";
-var g_restUrl = g_url + "api2/"; // "rest3/";
+//var g_url = "https://supertrade.supergrp.net:9082/";
+//var g_restUrl = g_url + "api2/"; // "rest3/";
 //var g_restUrl = g_url + "testrest/";
 //var g_vanSales = true;
-var g_vanSales = false;
-var g_logo = 'img/SGlogoSml.png';
-var g_menuLogo = 'img/sglogo.png';
-var g_restPHPUrl = "https://supertrade.supergrp.net:9085/rest/";
+//var g_vanSales = false;
+//var g_logo = 'img/SGlogoSml.png';
+//var g_menuLogo = 'img/sglogo.png';
+//var g_restPHPUrl = "https://supertrade.supergrp.net:9085/rest/";
 // this setup is for SG only, so when you change target urls back to RT
 // please comment below nine lines as well
 $.ajaxSetup({
@@ -27,12 +27,12 @@ $.ajaxSetup({
 });
 
 
- // var g_url = "http://app.rapidtrade.biz/";
- // var g_restUrl = g_url + "rest/";
- // var g_vanSales = false;
- // var g_restPHPUrl = "http://api.rapidtrade.biz/rest/";
- // var g_logo = 'img/logoSml.png';
- // var g_menuLogo = 'img/logo.png';
+ var g_url = "https://app.rapidtradews.com/;
+ var g_restUrl = g_url + "rest/";
+ var g_vanSales = false;
+ var g_restPHPUrl = "https://api.rapidtrade.biz/rest/";
+ var g_logo = 'img/logoSml.png';
+ var g_menuLogo = 'img/logo.png';
 
 
 
