@@ -27,7 +27,7 @@ $.ajaxSetup({
 });
 
 
- var g_url = "https://app.rapidtradews.com/;
+ var g_url = "https://app.rapidtradews.com/";
  var g_restUrl = g_url + "rest/";
  var g_vanSales = false;
  var g_restPHPUrl = "https://api.rapidtrade.biz/rest/";
