@@ -38,20 +38,6 @@ function orderdetailsOnPageShow() {
     if (!$('#sendToBasketButton').hasClass('ui-disabled'))
         $('#sendToBasketButton').addClass('ui-disabled');
 
-    if (g_orderdetailsCurrentOrder.ERPOrderNumber === 'Declined') {
-        if ($('#resendOrderButton').hasClass('invisible'))
-            $('#resendOrderButton').removeClass('invisible');
-
-        if ($('#rejectOrderButton').hasClass('invisible'))
-            $('#rejectOrderButton').removeClass('invisible');
-    } else {
-        if (!$('#resendOrderButton').hasClass('invisible'))
-            $('#resendOrderButton').addClass('invisible');
-
-        if (!$('#rejectOrderButton').hasClass('invisible'))
-            $('#rejectOrderButton').addClass('invisible');
-    }
-
     orderdetailsInit();
     orderdetailsBind();
 }
@@ -131,33 +117,6 @@ function orderdetailsBind() {
             orderdetailsDecideOnEditOrder();
             return;
         }
-
-        function removePromoItems(items) {
-            var res = [];
-            for (var i = 0; i < items.length; ++i) {
-                if (!items[i].PromoID || !items[i].RepChangedPrice || (items[i].RepDiscount < 100)) {
-                    if (items[i].PromoID && items[i].RepChangedPrice && (items[i].RepDiscount < 100)) {
-                        delete items[i].PromoID;
-                        delete items[i].RepChangedPrice;
-                        delete items[i].RepDiscount;
-                        delete items[i].RepNett;
-                    }
-                    res.push(items[i]);
-                }
-            }
-            return res;
-        }
-
-        if (DaoOptions.getValue('localTPM', 'false') === 'true') {
-            g_orderdetailsOrderItems = removePromoItems(g_orderdetailsOrderItems);
-        }
-
-        if ((DaoOptions.getValue('AllowDecimalQuantity', 'true') !== 'true') || !(DaoOptions.getValue('AllowDecimalQuantityForBranches', '').length ? ($.inArray(g_currentCompany().BranchID, DaoOptions.getValue('AllowDecimalQuantityForBranches', '').split(',')) > -1) : true)) {
-            for (var i = 0; i < g_orderdetailsOrderItems.length; ++i) {
-                g_orderdetailsOrderItems[i].Quantity = Math.round(g_orderdetailsOrderItems[i].Quantity);
-            }
-        }
-
         basket.saveItems(orderdetailsIsComplexView() ? g_orderdetailsComplexItems : g_orderdetailsOrderItems, onItemsSaved);
 
         function onItemsSaved() {
@@ -169,72 +128,6 @@ function orderdetailsBind() {
                 sessionStorage.setItem('ShoppingCartReturnPage', 'orderdetails.html');
                 $.mobile.changePage("shoppingCart.html");
             }
-        }
-    });
-
-    $('#resendOrderButton').unbind();
-    $('#resendOrderButton').click(function () {
-        var conf = confirm('Are You sure you want to resend this ' + g_orderdetailsCurrentOrder.Type + '?');
-        if (conf) {
-
-            var onSuccess = function(json) {
-                g_busy();
-                if (json && json.length && json[0].status) {
-                    if (!$('#resendOrderButton').hasClass('invisible'))
-                        $('#resendOrderButton').addClass('invisible');
-                    alert('Your ' + g_orderdetailsCurrentOrder.Type + ' has been resent successfully.');
-                    sessionStorage.removeItem('HistoryCacheAccountID');
-                    orderdetailsOnBackClicked();
-                } else {
-                    alert('An error occurred on resending Your order. Please try again later.');
-                    console.log('resendOrderButton - onSuccess:');
-                    console.log(json);
-                }
-            };
-
-            var onFailure = function(err) {
-                g_busy();
-                alert('An error occurred on resending Your order. Please try again later.');
-                console.log('resendOrderButton - onFailure:');
-                console.log(err);
-            };
-            g_busy(true);
-            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orders_resubmit&params=(%27' + g_orderdetailsCurrentOrder.SupplierID + '%27|%27' + g_orderdetailsCurrentOrder.AccountID + '%27|%27' + g_orderdetailsCurrentOrder.OrderID + '%27)';
-            console.log(url);
-            g_ajaxget(url, onSuccess,onFailure);
-        }
-    });
-
-    $('#rejectOrderButton').unbind();
-    $('#rejectOrderButton').click(function () {
-        var msg = prompt('Are You sure you want to reject this ' + g_orderdetailsCurrentOrder.Type + '?');
-        if (msg !== null) {
-
-            var onSuccess = function(json) {
-                g_busy();
-                if (json && json.length && json[0].status) {
-                    if (!$('#rejectOrderButton').hasClass('invisible'))
-                        $('#rejectOrderButton').addClass('invisible');
-                    alert('Your ' + g_orderdetailsCurrentOrder.Type + ' has been rejected successfully.');
-                    sessionStorage.removeItem('HistoryCacheAccountID');
-                    orderdetailsOnBackClicked();
-                } else {
-                    alert('An error occurred on rejecting Your order. Please try again later.');
-                    console.log('rejectOrderButton - onSuccess:');
-                    console.log(json);
-                }
-            };
-
-            var onFailure = function(err) {
-                g_busy();
-                alert('An error occurred on rejecting Your order. Please try again later.');
-                console.log('rejectOrderButton - onFailure:');
-                console.log(err);
-            };
-            g_busy(true);
-            var url = g_restPHPUrl + 'GetStoredProc?StoredProc=usp_orders_reject&params=(%27' + g_orderdetailsCurrentOrder.SupplierID + '%27|%27' + g_orderdetailsCurrentOrder.AccountID + '%27|%27' + g_orderdetailsCurrentOrder.OrderID + '%27|%27' + msg + '%27)';
-            console.log(url);
-            g_ajaxget(url, onSuccess,onFailure);
         }
     });
 
@@ -277,11 +170,6 @@ function orderdetailsBind() {
     	'popupafteropen': function() {
     		$('#quantityEdit').focus();
     	}
-    });
-
-    $('#quantityEdit').keypress(function(event) {
-        var allowDecimals = (DaoOptions.getValue('AllowDecimalQuantity', 'true') === 'true') && (DaoOptions.getValue('AllowDecimalQuantityForBranches', '').length ? ($.inArray(g_currentCompany().BranchID, DaoOptions.getValue('AllowDecimalQuantityForBranches', '').split(',')) > -1) : true);
-        return g_isValidQuantityCharPressed(event, allowDecimals);
     });
 }
 
@@ -406,11 +294,11 @@ function orderdetailsExportCSV() {
                    ',Email: info@mnb.com.au,,,,,',
                    ',,,,,,',
                    'Product,Description,Pack Size,Price,Bar Code,Quantity,*SOH*',
-                   '-------,-----------,---------,-----,--------,--------,-------'].join('\n');
+                   '-------,-----------,---------,-----,--------,--------,'].join('\n');
 
     $.each(g_orderdetailsOrderItems, function(index, item) {
 
-        csvData += '\n' + [item.ProductID, item.Description, (item.UserField03 || '-')  + '/' + (item.UserField04 || '-'), item.Nett, item.Barcode || 'N/A', item.Quantity, item.ItemID].join(',');
+        csvData += '\n' + [item.ProductID, item.Description, (item.UserField03 || '-')  + '/' + (item.UserField04 || '-'), item.Nett, item.Barcode || 'N/A', item.Quantity, g_orderdetailsSOHInfo[item.ItemID]].join(',');
     });
 
     var csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csvData);
@@ -887,8 +775,8 @@ function orderdetailsFetchOrderItems() {
     for (var i = 0; i < orderItems.length; i++) {
 
         var orderItem = orderItems[i];
-        // orderItem.PromoID = undefined;
-        // orderItem.PromoType = undefined;
+        orderItem.PromoID = undefined;
+        orderItem.PromoType = undefined;
         if (isComplexView) {
 
             var complexProductId = orderItem[DaoOptions.getValue('MasterChartComplexProd')];

@@ -1,7 +1,7 @@
 ﻿
 <!DOCTYPE html>
 <html manifest="manifest.txt">
-<!-- <html> -->
+<!--<html>-->
     <head>
 	<title>Rapidtrade</title>
         <meta charset="utf-8" />
@@ -57,7 +57,7 @@
         <script type="application/javascript"  src="script/shoppingCart.js"></script>
         <script type="application/javascript"  src="script/orderHeader.js"></script>
         <script type="application/javascript"  src="script/activityform.js"></script>
-	    <script type="application/javascript"  src="script/activity.js"></script>
+	<script type="application/javascript"  src="script/activity.js"></script>
         <script type="application/javascript" src="script/basket.js"></script>
         <script type="application/javascript" src="script/orderdetails.js"></script>
         <script type="application/javascript" src="script/callcycle.js"></script>
@@ -93,19 +93,19 @@
         $('#menupage').bind('pagebeforecreate', menuOnPageBeforeCreate);
         $(document).on("pageshow", "#menupage", menuOnPageShow);
 
-        // document.addEventListener("deviceready", function() {
-        //                             $('#status').text('Starting Cordova');
-        //                             window.setTimeout(g_phonegapon(function(){
-        //                                                     //menuOnPageBeforeCreate();
-        //                                                     //menuOnPageShow();
-        //                                                 }), 1000);
-        //                             }, false);
+        document.addEventListener("deviceready", function() {
+                                    $('#status').text('Starting Cordova');
+                                    window.setTimeout(g_phonegapon(function(){
+                                                            //menuOnPageBeforeCreate();
+                                                            //menuOnPageShow();
+                                                        }), 1000);
+                                    }, false);
 
         // <!-- uncomment below for Non phonegap-->
-
+        /*
         $('#menupage').bind('pagebeforecreate', menuOnPageBeforeCreate);
         $('#menupage').live("pageshow", menuOnPageShow);
-
+        */
     </script>
 
     <div data-role="content">
@@ -242,9 +242,7 @@
 	   	</div>
 
         <div style="text-align:center;color:#555555;">
-
-        Version 10.88
-
+        Version 10.62
         </div>
         <div id="status" style="text-align:center;color:#555555;">
         </div>

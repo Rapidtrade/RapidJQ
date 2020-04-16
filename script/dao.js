@@ -2,7 +2,7 @@ var db;
 function Dao() {
     /*
 	 * this method is used to read the database.
-	 * to be be consistent for indexeddb and websql we will trigger an event when we have read the data
+	 * to be be consistent for indexeddb and websql we will trigger an event when we have read the data 
 	 */
     this.get = function (table, key, ponsuccessread, ponerror, poncomplete) {
         if (g_indexedDB)
@@ -12,15 +12,15 @@ function Dao() {
     };
 
     /*
-	 * pass in a jsonobject and
+	 * pass in a jsonobject and 
 	 */
     this.put = function (json, table, key, ponsuccesswrite, ponerror, poncomplete) {
-
+    	
 //    	console.log('Inserting ' + key + ' into table ' + table);
-
+    	
     	if ((table == 'ProductCategories2') && (!json.p))
     		json.p = 'PC';
-
+    	
         if (g_indexedDB)
             this.idbput(json, table, key, ponsuccesswrite, ponerror, poncomplete);
         else
@@ -28,25 +28,25 @@ function Dao() {
     };
 
     /*
-	 * pass in a jsonobject and
+	 * pass in a jsonobject and 
 	 */
     this.putMany = function (items, table, ponsuccesswrite, ponerror, poncomplete) {
-
+    	
 //    	console.log('Inserting ' + key + ' into table ' + table);
-
+    	
         if (g_indexedDB)
             this.idbputMany(items, table, ponsuccesswrite, ponerror, poncomplete);
         else
             this.sqlputMany(items, table, ponsuccesswrite, ponerror, poncomplete);
     };
-
+    
     this.update = function (json, table, key, ponsuccesswrite, ponerror, poncomplete) {
-
+    	
 //    	console.log('Inserting ' + key + ' into table ' + table);
-
+    	
     	if ((table == 'ProductCategories2') && (!json.p))
     		json.p = 'PC';
-
+    	
         if (g_indexedDB) {
             this.idbput(json, table, key, ponsuccesswrite, ponerror, poncomplete);
             //if (ponerror) { ponerror('Unimplemented function!'); }
@@ -54,17 +54,17 @@ function Dao() {
             this.sqlupdate(json, table, key, ponsuccesswrite, ponerror, poncomplete);
         }
     };
-
+    
     this.index = function (table, key, idx, ponsuccessread, ponerror, poncomplete) {
-
+    	
         if (g_indexedDB)
             this.idbindex(table, key, idx, ponsuccessread, ponerror, poncomplete);
         else
             this.sqlindex(table, key, idx, ponsuccessread, ponerror, poncomplete);
     };
 
-
-    this.indexsorted = function (table, key, idx, sortidx, ponsuccessread, ponerror, poncomplete) {
+    
+    this.indexsorted = function (table, key, idx, sortidx, ponsuccessread, ponerror, poncomplete) {	
         if (g_indexedDB)
         	//TODO: implement an idbindexsorted then we can implement below. for indexeddb we just call index for now
             this.idbindex(table, key, idx, ponsuccessread, ponerror, poncomplete);
@@ -72,14 +72,14 @@ function Dao() {
             this.sqlindexsorted(table, key, idx, sortidx, ponsuccessread, ponerror, poncomplete);
     };
 
-
+    
     this.cursor = function (table, key, index, ponsuccessread, ponerror, poncomplete) {
         if (g_indexedDB)
             this.idbcursor(table, key, index, ponsuccessread, ponerror, poncomplete);
         else
             this.sqlcursor(table, key, index, ponsuccessread, ponerror, poncomplete);
     };
-
+    
     this.cursor1 = function (table, ponsuccessread, ponerror, poncomplete) {
         if (g_indexedDB) {
             this.idbcursor1(table, ponsuccessread, ponerror, poncomplete);
@@ -96,54 +96,54 @@ function Dao() {
             this.sqlcount(table, key, index,  poncomplete, ponerror);
     };
 
-
+    
     /*
 	 * The first method called and is opens the database for the page
 	 */
     Dao.prototype.openDB = function (pdbopened) {
-
+    	
     	var isIE = function() {
-
+    		
     		var tmp = document.documentMode;
 
-    		// Try to force this property to be a string.
+    		// Try to force this property to be a string. 
     		try{
-
+    			
     			document.documentMode = "";
-
+    			
     		} catch(e){
-
+    			
     		};
 
-    		// If document.documentMode is a number, then it is a read-only property, and so
+    		// If document.documentMode is a number, then it is a read-only property, and so 
     		// we have IE 8+.
     		// Otherwise, if conditional compilation works, then we have IE < 11.
-    		// Otherwise, we have a non-IE browser.
+    		// Otherwise, we have a non-IE browser. 
     		result = typeof document.documentMode == "number" ? !0 : eval("/*@cc_on!@*/!1");
 
-    		// Switch back the value to be unobtrusive for non-IE browsers.
+    		// Switch back the value to be unobtrusive for non-IE browsers. 
     		try {
-
+    			
     			document.documentMode = tmp;
-
+    			
     		}catch(e){
-
+    			
     		};
-
+    		
     		return result;
-    	};
-
+    	}; 
+    	
         g_indexedDB = false;
-
-        if (isIE())
+        
+        if (isIE()) 
         	g_indexedDB = true;
-        if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent))
+        if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) 
         	g_indexedDB = true;
-
+        
         // TEST CODE
 //        g_indexedDB = true;
        // END OF TEST CODE
-
+        
         if (g_indexedDB)
             Dao.prototype.idbopenDB(pdbopened);
         else
@@ -157,12 +157,12 @@ function Dao() {
     	var seq = localStorage.getItem('sequenceNumber');
     	var seqday = localStorage.getItem('sequenceDay');
     	var portuguese = localStorage.getItem('Portuguese');
-
+    	
         if (g_indexedDB)
             this.idbdeleteDB(pondbdeleted);
         else
             this.sqldeleteDB(pondbdeleted);
-
+        
         //reset sequence number
         if (seq) localStorage.setItem('sequenceNumber',seq);
         if (seqday) localStorage.setItem('sequenceDay', seqday);
@@ -190,50 +190,50 @@ function Dao() {
     };
 
     this.fetchCompanies = function (searchText, ponsuccessread, ponerror, poncomplete) {
-
+    	
     	searchText = searchText || '';
-
+    	
     	var searchWords = searchText.split(/[ ]+/);
-
+    	
     	try {
-
+    		
     		(g_indexedDB ? this.idbFetchCompanies : this.sqlFetchCompanies)(searchWords, ponsuccessread, ponerror, poncomplete);
-
+    		
     	} catch (e) {
-
+    		
     		g_myterritorySortField = 'Name';
     		(g_indexedDB ? this.idbFetchCompanies : this.sqlFetchCompanies)(searchWords, ponsuccessread, ponerror, poncomplete);
     	}
     };
-
+    
     this.fetchPricelist = function (searchText, ponsuccessread, ponerror, poncomplete, offset, limit, warehouse) {
-
+    	
     	searchText = searchText || '';
-
+    	
     	var searchWords = searchText.split(/[ ]+/);
-
+    	
     	try {
-
+    		
     		g_pricelistSortField = DaoOptions.getValue('PriceListSortField') || 'des';
     		if (g_indexedDB)
     			//TODO: implement offset / limit in indexeddb
     			this.idbFetchPricelist(searchWords, ponsuccessread, ponerror, poncomplete, offset, limit, warehouse);
-    		else
+    		else 
     			this.sqlFetchPricelist(searchWords, ponsuccessread, ponerror, poncomplete, offset, limit, warehouse);
-
+    		
     	} catch (e) {
-
+    		
     		g_pricelistSortField = 'des';
     		(g_indexedDB ? this.idbFetchPricelist : this.sqlFetchPricelist)(searchWords, ponsuccessread, ponerror, poncomplete, offset, limit, warehouse);
     	}
-    };
-
+    };  
+    
     this.fetchTemplateItems = function (template, ponsuccessread, ponerror, poncomplete) {
-
-        this[(g_indexedDB ? 'idb' : 'sql') + 'FetchTemplateItems'](template, ponsuccessread, ponerror, poncomplete);
-    }; //this.sqlFetchRoutesByDate =  function(selectedDate, ponsuccessread, ponerror, poncomplete)
-
-    this.fetchRoutesByDate = function (selectedDate, ponsuccessread, ponerror, poncomplete) {
+    	
+        this[(g_indexedDB ? 'idb' : 'sql') + 'FetchTemplateItems'](template, ponsuccessread, ponerror, poncomplete);        
+    }; //this.sqlFetchRoutesByDate =  function(selectedDate, ponsuccessread, ponerror, poncomplete)  
+    
+    this.fetchRoutesByDate = function (selectedDate, ponsuccessread, ponerror, poncomplete) { 
         if (g_indexedDB) {
             this.idFetchRoutesByDate(selectedDate, ponsuccessread, ponerror, poncomplete);
         } else {
@@ -259,7 +259,7 @@ function Dao() {
 
     /***************** Indexed DB ********************************************************************************
 	 * this method is used to read the database.
-	 * to be be consistent for indexeddb and websql we will trigger an event when we have read the data
+	 * to be be consistent for indexeddb and websql we will trigger an event when we have read the data 
 	 *************************************************************************************************************/
     this.idbget = function (table, key, ponsuccessread, ponerror, poncomplete) {
 
@@ -271,17 +271,17 @@ function Dao() {
         };
         request.onsuccess = function (event) {
             if (event.target.result == undefined) {
-                if (ponerror != undefined)
+                if (ponerror != undefined) 
                 	ponerror("No record found");
             } else {
-                if (ponsuccessread != undefined)
+                if (ponsuccessread != undefined) 
                 	ponsuccessread(event.target.result);
             }
         };
     };
 
     /*
-	 * pass in a jsonobject and
+	 * pass in a jsonobject and 
 	 */
     this.idbputMany = function (json, table, ponsuccesswrite, ponerror, poncomplete) {
         $.each(json, function (index, j) {
@@ -294,34 +294,34 @@ function Dao() {
 
         });
     };
-
+    
     /*
-	 * pass in a jsonobject and
+	 * pass in a jsonobject and 
 	 */
     this.idbput = function (json, table, key, ponsuccesswrite, ponerror, poncomplete) {
-
+    	
     	// for index range purposes
-
+    	
     	if ('Pricelists' == table)
             json[g_pricelistSortField] = 'PL:' + json.pl + ';' + g_pricelistSortField.toUpperCase() + ':' + json[g_pricelistSortField];
-
+    		
         var transaction;
-
+        
         try {
             transaction = db.transaction(table, 'readwrite');
         } catch (err) {
-            if (ponerror != undefined)
+            if (ponerror != undefined) 
             	ponerror("error getting database");
             return;
         }
 
         transaction.oncomplete = function (event) {
-            if (poncomplete != undefined)
+            if (poncomplete != undefined) 
             	poncomplete();
         };
 
         transaction.onerror = function (event) {
-            if (ponerror != undefined)
+            if (ponerror != undefined) 
             	ponerror(event);
         };
 
@@ -329,13 +329,13 @@ function Dao() {
         json.key = key;
         var request = objectStore.put(json);
         request.onsuccess = function (event) {
-            if (ponsuccesswrite != undefined)
+            if (ponsuccesswrite != undefined) 
             	ponsuccesswrite();
         };
     };
 
     this.idbindex = function (table, key, idx, ponsuccessread, ponerror, poncomplete) {
-
+    	
         if (table === 'ProductCategories2') {
             if (idx === 'index1')
                 idx = 'p';
@@ -346,42 +346,42 @@ function Dao() {
         } else if (table === 'Orders') {
             if (idx === 'index1') idx = 'AccountID';
         }
-
-
+        
+    	
         var transaction = db.transaction(table, "readwrite");
         // Do something when all the data is added to the database.
         transaction.oncomplete = function (event) {
-            if (poncomplete != undefined)
+            if (poncomplete != undefined) 
             	poncomplete();
         };
 
         transaction.onerror = function (event) {
-            if (ponerror != undefined)
+            if (ponerror != undefined) 
             	ponerror(event);
         };
 
         var noResult = true;
-
+        
         var objectStore = transaction.objectStore(table);
         var index = objectStore.index(idx);
         var singleKeyRange = IDBKeyRange.only(key);
         index.openCursor(singleKeyRange).onsuccess = function (event) {
-
+        	
             var cursor = event.target.result;
             if (cursor) {
-
+            	
             	noResult = false;
-
+            	
                 // cursor.key is a name, like "Bill", and cursor.value is the whole object.
-                if (ponsuccessread != undefined)
+                if (ponsuccessread != undefined) 
                 	ponsuccessread(cursor.value);
                 cursor['continue']();
-
+                
             } else if (ponerror && noResult) {
-
+            
             	ponerror(key);
-            }
-
+            }           
+            
         };
     };
 
@@ -397,12 +397,12 @@ function Dao() {
         var transaction = db.transaction(table, "readwrite");
         // Do something when all the data is added to the database.
         transaction.oncomplete = function (event) {
-            if (poncomplete != undefined)
+            if (poncomplete != undefined) 
             	poncomplete();
         };
 
         transaction.onerror = function (event) {
-            if (ponerror != undefined)
+            if (ponerror != undefined) 
             	ponerror(event);
         };
 
@@ -416,7 +416,7 @@ function Dao() {
                 var cursor = event.target.result;
                 if (cursor) {
                     //$(document).trigger('rowreadOK',cursor.value);
-                    if (ponsuccessread != undefined)
+                    if (ponsuccessread != undefined) 
                     	ponsuccessread(cursor.value);
                     cursor['continue']();
                 };
@@ -426,7 +426,7 @@ function Dao() {
                 var cursor = event.target.result;
                 if (cursor) {
                     //$(document).trigger('rowreadOK',cursor.value);
-                    if (ponsuccessread != undefined)
+                    if (ponsuccessread != undefined) 
                     	ponsuccessread(cursor.value);
                     cursor['continue']();
                 };
@@ -562,7 +562,7 @@ function Dao() {
             } catch (error) {
                 console.log("Already exists");
             }
-
+            
             try {
                 objectStore = db.createObjectStore("Orders", { keyPath: "key" });
                 objectStore.createIndex("AccountID", "AccountID", { unique: false });
@@ -573,18 +573,18 @@ function Dao() {
                 objectStore = db.createObjectStore("OrderItems", { keyPath: "key" });
             } catch (error) {
                 console.log("Already exists");
-            }
+            }         
             try {
                 objectStore = db.createObjectStore("Tpm", { keyPath: "key" });
             } catch (error) {
                 console.log("Already exists");
-			}
+			} 
             try {
                 objectStore = db.createObjectStore("Route", { keyPath: "key" });
 				objectStore.createIndex("routeID", "routeID", { unique: false });
             } catch (error) {
                 console.log("Already exists");
-            }
+            }               
         };
         request.onsuccess = function (event) {
             db = request.result;
@@ -623,7 +623,7 @@ function Dao() {
 
             if (cursor) {
 
-
+                
                 var accountID = new String(cursor.value.AccountID);
 
                 if (accountID == key)
@@ -668,7 +668,7 @@ function Dao() {
                 g_alert(error.toString());
             }
         }
-        if (pondbdeleted != undefined)
+        if (pondbdeleted != undefined) 
         	pondbdeleted();
     };
 
@@ -676,7 +676,7 @@ function Dao() {
         poncomplete = this.oncomplete;
         var transaction = db.transaction(table, 'readwrite');
         transaction.oncomplete = function (event) {
-            if (poncomplete != undefined)
+            if (poncomplete != undefined) 
             	poncomplete();
         };
         var objectStore = transaction.objectStore(table);
@@ -689,7 +689,7 @@ function Dao() {
         var transaction = db.transaction(table, 'readwrite');
 
         transaction.oncomplete = function (event) {
-            if (poncomplete != undefined)
+            if (poncomplete != undefined) 
             	poncomplete();
         };
         var objectStore = transaction.objectStore(table);
@@ -704,7 +704,7 @@ function Dao() {
     this.idbclearBasket = function (table, accountID, type, ponerror, poncomplete) {
         var transaction = db.transaction(table, 'readwrite');
         transaction.oncomplete = function (event) {
-            if (poncomplete != undefined)
+            if (poncomplete != undefined) 
             	poncomplete();
         };
 
@@ -722,79 +722,79 @@ function Dao() {
         };
 
     };
-
-
+    
+    
     this.idbFetchCompanies = function(searchWords, ponsuccessread, ponerror, poncomplete) {
-
+    	
         var transaction = db.transaction('Companies');
-
+        
         // Do something when all the data is added to the database.
         transaction.oncomplete = function (event) {
-
-            if (poncomplete)
+        	
+            if (poncomplete) 
             	poncomplete();
         };
 
         transaction.onerror = function (event) {
-
-            if (ponerror)
+        	
+            if (ponerror) 
             	ponerror(event);
         };
 
         var objectStore = transaction.objectStore('Companies');
         var index = objectStore.index(g_myterritorySortField);
-
+        
         index.openCursor().onsuccess = function (event) {
-
+            
         	var cursor = event.target.result;
-
+            
         	if (cursor) {
-
+          	
                 var name = new String(cursor.value.Name).toLowerCase();
                 var branchId = new String(cursor.value.BranchID).toLowerCase();
-
+                
                 var isFound = true;
-
+                
                 for ( var i = 0; i < searchWords.length; ++i) {
-
+                	
 					word = searchWords[i].toLowerCase();
-
+					
 					isFound = isFound && (name.indexOf(word) != -1 || branchId.indexOf(word) != -1);
-
+					
 					if (!isFound)
 						break;
 				}
-
+            	
                 if (isFound && ponsuccessread)
                 	ponsuccessread(cursor.value);
-
+                
                 cursor['continue']();
-
+                
             } else if (ponerror) {
-
+            	
                 ponerror("No record found.");
             }
-        };
+        };    	
     };
 
-
+    
     this.idbFetchPricelist = function (searchWords, ponsuccessread, ponerror, poncomplete, offset, limit, warehouse) {
-
+    	
     	var isProductFound = function(product) {
-
+    		
     	    if (product.del)
     	        return false;
             var isFound = true;
-
+            
             if (!((searchWords.length == 1) && ('' == searchWords[0]))) {
-
+            	
             	// if there are search words
-
+            	           	
                 var productId = new String(product.id).toLowerCase();
                 var description = new String(product[g_pricelistSortField]).toLowerCase();
-
+            
                 for (var i = 0; i < searchWords.length; ++i) {
-
+                	
                     word = searchWords[i].toLowerCase();
 
                     isFound = isFound && ((productId.indexOf(word) != -1) || (description.indexOf(word) != -1));
@@ -803,74 +803,74 @@ function Dao() {
                             break;
                 }
             }
-
+            
             return isFound;
     	};
-
+    	
     	var transaction = db.transaction('Pricelists', 'readonly');
 
         transaction.oncomplete = function (event) {
-
-            if (poncomplete)
+        	
+            if (poncomplete) 
             	poncomplete();
         };
 
         transaction.onerror = function (event) {
-
-            if (ponerror)
+        	
+            if (ponerror) 
             	ponerror(event);
         };
 
         var objectStore = transaction.objectStore('Pricelists');
         var index = objectStore.index(g_pricelistSortField);
-
+        
         var indexFieldPrefix = 'PL:' + g_currentCompany().Pricelist + ';' + g_pricelistSortField.toUpperCase() + ':';
         var keyRange = IDBKeyRange.bound(indexFieldPrefix, indexFieldPrefix + '}}}');
-
+        
         index.openCursor(keyRange).onsuccess = function (event) {
-
+            
         	if (g_pricelistItemsOnPage < g_pricelistCurrentPricelistPage * g_numItemsPerPage) {
-
+        	
 	        	var cursor = event.target.result;
-
+	            
 	        	if (cursor) {
-
-	        		cursor.value[g_pricelistSortField] = cursor.value[g_pricelistSortField].replace(indexFieldPrefix, '');
-
+	        			        		
+	        		cursor.value[g_pricelistSortField] = cursor.value[g_pricelistSortField].replace(indexFieldPrefix, ''); 
+	        		
 	        		if (isProductFound(cursor.value)) {
-
-		        		if (g_pricelistItemsOnPage >= (g_pricelistCurrentPricelistPage - 1) * g_numItemsPerPage) {
-
+	        		
+		        		if (g_pricelistItemsOnPage >= (g_pricelistCurrentPricelistPage - 1) * g_numItemsPerPage) {	               
+			            	
                                             if (ponsuccessread)
                                                 ponsuccessread(cursor.value);
-
+	     
 		        		} else {
-
+		        			
                                             ++g_pricelistItemsOnPage;
 		        		}
 	        		}
-
+	                
 	                cursor['continue']();
-
+	                
 	            } else if (ponerror) {
-
+	            	
 	                ponerror("No record found.");
 	            }
         	}
-        };
+        };    	
     };
-
+    
     this.idbFetchTemplateItems = function(template, ponsuccessread, ponerror, poncomplete) {
-
-
+        
+                
     };
 
     /**************************************** Web SQL **********************************************
-     *
+     * 
      ***********************************************************************************************/
     /*
      * this method is used to read the database.
-     * to be be consistent for indexeddb and websql we will trigger an event when we have read the data
+     * to be be consistent for indexeddb and websql we will trigger an event when we have read the data 
      */
     this.sqlget = function (table, key, ponsuccessread, ponerror, poncomplete) {
         db.transaction(function (tx) {
@@ -881,25 +881,25 @@ function Dao() {
                                     try {
                                         ponsuccessread(JSON.parse(results.rows.item(0).json));
                                     } catch (error) {
-                                        if (ponerror != undefined)
+                                        if (ponerror != undefined) 
                                         	ponerror("No record found");
                                     }
                                 }
-
+                                
                                 if (poncomplete)
                                     poncomplete();
                             },
                             function (tx, e) {
-                                if (ponerror != undefined)
+                                if (ponerror != undefined) 
                                 	ponerror();
                                 if (poncomplete)
-                                    poncomplete();
+                                    poncomplete();                                    
                             });
         });
     };
 
     /*
-     * pass in a jsonobject and
+     * pass in a jsonobject and 
      */
     this.sqlput = function (item, table, keyf, ponsuccesswrite, ponerror, poncomplete) {
         db.transaction(function (tx) {
@@ -908,46 +908,46 @@ function Dao() {
             tx.executeSql(sql,
                     [keyf, JSON.stringify(item), getsqlIndex1(table, item), getsqlIndex2(table, item), getsqlIndex3(table, item), getsqlIndex4(table, item)],
                     function (tx, results) {
-                        if (ponsuccesswrite != undefined)
+                        if (ponsuccesswrite != undefined) 
                             ponsuccesswrite();
-
+                        
                         if (poncomplete)
-                            poncomplete();
+                            poncomplete();                            
                     },
                     function (tx, e) {
-                        if (ponerror != undefined)
+                        if (ponerror != undefined) 
                             ponerror(tx, e);
-
+                        
                         if (poncomplete)
-                            poncomplete();
+                            poncomplete();                            
                     });
         });
     };
 
     /*
-     * pass in a jsonobject and
+     * pass in a jsonobject and 
      */
     this.sqlputMany = function (items, table, ponsuccesswrite, ponerror, poncomplete) {
-
+    	
     	var that = this;
-
-        db.transaction(function (tx) {
+    	
+        db.transaction(function (tx) {   
             $.each(items, function (i, item) {
-
+            	
             	if ((table == 'ProductCategories2') && (!item.p))
             		item.p = 'PC';
-
+            	
             	item.key = syncGetKeyField(item, table);
-
+            	
             	if (item.Deleted || item.del) {
             		that.deleteItem(table, item.key, undefined,	undefined, undefined, undefined);
             	}
-            	else {
+            	else {	
 	            	var sql = 'INSERT or REPLACE INTO ' + table + '(keyf, json, index1, index2,index3, index4) VALUES (?,?,?,?,?,?)';
 	            	tx.executeSql(sql, [item.key, JSON.stringify(item), getsqlIndex1(table, item), getsqlIndex2(table, item), getsqlIndex3(table, item), getsqlIndex4(table, item)]);
             	}
             });
-
+            
             if (poncomplete != undefined) {
                 poncomplete();
             }
@@ -956,38 +956,38 @@ function Dao() {
         function (tx) {
             // error
             //alert('1.Something went wrong: ');
-            if (ponerror != undefined)
+            if (ponerror != undefined) 
             	ponerror(tx);
             else
                 console.log(tx);
         });
-
+       
     };
-
+    
     this.sqlupdate = function(item, table, keyf, ponsuccesswrite, ponerror, poncomplete) {
         db.transaction(function (tx) {
             var sql = 'UPDATE ' + table + ' SET json=?, index1=?, index2=?, index3=?, index4=? WHERE keyf=? ';
-
+            
             tx.executeSql(sql,
                     [JSON.stringify(item), getsqlIndex1(table, item), getsqlIndex2(table, item), getsqlIndex3(table, item), getsqlIndex4(table, item), keyf],
                     function (tx, results) {
-                        if (ponsuccesswrite !== undefined)
+                        if (ponsuccesswrite !== undefined) 
                             ponsuccesswrite();
-
+                        
                         if (poncomplete)
-                            poncomplete();
+                            poncomplete();                            
                     },
                     function (tx, e) {
-                        if (ponerror !== undefined)
+                        if (ponerror !== undefined) 
                             ponerror(tx, e);
-
+                        
                         if (poncomplete)
-                            poncomplete();
+                            poncomplete();                            
                     });
         });
     };
-
-    //todo - turn these into proper functions
+    
+    //todo - turn these into proper functions 
     function getsqlIndex1(table, item) {
         try {
             if (table == 'Companies') {
@@ -1018,19 +1018,19 @@ function Dao() {
                 return $.trim(item.DiscountID);
             } else if (table == 'DiscountValues') {
                 return $.trim(item.DiscountID);
-            }
+            }             
 
             return '';
-
+            
         } catch (error) {
-
+        	
             return '';
         };
     };
 
     function getsqlIndex2(table, item) {
-
-        try {
+    	
+        try {      	
             if (table == 'Companies') {
                 return item[g_myterritorySortField].toLowerCase();
             } else if (table == 'Pricelists') {
@@ -1038,7 +1038,7 @@ function Dao() {
             } else if (table == 'BasketInfo') {
             	return item.ProductID;
             } else if (table == 'Stock') {
-                return item.Warehouse;
+                return item.Warehouse;	
             } else if ((table == 'ProductCategories2') || (table == 'ProductCategory2Link')) {
                 return item.c;
             } else if (table == 'Orders') {
@@ -1048,23 +1048,23 @@ function Dao() {
             } else if (table == 'Discount') {
                 return $.trim(item.SortOrder);
             };
-
+            
             return '';
-
+            
         } catch (error) {
-
+        	
             return '';
         };
     };
-
-    function getsqlIndex3(table, item) {
+    
+    function getsqlIndex3(table, item) {   	
         try {
             if (table == 'Pricelists') {
                 return item.id;
             } else if (table == 'BasketInfo') {
             	return item.Quantity;
             } else if (table == 'Stock') {
-                return item.Stock;
+                return item.Stock;	
             } else if (table == 'ProductCategories2') {
             	return item.des;
             } else if (table == 'Orders') {
@@ -1080,8 +1080,8 @@ function Dao() {
             return '';
         };
     };
-
-    function getsqlIndex4(table, item) {
+    
+    function getsqlIndex4(table, item) {	
         try {
             if (table == 'Pricelists') {
                 return item.cn;
@@ -1099,17 +1099,17 @@ function Dao() {
             return '';
         };
     };
-
+    
     function checkindex (idx){
-    	if (idx != 'index1' && idx != 'index2' && idx != 'index3' && idx != 'index4') {
+    	if (idx != 'index1' && idx != 'index2' && idx != 'index3' && idx != 'index4') {   		
     		idx = 'index1'; // index can only be either Index1 or Index2. so default to index1 of not valid
     		console.log('Issue with this index used, defaulting to index1');
-    	}
+    	}    
     	return idx;
-    };
+    }; 
 
 
-
+    
     this.sqlindex = function (table, key, idx, ponsuccessread, ponerror, poncomplete) {
         var sql = 'SELECT [json] FROM ' + table + ' where ' + checkindex(idx) + '= ?';
         db.transaction(function (tx) {
@@ -1117,69 +1117,69 @@ function Dao() {
                 if (ponsuccessread != undefined) {
                     try {
                     	var len = results.rows.length, i;
-                    	if (!len && ponerror) {
+                    	if (!len && ponerror) {                    		
                             ponerror(key);
-                    	}
+                    	}                    	
                     	for (i = 0; i < len; i++) {
                             ponsuccessread(JSON.parse(results.rows.item(i).json));
                         }
-                        if (poncomplete != undefined)
+                        if (poncomplete != undefined) 
                         	poncomplete();
                     } catch (error) {
-                        if (ponerror)
+                        if (ponerror) 
                         	ponerror("No record found");
                     };
                 };
             });
         });
     };
-
+        
     this.sqlindexsorted = function (table, key, idx, sortidx, ponsuccessread, ponerror, poncomplete) {
         db.transaction(function (tx) {
             tx.executeSql('SELECT [json] FROM ' + table + ' where ' + checkindex(idx) + '= ? order by ' + checkindex(sortidx), [key], function (tx, results) {
                 if (ponsuccessread != undefined) {
                     try {
                     	var len = results.rows.length, i;
-                    	if (!len) {
+                    	if (!len) {                    		
                     		ponerror(key);
-                    	}
+                    	}                    	
                     	for (i = 0; i < len; i++) {
                             ponsuccessread(JSON.parse(results.rows.item(i).json));
                         }
-                        if (poncomplete != undefined)
+                        if (poncomplete != undefined) 
                         	poncomplete();
                     } catch (error) {
-                        if (ponerror != undefined)
+                        if (ponerror != undefined) 
                         	ponerror("No record found");
                     };
                 };
             });
         });
     };
-
+    
     this.sqlcount = function (table, key, idx, poncomplete, ponerror) {
-    	if (idx != 'index1' && idx != 'index2' && idx != 'index3' && idx != 'index4') {
+    	if (idx != 'index1' && idx != 'index2' && idx != 'index3' && idx != 'index4') {   		
     		idx = 'index1'; // index can only be either Index1 or Index2. so default to index1 of not valid
     		console.log('Issue with this index used, defaulting to index1');
     	}
         db.transaction(function (tx) {
             tx.executeSql('SELECT count(keyf) as cnt FROM ' + table + ' where ' + idx + '= ?', [key], function (tx, results) {
                 if (poncomplete != undefined) {
-                    try {
+                    try {                   		
                     	var len = results.rows.item(0).cnt;
                     	if (len > 0)
                     		poncomplete(len);
                     	else
                     		ponerror(0);
-                    } catch (error) {
-                        if (ponerror != undefined)
+                    } catch (error) {                   	
+                        if (ponerror != undefined) 
                         	ponerror("No record found");
                     };
                 };
             });
         });
     };
-
+    
 
     this.sqlcursor = function (table, key, index, ponsuccessread, ponerror, poncomplete) {
         db.transaction(function (tx) {
@@ -1190,39 +1190,28 @@ function Dao() {
                         for (i = 0; i < len; i++) {
                             ponsuccessread(JSON.parse(results.rows.item(i).json));
                         }
-                        if (poncomplete != undefined)
+                        if (poncomplete != undefined) 
                         	poncomplete();
                     } catch (error) {
-                        if (ponerror != undefined)
+                        if (ponerror != undefined) 
                         	ponerror("No record found");
                     };
                 };
             });
         });
     };
-
+    
 
     /*
      * The first method called and is opens the database for the page
      */
     Dao.prototype.sqlopenDB = function (pdbopened) {
-        if (g_phonegap) {
-            if (!window.sqlitePlugin) {
-                setTimeout(function (){
-                    Dao.prototype.sqlopenDB(pdbopened);
-                }, 1000);
-                return;
-            }
-            db = window.sqlitePlugin.openDatabase({name: 'rapidtrade', location: 'default'});
-        } else {
-            db = openDatabase('rapidtrade', '1.0', 'Rapidtrade database', 50 * 1024 * 1024);
-        }
-
+        db = openDatabase('rapidtrade', '1.0', 'Rapidtrade database', 2 * 1024 * 1024);
         db.transaction(function (tx) {
-
+            
             tx.executeSql('DROP TABLE IF EXISTS Activities');
             tx.executeSql('DROP TABLE IF EXISTS Products');
-
+            
             tx.executeSql('CREATE TABLE IF NOT EXISTS Companies (keyf, json, index1, index2, index3, index4,  primary key (keyf))');
             tx.executeSql('CREATE TABLE IF NOT EXISTS Pricelists (keyf, json, index1, index2, index3, index4, primary key (keyf))');
             tx.executeSql('CREATE TABLE IF NOT EXISTS DisplayFields (keyf, json, index1, index2, index3, index4, primary key (keyf))');
@@ -1239,57 +1228,51 @@ function Dao() {
             tx.executeSql('CREATE TABLE IF NOT EXISTS ProductCategory2Link (keyf, json, index1, index2, index3, index4, primary key (keyf))');
             tx.executeSql('CREATE TABLE IF NOT EXISTS Address (keyf, json, index1, index2, index3, index4, primary key (keyf))');
             tx.executeSql('CREATE TABLE IF NOT EXISTS Stock (keyf, json, index1, index2, index3, index4, primary key (keyf))');
-            tx.executeSql('CREATE TABLE IF NOT EXISTS Orders (keyf, json, index1, index2, index3, index4, primary key (keyf))');
-            tx.executeSql('CREATE TABLE IF NOT EXISTS OrderItems (keyf, json, index1, index2, index3, index4, primary key (keyf))');
+            tx.executeSql('CREATE TABLE IF NOT EXISTS Orders (keyf, json, index1, index2, index3, index4, primary key (keyf))');   
+            tx.executeSql('CREATE TABLE IF NOT EXISTS OrderItems (keyf, json, index1, index2, index3, index4, primary key (keyf))');               
             tx.executeSql('CREATE TABLE IF NOT EXISTS Unsent (keyf, json, index1, index2, index3, index4, primary key (keyf))');
             tx.executeSql('CREATE TABLE IF NOT EXISTS Tpm (keyf, json, index1, index2, index3, index4, primary key (keyf))');
             tx.executeSql('CREATE TABLE IF NOT EXISTS Route (keyf, json, index1, index2, index3, index4, primary key (keyf))');
-
+            
             var tables = ['Pricelists', 'ProductCategories2', 'ProductCategory2Link'];
-            for ( var i = 0; i < tables.length; i++)
-            	for ( var j = 1; j <= 4; j++)
+            for ( var i = 0; i < tables.length; i++)			
+            	for ( var j = 1; j <= 4; j++)					
             		tx.executeSql('CREATE INDEX IF NOT EXISTS idxindex' + j + ' ON ' + tables[i] + ' (index' + j + ')');
         });
         pdbopened();
     };
 
     this.sqldeleteDB = function (pondbdeleted) {
-
+    	
         localStorage.clear();
         sessionStorage.clear();
 
-        if (g_phonegap) {
-            window.sqlitePlugin.deleteDatabase({name: 'rapidtrade', location: 'default'}, pondbdeleted, function(err) {
-                console.log(err);
-            });
-        } else {
-            db.transaction(function (tx) {
-                tx.executeSql('drop table if EXISTS Companies  ');
-                tx.executeSql('drop table if EXISTS Pricelists  ');
-                tx.executeSql('drop table if EXISTS DisplayFields  ');
-                tx.executeSql('drop table if EXISTS Options  ');
-                tx.executeSql('drop table if EXISTS ActivityTypes  ');
-                tx.executeSql('drop table if EXISTS Users  ');
-                tx.executeSql('drop table if EXISTS Contacts  ');
-                tx.executeSql('drop table if EXISTS BasketInfo  ');
-                tx.executeSql('drop table if EXISTS CallCycle  ');
-                tx.executeSql('drop table if EXISTS Discount  ');
-                tx.executeSql('drop table if EXISTS DiscountCondition  ');
-                tx.executeSql('drop table if EXISTS DiscountValues  ');
-                tx.executeSql('drop table if EXISTS ProductCategories2  ');
-                tx.executeSql('drop table if EXISTS ProductCategory2Link  ');
-                tx.executeSql('drop table if EXISTS Address  ');
-                tx.executeSql('drop table if EXISTS Stock  ');
-                tx.executeSql('drop table if EXISTS Orders  ');
-                tx.executeSql('drop table if EXISTS OrderItems  ');
-                tx.executeSql('drop table if EXISTS Unsent  ');
-                tx.executeSql('drop table if EXISTS Tpm  ');
-                tx.executeSql('drop table if EXISTS Route  ');
-            });
-
-            if (pondbdeleted != undefined)
-            	pondbdeleted();
-        }
+        db.transaction(function (tx) {
+            tx.executeSql('drop table if EXISTS Companies  ');
+            tx.executeSql('drop table if EXISTS Pricelists  ');
+            tx.executeSql('drop table if EXISTS DisplayFields  ');
+            tx.executeSql('drop table if EXISTS Options  ');
+            tx.executeSql('drop table if EXISTS ActivityTypes  ');
+            tx.executeSql('drop table if EXISTS Users  ');
+            tx.executeSql('drop table if EXISTS Contacts  ');
+            tx.executeSql('drop table if EXISTS BasketInfo  ');
+            tx.executeSql('drop table if EXISTS CallCycle  ');
+            tx.executeSql('drop table if EXISTS Discount  ');
+            tx.executeSql('drop table if EXISTS DiscountCondition  ');
+            tx.executeSql('drop table if EXISTS DiscountValues  ');
+            tx.executeSql('drop table if EXISTS ProductCategories2  ');
+            tx.executeSql('drop table if EXISTS ProductCategory2Link  ');
+            tx.executeSql('drop table if EXISTS Address  ');
+            tx.executeSql('drop table if EXISTS Stock  ');
+            tx.executeSql('drop table if EXISTS Orders  ');   
+            tx.executeSql('drop table if EXISTS OrderItems  ');               
+            tx.executeSql('drop table if EXISTS Unsent  ');
+            tx.executeSql('drop table if EXISTS Tpm  ');
+            tx.executeSql('drop table if EXISTS Route  ');
+        });
+        
+        if (pondbdeleted != undefined) 
+        	pondbdeleted();
     };
 
     this.sqlclear = function (table, poncomplete, ponerror) {
@@ -1313,7 +1296,7 @@ function Dao() {
     };
 
     this.sqlclearBasket = function (table, accountId, type, ponerror, poncomplete) {
-
+    	
         db.transaction(function (tx) {
         	try {
         		var query = 'DELETE FROM BasketInfo WHERE [json] LIKE \'%"AccountID":"' + accountId + '"%\'';
@@ -1323,78 +1306,78 @@ function Dao() {
 	            		if (poncomplete)
 	            			poncomplete();
             		} catch(error) {
-                		if (ponerror)
-                			ponerror(error);
+                		if (ponerror) 
+                			ponerror(error);            			
             		}
             	});
         	} catch (error) {
-        		if (ponerror)
+        		if (ponerror) 
         			ponerror(error);
         	}
         });
     };
-
+    
     this.sqlFetchCompanies = function(searchWords, ponsuccessread, ponerror, poncomplete) {
-
+        
         db.transaction(function (tx) {
-
+        	
         	var query = 'SELECT json FROM Companies WHERE ';
-
-        	for (var i = 0; i < searchWords.length; ++i) {
-
+        	
+        	for (var i = 0; i < searchWords.length; ++i) {        	
+        		
         		query += 'json like \'%' + searchWords[i].replace(' ', '%') + '%\'';
-
+        		
         		if (i < searchWords.length - 1)
         			query += ' AND ';
         	}
-
+        	
         	query += ' ORDER BY index2';
-
-            tx.executeSql(query,[],
-
+        	
+            tx.executeSql(query,[], 
+            		
             		function (tx, results) {
-
+            	
 		                try {
-
+		                	
                                     if (ponsuccessread) {
-
+                                        
 		                        for (var i = 0; i < results.rows.length; ++i) {
-
+                                            
                                             var company = JSON.parse(results.rows.item(i).json);
                                             ponsuccessread(company);
 		                        }
                                     }
-
-                                    if (results.rows.length==0 && ponerror)
+		                	
+                                    if (results.rows.length==0 && ponerror) 
                                         ponerror("No record found");
 
-                                    if (poncomplete)
+                                    if (poncomplete) 
                                         poncomplete();
-
+		
 		                } catch (error) {
-
-		                    if (ponerror)
+		                	
+		                    if (ponerror) 
 		                    	ponerror("No record found");
 		                };
             		});
         });
     };
-
+    
 
     this.sqlFetchPricelist = function(searchWords, ponsuccessread, ponerror, poncomplete, offset, limit, warehouse) {
-
+        
         isBarCodeSearch = (searchWords.length == 1) && (searchWords[0].indexOf('b":"') != -1);
-
+        
         db.transaction(function (tx) {
         	//var query = 'SELECT json FROM Pricelists WHERE index1 = ? AND ';
         	var includeCategoryToggle = 'off'; // (sessionStorage.getItem('expandcategory')) ? 'on' : 'off';
-        	var query = '';
+        	var query = ''; 
         	if (includeCategoryToggle != 'on') {
-                    query = 'select p.json, b.json as BasketInfo, s.index3 as Stock from Pricelists p ' +
-                            'left outer join basketinfo b on p.index3 = b.index2 and b.index1 = ? ' +
-                            (DaoOptions.getValue('VanandWareOrder', 'false') === 'true' ? 'inner' : 'left outer') + ' join stock s on s.index1 = p.index3 and s.index2 = ? ' +
+                    query = 'select p.json, b.json as BasketInfo, s.index3 as Stock from Pricelists p ' + 
+                            'left outer join basketinfo b on p.index3 = b.index2 and b.index1 = ? ' +  
+                            (DaoOptions.getValue('VanandWareOrder', 'false') === 'true' ? 'inner' : 'left outer') + ' join stock s on s.index1 = p.index3 and s.index2 = ? ' +  
                             'WHERE p.index1 = ? AND ';
-                    for (var i = 0; i < searchWords.length; ++i) {
+                    for (var i = 0; i < searchWords.length; ++i) {        	        		
                             query += 'p.json like \'%' + searchWords[i].replace(' ', '%') + '%\'';
                             if (i < searchWords.length - 1)
                                     query += ' AND ';
@@ -1410,8 +1393,8 @@ function Dao() {
 						'       select distinct p.index4 ' +
 						'       from Pricelists p  where ' +
 						'p.json like \'%';
-
-        		for (var i = 0; i < searchWords.length; ++i) {
+	        	
+        		for (var i = 0; i < searchWords.length; ++i) {        	        		
 	        		query +=  searchWords[i];
 	        		if (i < searchWords.length - 1)
             			query += ' ';
@@ -1422,19 +1405,19 @@ function Dao() {
         	// limit 50 offset 0
         	query += ' ORDER BY p.index2 limit ' + limit + ' offset ' + offset;
         	console.log(query);
-            tx.executeSql(query,[g_currentCompany().AccountID, warehouse ? warehouse : g_currentCompany().BranchID, g_currentCompany().Pricelist],
+            tx.executeSql(query,[g_currentCompany().AccountID, warehouse ? warehouse : g_currentCompany().BranchID, g_currentCompany().Pricelist], 
             		function (tx, results) {
-		                try {
+		                try {		              
 		                	if (ponsuccessread)
-		                        for (var i = 0; i < results.rows.length; ++i) {
+		                        for (var i = 0; i < results.rows.length; ++i) {                                    
                                             if (g_pricelistItemsOnPage < g_pricelistCurrentPricelistPage * g_numItemsPerPage - offset) {
                                                 if (g_pricelistItemsOnPage >= (g_pricelistCurrentPricelistPage - 1) * g_numItemsPerPage - offset) {
 		                                    var product = JSON.parse(results.rows.item(i).json);
 		                                    var barcode = searchWords[0].slice(4, searchWords[0].length);
-
+                                                        
                                                     product.BasketInfo = JSON.parse(results.rows.item(i).BasketInfo || '{}');
                                                     product.Stock = results.rows.item(i).Stock || '';
-
+                                                        
 
 		                                    if ((!isBarCodeSearch) || (isBarCodeSearch && (product.b == barcode)))
 		                                        ponsuccessread(product);
@@ -1445,42 +1428,42 @@ function Dao() {
 				                		break;
 				                	}
 		                        }
-
-		                	if (results.rows.length==0 && ponerror)
+		                	
+		                	if (results.rows.length==0 && ponerror) 
 		                		ponerror("No record found");
-
-		                	if (poncomplete)
+	                        
+		                	if (poncomplete) 
 	                        	poncomplete();
-
+		
 		                } catch (error) {
-
-		                    if (ponerror)
+		                	
+		                    if (ponerror) 
 		                    	ponerror("No record found");
 		                };
             		});
         });
     };
-
-    this.sqlFetchTemplateItems = function(template, ponsuccessread, ponerror, poncomplete) {
-
+    
+    this.sqlFetchTemplateItems = function(template, ponsuccessread, ponerror, poncomplete) {        
+        
         var query = 'select oi.json, b.index3 as Basket, s.index3 as Stock from OrderItems oi' +
                     ' left outer join basketinfo b on oi.index3 = b.index2 and b.index1 = \'' + g_currentCompany().AccountID + '\'' +
                     ' left outer join stock s on s.index1 = oi.index3 and s.index2 = \'' + g_currentCompany().BranchID + '\'' +
-                    ' where oi.index2 = \'' + g_currentCompany().AccountID + '-' + template + '\'';
-
+                    ' where oi.index2 = \'' + g_currentCompany().AccountID + '-' + template + '\'';     
+        
         console.log(query);
-
+        
         db.transaction(function (tx) {
-
-            tx.executeSql(query,[],
+        
+            tx.executeSql(query,[], 
                 function (tx, results) {
-                    try {
+                    try {		              
                         if (ponsuccessread) {
 
                             for (var i = 0; i < results.rows.length; ++i) {
 
-                                var item = results.rows.item(i);
-                                var product = JSON.parse(item.json);
+                                var item = results.rows.item(i);                                                                                                            
+                                var product = JSON.parse(item.json);                                                    
 
                                 product.BasketQty = item.Basket;
                                 product.Stock = item.Stock;
@@ -1489,42 +1472,42 @@ function Dao() {
                             }
                         }
 
-                        if (!results.rows.length && ponerror)
+                        if (!results.rows.length && ponerror) 
                             ponerror("No record found");
 
-                        if (poncomplete)
+                        if (poncomplete) 
                             poncomplete();
 
                     } catch (error) {
 
-                        if (ponerror)
+                        if (ponerror) 
                             ponerror("No record found");
                     };
-                });
+                });    
             });
     };
-
+    
     this.sqlFetchRoutesByDate =  function(selectedDate, ponsuccessread, ponerror, poncomplete) {
-        var query = 'SELECT distinct r.json, ' +
+        var query = 'SELECT distinct r.json, ' + 
                     ' (SELECT count(*) FROM Orders where index3 = r.index1 and json like \'%"CreateDate":"' + selectedDate + '%\' and (index4=\'\' or ' +
                     ' index4=\'' + g_currentUser().UserID + '\' )) as numOfRouts, ord.index4 as UserID FROM Route r' +
                     ' inner join Orders ord on ord.index3 = r.index1 ' +
-                    ' where ord.json like \'%"CreateDate":"' + selectedDate + '%\'';
+                    ' where ord.json like \'%"CreateDate":"' + selectedDate + '%\''; 
             /* select only rautes for current user and selected date */
         console.log(query);
-
+        
         db.transaction(function (tx) {
-
-            tx.executeSql(query,[],
+        
+            tx.executeSql(query,[], 
                 function (tx, results) {
                     try {
                         var res = [];
                         //if (ponsuccessread) {
                         if (results.rows.length > 0) {
                             for (var i = 0; i < results.rows.length; ++i) {
-
-                                var item = results.rows.item(i);
-                                var route = JSON.parse(item.json);
+                                
+                                var item = results.rows.item(i);                                                                                                            
+                                var route = JSON.parse(item.json);                                                    
                                 route.numOfRouts = item.numOfRouts;
                                 route.UserID = item.UserID;
                                 res.push(route);
@@ -1532,18 +1515,18 @@ function Dao() {
                             }
                         }
 
-                        if (!results.rows.length && ponerror)
+                        if (!results.rows.length && ponerror) 
                             ponerror("No record found");
 
-                        if (poncomplete)
+                        if (poncomplete) 
                             poncomplete(res);
 
                     } catch (error) {
 
-                        if (ponerror)
+                        if (ponerror) 
                             ponerror("No record found");
                     };
-                });
+                });    
             });
     };
 
@@ -1556,16 +1539,16 @@ function Dao() {
             poncomplete(res);
         }
     };
-
+    
     this.sqlFetchRouteDeliveries =  function(routeID, selectedDate, ponsuccessread, ponerror, poncomplete) {
         var query = 'SELECT distinct ord.json FROM Orders ord' +
-                    ' where ord.json like \'%"RequiredByDate":"' + selectedDate + '%\' and index3 = \'' + routeID + '\'';
-
+                    ' where ord.json like \'%"RequiredByDate":"' + selectedDate + '%\' and index3 = \'' + routeID + '\''; 
+            
         console.log(query);
-
+        
         db.transaction(function (tx) {
-
-            tx.executeSql(query,[],
+        
+            tx.executeSql(query,[], 
                 function (tx, results) {
                     try {
                         var res = [];
@@ -1573,26 +1556,26 @@ function Dao() {
                         if (results.rows.length > 0) {
                             for (var i = 0; i < results.rows.length; ++i) {
 
-                                var item = results.rows.item(i);
-                                var deliv = JSON.parse(item.json);
-
+                                var item = results.rows.item(i);                                                                                                            
+                                var deliv = JSON.parse(item.json);                                                    
+                                
                                 res.push(deliv);
                                 //ponsuccessread(route);
                             }
                         }
 
-                        if (!results.rows.length && ponerror)
+                        if (!results.rows.length && ponerror) 
                             ponerror("No record found");
 
-                        if (poncomplete)
+                        if (poncomplete) 
                             poncomplete(res);
 
                     } catch (error) {
 
-                        if (ponerror)
+                        if (ponerror) 
                             ponerror("No record found");
                     };
-                });
+                });    
             });
     };
 
@@ -1633,7 +1616,7 @@ function Dao() {
                     delivResult.push(cursor.value);
 
 
-
+                
 
                 cursor['continue']();
 
@@ -1643,16 +1626,16 @@ function Dao() {
             }
         };
     };
-
+    
     this.sqlFetchDeliveryDetails = function (podID, accountID, ponsuccessread, ponerror, poncomplete) {
         var query = 'SELECT distinct oi.json FROM OrderItems oi' +
-                    ' where oi.index2=\'' + podID + '\' ';
-
+                    ' where oi.index2=\'' + podID + '\' '; 
+            
         console.log(query);
-
+        
         db.transaction(function (tx) {
-
-            tx.executeSql(query,[],
+        
+            tx.executeSql(query,[], 
                 function (tx, results) {
                     try {
                         var res = [];
@@ -1660,26 +1643,26 @@ function Dao() {
                         if (results.rows.length > 0) {
                             for (var i = 0; i < results.rows.length; ++i) {
 
-                                var item = results.rows.item(i);
-                                var delivItem = JSON.parse(item.json);
-
+                                var item = results.rows.item(i);                                                                                                            
+                                var delivItem = JSON.parse(item.json);                                                    
+                                
                                 res.push(delivItem);
                                 //ponsuccessread(route);
                             }
                         }
 
-                        if (!results.rows.length && ponerror)
+                        if (!results.rows.length && ponerror) 
                             ponerror("No record found");
 
-                        if (poncomplete)
+                        if (poncomplete) 
                             poncomplete(res);
 
                     } catch (error) {
 
-                        if (ponerror)
+                        if (ponerror) 
                             ponerror("No record found");
                     };
-                });
+                });    
             });
     };
 
@@ -1728,15 +1711,15 @@ function Dao() {
             }
         };
     };
-
+    
     this.sqlcursor1 =  function(table, ponsuccessread, ponerror, poncomplete) {
-        var query = 'SELECT [json] FROM ' + table;
-
+        var query = 'SELECT [json] FROM ' + table; 
+            
         console.log(query);
-
+        
         db.transaction(function (tx) {
-
-            tx.executeSql(query,[],
+        
+            tx.executeSql(query,[], 
                 function (tx, results) {
                     try {
                         var res = [];
@@ -1744,31 +1727,31 @@ function Dao() {
                         if (results.rows.length > 0) {
                             for (var i = 0; i < results.rows.length; ++i) {
 
-                                var item = results.rows.item(i);
-                                var jsonObj = JSON.parse(item.json);
-
+                                var item = results.rows.item(i);                                                                                                            
+                                var jsonObj = JSON.parse(item.json);                                                    
+                                
                                 res.push(jsonObj);
                                 //ponsuccessread(route);
                             }
                         }
 
-                        if (!results.rows.length && ponerror)
+                        if (!results.rows.length && ponerror) 
                             ponerror("No record found");
 
-                        if (poncomplete)
+                        if (poncomplete) 
                             poncomplete(res);
 
                     } catch (error) {
 
-                        if (ponerror)
+                        if (ponerror) 
                             ponerror("No record found");
                     };
-                });
+                });    
             });
     };
 
     this.idbcursor1 = function (table, ponsuccessread, ponerror, poncomplete) {
-
+        
         var result = [];
 
         var transaction = db.transaction(table, "readwrite");
@@ -1796,16 +1779,16 @@ function Dao() {
 
                 cursor['continue']();
             }
-
-
+                
+            
         };
     };
-
+    
     this.execSQL = function (sql, onsuccess, onerror) {
-
+        
         db.transaction(function (tx) {
-
-            tx.executeSql(sql,[],
+        
+            tx.executeSql(sql,[], 
                 function (tx, results) {
                     try {
                         var res = [];
@@ -1813,28 +1796,27 @@ function Dao() {
                         if (results.rows.length > 0) {
                             for (var i = 0; i < results.rows.length; ++i) {
 
-                                var item = results.rows.item(i);
-                                var jsonObj = JSON.parse(item.json);
-
+                                var item = results.rows.item(i);                                                                                                            
+                                var jsonObj = JSON.parse(item.json);                                                    
+                                
                                 res.push(jsonObj);
                                 //ponsuccessread(route);
                             }
                         }
 
-                        if (!results.rows.length && onerror)
+                        if (!results.rows.length && onerror) 
                             onerror("No record found");
 
-                        if (results.rows.length && onsuccess)
+                        if (results.rows.length && onsuccess) 
                             onsuccess(res);
 
                     } catch (error) {
 
-                        if (onerror)
+                        if (onerror) 
                             onerror("No record found: error");
                     };
-                });
-            }, function(err) {
-                if (onerror) onerror(err);
+                });    
             });
     }
 }
+        

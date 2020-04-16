@@ -16,15 +16,6 @@ var g_userDailySalesDetailTranslation = {};
 var g_monthlySummaryTranslation = {};
 var g_dashboardExtraReports = [];
 
-// this setup is for SG only, so when you change target urls back to RT
-// please comment below five lines as well
-$.ajaxSetup({
-    beforeSend: function(xhr) {
-        xhr.setRequestHeader("Authorization", "Basic " + btoa("rtRestAuthUser:pass@word1pass@word1"));
-    }
-});
-
-
 function dashboardOnPageBeforeCreate() {
 
     g_dashboardPageTranslation = translation('dashboardpage');
@@ -220,7 +211,7 @@ function fetchUsers(){
 
     $.mobile.loading("show");
     $.ajax({
-        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'json',
+        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'jsonp',
         success: function (json) {
             temp = '';
             $.each(json, function (i, item) {
@@ -281,7 +272,7 @@ function fetchActivityTypes() {
     var url = g_restUrl + 'ActivityTypes/GetCollection?supplierID=' + g_currentUser().SupplierID + '&skip=0&top=100&format=json';
     $.mobile.loading("show");
     $.ajax({
-        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback3', contentType: "application/json", dataType: 'json',
+        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback3', contentType: "application/json", dataType: 'jsonp',
         success: function (json) {
             $.each(json, function (i, item) {
                 $('#msActivity').append("<option>" + g_dashboardPageTranslation.translateText(item.Label) + "</option>");
@@ -322,7 +313,7 @@ function fetchMonthySummary() {
  	var activities = ' ';
  	$.mobile.loading("show");
 	$.ajax({
-		type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback', contentType: "application/json", dataType: 'json',
+		type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback', contentType: "application/json", dataType: 'jsonp',
 		success: function (json) {
 		    $('#monthlysummarytable tbody').empty();
 		    hasValue = false;
@@ -394,7 +385,7 @@ function fetchDailySummary() {
     console.log(url);
 
     $.ajax({
-        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'json',
+        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'jsonp',
         success: function (json) {
 
             $('#dailySummaryTable tbody').empty();
@@ -621,7 +612,7 @@ function fetchActivityList() {
 
 	$.mobile.loading("show");
     $.ajax({
-        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'json',
+        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'jsonp',
         success: function (json) {
 
             $('#activityListTable tbody').empty();
@@ -707,7 +698,7 @@ function fetchMonthlyCalendarSummary() {
 	var fetchedActivities = {};
 
 	$.ajax({
-		type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'json',
+		type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'jsonp',
 		success: function (json) {
 
 			$.each(json, function (i, item) {
@@ -780,7 +771,7 @@ function fetchCallCycle() {
 
     $.mobile.loading("show");
     $.ajax({
-        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'json',
+        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'jsonp',
         success: function (json) {
 
             $("#callcycleTable tbody").empty();
@@ -824,7 +815,7 @@ function fetchOrderCountByUser() {
     var url = (DaoOptions.getValue('LiveDashboardURL') || g_restUrl) + 'Dashboard/GetUserOrdering?supplierID=' + g_currentUser().SupplierID + '&userID=' + g_currentUser().UserID + '&format=json';
     $.mobile.loading("show");
     $.ajax({
-        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback', contentType: "application/json", dataType: 'json',
+        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback', contentType: "application/json", dataType: 'jsonp',
         success: function (json) {
             $('#orderCountByUserTable tbody').empty();
             $.each(json, function (i, item) {
@@ -964,7 +955,7 @@ function showPopupDetail(name, account) {
     var url = g_restUrl + "Activities2/GetCollection2?supplierID=" + g_currentUser().SupplierID + "&userID=" + name + "&accountID=" + account + "&includeReps=" + includeReps + "&fromDate=" + start + "&toDate=" + end + "&skip=0&top=300&format=json";
     $.mobile.loading("show");
     $.ajax({
-        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'json',
+        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback2', contentType: "application/json", dataType: 'jsonp',
         success: function (json) {
             var arr = [];
             $.each(json, function (i, item) {
@@ -1063,7 +1054,7 @@ function saveComment(type) {
             "&format=json";
 
     $.ajax({
-        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback7', contentType: "application/json", dataType: 'json',
+        type: 'GET', url: url, async: false, jsonpCallback: 'jsonCallback7', contentType: "application/json", dataType: 'jsonp',
         success: function (json) {
             cancelComment(type);
         },

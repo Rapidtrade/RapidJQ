@@ -8,9 +8,9 @@
         <link rel="stylesheet" href="Rapidtrade.css" />
         <link rel="stylesheet" href="jquery/jqm-datebox-1.1.0.css" />
 
-        <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>
-        <script type="application/javascript" src="jquery/jquery.mobile-1.2.0.min.js"></script>
-        <script type="application/javascript" src="jquery/jqm-datebox.core.min.js"></script>
+        <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>	
+        <script type="application/javascript" src="jquery/jquery.mobile-1.2.0.min.js"></script>    
+        <script type="application/javascript" src="jquery/jqm-datebox.core.min.js"></script>	  	
         <script type="application/javascript" src="jquery/jqm-datebox.mode.calbox.min.js"></script>
         <script type="application/javascript" src="jquery/jqm-datebox.mode.flipbox.min.js"></script>
 
@@ -18,12 +18,12 @@
         <script type="application/javascript" src="script/dao.js"></script>
         <script type="application/javascript" src="script/jsonform.js"></script>
         <script type="application/javascript" src="script/basket.js"></script>
-        <script type="application/javascript" src="script/orderdetails.js"></script>
+        <script type="application/javascript" src="script/orderdetails.js"></script>    
     </head>
     <body>
         <div data-role="page" id="orderdetailspage" class="ipadStatusBar">
             <script>
-                $('#orderdetailspage').bind("pagebeforecreate", orderdetailsOnPageBeforeCreate);
+                $('#orderdetailspage').bind("pagebeforecreate", orderdetailsOnPageBeforeCreate);                
                 $('#orderdetailspage').bind("pageshow", orderdetailsOnPageShow);
             </script>
         	<div data-role="header" >
@@ -31,7 +31,7 @@
                 <a id="orderDetailsBackButton" data-role="button" data-icon="arrow-l" data-iconpos="left" data-direction="reverse" data-transition="none" class="ui-btn-left">Back</a>
                 <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right" style="vertical-align: top;">
                     <!--<span id="thumbnailModeDiv"><select id="thumbnailMode" data-mini="true" data-native-menu="true" data-inline="true">
-                            <option value="On Thumbs">On Thumbs</option>
+                            <option value="On Thumbs">On Thumbs</option>                                
                             <option value="Off Thumbs">Off Thumbs</option>
                         </select></span>-->
                     <div id="thumbnailModeDiv" style="float:left; vertical-align: top;">
@@ -45,19 +45,19 @@
                     <a id="deleteButton" data-role="button" data-icon="delete" data-iconpos="right" data-transition="none" class="invisible">Delete</a>
                     <a id="csvButton" data-role="button" data-icon="grid" data-iconpos="right" data-transition="none" class="invisible">CSV</a>
                     <a id="reprintButton" data-role="button" data-icon="arrow-r" data-iconpos="right" data-transition="none" class="invisible">Reprint</a>
-
+                    
                     <a id="shoppingcartButton" data-role="button" data-icon="arrow-r" data-iconpos="right" data-transition="none" class="ui-disabled">Shopping Cart</a>
-                </div>
+                </div>                 
             </div>
             <div data-role="content" style="position:relative">
                 <div id="buttondiv" style="margin-bottom:10px;">
                     <label for="buttons" class="multiLanguage">Send to cart as:</label>
-                    <fieldset name="buttons" data-role="controlgroup" data-type="horizontal">
+                    <fieldset name="buttons" data-role="controlgroup" data-type="horizontal">                        
                         <label for="radioOrder">
                             Order
                         </label>
                         <input id="radioOrder" name="" value="Order" type="radio" checked="checked">
-                     </fieldset>
+                     </fieldset>	    		
                 </div>
                 <a id="saveCreditButton" data-role="button" data-transition="none" class="invisible">Save Credit</a>
                 <div id="orderDetailspopup">
@@ -69,20 +69,18 @@
                     <table id="complexProductTable"><thead><th>ID</th><th>Description</th><th>Quantity</th></thead><tbody></tbody></table>
                     <a id="okButton" data-role="button" data-inline="false" style="margin-top:20px" href="#">
                          OK
-                    </a>
-                </div>
+                    </a>           
+                </div>                
                 <table style="width:100%;"><tr>
                     <td><h2 id="itemslabel" class="multiLanguage">Items</h2></td>
                     <td>
                         <a style="float: right;" id="sendToBasketButton" data-role="button" href="#" data-theme="b"  data-icon="arrow-r" data-iconpos="right">Send all to Cart</a>
-                        <a style="float: right;" id="rejectOrderButton" data-role="button" href="#" data-theme="b" class="invisible">Reject</a>
-                        <a style="float: right;" id="resendOrderButton" data-role="button" href="#" data-theme="b" class="invisible">Resend</a>
                     </td>
-                </tr></table>
+                </tr></table>		
 	            <div>
-	             	<ul id="orderitemlist" data-inset="true"  data-role="listview" data-theme="b" data-divider-theme="b" class="ui-listview ui-corner-all ui-shadow"></ul>
+	             	<ul id="orderitemlist" data-inset="true"  data-role="listview" data-theme="b" data-divider-theme="b" class="ui-listview ui-corner-all ui-shadow"></ul>                   	 	
 	            </div>
-
+	            
 	        	<div data-role="popup" id="quantityPopup" data-history="false" data-theme="b" data-overlay-theme="a" class="ui-content">
 	               <div>
 	                    <div data-role="fieldcontain">
@@ -101,13 +99,13 @@
 		                    Not Ordered
 		                </option>
 		            </select>
-	            	</div>
+	            	</div>  
 	               <a id="sendItemButton" href="#pricelistpage" data-role="button" data-inline="true" data-icon="check" data-iconpos="left" data-theme="b">
 	            	   Send
 	        	   </a>
 	               <a id="cancel" href="#orderdetailspage" data-role="button" data-inline="true"  data-icon="delete" data-iconpos="left" data-theme="b">
 	                   Cancel
-	               </a>
+	               </a>             
        			</div>
 	        	<div data-role="popup" id="creditInfoPopup" data-history="false" data-theme="b" data-overlay-theme="a" class="ui-content">
 	               <div style="padding-bottom:20px">
@@ -117,22 +115,22 @@
 	               <a id="creditInfoOKButton" href="#orderdetailspage" data-role="button" data-inline="false">
 	                   OK
 	               </a>
-       			</div>
+       			</div>   
        			<div data-role="popup" data-history="false" id="orderDetailsInvoicePopup" data-theme="e">
 	                <p>
 	                	Which size?
-	                </p>
+	                </p>  
 	                <a id="a4PrinterButton" href="printinvoiceA4.html" data-role="button" data-inline="true">
 		            	   A4 Printer
 		        	</a>
 		            <a id="smallPrinterButton" href="printinvoicesmall.html" data-role="button" data-inline="true">
 		                   Small Printer
-		            </a>
-            	</div>
+		            </a>            
+            	</div> 
             	<div data-role="popup" data-history="false" id="itemInfoPopup" data-theme="e">
                     <p class="multiLanguage">
 	                    Item sent successfully.
-                    </p>
+                    </p>           
             	</div>
                 <div data-role="popup" data-history="false" id="orderdetailsCanEditOrderPopup" class="ui-content">
                     <p>
@@ -149,6 +147,6 @@
 	            </a>
             	</div>
             </div>
-        </div>
+        </div>        
     </body>
 </html>

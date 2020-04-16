@@ -6,25 +6,14 @@
 //var g_logo = 'img/rapidtrade-logo-small.png';
 //var g_logo = "img/SGlogoSml.png";
 
-//var g_url = "https://supertrade.supergrp.net:9082/";
-//var g_restUrl = g_url + "api2/"; // "rest3/";
-//var g_restUrl = g_url + "testrest/";
-//var g_vanSales = true;
+//var g_url = "http://www.dedicatedsolutions.co.za:8082/";
+//var g_restUrl = g_url + "rest3/";
+////var g_restUrl = g_url + "testrest/";
+////var g_vanSales = true;
 //var g_vanSales = false;
 //var g_logo = 'img/SGlogoSml.png';
 //var g_menuLogo = 'img/sglogo.png';
-//var g_restPHPUrl = "https://supertrade.supergrp.net:9085/rest/";
-// this setup is for SG only, so when you change target urls back to RT
-// please comment below nine lines as well
-$.ajaxSetup({
-    beforeSend: function(xhr) {
-        if (sessionStorage.getItem('isADCall') === 'true') {
-            xhr.setRequestHeader("Authorization", null);
-        } else {
-            xhr.setRequestHeader("Authorization", "Basic " + btoa("rtRestAuthUser:pass@word1pass@word1"));
-        }
-    }
-});
+//var g_restPHPUrl = "http://www.super-trade.co.za:8083/rest/index.php/";
 
 
  var g_url = "https://app.rapidtradews.com/";
@@ -271,9 +260,8 @@ function g_menuBind() {
 	$('#menuButton').unbind();
 	$('#menuButton').click(function() {
 
-        if (g_currentUser().Role && g_currentUser().Role.toUpperCase().indexOf('CUST') !== -1 && $.mobile.activePage.attr('id') === 'companypage')
-            if (!sessionStorage.getItem('customerMoreThan1Company'))
-    		      g_loadMenu();
+            if (g_currentUser().Role && g_currentUser().Role.toUpperCase().indexOf('CUST') !== -1 && $.mobile.activePage.attr('id') === 'companypage')
+		g_loadMenu();
 	});
 }
 
@@ -419,18 +407,9 @@ function g_firstMondayOfCurrentMonth() {
 
 
 function g_currentCallCycleWeek() {
-	if (DaoOptions.getValue('WeeksInCallCycle','')=='2' ) {
-        if (DaoOptions.getValue('RollingCallCycle', 'true') === 'true') {
-            var numWeeks = 2
-            var now = moment();
-            var weekoy = g_getWeek();
-            var cycle = Math.floor(weekoy / numWeeks);
-    		var weekInCycle = weekoy - (cycle * numWeeks);
-    		return weekInCycle ? weekInCycle : numWeeks;
-        } else {
-            return (g_getWeek() % 2) + 1;
-        }
-	} else if (DaoOptions.getValue('WeeksInCallCycle','')=='4') {
+	if (DaoOptions.getValue('WeeksInCallCycle','')=='2' )
+		return (g_getWeek() % 2) + 1;
+	else if (DaoOptions.getValue('WeeksInCallCycle','')=='4') {
 		var weekoy;
 		if (DaoOptions.getValue('FirsfWeekOfYear')) {
 			var firstWeekOfYear = g_getWeek(g_yyyyMMddToDate(DaoOptions.getValue('FirsfWeekOfYear')));
@@ -614,11 +593,9 @@ function g_isValidQuantityCharPressed(event, allowDecimals) {
 
 	var keyCode = (event.keyCode ? event.keyCode : event.which);
 
-    if (!allowDecimals && ((keyCode === 46) || (keyCode === 190))) return false;
-
-    // decimal point
-    if ((190 == keyCode) && ((DaoOptions.getValue('AllPartfullUnit') == 'true') || allowDecimals))
-        return true;
+        // decimal point
+        if ((190 == keyCode) && ((DaoOptions.getValue('AllPartfullUnit') == 'true') || allowDecimals))
+            return true;
 
 	// Numeric keypad
 	if ((keyCode > 95) && (keyCode < 106))
@@ -627,7 +604,7 @@ function g_isValidQuantityCharPressed(event, allowDecimals) {
 
 	if (isNaN(String.fromCharCode(event.which)) || event.which == 32
 			|| (event.keyCode >= 186 && event.keyCode <= 222))
-		if (event.which != 8 && event.which != 9 && event.which != 46)
+		if (event.which != 8 && event.which != 9)
 			return false;
 
 	return true;

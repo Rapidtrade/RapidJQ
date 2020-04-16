@@ -214,7 +214,6 @@ function shoppingCartBind() {
             }
         }
     });
-    $('#saveShoppingCart').toggleClass('ui-disabled', true);
 
     $('#deleteShoppingCart').unbind();
     $('#deleteShoppingCart').click(function() {
@@ -699,10 +698,9 @@ function shoppingCartOnAllItemsAdded() {
     	g_shoppingCartTotalIncl += g_shoppingCartVAT;
     }
 
-    // $('.quantity').keydown(function(event) {
-    //     var allowDecimals = (DaoOptions.getValue('AllowDecimalQuantity', 'true') === 'true') && (DaoOptions.getValue('AllowDecimalQuantityForBranches', '').length ? ($.inArray(g_currentCompany().BranchID, DaoOptions.getValue('AllowDecimalQuantityForBranches', '').split(',')) > -1) : true);
-    //     return g_isValidQuantityCharPressed(event, allowDecimals);
-    // });
+    $('.quantity').keydown(function(event) {
+        return g_isValidQuantityCharPressed(event);
+    });
 
     $('#vat').html(g_addCommas(g_roundToTwoDecimals(g_shoppingCartVAT)));
     $('#totalExcl').html(g_addCommas(g_roundToTwoDecimals(g_shoppingCartTotalExcl)));
@@ -715,11 +713,6 @@ function shoppingCartOnAllItemsAdded() {
     g_basketHTML = '';
     if (DaoOptions.getValue('DoNotSortBasket', 'false') !== 'true')
         alphaFilter.getInstance().HTML('#alphabet', '#shoppingCartitemlist');
-
-    $('.qtybox').keypress(function(event) {
-        var allowDecimals = (DaoOptions.getValue('AllowDecimalQuantity', 'true') === 'true') && (DaoOptions.getValue('AllowDecimalQuantityForBranches', '').length ? ($.inArray(g_currentCompany().BranchID, DaoOptions.getValue('AllowDecimalQuantityForBranches', '').split(',')) > -1) : true);
-        return g_isValidQuantityCharPressed(event, allowDecimals);
-    });
 
     var hidePrice = ((DaoOptions.getValue(sessionStorage.getItem("currentordertype") + 'CartHidePrice', 'false') === 'true') || g_isNoPriceUser());
     if (hidePrice) {
@@ -977,8 +970,6 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
         	basketInfo.Discount = discount;
         	basketInfo.Nett = nett;
         	basketInfo.Gross = gross;
-            basketInfo.DiscountApplied = (volumePrice.ID != undefined && volumePrice.ID != null && volumePrice.ID != '');
-
 
                 if (DaoOptions.getValue('SetRepBoolDiscountUF') && basketInfo[DaoOptions.getValue('SetRepBoolDiscountUF')]) {
                     basketInfo.RepNett = nett;
@@ -1097,7 +1088,6 @@ function shoppingCartRecalcMultilineDiscounts(changedItemIndex) {
                                 basketInfo.Discount = discount;
                                 basketInfo.Nett = nett;
                                 basketInfo.Gross = gross;
-                                basketInfo.DiscountApplied = (volumePrice[0].ID != undefined && volumePrice[0].ID != null && volumePrice[0].ID != '');
 
                                 if (DaoOptions.getValue('SetRepBoolDiscountUF') && basketInfo[DaoOptions.getValue('SetRepBoolDiscountUF')]) {
                                     basketInfo.RepNett = nett;
@@ -1177,7 +1167,6 @@ function shoppingCartRecalcMultilineDiscounts(changedItemIndex) {
                                     basketInfo.Discount = discount;
                                     basketInfo.Nett = nett;
                                     basketInfo.Gross = gross;
-                                    basketInfo.DiscountApplied = (volumePrice[0].ID != undefined && volumePrice[0].ID != null && volumePrice[0].ID != '');
 
                                     if (DaoOptions.getValue('SetRepBoolDiscountUF') && basketInfo[DaoOptions.getValue('SetRepBoolDiscountUF')]) {
                                         basketInfo.RepNett = nett;
@@ -1207,7 +1196,7 @@ function shoppingCartRecalcMultilineDiscounts(changedItemIndex) {
                         );
 
                         g_clearCacheDependantOnBasket();
-                    }
+                            }
                 });
             }
         });
@@ -1243,7 +1232,6 @@ function shoppingCartRecalcLocalPricing(itemIndex) {
         if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
             shoppingCartRecalcMultilineDiscounts();
         }
-        $('#saveShoppingCart').toggleClass('ui-disabled', false);
         return;
     }
 
@@ -1272,8 +1260,6 @@ function shoppingCartCalculateLocalDiscount(volumePrice, itemIndex) {
     var nett = 0;
     var discount = 0;
     var type;
-    var deal = '';
-    var discID = '';
 
     var qty = Number($('#' + itemIndex).val() ? $('#' + itemIndex).val() : '0');
 
@@ -1295,8 +1281,6 @@ function shoppingCartCalculateLocalDiscount(volumePrice, itemIndex) {
         gross = parseFloat(volumePrice[i].Gross);
         nett  = parseFloat(volumePrice[i]['Nett' + j]);
         discount = parseFloat(volumePrice[i]['Discount' + j]);
-        deal = volumePrice[i].Deal;
-        discID = volumePrice[i].ID;
 
         type = volumePrice[i]['Type'];
     }
@@ -1311,10 +1295,7 @@ function shoppingCartCalculateLocalDiscount(volumePrice, itemIndex) {
         basketInfo.Nett = nett;
         basketInfo.Gross = gross;
         basketInfo.UserField15 = type;
-        basketInfo.DiscountApplied = (volumePrice[0].ID != undefined && volumePrice[0].ID != null && volumePrice[0].ID != '');
-        basketInfo.Deal = deal;
-        basketInfo.DiscountID = discID;
-        // basketInfo.DiscountApplied = true;
+        basketInfo.DiscountApplied = true;
 
         if (g_enableMultiLineDiscount === 'true' &&
                 volumePrice[volumePrice.length - 1].ID === g_multiLineDiscountID) {
@@ -1356,7 +1337,6 @@ function shoppingCartRecalcLivePricing(itemIndex) {
         if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
             shoppingCartRecalcMultilineDiscounts();
         }
-        $('#saveShoppingCart').toggleClass('ui-disabled', true);
         return;
     }
 
@@ -1426,8 +1406,7 @@ function shoppingCartCalculateDiscount(volumePrice, itemIndex) {
         basketInfo.Nett = nett;
         basketInfo.Gross = gross;
         basketInfo.UserField15 = type;
-        // basketInfo.DiscountApplied = true;
-        basketInfo.DiscountApplied = (volumePrice[0].ID != undefined && volumePrice[0].ID != null && volumePrice[0].ID != '');
+        basketInfo.DiscountApplied = true;
 
         if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true' &&
                 volumePrice[volumePrice.length - 1].ID === DaoOptions.getValue('MultiLineDiscountID')) {

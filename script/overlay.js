@@ -1,12 +1,12 @@
 var g_companyOnHoldMessageShown;
 
 function overlayInit(pageId) {
-
+    
     g_companyOnHoldMessageShown = false;
-
+	
     var menuPanel = '<div data-role="panel" data-dismissible="false" data-display="push" id="menuPanel" class="overlayMenu invisible" data-theme="b">';
 
-    if (g_currentUser().Role != 'CUST' || (sessionStorage.getItem('customerMoreThan1Company') === 'true')) {
+    if (g_currentUser().Role != 'CUST') {
 
             menuPanel += '<ul id="mainMenu" data-role="listview" data-inset="true" data-divider-theme="d" >' +
                                                     '<li data-role="list-divider" role="heading">' + g_companyPageTranslation.translateText('Main Menu') + '</li>' +
@@ -20,31 +20,31 @@ function overlayInit(pageId) {
                 //Check if we can invoice, then add order types
                 if (g_currentUser().Role) {
 
-                    if (g_currentUser().Role.indexOf('canInv') !== -1) {
+                    if (g_currentUser().Role.indexOf('canInv') !== -1) {		
 
                         var warehouses = ((g_currentUser().Role.split(',')[1]).split('=')[1]).split('|');
-                        $.each(warehouses, function(key, value) {
+                        $.each(warehouses, function(key, value) {   
 
                              orderTypes.push('Invoice-' + value);
-                        });
+                        });				
                     }
                 }
-
+                
                 var specialOrderType = DaoOptions.getValue('PutOrderTypeLastInList', '');
                 var isSpecialOrderTypeListed = false;
 
                 if (orderTypes.length) {
 
                     if (!((orderTypes.length == 1) && (orderTypes[0].toLowerCase() == 'none'))) {
-
-                        $.each(orderTypes, function(key, value) {
+                        
+                        $.each(orderTypes, function(key, value) {                            
 
                             var orderTypeItemText = ('Create ' + value).replace('Create Invoice', g_companyPageTranslation.translateText('Create Invoice'))
                                     .replace('Create Order', g_companyPageTranslation.translateText('Create Order'));
-
-                            var classes = 'orderItem' + (value.indexOf('Invoice') !== -1 ? ' invoiceItem' : '');
-
-                            if (value !== specialOrderType)
+                            
+                            var classes = 'orderItem' + (value.indexOf('Invoice') !== -1 ? ' invoiceItem' : ''); 
+                            
+                            if (value !== specialOrderType)                            
                                 menuPanel += '<li id="pricelist' + value + 'Item" class="' + classes + '">' + orderTypeItemText + '</li>';
                             else
                                 isSpecialOrderTypeListed = true;
@@ -59,13 +59,13 @@ function overlayInit(pageId) {
             } else {
 
                 menuPanel += '<li id="pricelistOrderItem" class="orderItem">' + g_companyPageTranslation.translateText('Create Order') + '</li>';
-            }
+            }	
 
             menuPanel += '<li id="activityItem">' + g_companyPageTranslation.translateText('Add Activity') + '</li>';
-
+                             
             if (isSpecialOrderTypeListed)
                 menuPanel += '<li id="pricelist' + specialOrderType + 'Item" class="orderItem">Create ' + specialOrderType + '</li>';
-
+            
             menuPanel += '</ul>';
     }
 
@@ -75,12 +75,12 @@ function overlayInit(pageId) {
 
     if (showPricelistMenu) {
 
-            menuPanel += '<div id="pricelistMenu">' +
+            menuPanel += '<div id="pricelistMenu">' +   
                     '<ul data-role="listview" data-inset="true" data-divider-theme="d" >' +
                     '<li data-role="list-divider" role="heading">' + g_companyPageTranslation.translateText('Pricelist') + '</li>' +
                     '<li id="basic" class="ui-btn-active">' + g_companyPageTranslation.translateText('Basic Search') + '</li>';
 
-            if (DaoOptions.getValue('MobileCategories') == 'true')
+            if (DaoOptions.getValue('MobileCategories') == 'true')			
                 menuPanel += '<li id="categories">' + g_companyPageTranslation.translateText('Product Categories') + '</li>';
 
             if (DaoOptions.getValue('AllowAdvancedSearch') == 'true') {
@@ -93,7 +93,7 @@ function overlayInit(pageId) {
 
                     for ( var i = 0; i < extraMenuItemArray.length; i++)
                             menuPanel += '<li id="' + extraMenuItemArray[i].search + '">' + extraMenuItemArray[i].label + '</li>';
-                }
+                }	 
 
                 menuPanel += pricelistMenuEnd;
 
@@ -104,26 +104,26 @@ function overlayInit(pageId) {
                     var extraMenuItemArray = JSON.parse(DaoOptions.getValue('extrasearch'));
 
                     for ( var i = 0; i < extraMenuItemArray.length; i++) {
-                        if (DaoOptions.getValue('extrasearch' + extraMenuItemArray[i].search + 'isComplex', 'false') === 'true') {
+                        if (DaoOptions.getValue('extrasearch' + extraMenuItemArray[i].search + 'isComplex', 'false') === 'true') { 
                             menuPanel += '<li id="' + extraMenuItemArray[i].search + '" data-icon="false"><a href >' + extraMenuItemArray[i].label + /*'<span class="ui-li-count"><img src="jquery/jquery14/images/icons-png/carat-d-black.png" /></span>*/ '</a></li>';
                         } else {
                             menuPanel += '<li id="' + extraMenuItemArray[i].search + '">' + extraMenuItemArray[i].label + '</li>';
                         }
                     }
-                }
+                }	 
 
                 menuPanel += pricelistMenuEnd;
 
             }
-    }
+    } 
 
     menuPanel += '<div id="productDetailsMenu">' +
                                 '<ul data-role="listview" data-inset="true" data-divider-theme="d">' +
                                     '<li data-role="list-divider" role="heading">Product Details</li>' +
                                     '<li id="price" class="ui-btn-active">Price</li>';
 
-    if (DaoOptions.getValue('ShowProductInfo') == 'true')
-        menuPanel += '<li>Product Info</li>';
+    if (DaoOptions.getValue('ShowProductInfo') == 'true')          
+        menuPanel += '<li>Product Info</li>'; 
 
     if (DaoOptions.getValue('ShowComponents') === 'true')
         menuPanel += '<li id="components">Components</li>';
@@ -141,7 +141,7 @@ function overlayInit(pageId) {
                  '</ul>' +
                  '</div>';
 
-    if (g_currentUser().Role != 'CUST' || (sessionStorage.getItem('customerMoreThan1Company') === 'true'))
+    if (g_currentUser().Role != 'CUST') 
         menuPanel += '<a data-role="button" href="myterritory.html" data-icon="search" data-theme="b">' + g_companyPageTranslation.translateText('My Customers') + '</a>';
 
     menuPanel += '<p><a id="home" data-role="button" data-icon="home" data-theme="e">' + g_companyPageTranslation.translateText('Home') + '</a>';
@@ -156,7 +156,7 @@ function overlayInit(pageId) {
 }
 
 function overlayBind() {
-
+	
     $('#menuPanel li').click(function() {
 
         if ($(this).closest('ul').attr('id') != 'mainMenu')
@@ -176,7 +176,7 @@ function overlayBind() {
         } else {
 
           advancedSearchResetStorage();
-          sessionStorage.removeItem('cachePricelist');
+          sessionStorage.removeItem('cachePricelist');                      
         }
 
         if ($(this).hasClass('orderItem')) {
@@ -193,11 +193,11 @@ function overlayBind() {
 
         overlayOnItemClick(this);
 
-        if ('pricelistMenu' == $(this).closest('div').attr('id')) {
+        if ('pricelistMenu' == $(this).closest('div').attr('id')) { 
             sessionStorage.setItem('lastPricelistMenuItemId', this.id);
             if (DaoOptions.getValue('extrasearch' + this.id + 'isComplex', 'false') === 'true') {
                 pricelistDoExtraCoplexSearch();
-            } else {
+            } else {                
                 pricelistDoSearch(this.id);
             }
 
@@ -217,7 +217,7 @@ function overlayBind() {
 }
 
 function overlayRemoveStorage() {
-
+	
         sessionStorage.removeItem('lastMenuItemId');
         sessionStorage.removeItem('lastPricelistMenuItemId');
         sessionStorage.removeItem('lastPanelId');
@@ -226,29 +226,29 @@ function overlayRemoveStorage() {
 }
 
 function overlayOnItemClick(item) {
-
-    if (item)
+	
+    if (item)    
         overlayHighlightMenuItem(item);
 
-    if (g_phonegap || $( window ).width() < 900)
+    if (g_phonegap || $( window ).width() < 900) 
         $('#menuPanel').panel('close');
 }
 
 function overlayHighlightMenuItem(item) {
-
-    var $item = ('.orderItem' === item) ? $(item).first() : $(item);
+	
+    var $item = ('.orderItem' === item) ? $(item).first() : $(item);			
     $item.addClass('ui-btn-active').siblings('li').removeClass('ui-btn-active');
-
+    
     if ('.orderItem' === item) {
         sessionStorage.setItem('currentordertype', $.trim($($item).attr('id').replace('pricelist', '').replace('Item', '')));
     }
 
     if ($item.closest('ul').attr('id') === 'mainMenu')
-        sessionStorage.setItem('lastMenuItemId', $item.attr('id'));
+        sessionStorage.setItem('lastMenuItemId', $item.attr('id'));    
 }
 
 function overlaySetMenuButton() {
-
+	
     $('#menuButton').unbind();
 
      $('#menuButton').attr('data-icon', 'bars').find('.ui-icon').addClass('ui-icon-bars').removeClass('ui-icon-home');
@@ -260,7 +260,7 @@ function overlaySetMenuButton() {
 }
 
 function overlayOpenMenu() {
-
+	
     if (!g_phonegap && $( window ).width() > 900)
         $('#menuPanel').panel('open');
 }
@@ -269,19 +269,19 @@ function overlayIntSalesDisabledItems() {
     if (!g_isUserIntSalse()) {
         return DaoOptions.getValue('IncludeIntSalesOrderType','');
     }
-
+    
     return '';
 }
 
 function overlaySetMenuItems() {
-
+    
     $('#companyItem, #historyItem, #activityItem').toggleClass('ui-disabled', g_vanSales && g_currentCompany().AccountID.toUpperCase() == g_currentUser().RepID.toUpperCase());
-
-    if (g_currentUser().Role)
+    
+    if (g_currentUser().Role) 
         isVan = (g_currentUser().Role.indexOf('canInv') != -1);
     else
         isVan = false;
-
+    
     if ((DaoOptions.getValue('StopOnHoldOrders', false) === 'true') || isVan) {
         var field = DaoOptions.getValue('StopOnHoldField', '');
         var isOnHold = (field && g_currentCompany()[field] === 'Y');
@@ -291,68 +291,68 @@ function overlaySetMenuItems() {
                 g_popup('#companyInfoPopup').show(2000, function() {
                     g_companyOnHoldMessageShown = true;
                 });
-            }
+            }            
         }
-
-        var disabledTypesCSV = (isOnHold ? DaoOptions.getValue('StopOnHoldOrderType','') : (isVan ? DaoOptions.getValue('ExcludeVanOrderType','') : []));
+        
+        var disabledTypesCSV = (isOnHold ? DaoOptions.getValue('StopOnHoldOrderType','') : (isVan ? DaoOptions.getValue('ExcludeVanOrderType','') : []));      
         if (disabledTypesCSV.length > 0) {
             $.each(disabledTypesCSV.split(','), function(index, orderType) {
-                (orderType === 'Invoice') ? $('.invoiceItem').addClass('ui-disabled') : $('#pricelist' + orderType + 'Item').addClass('ui-disabled');
+                (orderType === 'Invoice') ? $('.invoiceItem').addClass('ui-disabled') : $('#pricelist' + orderType + 'Item').addClass('ui-disabled'); 
             });
-        };
+        };            
     } else if (DaoOptions.getValue('IncludeIntSalesOrderType','') !== '') {
         var intSalesDisableTypes = overlayIntSalesDisabledItems();
         if (intSalesDisableTypes.length > 0) {
             $.each(intSalesDisableTypes.split(','), function(index, orderType) {
-                (orderType === 'Invoice') ? $('.invoiceItem').addClass('ui-disabled') : $('#pricelist' + orderType + 'Item').addClass('ui-disabled');
+                (orderType === 'Invoice') ? $('.invoiceItem').addClass('ui-disabled') : $('#pricelist' + orderType + 'Item').addClass('ui-disabled'); 
             });
-        };
+        };  
     }
-
+    
     overlayHighlightMenuItem(document.getElementById(sessionStorage.getItem('lastMenuItemId') || 'companyItem'));
-
+    
     if ($('#pricelistMenu').length) {
-
+    	
         if (sessionStorage.getItem('lastPricelistMenuItemId')) {
             overlayHighlightMenuItem('#' + sessionStorage.getItem('lastPricelistMenuItemId'));
         } else {
             overlayHighlightMenuItem('#basic');
         }
-
+    	    	    	
     	$('#pricelistMenu').toggle($('#pricelistPanel').is(':visible'));
     }
-
+    
     if ($('#productDetailsMenu').length) {
-
+    	
     	$('#productDetailsMenu').toggle($('#productDetailPanel').is(':visible'));
     	overlayHighlightMenuItem('#price');
     }
 }
 
 function overlayFetchOrderTypes() {
-
-	if (g_currentUser().Role) {
-
-		var roles = g_currentUser().Role.split(',');
-
+	
+	if (g_currentUser().Role) {	
+		
+		var roles = g_currentUser().Role.split(',');	
+		
 		for (var i = 0; i < roles.length; ++i) {
-
+			
 			var orderTypes = DaoOptions.getValue(roles[i] + 'OrderTypes');
-
+		
 			if (orderTypes)
 				return orderTypes.split(',');
 		}
-
+		
 		return overlayFetchMobileOrderTypes();
-
+		
 	} else {
-
+		
 		return overlayFetchMobileOrderTypes();
 	}
 }
 
 function overlayFetchMobileOrderTypes() {
-
+	
 	var orderTypes = DaoOptions.getValue('MobileOrderTypes');
 	return orderTypes ? orderTypes.split(',') : [];
 }
