@@ -174,6 +174,10 @@ function g_isiPad() {
 			|| /iPhone OS 3_2_2/i.test(userAgent);
 }
 
+function g_isSGConvWebsite() {
+    return window.location.href.includes("https://supertrade.supergrp.net:9082/sgconvenience");
+   }
+
 function g_isAndroid() {
     var userAgent = navigator.userAgent;
     return /Android/i.test(userAgent);

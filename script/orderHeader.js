@@ -415,6 +415,9 @@ function orderHeaderSaveOrder() {
         if (g_isiPad())
             g_orderHeaderOrder.UserField10 = 'IPAD';
 
+        if (g_isSGConvWebsite())
+        g_orderHeaderOrder.UserField10 = 'SG Convenience';
+
         // next step
 
         //g_orderHeaderNextSavingStep = orderHeaderSaveOrderStep2;
