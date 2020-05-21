@@ -175,7 +175,7 @@ function g_isiPad() {
 }
 
 function g_isSGConvWebsite() {
-    return window.location.href.includes("https://supertrade.supergrp.net:9082/sgconvenience");
+    return window.location.href.includes("https://supertrade.supergrp.net:9082/beta/");
    }
 
 function g_isAndroid() {
