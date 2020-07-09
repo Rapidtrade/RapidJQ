@@ -907,6 +907,14 @@ function shoppingCartIsTotalQuantityValid() {
     return true;
 }
 
+var cartShowStockMessage = function(stock, message) {
+
+    $('#cartMessagePopup p').text(g_companyPageTranslation.translateText(message || 'No Stock Available'));
+    $('#cartMessagePopup').popup('open');
+    $('#cartMessagePopup #cancelButton').removeClass('invisible').toggle(-9998 === stock);
+
+}
+
 function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) {
 
     if (sessionStorage.getItem('ShoppingCartNoChangeAllowed') === 'true') {
@@ -950,6 +958,29 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
     	return;
     }
 
+    var checkForOrderTypes = DaoOptions.getValue('OrderTypeMustHaveStock');
+    var stock = g_shoppingCartDetailItems[itemIndex].Stock;
+    if (checkForOrderTypes === undefined) {
+
+        if ((DaoOptions.getValue('musthavestock') == 'true') && (isNaN(stock) || stock <= 0 || stock < quantity)) {
+            if (sessionStorage.getItem('currentordertype').toLowerCase() === 'repl' && DaoOptions.getValue('ReplenishZeroStock', 'false') === 'true') {
+
+            } else {
+                cartShowStockMessage(stock);
+                var previousQty = g_shoppingCartDetailItems[itemIndex].Quantity;
+                $('#' + itemIndex).attr('value', previousQty);
+                return;
+            }
+        }
+    } else {
+        if (($.inArray(sessionStorage.getItem('currentordertype'), checkForOrderTypes.split(',')) !== -1) && (isNaN(stock) || stock <= 0 )) {
+            cartShowStockMessage(stock);
+            var previousQty = g_shoppingCartDetailItems[itemIndex].Quantity;
+            $('#' + itemIndex).attr('value', previousQty);
+            return;
+        }
+    }
+
     var dao = new Dao();
     dao.get("BasketInfo", g_shoppingCartItemKeys[itemIndex], function(basketInfo) {
 
@@ -988,6 +1019,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
 
         basket.saveItem(basketInfo, quantity);
 
+        g_shoppingCartDetailItems[itemIndex].Quantity = quantity;
         $('#' + itemIndex + 'nett').text('' + g_roundToTwoDecimals(shoppingCartItemNett(basketInfo))); //$('#' + itemIndex + 'nett').text('' + basketInfo.Nett);
         $('#' + itemIndex + 'total').text(g_roundToTwoDecimals(shoppingCartItemNett(basketInfo) / ((DaoOptions.getValue('DividePriceByUnit')  === 'true') && g_isPackSizeUnitValid(basketInfo.Unit) ? basketInfo.Unit : 1) * quantity));
         g_shoppingCartTotalExcl = 0;

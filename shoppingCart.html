@@ -6,10 +6,10 @@
 
         <link rel="stylesheet" href="jquery/jquery.mobile-1.2.0.min.css" />
         <link rel="stylesheet" href="Rapidtrade.css" />
-	    
+
         <link rel="stylesheet" href="Rapidtrade.css" />
 
-        <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>	
+        <script type="application/javascript" src="jquery/jquery-1.8.3.min.js"></script>
         <script type="application/javascript"  src="jquery/jquery.mobile-1.2.0.min.js"></script>
 
         <script type="application/javascript" src="script/globals.js"></script>
@@ -41,9 +41,9 @@
 				    	</div>
 				        <a href="#" data-theme="b" class="shopcartButtoms" id="deleteShoppingCart" data-role="button" data-icon="delete"  data-inline="true">Delete All
 				        </a>
-				        <a href="#" data-theme="b" class="shopcartButtoms invisible" id="summaryButton" data-role="button" data-inline="true">Summary</a>                                        
+				        <a href="#" data-theme="b" class="shopcartButtoms invisible" id="summaryButton" data-role="button" data-inline="true">Summary</a>
 				      	<a href="#scanPopup" data-transition="pop" data-rel="popup" data-position-to="window"  data-theme="b" class="shopcartButtoms" id="startScanning" data-role="button" data-inline="true">Start Scanning
-				        </a>    
+				        </a>
 				    </div>
 				    <div class="ui-block-b" >
 				        <ul class="shopcartTotals" id="totallist" data-role="listview" data-inset="true" >
@@ -72,8 +72,8 @@
 	  		<div data-role="content">
 	  			<div id ="shoppingCartItemspopup" >
 	  				<fieldset id="alphabet" data-role="controlgroup" data-type="horizontal" data-mini="true" style="margin-bottom:15px;"></fieldset>
-	     			<ul id="shoppingCartitemlist" data-inset="true"  data-split-icon="delete" data-role="listview" class="ui-listview" data-filter-placeholder="Search..."></ul>   
-              	</div>             	
+	     			<ul id="shoppingCartitemlist" data-inset="true"  data-split-icon="delete" data-role="listview" class="ui-listview" data-filter-placeholder="Search..."></ul>
+              	</div>
               	<div data-role="popup" id="scanPopup" data-history="false" data-theme="b" data-overlay-theme="a" class="ui-content">
 	               <div>
                     <div data-role="fieldcontain" style="width:400px">
@@ -81,7 +81,7 @@
                			<input type="text" id="barcode" class="pricelistInput"/>
                			<div id="scanResult" style="padding-top:20px">&nbsp;</div>
              		</div>
-	               </div>         
+	               </div>
        			</div>
        			<div data-role="popup" id="creditLimitPopup" data-history="false" data-theme="e" class="ui-content">
 	               <div style="padding-bottom:20px">
@@ -98,12 +98,22 @@
                                     <table id="localTPMItemsTable" >
                                     </table>
                                 </div>
-                                <div style="vertical-align: middle;"> 
+                                <div style="vertical-align: middle;">
                                     <a id="shoppingCartLocalTPMCancel" class="ui-btn-left" data-role="button" href >Cancel</a>
                                     <a id="shoppingCartLocalTPMOK" class="ui-btn-right" data-role="button" href >Continue</a>
                                 </div>
                             </div>
-          	</div>      	 	
-		</div> 
+        			        <div data-role="popup" id="cartMessagePopup" data-history="false" data-theme="e" style="padding:10px;">
+        			            <p></p>
+                                            <br />
+        			            <a id="okButton" href="shoppingCart.html" data-role="button" data-inline="false" >
+        			            	   OK
+        			        	</a>
+        			            <a id="cancelButton" href="shoppingCart.html" data-role="button" data-inline="false">
+        			                   Cancel
+        			            </a>
+        		      		</div>
+          	</div>
+		</div>
 	</body>
 </html>
