@@ -132,7 +132,7 @@ function orderdetailsBind() {
             return;
         }
 
-        function removePromoItems(items) {
+        var removePromoItems = function(items) {
             var res = [];
             for (var i = 0; i < items.length; ++i) {
                 if (!items[i].PromoID || !items[i].RepChangedPrice || (items[i].RepDiscount < 100)) {
@@ -146,7 +146,17 @@ function orderdetailsBind() {
                 }
             }
             return res;
-        }
+        };
+
+        var checkStockOnItems = function(items) {
+            var res = [];
+            for (var i = 0; i < items.length; ++i) {
+                if (!isNaN(items[i].Stock) && items[i].Stock > 0 && items[i].Stock >= items[i].Quantity) {
+                    res.push(items[i]);
+                }
+            }
+            return res;
+        };
 
         if (DaoOptions.getValue('localTPM', 'false') === 'true') {
             g_orderdetailsOrderItems = removePromoItems(g_orderdetailsOrderItems);
@@ -155,6 +165,18 @@ function orderdetailsBind() {
         if ((DaoOptions.getValue('AllowDecimalQuantity', 'true') !== 'true') || !(DaoOptions.getValue('AllowDecimalQuantityForBranches', '').length ? ($.inArray(g_currentCompany().BranchID, DaoOptions.getValue('AllowDecimalQuantityForBranches', '').split(',')) > -1) : true)) {
             for (var i = 0; i < g_orderdetailsOrderItems.length; ++i) {
                 g_orderdetailsOrderItems[i].Quantity = Math.round(g_orderdetailsOrderItems[i].Quantity);
+            }
+        }
+
+        var checkForOrderTypes = DaoOptions.getValue('OrderTypeMustHaveStock');
+        if (checkForOrderTypes === undefined) {
+
+            if (DaoOptions.getValue('musthavestock') == 'true') {
+                g_orderdetailsOrderItems = checkStockOnItems(g_orderdetailsOrderItems);
+            }
+        } else {
+            if (($.inArray(sessionStorage.getItem('currentordertype'), checkForOrderTypes.split(',')) !== -1) && (isNaN(stock) || stock <= 0 || stock < enteredQuantity())) {
+                g_orderdetailsOrderItems = checkStockOnItems(g_orderdetailsOrderItems);
             }
         }
 
@@ -752,6 +774,27 @@ function orderdetailsSendOrderItem(itemKey) {
         if (orderdetailsIsCreditSelected())
             item.UserField02 = item.Quantity;
 
+        var checkForOrderTypes = DaoOptions.getValue('OrderTypeMustHaveStock');
+        var stock = item.Stock;
+        if (checkForOrderTypes === undefined) {
+
+            if ((DaoOptions.getValue('musthavestock') == 'true') && (isNaN(stock) || stock <= 0 || stock < enteredQuantity())) {
+                if (sessionStorage.getItem('currentordertype').toLowerCase() === 'repl' && DaoOptions.getValue('ReplenishZeroStock', 'false') === 'true') {
+
+                } else {
+                    $('#quantityPopup').popup('close');
+                    orderdetailsShowStockMessage(stock);
+                    return;
+                }
+            }
+        } else {
+            if (($.inArray(sessionStorage.getItem('currentordertype'), checkForOrderTypes.split(',')) !== -1) && (isNaN(stock) || stock <= 0 || stock < enteredQuantity())) {
+                $('#quantityPopup').popup('close');
+                orderdetailsShowStockMessage(stock);
+                return;
+            }
+        }
+
         if (isValid) {
 
             item.Quantity = enteredQuantity();
@@ -765,6 +808,14 @@ function orderdetailsSendOrderItem(itemKey) {
                 $('.historyOrderItems tr:contains("' + item.ProductID + '") .descr').text(item.Quantity + ' [-' + enteredQuantity() + ']');
         }
     });
+}
+
+var orderdetailsShowStockMessage = function(stock, message) {
+    setTimeout(function() {
+        $('#orderdetailsMessagePopup p').text(g_companyPageTranslation.translateText(message || 'No Stock Available'));
+        $('#orderdetailsMessagePopup').popup('open');
+        $('#orderdetailsMessagePopup #orderdetailsCancelButton').removeClass('invisible').toggle(-9998 === stock);
+    }, 500);
 }
 
 function orderdetailsOnComplexQuantityChange(inputElement) {
@@ -788,14 +839,27 @@ function orderdetailsFetchOrderItems() {
 
     var success = function (json) {
 
-        orderdetailsShowOrderItems(json);
+        var completeloadingitems = function(orderItems) {
+            orderdetailsShowOrderItems(orderItems);
 
-        orderdetailsCheckBasket();
+            orderdetailsCheckBasket();
 
-        if ($('#sendToBasketButton').hasClass('ui-disabled'))
-            $('#sendToBasketButton').removeClass('ui-disabled');
+            if ($('#sendToBasketButton').hasClass('ui-disabled'))
+                $('#sendToBasketButton').removeClass('ui-disabled');
 
-        $.mobile.hidePageLoadingMsg();
+            $.mobile.hidePageLoadingMsg();
+        };
+
+
+        $.each(json, function(index, item) {
+
+            orderdetailsFetchStock(item, function(stock) {
+                item.Stock = stock;
+                if (index === (json.length - 1)) {
+                    completeloadingitems(json);
+                }
+            });
+        });
     };
 
     var error = function (e) {
@@ -922,7 +986,8 @@ function orderdetailsFetchOrderItems() {
 
         var barcode = (orderdetailsIsSpecialOrder() ? orderItem[DaoOptions.getValue('MasterChrtBCodeField')] : '');
         orderItem.Description = ((!orderItem.Description || orderItem.Description == null) ? '' : orderItem.Description.replace(/'/g, '&quot;')) + (barcode ? ' (' + barcode + ')' : '');
-
+        var stockValue = (orderItem.Stock !== undefined && orderItem.Stock !== null)? g_stockDescriptions[orderItem.Stock] || orderItem.Stock.toString() : 'N/A';
+        var stockText = g_indexedDB || (DaoOptions.getValue('HideStockBubble', 'false') == 'true') ? '' : '<td><span id="' + orderItem.ProductID + 'Stock" class="ui-li-count">' + stockValue + '</span></td>';
         var doNotShowItemID = DaoOptions.getValue('DoNotShowItemID', 'false') === 'true';
 
         g_append('#orderitemlist', '<li data-theme="c" id="' + itemKey + '">' +
@@ -930,7 +995,8 @@ function orderdetailsFetchOrderItems() {
             '   <p class="ui-li-heading"><strong>' + (isComplexView ? orderItem[DaoOptions.getValue('MasterChartComplexDesc')] : orderItem.Description) + '</strong></p>' +
             '   <table class="ui-li-desc historyOrderItems"><tr>' + (doNotShowItemID ? '' : '<td class="itemId">' + orderItem.ItemID + '</td>') + '<td class="productId">' + (isComplexView ? complexProductId : orderItem.ProductID) +
             '</td><td class="quantity">' + orderItem.Quantity + '</td>' +
-            (g_isNoPriceUser() ? '' : '<td class="value">' + g_roundToTwoDecimals(nettValue) + '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td>') + '<td class="orderedQuantity"></td>' + quantityInputHtml + '</tr></table></a>' +
+            (g_isNoPriceUser() ? '' : '<td class="value">' + g_roundToTwoDecimals(nettValue) + '</td><td class="value">' + g_roundToTwoDecimals(orderItem.Value) + '</td>') + '<td class="orderedQuantity"></td>' + quantityInputHtml +
+            stockText + '</tr></table></a>' +
             '	<a onclick="orderdetailsSendOrderItem(' + (isComplexView ? '\'' + complexProductId + '\', true' : g_orderdetailsOrderItems.length) + ')" data-role="button" data-transition="pop" data-rel="popup"  data-position-to="window" data-inline="true"' +
             '	class="ui-li-link-alt ui-btn ui-btn-up-c" data-theme="c" >' +
             '	<span class="ui-btn-inner ui-btn-corner-all">' +
@@ -1066,6 +1132,7 @@ function orderdetailsFetchOrderItems() {
 
 			    	console.log(error.message);
 			    	$('#stockValue').text('No data available');
+                    onFetchLocalSuccess({Stock: ''});
 			    },
 			    undefined);
 	};
