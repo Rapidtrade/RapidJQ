@@ -1704,6 +1704,14 @@ function pricelistOnItemClicked(itemIndex) {
     }
 }
 
+var pricelistShowStockMessage = function(stock, message) {
+
+    $('#productMessagePopup p').text(g_companyPageTranslation.translateText(message || 'Not available to purchase'));
+    $('#productMessagePopup').popup('open');
+    $('#productMessagePopup #cancelButton').removeClass('invisible').toggle(-9998 === stock);
+    $('#quantity').toggleClass('ui-disabled', -9999 === stock);
+}
+
 function pricelistAddItemToBasket(itemIndex) {
 
     if ((Number(g_pricelistItems[itemIndex].n) === 0) && (DaoOptions.getValue('CanOrderZeroPrice') !== 'true'))
@@ -1727,6 +1735,25 @@ function pricelistAddItemToBasket(itemIndex) {
                         deleteItemOnSuccess, false);
 
         return;
+    }
+
+    var checkForOrderTypes = DaoOptions.getValue('OrderTypeMustHaveStock');
+    var stock = g_pricelistItems[itemIndex].Stock
+    if (checkForOrderTypes === undefined) {
+
+        if ((DaoOptions.getValue('musthavestock') == 'true') && (isNaN(stock) || stock <= 0 || stock < (getQuantity(itemIndex) || 0))) {
+            if (sessionStorage.getItem('currentordertype').toLowerCase() === 'repl' && DaoOptions.getValue('ReplenishZeroStock', 'false') === 'true') {
+
+            } else {
+                pricelistShowStockMessage(stock);
+                return;
+            }
+        }
+    } else {
+        if (($.inArray(sessionStorage.getItem('currentordertype'), checkForOrderTypes.split(',')) !== -1) && (isNaN(stock) || stock <= 0 )) {
+            pricelistShowStockMessage(stock);
+            return;
+        }
     }
 
     var unit = parseInt(g_pricelistItems[itemIndex].u, 10);
