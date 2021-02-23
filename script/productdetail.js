@@ -1169,7 +1169,7 @@ function productdetailCalculateDiscount(volumePrice) {
 
 	    // increase index according to quantity
 
-    	while (j < 5) {
+    	while (j < 6) {
 
             if (qty < volumePrice[i]['Qty' + j])
                     break;

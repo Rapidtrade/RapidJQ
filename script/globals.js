@@ -7,7 +7,7 @@
 //var g_logo = "img/SGlogoSml.png";
 
 var g_url = "https://supertrade.supergrp.net:9082/";
-var g_restUrl = g_url + "api2/"; // "rest3/";
+var g_restUrl = g_url + "api4/"; // "rest3/";
 //var g_restUrl = g_url + "testrest/";
 //var g_vanSales = true;
 var g_vanSales = false;

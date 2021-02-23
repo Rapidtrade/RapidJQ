@@ -1,35 +1,35 @@
 var Discounts = (function() {
-    
+
     // Public
-    
+
     /*
      * Discounts.GetPrice(item, oncomplete);
      */
-    
+
     return {
-        
+
         GetPrice: function(item, oncomplete, onerror) {
             if (g_indexedDB) {
                     GetIndexDBPrice(item, oncomplete, onerror);
             } else {
                     GetSQLDBPrice(item, oncomplete, onerror);
-            }            
+            }
         }
     };
-    
+
     // Private
-    
+
     var trustedGross;
     var trustedNett;
     var trustedDiscount;
     var trustedItem;
     var oncomplete;
     var onerror;
-    
+
     function GetSQLDBPrice(item, poncomplete, ponerror) {
         oncomplete = poncomplete;
-        onerror = ponerror;       
-        
+        onerror = ponerror;
+
         var sql = getSQL(item);
         var dao = new Dao();
         dao.execSQL(sql, function(items){
@@ -42,9 +42,9 @@ var Discounts = (function() {
                 trustedItem = trItem[0];
                 var stockPrice = {};
                 stockPrice.volumePrice = GetDiscount3(g_discountsDictionary, items, undefined, undefined, item.ProductID.trim(), trustedGross, trustedNett, trustedDiscount);
-               
-               
-               
+
+
+
                 //*** Only if we applying more that one discount do we do this.
                 if (stockPrice.volumePrice.length > 1) {
                     for (var vp in stockPrice.volumePrice) {
@@ -79,12 +79,18 @@ var Discounts = (function() {
                             vp.Discount4 = 0;
                         }
 
+                        if (vp.Nett5 > 0) {
+                            vp.Discount5 = (trustedItem.g - vp.Nett5) / trustedItem.g * 100;
+                        } else {
+                            vp.Discount5 = 0;
+                        }
+
                     }
                 }
-                
+
                 if (oncomplete)
                     oncomplete(stockPrice);
-                
+
             },function(error) {
                 onerror(error);
             });
@@ -92,7 +98,7 @@ var Discounts = (function() {
             onerror(items);
         });
     }
-    
+
     function GetDiscount3(hashDiscounts, lstDiscValues, supplierID, accountid, productid, trGross, trNett, trDiscount) {
         var bfound = false;
         var liveinfo = {};
@@ -135,6 +141,7 @@ var Discounts = (function() {
                     if (cntVolDisc === 2) bfound = CalcPriceOrDiscount(disc, discountValue, trustedValues, 2, liveinfo, bfound, discountValue.QtyHigh, liveinfo.Deal);
                     if (cntVolDisc === 3) bfound = CalcPriceOrDiscount(disc, discountValue, trustedValues, 3, liveinfo, bfound, discountValue.QtyHigh, liveinfo.Deal);
                     if (cntVolDisc === 4) bfound = CalcPriceOrDiscount(disc, discountValue, trustedValues, 4, liveinfo, bfound, discountValue.QtyHigh, liveinfo.Deal);
+                    if (cntVolDisc === 5) bfound = CalcPriceOrDiscount(disc, discountValue, trustedValues, 5, liveinfo, bfound, discountValue.QtyHigh, liveinfo.Deal);
 
                     if (disc.SkipRest && !HasOtherVolDiscounts(lstDiscValues, x)) {
                         console.log("Skip rest");
@@ -144,10 +151,10 @@ var Discounts = (function() {
                 }
                 x = x + 1;
             }
-            if (bfound && disc.SkipRest) 
+            if (bfound && disc.SkipRest)
                 break;
         }
-        if (bfound) { 
+        if (bfound) {
 //            console.log("Discount/Price calulated as " & liveinfo.toString());
             return lst;
         } else {
@@ -164,7 +171,7 @@ var Discounts = (function() {
             return lst;
         }
     }
-    
+
     //function CalcPriceOrDiscount(disc, discountValue, tr_gross, tr_nett, nett, Discount, bfound, QtyHigh, Qty, Deal) {
     function CalcPriceOrDiscount(disc, discountValue, trValues, index, liveinfo, bfound, QtyHigh, Deal) {
         liveinfo['Qty' + index] = QtyHigh;
@@ -192,22 +199,22 @@ var Discounts = (function() {
                 liveinfo['Discount' + index] = 0;
             }
         }
-        
+
         return bfound;
     }
-    
+
     function getSQL(item) {
-        
+
         var sql = '';
         var union = '';
-        
+
         for (var j=0; j < g_discounts.length; ++j) {
             var discountInfo = g_discounts[j]
-        
+
             sql = sql + union + "SELECT dv.* FROM DiscountValues dv WHERE dv.index1='" + discountInfo.DiscountID + "'";
             for (var x = 0; x < g_discountConditions.length; ++x) {
                 var discountConditionInfo = g_discountConditions[x];
-                if (discountInfo.DiscountID !== discountConditionInfo.DiscountID) 
+                if (discountInfo.DiscountID !== discountConditionInfo.DiscountID)
                     continue;
 
                 if (x < (g_discountConditions.length - 1)) {
@@ -216,14 +223,14 @@ var Discounts = (function() {
                     } else if (g_discountConditions[x].OrCond) {
                         sql += " OR ";       //*** this condition is an or
                     } else {
-                        sql += " AND ";      //*** all others are and   
+                        sql += " AND ";      //*** all others are and
                     }
                 } else {
                     sql += " AND ";
                 }
-                
+
                 if (discountConditionInfo.InCond) {
-                    var findInArray = discountConditionInfo.RTObject === "#Account" ? 
+                    var findInArray = discountConditionInfo.RTObject === "#Account" ?
                         g_currentCompany()[discountConditionInfo.RTAttribute].replace(/'/g,'').split(',') : item[discountConditionInfo.RTAttribute].replace(/'/g,'').split(',');
                     sql += ' ( ';
                     var orStr = '';
@@ -235,8 +242,8 @@ var Discounts = (function() {
                 } else {
                     var rtAttribute = discountConditionInfo.RTObject === "#Account" ? g_currentCompany()[discountConditionInfo.RTAttribute] : item[discountConditionInfo.RTAttribute];
                     sql += " dv.[json] like '%\"" + discountConditionInfo.DiscountField + "\":\"" + rtAttribute + "\"%' ";
-                }                
-                
+                }
+
                 if (g_discountConditions[x].OrCond) {
                     sql += " ) ";   //*** close the bracket if this was the or
                 }
@@ -250,7 +257,7 @@ var Discounts = (function() {
 //        console.log(sql);
         return sql;
     }
-    
+
     function HasOtherVolDiscounts(lstDiscValues, x) {
         if (x === lstDiscValues.length - 1) return false;
         var thisDiscountID, nextDiscountID;
@@ -262,7 +269,7 @@ var Discounts = (function() {
             return false;
         }
     }
-    
+
     function getNewVolumePrice() {
         var volumePrice = {};
         volumePrice.ApplyToGross = false;
@@ -271,29 +278,32 @@ var Discounts = (function() {
         volumePrice.Discount2 = 0;
         volumePrice.Discount3 = 0;
         volumePrice.Discount4 = 0;
+        volumePrice.Discount5 = 0;
         volumePrice.Gross = 0;
         volumePrice.ID = undefined;
         volumePrice.Nett1 = 0;
         volumePrice.Nett2 = 0;
         volumePrice.Nett3 = 0;
         volumePrice.Nett4 = 0;
+        volumePrice.Nett5 = 0;
         volumePrice.OverwriteDiscount = false;
         volumePrice.ProductID = undefined;
         volumePrice.Qty1 = 0;
         volumePrice.Qty2 = 0;
         volumePrice.Qty3 = 0;
         volumePrice.Qty4 = 0;
+        volumePrice.Qty5 = 0;
         volumePrice.skipRest = true;
         volumePrice.SortOrder = 0;
         volumePrice.Type = 0;
-        
+
         return volumePrice;
-        
+
     }
-    
+
     function GetIndexDBPrice(item, oncomplete, onerror) {
         productdetailFetchLocalDiscount();
     }
-    
-    
+
+
 })();

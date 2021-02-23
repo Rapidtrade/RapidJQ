@@ -992,7 +992,7 @@ function shoppingCartOnQuantityChanged(itemIndex, value, maxValue, productName) 
 
     	    // increase index according to quantity
 
-        	while (j < 5) {
+        	while (j < 6) {
 
         		if (quantity < volumePrice['Qty' + j])
         			break;
@@ -1113,7 +1113,7 @@ function shoppingCartRecalcMultilineDiscounts(changedItemIndex) {
 
                             // increase index according to quantity
 
-                                while (j < 5) {
+                                while (j < 6) {
 
                                         if (g_shoppingCartMultilineDiscQty[promoID] < volumePrice['Qty' + j])
                                                 break;
@@ -1193,7 +1193,7 @@ function shoppingCartRecalcMultilineDiscounts(changedItemIndex) {
 
                                 // increase index according to quantity
 
-                                    while (j < 5) {
+                                    while (j < 6) {
 
                                             if (g_shoppingCartMultilineDiscQty[promoID] < volumePrice['Qty' + j])
                                                     break;
@@ -1316,7 +1316,7 @@ function shoppingCartCalculateLocalDiscount(volumePrice, itemIndex) {
 
 	    // increase index according to quantity
 
-    	while (j < 5) {
+    	while (j < 6) {
 
             if (qty < volumePrice[i]['Qty' + j])
                     break;
@@ -1433,7 +1433,7 @@ function shoppingCartCalculateDiscount(volumePrice, itemIndex) {
 
 	    // increase index according to quantity
 
-    	while (j < 5) {
+    	while (j < 6) {
 
             if (qty < volumePrice[i]['Qty' + j])
                     break;

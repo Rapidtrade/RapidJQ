@@ -1,12 +1,12 @@
-var conditions = {}; 
-var g_promoExclAccountGroup; 
+var conditions = {};
+var g_promoExclAccountGroup;
 var g_promoExclDicounts;
 var g_enableMultiLineDiscount;
 var g_multiLineDiscountID;
 
 /**
  * First pick which conditions apply to this customer/product combination
- * Collect all the valid discountconditions in the conditions array. 
+ * Collect all the valid discountconditions in the conditions array.
  */
 
 
@@ -28,7 +28,7 @@ function productdetailFetchLocalDiscount() {
                 condition.Discount = g_discounts[x];
                 condition.DiscountField = g_discountConditions[y].DiscountField;
                 condition.InCond = g_discountConditions[y].InCond;
-                //either compare against account table or product table 
+                //either compare against account table or product table
                 if (g_discountConditions[y].RTObject === '#Account') {
                     condition.Value = g_currentCompany()[g_discountConditions[y].RTAttribute];
                 } else if (g_discountConditions[y].RTObject === '#Product') {
@@ -36,7 +36,7 @@ function productdetailFetchLocalDiscount() {
                 }
                 if (conditions[g_discounts[x].DiscountID] == undefined) {
                     conditions[g_discounts[x].DiscountID] = [];
-                    
+
                 }
                 conditions[g_discounts[x].DiscountID].push(condition);
                 //conditions.push(condition);
@@ -51,11 +51,11 @@ function productdetailFetchLocalDiscount() {
 
 
 /*
- * Receive all discountvalues records at a time and check if any passes conditions 
+ * Receive all discountvalues records at a time and check if any passes conditions
  */
 
 function onsuccessDiscountValuesRead(allRows) {
-    
+
     if (!allRows || allRows.length == 0){
         if ($('#quantity').hasClass('ui-disabled')) {
             $('#quantity').removeClass('ui-disabled');
@@ -65,7 +65,7 @@ function onsuccessDiscountValuesRead(allRows) {
     var possibleValues = [];
     var cntVolDisc = 1;
     for (var dv = 0; dv < allRows.length; ++dv) {
-        
+
         // check if dates are valid
         var today = new Date();
         var fromDateSrv = (allRows[dv].FromDate ? allRows[dv].FromDate.replace('/Date(','').replace(')/','').split('+') : new Array(0,1));
@@ -74,19 +74,19 @@ function onsuccessDiscountValuesRead(allRows) {
         var toDateSrv = (allRows[dv].ToDate ? allRows[dv].ToDate.replace('/Date(','').replace(')/','').split('+') : new Array(0,1));
         mom = new moment(parseInt(toDateSrv[0], 10)); //new moment(activity.DueDate);
         var toDate = mom.toDate();
-        
+
         if (fromDate > today || toDate < today)
             continue; // skip this discount value
-        
+
         var row = allRows[dv];
         var dvConditions = [];
-        
+
         // get conditions for this row if exists
         if (conditions.hasOwnProperty(row.DiscountID) && discountApplyDiscounts(row.DiscountID))
             dvConditions = conditions[row.DiscountID];
         else
             continue;
-        
+
         var thisIsOurValue = true;
         //Loop through each condition and see if it applies to this discountvalues row
         for (var i = 0; i < dvConditions.length; i++) {
@@ -100,22 +100,22 @@ function onsuccessDiscountValuesRead(allRows) {
                 for (var c = 0; c < arrayToCheck.length; ++c) {
                     if (arrayToCheck[c].replace(/'/g, '') === row[dvConditions[i].DiscountField]) {
                         isInArray = true;
-                    }                    
+                    }
                 }
                 thisIsOurValue = thisIsOurValue && isInArray;
             } else {
                 thisIsOurValue = thisIsOurValue && dvConditions[i].Value === row[dvConditions[i].DiscountField];
-                
+
             }
             //yes, we want to use this condition
-            
+
         }
-        
+
         if (!thisIsOurValue) {
             cntVolDisc = 1;
-            continue; //It is our discount, but values dont match, so continue the loop so we move onto the next discountvalues record            
+            continue; //It is our discount, but values dont match, so continue the loop so we move onto the next discountvalues record
         }
-        
+
         row.SortOrder = dvConditions[0].Discount.SortOrder;
         row.SkipRest = dvConditions[0].Discount.SkipRest;
         row.DiscObj = dvConditions[0].Discount;
@@ -123,12 +123,12 @@ function onsuccessDiscountValuesRead(allRows) {
         possibleValues.push(row);
         ++cntVolDisc;
         // we will apply discouts later
-        // after we find all matching values        
+        // after we find all matching values
     }
-    
+
     console.log(possibleValues);
     discountApplyDiscountValues(possibleValues);
-    
+
 }
 
 function discountApplyDiscountValues(discountValues) {
@@ -136,7 +136,7 @@ function discountApplyDiscountValues(discountValues) {
     if (discountValues == undefined) {
        if ($('#quantity').hasClass('ui-disabled')) {
             $('#quantity').removeClass('ui-disabled');
-        }    
+        }
         return;
     }
     var dvComparator = function (a, b) {
@@ -144,7 +144,7 @@ function discountApplyDiscountValues(discountValues) {
             return -1;
         if (a.SortOrder > b.SortOrder)
             return 1;
-        
+
         if (a.QtyHigh < b.QtyHigh) {
             if (a.cntVolDisc > b.cntVolDisc) {
                 var tmp_cntVolDisc = a.cntVolDisc;
@@ -161,17 +161,17 @@ function discountApplyDiscountValues(discountValues) {
             }
             return 1;
         }
-        
+
 //        if (a.cntVolDisc < b.cntVolDisc)
 //            return -1;
 //        if (a.cntVolDisc > b.cntVolDisc)
 //            return 1;
-        
+
         return 0;
     };
-    
+
     discountValues.sort(dvComparator);
-    
+
     var discIDFlag = '';
     var previousSaidSkipRest = false;
     for (var i = 0; i < discountValues.length; ++i) {
@@ -210,13 +210,13 @@ function discountApplyDiscountValues(discountValues) {
             g_pricelistSelectedProduct.Nett = g_pricelistSelectedProduct.Gross - (g_pricelistSelectedProduct.Gross * (g_pricelistSelectedProduct.Discount / 100));
         }
         g_pricelistSelectedProduct.UserField15 = discountValues[i].DiscObj.Type;
-        
+
         if (!g_pricelistSelectedProduct.RepChangedPrice || (DaoOptions.getValue('SetRepBoolDiscountUF') && g_pricelistSelectedProduct[DaoOptions.getValue('SetRepBoolDiscountUF')])) {
             productdetailValue('discount', g_addCommas(g_pricelistSelectedProduct.Discount.toFixed(2)) + '%');
             productdetailValue('nett', g_addCommas(g_pricelistSelectedProduct.Nett.toFixed(2)));
             $('#grossvalue')['html'](g_addCommas(g_pricelistSelectedProduct.Gross.toFixed(2)));
         }
-        
+
         discountDiscountValueToVolumePrice(discountValues[i], g_pricelistSelectedProduct);
         previousSaidSkipRest = discountValues[i].SkipRest;
             //break;
@@ -243,11 +243,11 @@ function onsuccessDiscountValuesRead1(allRows) {
                 if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
                     shoppingCartRecalcMultilineDiscounts();
                 }
-            } 
-            
+            }
+
             continue;
         }
-        
+
         conditions = {};
         //loop through discounts
         for (var x = 0; x < g_discounts.length  ; x++) {
@@ -259,7 +259,7 @@ function onsuccessDiscountValuesRead1(allRows) {
                     condition.Discount = g_discounts[x];
                     condition.DiscountField = g_discountConditions[y].DiscountField;
                     condition.InCond = g_discountConditions[y].InCond;
-                    //either compare against account table or product table 
+                    //either compare against account table or product table
                     if (g_discountConditions[y].RTObject === '#Account') {
                         condition.Value = g_currentCompany()[g_discountConditions[y].RTAttribute];
                     } else if (g_discountConditions[y].RTObject === '#Product') {
@@ -274,11 +274,11 @@ function onsuccessDiscountValuesRead1(allRows) {
                 }
             }
         }
-        
+
         var cntVolDisc = 1;
         var possibleValues = [];
         for (var dv = 0; dv < allRows.length; ++dv) {
-            
+
             // check if dates are valid
             var today = new Date();
             var fromDateSrv = (allRows[dv].FromDate ? allRows[dv].FromDate.replace('/Date(','').replace(')/','').split('+') : new Array(0,1));
@@ -290,7 +290,7 @@ function onsuccessDiscountValuesRead1(allRows) {
 
             if (fromDate > today || toDate < today)
                 continue; // skip this discount value
-            
+
             var row = allRows[dv];
             var dvConditions = [];
 
@@ -313,7 +313,7 @@ function onsuccessDiscountValuesRead1(allRows) {
                     for (var c = 0; c < arrayToCheck.length; ++c) {
                         if (arrayToCheck[c].replace(/'/g, '') === row[dvConditions[i].DiscountField]) {
                             isInArray = true;
-                        }                    
+                        }
                     }
                     thisIsOurValue = thisIsOurValue && isInArray;
                 } else {
@@ -326,7 +326,7 @@ function onsuccessDiscountValuesRead1(allRows) {
 
             if (!thisIsOurValue) {
                 cntVolDisc = 1;
-                continue; //It is our discount, but values dont match, so continue the loop so we move onto the next discountvalues record            
+                continue; //It is our discount, but values dont match, so continue the loop so we move onto the next discountvalues record
             }
             row.SortOrder = dvConditions[0].Discount.SortOrder;
             row.SkipRest = dvConditions[0].Discount.SkipRest;
@@ -335,15 +335,15 @@ function onsuccessDiscountValuesRead1(allRows) {
             possibleValues.push(row);
             ++cntVolDisc;
             // we will apply discouts later
-            // after we find all matching values        
+            // after we find all matching values
         }
 
         //console.log(possibleValues);
         discountApplyDiscountValues1(possibleValues, cartItemIndex);
-        
+
     }
-    
-    
+
+
 }
 
 function discountApplyDiscountValues1(discountValues, index) {
@@ -361,7 +361,7 @@ function discountApplyDiscountValues1(discountValues, index) {
             return -1;
         if (a.SortOrder > b.SortOrder)
             return 1;
-        
+
         if (a.QtyHigh < b.QtyHigh) {
             if (a.cntVolDisc > b.cntVolDisc) {
                 var tmp_cntVolDisc = a.cntVolDisc;
@@ -378,27 +378,27 @@ function discountApplyDiscountValues1(discountValues, index) {
             }
             return 1;
         }
-        
+
 //        if (a.cntVolDisc < b.cntVolDisc)
 //            return -1;
 //        if (a.cntVolDisc > b.cntVolDisc)
 //            return 1;
-        
+
         return 0;
     };
-    
+
     discountValues.sort(dvComparator);
 //    var currentProduct = g_shoppingCartDetailItems[index];
-    
+
     var dao = new Dao();
     dao.get("BasketInfo", g_shoppingCartItemKeys[index], function(basketInfo) {
         var discIDFlag = '';
         var previousSaidSkipRest = false;
         for (var i = 0; i < discountValues.length; ++i) {
-            
+
             if (i === 0)
                 discIDFlag = discountValues[i].DiscountID;
-            
+
             if (i > 0 && discIDFlag !== discountValues[i].DiscountID && previousSaidSkipRest) {
                 break;
             } else if (i > 0 && discIDFlag === discountValues[i].DiscountID) {
@@ -410,13 +410,13 @@ function discountApplyDiscountValues1(discountValues, index) {
                     }
                 }
             }
-            
-            if (g_enableMultiLineDiscount === 'true' && 
+
+            if (g_enableMultiLineDiscount === 'true' &&
                     discountValues[i].DiscountID === g_multiLineDiscountID) {
-                    if (!g_shoppingCartMultilineDiscItems.hasOwnProperty(basketInfo.UserField05)) 
+                    if (!g_shoppingCartMultilineDiscItems.hasOwnProperty(basketInfo.UserField05))
                         g_shoppingCartMultilineDiscItems[basketInfo.UserField05] = [];
 
-                    if (!g_shoppingCartMultilineDiscQty.hasOwnProperty(basketInfo.UserField05)) 
+                    if (!g_shoppingCartMultilineDiscQty.hasOwnProperty(basketInfo.UserField05))
                         g_shoppingCartMultilineDiscQty[basketInfo.UserField05] = 0;
 
                     g_shoppingCartMultilineDiscItems[basketInfo.UserField05][index] = basketInfo;
@@ -424,7 +424,7 @@ function discountApplyDiscountValues1(discountValues, index) {
 
                     g_shoppingCartMultilineItemPromoID[index] = basketInfo.UserField05;
             }
-            
+
             //If we here then this row's discount or price must be applied
             if (discountValues[i].DiscObj && discountValues[i].DiscObj.Type === 'PRICE') {
                 basketInfo.Nett = discountValues[i].Price;
@@ -461,7 +461,7 @@ function discountApplyDiscountValues1(discountValues, index) {
                 var value = $(this).text().replace(',','');
                 g_shoppingCartTotalExcl += parseFloat(value);
             });
-            shoppingCartRecalcTotals(basketInfo, basketInfo.Quantity);   
+            shoppingCartRecalcTotals(basketInfo, basketInfo.Quantity);
             if (g_shoppingCartItemKeys.length === (index + 1)) {
                     g_busy(false);
                     if (DaoOptions.getValue('EnableMultiLineDiscount','false') === 'true') {
@@ -480,62 +480,77 @@ function discountDiscountValueToVolumePrice(dv, item) {
         vp.Discount2 = 0;
         vp.Discount3 = 0;
         vp.Discount4 = 0;
+        vp.Discount5 = 0;
         try {
             vp.Gross = parseFloat(item.Gross.replace(/,/g,''));
         } catch(ex) {vp.Gross = item.Gross;}
         vp.ID = dv.DiscountID;
         if (dv.DiscObj.Type === 'DISCOUNT')
             vp.Nett1 = item.Gross - (item.Gross * (dv.Discount / 100));
-        else 
+        else
             vp.Nett1 = dv.Price;
         vp.Nett2 = 0;
         vp.Nett3 = 0;
         vp.Nett4 = 0;
+        vp.Nett5 = 0;
         vp.OverwriteDiscount = dv.DiscObj.OverwriteDiscount;
         vp.ProductID = item.ProductID;
         vp.Qty1 = dv.QtyHigh;
         vp.Qty2 = 0;
         vp.Qty3 = 0;
         vp.Qty4 = 0;
+        vp.Qty5 = 0;
         vp.SortOrder = dv.DiscObj.SortOrder;
         vp.Type = dv.DiscObj.Type;
         vp.skipRest = dv.DiscObj.SkipRest;
         g_pricelistVolumePrices[item.ProductID] = vp;
     }
-    
+
     if (dv.cntVolDisc === 2) {
         var vp = g_pricelistVolumePrices[item.ProductID];
         vp.Discount2 = dv.Discount;
         if (dv.DiscObj.Type === 'DISCOUNT')
             vp.Nett2 = item.Gross - (item.Gross * (dv.Discount / 100));
-        else 
+        else
             vp.Nett2 = dv.Price;
         vp.Qty2 = dv.QtyHigh;
-        
+
         g_pricelistVolumePrices[item.ProductID] = vp;
     }
-    
+
     if (dv.cntVolDisc === 3) {
         var vp = g_pricelistVolumePrices[item.ProductID];
         vp.Discount3 = dv.Discount;
         if (dv.DiscObj.Type === 'DISCOUNT')
             vp.Nett3 = item.Gross - (item.Gross * (dv.Discount / 100));
-        else 
+        else
             vp.Nett3 = dv.Price;
         vp.Qty3 = dv.QtyHigh;
-        
+
         g_pricelistVolumePrices[item.ProductID] = vp;
     }
-    
+
     if (dv.cntVolDisc === 4) {
         var vp = g_pricelistVolumePrices[item.ProductID];
         vp.Discount4 = dv.Discount;
         if (dv.DiscObj.Type === 'DISCOUNT')
             vp.Nett4 = item.Gross - (item.Gross * (dv.Discount / 100));
-        else 
+        else
             vp.Nett4 = dv.Price;
         vp.Qty4 = dv.QtyHigh;
-        
+
+        g_pricelistVolumePrices[item.ProductID] = vp;
+    }
+
+    if (dv.cntVolDisc === 5) {
+        var vp = g_pricelistVolumePrices[item.ProductID];
+        vp.Discount5 = dv.Discount;
+        if (dv.DiscObj.Type === 'DISCOUNT')
+            vp.Nett5 = item.Gross - (item.Gross * (dv.Discount / 100));
+        else
+            vp.Nett5 = dv.Price;
+        vp.Qty5 = dv.QtyHigh;
+
         g_pricelistVolumePrices[item.ProductID] = vp;
     }
 }
@@ -543,19 +558,19 @@ function discountDiscountValueToVolumePrice(dv, item) {
 function discountApplyDiscounts(discountID) {
     if (!g_promoExclAccountGroup)
         return true;
-        
+
     if ($.inArray(g_currentCompany().AccountGroup, g_promoExclAccountGroup.split(',')) >= 0 && $.inArray(discountID, g_promoExclDicounts) >= 0) {
         return false;
-    } else 
+    } else
         return true;
-    
+
 //    var promoExclAccountGroup = DaoOptions.getValue('PromoExclAccountGroup');
 //    if (!promoExclAccountGroup)
 //        return true;
-//        
+//
 //    var promoExclDicounts = DaoOptions.getValue('PromoExclDiscounts') ? DaoOptions.getValue('PromoExclDiscounts').split(',') : [];
 //    if ($.inArray(g_currentCompany().AccountGroup, promoExclAccountGroup.split(',')) >= 0 && $.inArray(discountID, promoExclDicounts) >= 0) {
 //        return false;
-//    } else 
+//    } else
 //        return true;
 }
