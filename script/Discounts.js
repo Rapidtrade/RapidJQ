@@ -85,6 +85,36 @@ var Discounts = (function() {
                             vp.Discount5 = 0;
                         }
 
+                        if (vp.Nett6 > 0) {
+                            vp.Discount6 = (trustedItem.g - vp.Nett6) / trustedItem.g * 100;
+                        } else {
+                            vp.Discount6 = 0;
+                        }
+
+                        if (vp.Nett7 > 0) {
+                            vp.Discount7 = (trustedItem.g - vp.Nett7) / trustedItem.g * 100;
+                        } else {
+                            vp.Discount7 = 0;
+                        }
+
+                        if (vp.Nett8 > 0) {
+                            vp.Discount8 = (trustedItem.g - vp.Nett8) / trustedItem.g * 100;
+                        } else {
+                            vp.Discount8 = 0;
+                        }
+
+                        if (vp.Nett9 > 0) {
+                            vp.Discount9 = (trustedItem.g - vp.Nett9) / trustedItem.g * 100;
+                        } else {
+                            vp.Discount9 = 0;
+                        }
+
+                        if (vp.Nett10 > 0) {
+                            vp.Discount10 = (trustedItem.g - vp.Nett10) / trustedItem.g * 100;
+                        } else {
+                            vp.Discount10 = 0;
+                        }
+
                     }
                 }
 
@@ -142,6 +172,11 @@ var Discounts = (function() {
                     if (cntVolDisc === 3) bfound = CalcPriceOrDiscount(disc, discountValue, trustedValues, 3, liveinfo, bfound, discountValue.QtyHigh, liveinfo.Deal);
                     if (cntVolDisc === 4) bfound = CalcPriceOrDiscount(disc, discountValue, trustedValues, 4, liveinfo, bfound, discountValue.QtyHigh, liveinfo.Deal);
                     if (cntVolDisc === 5) bfound = CalcPriceOrDiscount(disc, discountValue, trustedValues, 5, liveinfo, bfound, discountValue.QtyHigh, liveinfo.Deal);
+                    if (cntVolDisc === 6) bfound = CalcPriceOrDiscount(disc, discountValue, trustedValues, 6, liveinfo, bfound, discountValue.QtyHigh, liveinfo.Deal);
+                    if (cntVolDisc === 7) bfound = CalcPriceOrDiscount(disc, discountValue, trustedValues, 7, liveinfo, bfound, discountValue.QtyHigh, liveinfo.Deal);
+                    if (cntVolDisc === 8) bfound = CalcPriceOrDiscount(disc, discountValue, trustedValues, 8, liveinfo, bfound, discountValue.QtyHigh, liveinfo.Deal);
+                    if (cntVolDisc === 9) bfound = CalcPriceOrDiscount(disc, discountValue, trustedValues, 9, liveinfo, bfound, discountValue.QtyHigh, liveinfo.Deal);
+                    if (cntVolDisc === 10) bfound = CalcPriceOrDiscount(disc, discountValue, trustedValues, 10, liveinfo, bfound, discountValue.QtyHigh, liveinfo.Deal);
 
                     if (disc.SkipRest && !HasOtherVolDiscounts(lstDiscValues, x)) {
                         console.log("Skip rest");
@@ -279,6 +314,11 @@ var Discounts = (function() {
         volumePrice.Discount3 = 0;
         volumePrice.Discount4 = 0;
         volumePrice.Discount5 = 0;
+        volumePrice.Discount6 = 0;
+        volumePrice.Discount7 = 0;
+        volumePrice.Discount8 = 0;
+        volumePrice.Discount9 = 0;
+        volumePrice.Discount10 = 0;
         volumePrice.Gross = 0;
         volumePrice.ID = undefined;
         volumePrice.Nett1 = 0;
@@ -286,6 +326,11 @@ var Discounts = (function() {
         volumePrice.Nett3 = 0;
         volumePrice.Nett4 = 0;
         volumePrice.Nett5 = 0;
+        volumePrice.Nett6 = 0;
+        volumePrice.Nett7 = 0;
+        volumePrice.Nett8 = 0;
+        volumePrice.Nett9 = 0;
+        volumePrice.Nett10 = 0;
         volumePrice.OverwriteDiscount = false;
         volumePrice.ProductID = undefined;
         volumePrice.Qty1 = 0;
@@ -293,6 +338,11 @@ var Discounts = (function() {
         volumePrice.Qty3 = 0;
         volumePrice.Qty4 = 0;
         volumePrice.Qty5 = 0;
+        volumePrice.Qty6 = 0;
+        volumePrice.Qty7 = 0;
+        volumePrice.Qty8 = 0;
+        volumePrice.Qty9 = 0;
+        volumePrice.Qty10 = 0;
         volumePrice.skipRest = true;
         volumePrice.SortOrder = 0;
         volumePrice.Type = 0;

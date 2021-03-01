@@ -481,6 +481,11 @@ function discountDiscountValueToVolumePrice(dv, item) {
         vp.Discount3 = 0;
         vp.Discount4 = 0;
         vp.Discount5 = 0;
+        vp.Discount6 = 0;
+        vp.Discount7 = 0;
+        vp.Discount8 = 0;
+        vp.Discount9 = 0;
+        vp.Discount10 = 0;
         try {
             vp.Gross = parseFloat(item.Gross.replace(/,/g,''));
         } catch(ex) {vp.Gross = item.Gross;}
@@ -493,6 +498,11 @@ function discountDiscountValueToVolumePrice(dv, item) {
         vp.Nett3 = 0;
         vp.Nett4 = 0;
         vp.Nett5 = 0;
+        vp.Nett6 = 0;
+        vp.Nett7 = 0;
+        vp.Nett8 = 0;
+        vp.Nett9 = 0;
+        vp.Nett10 = 0;
         vp.OverwriteDiscount = dv.DiscObj.OverwriteDiscount;
         vp.ProductID = item.ProductID;
         vp.Qty1 = dv.QtyHigh;
@@ -500,6 +510,11 @@ function discountDiscountValueToVolumePrice(dv, item) {
         vp.Qty3 = 0;
         vp.Qty4 = 0;
         vp.Qty5 = 0;
+        vp.Qty6 = 0;
+        vp.Qty7 = 0;
+        vp.Qty8 = 0;
+        vp.Qty9 = 0;
+        vp.Qty10 = 0;
         vp.SortOrder = dv.DiscObj.SortOrder;
         vp.Type = dv.DiscObj.Type;
         vp.skipRest = dv.DiscObj.SkipRest;
@@ -550,6 +565,66 @@ function discountDiscountValueToVolumePrice(dv, item) {
         else
             vp.Nett5 = dv.Price;
         vp.Qty5 = dv.QtyHigh;
+
+        g_pricelistVolumePrices[item.ProductID] = vp;
+    }
+
+    if (dv.cntVolDisc === 6) {
+        var vp = g_pricelistVolumePrices[item.ProductID];
+        vp.Discount6 = dv.Discount;
+        if (dv.DiscObj.Type === 'DISCOUNT')
+            vp.Nett6 = item.Gross - (item.Gross * (dv.Discount / 100));
+        else
+            vp.Nett6 = dv.Price;
+        vp.Qty6 = dv.QtyHigh;
+
+        g_pricelistVolumePrices[item.ProductID] = vp;
+    }
+
+    if (dv.cntVolDisc === 7) {
+        var vp = g_pricelistVolumePrices[item.ProductID];
+        vp.Discount7 = dv.Discount;
+        if (dv.DiscObj.Type === 'DISCOUNT')
+            vp.Nett7 = item.Gross - (item.Gross * (dv.Discount / 100));
+        else
+            vp.Nett7 = dv.Price;
+        vp.Qty7 = dv.QtyHigh;
+
+        g_pricelistVolumePrices[item.ProductID] = vp;
+    }
+
+    if (dv.cntVolDisc === 8) {
+        var vp = g_pricelistVolumePrices[item.ProductID];
+        vp.Discount8 = dv.Discount;
+        if (dv.DiscObj.Type === 'DISCOUNT')
+            vp.Nett8 = item.Gross - (item.Gross * (dv.Discount / 100));
+        else
+            vp.Nett8 = dv.Price;
+        vp.Qty8 = dv.QtyHigh;
+
+        g_pricelistVolumePrices[item.ProductID] = vp;
+    }
+
+    if (dv.cntVolDisc === 9) {
+        var vp = g_pricelistVolumePrices[item.ProductID];
+        vp.Discount9 = dv.Discount;
+        if (dv.DiscObj.Type === 'DISCOUNT')
+            vp.Nett9 = item.Gross - (item.Gross * (dv.Discount / 100));
+        else
+            vp.Nett9 = dv.Price;
+        vp.Qty9 = dv.QtyHigh;
+
+        g_pricelistVolumePrices[item.ProductID] = vp;
+    }
+
+    if (dv.cntVolDisc === 10) {
+        var vp = g_pricelistVolumePrices[item.ProductID];
+        vp.Discount10 = dv.Discount;
+        if (dv.DiscObj.Type === 'DISCOUNT')
+            vp.Nett10 = item.Gross - (item.Gross * (dv.Discount / 100));
+        else
+            vp.Nett10 = dv.Price;
+        vp.Qty10 = dv.QtyHigh;
 
         g_pricelistVolumePrices[item.ProductID] = vp;
     }
